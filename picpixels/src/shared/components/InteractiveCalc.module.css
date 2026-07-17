@@ -1,0 +1,221 @@
+.wrapper {
+  padding: 3rem;
+  background: var(--bg-dark-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--glass-shadow);
+}
+
+.title {
+  font-size: 1.5rem;
+  color: var(--text-white);
+  margin-bottom: 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.planSelector,
+.speedSelector {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.planBtn,
+.speedBtn {
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-muted-dark);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.planBtn:hover,
+.speedBtn:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-white);
+}
+
+.planActive,
+.speedActive {
+  background: var(--primary) !important;
+  border-color: var(--primary-light) !important;
+  color: var(--text-white) !important;
+  box-shadow: var(--glow-shadow);
+}
+
+.select {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-sm);
+  padding: 0.75rem 1rem;
+  color: var(--text-white);
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  appearance: none;
+}
+
+.select:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+.sliderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge {
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--primary-light);
+  padding: 0.2rem 0.7rem;
+  border-radius: 50px;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  background: rgba(92, 46, 46, 0.08);
+  border-radius: 50px;
+  outline: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  box-shadow: var(--glow-shadow);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Output Card */
+.outputCard {
+  padding: 2.5rem;
+  background: linear-gradient(145deg, hsl(150, 7%, 95%) 0%, hsl(210, 14%, 97%) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.1);
+}
+
+.estimateLabel {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  color: var(--primary-light);
+  margin-bottom: 0.8rem;
+}
+
+.priceRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.4rem;
+  margin-bottom: 2rem;
+}
+
+.currency {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-muted-dark);
+  padding-bottom: 0.3rem;
+}
+
+.price {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--text-white);
+  line-height: 1;
+}
+
+.period {
+  font-size: 1rem;
+  color: var(--text-muted-dark);
+  padding-bottom: 0.5rem;
+}
+
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 1.5rem;
+}
+
+.breakdownItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-muted-dark);
+}
+
+.breakdownItem strong {
+  color: var(--text-white);
+}
+
+.discountText {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+.savings {
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding-top: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+.savedAmount {
+  color: #4ade80 !important;
+  font-size: 1.1rem;
+}

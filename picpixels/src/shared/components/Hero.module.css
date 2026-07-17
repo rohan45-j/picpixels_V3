@@ -1,0 +1,238 @@
+/* ================================
+   Hero — Split Layout (Text + Slider)
+   ================================ */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  padding: 8rem 2rem 7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 20% -10%, rgba(139, 92, 246, 0.12) 0%, rgba(16, 185, 129, 0.06) 40%, transparent 80%);
+  overflow: visible;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: -5%;
+  width: 110%;
+  height: 90px;
+  background: var(--color-bg, #f8f9fa);
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, black, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black, transparent 70%);
+  pointer-events: none;
+}
+
+/* ---------- Inner Grid ---------- */
+.heroInner {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  z-index: 1;
+}
+
+/* ---------- Left — Text ---------- */
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tagline {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.45rem 1.2rem;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  color: var(--primary-light);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 100px;
+  margin-bottom: 1.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.2rem;
+  line-height: 1.12;
+}
+
+.description {
+  font-size: clamp(1rem, 1.5vw, 1.15rem);
+  color: var(--color-muted);
+  max-width: 540px;
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.ctaGroup {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+/* ---------- Mini Stats ---------- */
+.heroStats {
+  display: flex;
+  gap: 2rem;
+}
+
+.heroStat {
+  display: flex;
+  flex-direction: column;
+}
+
+.heroStatNum {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--color-primary);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1;
+}
+
+.heroStatLabel {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+/* ---------- Right — Slider ---------- */
+.heroSlider {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.sliderWindow {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  background: var(--bg-light-card);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.15),
+    0 0 80px rgba(16, 185, 129, 0.06);
+}
+
+/* Each slide */
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.slideActive {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.slideImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Dots ---------- */
+.sliderDots {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(16, 185, 129, 0.4);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.dot:hover {
+  border-color: var(--color-primary);
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.dotActive {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  width: 28px;
+  border-radius: 10px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 992px) {
+  .heroInner {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    text-align: center;
+  }
+
+  .heroText {
+    align-items: center;
+  }
+
+  .description {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .ctaGroup {
+    justify-content: center;
+  }
+
+  .heroStats {
+    justify-content: center;
+  }
+
+  .sliderWindow {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero {
+    padding: 6rem 1rem 3rem;
+  }
+
+  .heroStats {
+    gap: 1.2rem;
+  }
+
+  .heroStatNum {
+    font-size: 1.3rem;
+  }
+}

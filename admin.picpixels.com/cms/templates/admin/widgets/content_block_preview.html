@@ -1,0 +1,362 @@
+{% load static %}
+<div class="cbw-container">
+  <input type="hidden" name="{{ widget.name }}" value='{{ blocks_json }}' id="id_{{ widget.name }}" />
+
+  <div class="cbw-header">
+    <div class="cbw-header-left">
+      <svg class="cbw-header-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      <div>
+        <div class="cbw-header-title">Content Builder</div>
+        <div class="cbw-header-sub">Add and arrange content sections for this page</div>
+      </div>
+    </div>
+    <button type="button" class="cbw-add-btn" id="cb-add-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Block
+    </button>
+  </div>
+
+  <div id="cb-cards-container" class="cbw-blocks"></div>
+</div>
+
+<div id="cb-picker-modal" class="cbw-modal-overlay" style="display:none">
+  <div class="cbw-modal">
+    <div class="cbw-modal-header">
+      <h3 class="cbw-modal-title">Choose a Block Type</h3>
+      <button type="button" class="cbw-modal-close" id="cb-picker-close">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="cbw-modal-body">
+      {% for cat in categories %}
+      <div class="cbw-category">
+        <div class="cbw-category-header">
+          <span class="cbw-category-title">{{ cat.label }}</span>
+          {% if cat.is_advanced %}<span class="cbw-badge">Advanced</span>{% endif %}
+        </div>
+        <div class="cbw-category-grid">
+          {% for item in cat.items %}
+          <button type="button" class="cbw-pick-btn" data-pick-type="{{ item.type }}">
+            <span class="cbw-pick-icon">{{ item.icon }}</span>
+            <span class="cbw-pick-label">{{ item.label }}</span>
+            <span class="cbw-pick-desc">{{ item.desc }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script type="text/html" id="cb-tpl-heading">
+<div class="cbw-field">
+  <label class="cbw-label">Heading Text</label>
+  <input type="text" data-field="content" class="cbw-input" placeholder="Enter heading text..." />
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Level</label>
+  <select data-field="level" class="cbw-select">
+    <option value="1">H1 — Page Title</option>
+    <option value="2" selected>H2 — Section Title</option>
+    <option value="3">H3 — Subsection</option>
+    <option value="4">H4 — Detail</option>
+  </select>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-text">
+<div class="cbw-field">
+  <label class="cbw-label">Content</label>
+  <textarea data-field="content" class="cbw-textarea cbw-textarea-lg" placeholder="Write your content here..."></textarea>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-image">
+<div class="cbw-field">
+  <label class="cbw-label">Image URL</label>
+  <input type="text" data-field="src" class="cbw-input" placeholder="https://example.com/image.jpg" />
+</div>
+<div class="cbw-field-row">
+  <div class="cbw-field">
+    <label class="cbw-label">Alt Text</label>
+    <input type="text" data-field="alt" class="cbw-input" placeholder="Describe the image" />
+  </div>
+  <div class="cbw-field">
+    <label class="cbw-label">Caption <span class="cbw-opt">optional</span></label>
+    <input type="text" data-field="caption" class="cbw-input" placeholder="Image caption" />
+  </div>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-image_with_text">
+<div class="cbw-field">
+  <label class="cbw-label">Image URL</label>
+  <input type="text" data-field="src" class="cbw-input" placeholder="https://example.com/image.jpg" />
+</div>
+<div class="cbw-field-row">
+  <div class="cbw-field">
+    <label class="cbw-label">Alt Text</label>
+    <input type="text" data-field="alt" class="cbw-input" placeholder="Describe the image" />
+  </div>
+  <div class="cbw-field">
+    <label class="cbw-label">Caption <span class="cbw-opt">optional</span></label>
+    <input type="text" data-field="caption" class="cbw-input" placeholder="Image caption" />
+  </div>
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Text Content</label>
+  <textarea data-field="text" class="cbw-textarea" placeholder="Descriptive text beside the image..."></textarea>
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Layout</label>
+  <div class="cbw-radio-group" data-field="layout">
+    <label class="cbw-radio">
+      <input type="radio" name="layout" value="left" checked />
+      <span>Image Left</span>
+    </label>
+    <label class="cbw-radio">
+      <input type="radio" name="layout" value="right" />
+      <span>Image Right</span>
+    </label>
+  </div>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-gallery">
+<div class="cbw-field">
+  <label class="cbw-label">Images</label>
+  <div class="cbw-gallery-list" data-list="images">
+    <div data-item="image" data-proto class="cbw-gallery-item">
+      <div class="cbw-gallery-row">
+        <input type="text" data-field="src" class="cbw-input cbw-input-sm" placeholder="Image URL" />
+        <input type="text" data-field="alt" class="cbw-input cbw-input-sm" placeholder="Alt text" />
+        <input type="text" data-field="caption" class="cbw-input cbw-input-sm" placeholder="Caption" />
+        <button type="button" data-remove-btn class="cbw-btn-icon cbw-btn-danger" title="Remove">&times;</button>
+      </div>
+    </div>
+  </div>
+  <button type="button" data-action="add-gallery-image" class="cbw-btn-secondary">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add Image
+  </button>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-code">
+<div class="cbw-field">
+  <label class="cbw-label">Language</label>
+  <input type="text" data-field="language" class="cbw-input" placeholder="javascript, python, bash, html..." />
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Code</label>
+  <textarea data-field="content" class="cbw-textarea cbw-textarea-code" placeholder="Paste your code here..."></textarea>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-callout">
+<div class="cbw-field">
+  <label class="cbw-label">Style</label>
+  <div class="cbw-radio-group cbw-radio-inline" data-field="style">
+    <label class="cbw-radio cbw-radio-chip">
+      <input type="radio" name="style" value="info" checked />
+      <span>&#8505;&#65039; Info</span>
+    </label>
+    <label class="cbw-radio cbw-radio-chip">
+      <input type="radio" name="style" value="warning" />
+      <span>&#9888;&#65039; Warning</span>
+    </label>
+    <label class="cbw-radio cbw-radio-chip">
+      <input type="radio" name="style" value="success" />
+      <span>&#9989; Success</span>
+    </label>
+  </div>
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Title <span class="cbw-opt">optional</span></label>
+  <input type="text" data-field="title" class="cbw-input" placeholder="Callout title" />
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Message</label>
+  <textarea data-field="content" class="cbw-textarea" placeholder="Important text to highlight..."></textarea>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-faq">
+<div class="cbw-field-row">
+  <div class="cbw-field">
+    <label class="cbw-label">Question <span class="cbw-req">*</span></label>
+    <input type="text" data-field="question" class="cbw-input" placeholder="FAQ question..." />
+  </div>
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Answer <span class="cbw-req">*</span></label>
+  <textarea data-field="answer" class="cbw-textarea" placeholder="FAQ answer..."></textarea>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-list">
+<div class="cbw-field">
+  <label class="cbw-checkbox">
+    <input type="checkbox" data-field="ordered" value="true" />
+    <span>Numbered list</span>
+  </label>
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Items</label>
+  <div data-list="items">
+    <div data-item="item" data-proto class="cbw-list-item">
+      <input type="text" data-field="items[]" class="cbw-input" placeholder="Item text" />
+      <button type="button" data-action="remove-item" class="cbw-btn-icon cbw-btn-danger" title="Remove">&times;</button>
+    </div>
+  </div>
+  <button type="button" data-action="add-item" class="cbw-btn-secondary">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add Item
+  </button>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-table">
+<div class="cbw-field">
+  <label class="cbw-label">Table Title <span class="cbw-opt">optional</span></label>
+  <input type="text" data-field="title" class="cbw-input" placeholder="Enter table title..." />
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Column Headers</label>
+  <input type="text" data-field="headers" class="cbw-input" placeholder="Name, Age, Location (comma-separated)" />
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Columns</label>
+  <div data-list="columns" class="cbw-columns-list"></div>
+  <div class="cbw-btn-row">
+    <button type="button" data-action="add-column" class="cbw-btn-secondary cbw-btn-sm">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Column
+    </button>
+    <button type="button" data-action="remove-last-column" class="cbw-btn-secondary cbw-btn-sm cbw-btn-ghost">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Remove Last
+    </button>
+  </div>
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Rows</label>
+  <div data-list="rows">
+    <div data-item="row" data-proto class="cbw-table-row">
+      <input type="text" class="cbw-input" placeholder="..." />
+      <button type="button" data-remove-btn class="cbw-btn-icon cbw-btn-danger" title="Remove row">&times;</button>
+    </div>
+  </div>
+  <button type="button" data-action="add-row" class="cbw-btn-secondary">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add Row
+  </button>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-step">
+<div class="cbw-field">
+  <label class="cbw-label">Step Title</label>
+  <input type="text" data-field="title" class="cbw-input" placeholder="Step 1: Prepare the Tools" />
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Description</label>
+  <textarea data-field="content" class="cbw-textarea" placeholder="Describe what to do in this step..."></textarea>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-stats">
+<div class="cbw-field-row">
+  <div class="cbw-field">
+    <label class="cbw-label">Value <span class="cbw-req">*</span></label>
+    <input type="text" data-field="stat_value" class="cbw-input" placeholder="99.9%, 10x, 500+" />
+  </div>
+  <div class="cbw-field">
+    <label class="cbw-label">Label</label>
+    <input type="text" data-field="stat_label" class="cbw-input" placeholder="uptime, reduction" />
+  </div>
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Description <span class="cbw-opt">optional</span></label>
+  <textarea data-field="stat_description" class="cbw-textarea" placeholder="Brief context for this stat..."></textarea>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-quote">
+<div class="cbw-field">
+  <label class="cbw-label">Quote Text</label>
+  <textarea data-field="content" class="cbw-textarea cbw-textarea-lg" placeholder="The quoted text..."></textarea>
+</div>
+<div class="cbw-field-row">
+  <div class="cbw-field">
+    <label class="cbw-label">Author <span class="cbw-opt">optional</span></label>
+    <input type="text" data-field="quote_author" class="cbw-input" placeholder="Jane Doe" />
+  </div>
+  <div class="cbw-field">
+    <label class="cbw-label">Role <span class="cbw-opt">optional</span></label>
+    <input type="text" data-field="quote_role" class="cbw-input" placeholder="CEO, Company Inc." />
+  </div>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-cta">
+<div class="cbw-field-row">
+  <div class="cbw-field">
+    <label class="cbw-label">Button Text <span class="cbw-req">*</span></label>
+    <input type="text" data-field="button_text" class="cbw-input" placeholder="Get Started Free" />
+  </div>
+  <div class="cbw-field">
+    <label class="cbw-label">Button Link <span class="cbw-req">*</span></label>
+    <input type="text" data-field="button_link" class="cbw-input" placeholder="/signup or https://..." />
+  </div>
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Supporting Text <span class="cbw-opt">optional</span></label>
+  <textarea data-field="cta_description" class="cbw-textarea" placeholder="Text that appears above the button..."></textarea>
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-full_width_image">
+<div class="cbw-field">
+  <label class="cbw-label">Image URL</label>
+  <input type="text" data-field="src" class="cbw-input" placeholder="https://example.com/hero.jpg" />
+</div>
+<div class="cbw-field-row">
+  <div class="cbw-field">
+    <label class="cbw-label">Alt Text</label>
+    <input type="text" data-field="alt" class="cbw-input" placeholder="Describe the image" />
+  </div>
+  <div class="cbw-field">
+    <label class="cbw-label">Alignment</label>
+    <select data-field="alignment" class="cbw-select">
+      <option value="full">Full Width</option>
+      <option value="centered">Centered (max-width)</option>
+      <option value="small">Small (constrained)</option>
+    </select>
+  </div>
+</div>
+<div class="cbw-field">
+  <label class="cbw-label">Caption <span class="cbw-opt">optional</span></label>
+  <input type="text" data-field="caption" class="cbw-input" placeholder="Image caption" />
+</div>
+</script>
+
+<script type="text/html" id="cb-tpl-divider">
+<div class="cbw-divider-preview">
+  <span class="cbw-divider-line"></span>
+  <span class="cbw-divider-label">Divider</span>
+  <span class="cbw-divider-line"></span>
+</div>
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    var data = {{ blocks_json_raw }};
+    ContentBlocksBuilder.init('id_{{ widget.name }}', data);
+  } catch(e) {
+    console.warn('Content builder init error:', e);
+  }
+});
+</script>

@@ -1,0 +1,184 @@
+.wrapper {
+  width: 100%;
+}
+
+.dropZone {
+  border: 2px dashed rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius-md, 12px);
+  background: var(--color-bg, #f8f9fa);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.dropZone:hover,
+.dropZoneActive {
+  border-color: var(--color-primary, #FF8A50);
+  background: rgba(255, 138, 80, 0.04);
+  box-shadow: 0 0 24px rgba(255, 138, 80, 0.08);
+}
+
+.dropZone:focus-visible {
+  outline: 2px solid var(--color-primary, #FF8A50);
+  outline-offset: 2px;
+}
+
+.dropIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255, 138, 80, 0.1), rgba(255, 138, 80, 0.05));
+  color: var(--color-primary, #FF8A50);
+  margin: 0 auto 1rem;
+  transition: all 0.3s ease;
+}
+
+.dropZone:hover .dropIcon,
+.dropZoneActive .dropIcon {
+  transform: translateY(-3px);
+  background: var(--color-primary, #FF8A50);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(255, 138, 80, 0.25);
+}
+
+.dropTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text, #212529);
+  margin: 0 0 0.35rem;
+}
+
+.dropDesc {
+  font-size: 0.82rem;
+  color: var(--color-muted, #6c757d);
+  margin: 0;
+}
+
+.browseText {
+  color: var(--color-primary, #FF8A50);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.inputHidden {
+  display: none;
+}
+
+.fileList {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--color-bg, #f8f9fa);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-sm, 8px);
+  transition: all 0.2s ease;
+}
+
+.fileItem:hover {
+  border-color: rgba(255, 138, 80, 0.15);
+  background: rgba(255, 138, 80, 0.03);
+}
+
+.fileIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: rgba(255, 138, 80, 0.08);
+  color: var(--color-primary, #FF8A50);
+  flex-shrink: 0;
+}
+
+.fileInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.fileName {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: var(--color-text, #212529);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fileSize {
+  font-size: 0.72rem;
+  color: var(--color-muted, #6c757d);
+}
+
+.fileStatus {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.statusDone {
+  color: #48bb78;
+}
+
+.statusError {
+  color: var(--color-danger, #dc3545);
+}
+
+.removeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-muted, #6c757d);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.removeBtn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+[data-theme="dark"] .dropZone {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: var(--bg-dark-elevated, hsl(222, 25%, 20%));
+}
+
+[data-theme="dark"] .dropZone:hover,
+[data-theme="dark"] .dropZoneActive {
+  border-color: var(--color-primary, #FF8A50);
+  background: rgba(255, 138, 80, 0.06);
+}
+
+[data-theme="dark"] .fileItem {
+  background: var(--bg-dark-elevated, hsl(222, 25%, 20%));
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .fileItem:hover {
+  border-color: rgba(255, 138, 80, 0.2);
+}

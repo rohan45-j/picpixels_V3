@@ -1,0 +1,380 @@
+{% extends 'admin/base_site.html' %}
+
+{% load i18n static unfold %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block content %}
+{% if dashboard_stats %}
+{% with s=dashboard_stats %}
+
+<div class="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 rounded-default shadow-xs mb-8 p-6 relative overflow-hidden dark:from-primary-800 dark:via-primary-900 dark:to-base-900">
+  <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.12),transparent_60%)]"></div>
+  <div class="relative z-10 flex items-center justify-between flex-wrap gap-4">
+    <div>
+      <h1 class="text-white text-xl font-bold tracking-tight">{% trans 'Dashboard' %}</h1>
+      <p class="text-primary-200 text-sm mt-1">
+        {% blocktranslate %}Welcome back, {{ request.user.get_short_name|default:request.user.username }}. Here's what's happening across your site.{% endblocktranslate %}
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-primary-200 text-xs font-medium bg-white/10 px-3 py-1.5 rounded-full backdrop-blur-sm">
+        {{ s.total_orders }} {% trans 'orders' %} &middot; {{ s.total_contacts }} {% trans 'inquiries' %} &middot; {{ s.total_blog_posts }} {% trans 'posts' %}
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="grid gap-4 mb-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
+  <div class="dashboard-stat-card stat-card-primary">
+    <div class="corner-accent"></div>
+    <div class="card-icon">
+      <span class="material-symbols-outlined" style="color:#4f46e5">shopping_cart</span>
+    </div>
+    <div class="stat-label">{% trans 'Total Orders' %}</div>
+    <div class="stat-value">{{ s.total_orders }}</div>
+    <div class="stat-sublabels">
+      <span class="stat-sublabel"><span class="stat-dot" style="background:#f59e0b"></span>{{ s.pending_orders }} pend.</span>
+      <span class="stat-sublabel"><span class="stat-dot" style="background:#3b82f6"></span>{{ s.in_progress_orders }} active</span>
+      <span class="stat-sublabel"><span class="stat-dot" style="background:#10b981"></span>{{ s.completed_orders }} done</span>
+    </div>
+  </div>
+
+  <div class="dashboard-stat-card stat-card-success">
+    <div class="corner-accent"></div>
+    <div class="card-icon">
+      <span class="material-symbols-outlined" style="color:#10b981">payments</span>
+    </div>
+    <div class="stat-label">{% trans 'Revenue' %}</div>
+    <div class="stat-value">{{ s.revenue_this_month }}</div>
+    <div class="stat-sublabels">
+      <span class="stat-sublabel"><span class="trend-badge trend-up">↑ {{ s.orders_this_month }}</span> orders this month</span>
+    </div>
+  </div>
+
+  <div class="dashboard-stat-card stat-card-info">
+    <div class="corner-accent"></div>
+    <div class="card-icon">
+      <span class="material-symbols-outlined" style="color:#06b6d4">people</span>
+    </div>
+    <div class="stat-label">{% trans 'Customers' %}</div>
+    <div class="stat-value">{{ s.total_users }}</div>
+    <div class="stat-sublabels">
+      <span class="stat-sublabel"><span class="stat-dot" style="background:#10b981"></span>{{ s.active_users }} active</span>
+      <span class="stat-sublabel"><span class="stat-dot" style="background:#8b5cf6"></span>{{ s.total_subscriptions }} subscribed</span>
+    </div>
+  </div>
+
+  <div class="dashboard-stat-card stat-card-warning">
+    <div class="corner-accent"></div>
+    <div class="card-icon">
+      <span class="material-symbols-outlined" style="color:#f59e0b">handyman</span>
+    </div>
+    <div class="stat-label">{% trans 'Services' %}</div>
+    <div class="stat-value">{{ s.total_services }}</div>
+    <div class="stat-sublabels">
+      <span class="stat-sublabel"><span class="stat-dot" style="background:#10b981"></span>{{ s.active_services }} active</span>
+      <span class="stat-sublabel"><span class="stat-dot" style="background:#6b7280"></span>{{ s.total_services }} total</span>
+    </div>
+  </div>
+
+  <div class="dashboard-stat-card stat-card-danger">
+    <div class="corner-accent"></div>
+    <div class="card-icon">
+      <span class="material-symbols-outlined" style="color:#f43f5e">hourglass_bottom</span>
+    </div>
+    <div class="stat-label">{% trans 'Pending Orders' %}</div>
+    <div class="stat-value">{{ s.pending_orders }}</div>
+    <div class="stat-sublabels">
+      <span class="stat-sublabel"><span class="stat-dot" style="background:#3b82f6"></span>{{ s.in_progress_orders }} in progress</span>
+      <span class="stat-sublabel"><span class="stat-dot" style="background:#f43f5e"></span>{{ s.cancelled_orders }} cancelled</span>
+    </div>
+  </div>
+
+  <div class="dashboard-stat-card stat-card-success">
+    <div class="corner-accent"></div>
+    <div class="card-icon">
+      <span class="material-symbols-outlined" style="color:#10b981">check_circle</span>
+    </div>
+    <div class="stat-label">{% trans 'Completed Orders' %}</div>
+    <div class="stat-value">{{ s.completed_orders }}</div>
+    <div class="stat-sublabels">
+      <span class="stat-sublabel"><span class="stat-dot" style="background:#10b981"></span>{{ s.orders_this_week }} this week</span>
+    </div>
+  </div>
+</div>
+
+<div class="grid gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+  <a href="{% url 'admin:cms_blogpost_changelist' %}" class="dashboard-stat-card group">
+    <div class="flex items-center gap-3">
+      <div class="quick-icon" style="background:#ffe4e6">
+        <span class="material-symbols-outlined" style="color:#e11d48;font-size:18px">article</span>
+      </div>
+      <div>
+        <div class="quick-title">{% trans 'Blog' %}</div>
+        <div class="quick-subtitle">{{ s.total_blog_posts }} published | {{ s.draft_blog_posts }} drafts</div>
+      </div>
+    </div>
+  </a>
+
+  <a href="{% url 'admin:cms_service_changelist' %}" class="dashboard-stat-card group">
+    <div class="flex items-center gap-3">
+      <div class="quick-icon" style="background:#dbeafe">
+        <span class="material-symbols-outlined" style="color:#2563eb;font-size:18px">build</span>
+      </div>
+      <div>
+        <div class="quick-title">{% trans 'Services' %}</div>
+        <div class="quick-subtitle">{{ s.active_services }} active | {{ s.total_services }} total</div>
+      </div>
+    </div>
+  </a>
+
+  <a href="{% url 'admin:cms_faq_changelist' %}" class="dashboard-stat-card group">
+    <div class="flex items-center gap-3">
+      <div class="quick-icon" style="background:#d1fae5">
+        <span class="material-symbols-outlined" style="color:#059669;font-size:18px">help</span>
+      </div>
+      <div>
+        <div class="quick-title">{% trans 'FAQ' %}</div>
+        <div class="quick-subtitle">{{ s.total_faqs }} active | {{ s.total_faq_categories }} categories</div>
+      </div>
+    </div>
+  </a>
+
+  <a href="{% url 'admin:cms_pricingplan_changelist' %}" class="dashboard-stat-card group">
+    <div class="flex items-center gap-3">
+      <div class="quick-icon" style="background:#ede9fe">
+        <span class="material-symbols-outlined" style="color:#7c3aed;font-size:18px">currency_exchange</span>
+      </div>
+      <div>
+        <div class="quick-title">{% trans 'Pricing' %}</div>
+        <div class="quick-subtitle">{{ s.active_plans }} active | {{ s.popular_plans }} popular</div>
+      </div>
+    </div>
+  </a>
+
+  <a href="{% url 'admin:cms_page_changelist' %}" class="dashboard-stat-card group">
+    <div class="flex items-center gap-3">
+      <div class="quick-icon" style="background:#fef3c7">
+        <span class="material-symbols-outlined" style="color:#d97706;font-size:18px">description</span>
+      </div>
+      <div>
+        <div class="quick-title">{% trans 'Pages' %}</div>
+        <div class="quick-subtitle">{{ s.total_pages }} total</div>
+      </div>
+    </div>
+  </a>
+
+  <a href="{% url 'admin:cms_testimonial_changelist' %}" class="dashboard-stat-card group">
+    <div class="flex items-center gap-3">
+      <div class="quick-icon" style="background:#cffafe">
+        <span class="material-symbols-outlined" style="color:#0891b2;font-size:18px">star</span>
+      </div>
+      <div>
+        <div class="quick-title">{% trans 'Testimonials' %}</div>
+        <div class="quick-subtitle">{{ s.total_testimonials }} active</div>
+      </div>
+    </div>
+  </a>
+</div>
+
+<div class="grid gap-6 mb-8 lg:grid-cols-3">
+  {% if s.order_monthly %}
+  <div class="bg-white border border-base-200 rounded-default shadow-xs p-5 dark:bg-base-900 dark:border-base-800 lg:col-span-2">
+    <div class="flex items-center justify-between mb-5">
+      <h2>{% trans 'Monthly Trends' %}</h2>
+      <div class="trend-legend">
+        <span class="trend-legend-item"><span class="trend-legend-dot trend-bar-orders"></span> {% trans 'Orders' %}</span>
+        <span class="trend-legend-item"><span class="trend-legend-dot trend-bar-inquiries"></span> {% trans 'Inquiries' %}</span>
+      </div>
+    </div>
+    <div class="trend-bar-container">
+      {% for item in s.order_monthly %}
+      <div class="trend-bar-group">
+        <div class="w-full flex flex-col items-center gap-0.5 justify-end" style="height:100%">
+          <div class="trend-bar trend-bar-orders w-full"
+               style="height:{% widthratio item.count 30 100 %}%;min-height:{% if item.count > 0 %}4px{% else %}0{% endif %}"></div>
+          {% if s.contacts_monthly %}
+          {% with c=s.contacts_monthly|slice:forloop.counter0|last %}
+          {% if c %}
+          <div class="trend-bar trend-bar-inquiries w-full"
+               style="height:{% widthratio c.count 30 100 %}%;min-height:{% if c.count > 0 %}4px{% else %}0{% endif %}"></div>
+          {% endif %}
+          {% endwith %}
+          {% endif %}
+        </div>
+        <span class="trend-month-label">{{ item.month }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="bg-white border border-base-200 rounded-default shadow-xs dark:bg-base-900 dark:border-base-800">
+    <div class="border-b border-base-200 px-5 py-4 dark:border-base-800">
+      <h2>{% trans 'Recent Orders' %}</h2>
+    </div>
+    {% if s.recent_orders %}
+    <div class="divide-y divide-base-200 dark:divide-base-800">
+      {% for order in s.recent_orders %}
+      <div class="flex items-center justify-between px-5 py-3">
+        <div>
+          <a href="{% url 'admin:orders_order_change' order.pk %}" class="hover:underline">
+            #{{ order.id|truncatechars:8 }}
+          </a>
+          <div class="text-xs text-base-400 dark:text-base-500 mt-0.5">{{ order.created_at|date:"M d, Y" }}</div>
+        </div>
+        <span class="order-status
+          {% if order.status == 'pending' %}bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400
+          {% elif order.status == 'in_progress' or order.status == 'processing' %}bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400
+          {% elif order.status == 'completed' %}bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400
+          {% elif order.status == 'cancelled' %}bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400
+          {% else %}bg-base-100 text-base-600 dark:bg-base-800 dark:text-base-400{% endif %}">
+          {{ order.get_status_display|default:order.status|title }}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="px-5 py-8 text-center text-base-400 dark:text-base-500 text-sm">{% trans 'No orders yet.' %}</div>
+    {% endif %}
+    <div class="border-t border-base-200 dark:border-base-800">
+      <a href="{% url 'admin:orders_order_changelist' %}">
+        <span>{% trans 'View all orders' %}</span>
+        <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="grid gap-6 mb-8 lg:grid-cols-3">
+  <div class="bg-white border border-base-200 rounded-default shadow-xs p-5 dark:bg-base-900 dark:border-base-800">
+    <h2 class="mb-4">{% trans 'Quick Actions' %}</h2>
+    <div class="grid grid-cols-2 gap-3">
+      <a href="{% url 'admin:cms_blogpost_add' %}">
+        <span class="material-symbols-outlined">add_circle</span>
+        <span>{% trans 'New Blog Post' %}</span>
+      </a>
+      <a href="{% url 'admin:cms_service_add' %}">
+        <span class="material-symbols-outlined">add_circle</span>
+        <span>{% trans 'New Service' %}</span>
+      </a>
+      <a href="{% url 'admin:cms_faq_add' %}">
+        <span class="material-symbols-outlined">add_circle</span>
+        <span>{% trans 'New FAQ' %}</span>
+      </a>
+      <a href="{% url 'admin:cms_pricingplan_add' %}">
+        <span class="material-symbols-outlined">add_circle</span>
+        <span>{% trans 'New Pricing Plan' %}</span>
+      </a>
+      <a href="{% url 'admin:cms_contactinquiry_changelist' %}">
+        <span class="material-symbols-outlined">inbox</span>
+        <span>{% trans 'View Inquiries' %}</span>
+      </a>
+      <a href="{% url 'admin:orders_order_changelist' %}">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span>{% trans 'Manage Orders' %}</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="bg-white border border-base-200 rounded-default shadow-xs p-5 dark:bg-base-900 dark:border-base-800">
+    <h2 class="mb-4">{% trans 'Content Overview' %}</h2>
+    <div class="space-y-3">
+      <div class="flex items-center justify-between">
+        <a href="{% url 'admin:cms_blogpost_changelist' %}" class="text-xs font-medium text-font-important-light dark:text-font-important-dark hover:text-primary-600 dark:hover:text-primary-400 transition-colors">{% trans 'Featured Blog Posts' %}</a>
+        <span class="text-xs font-bold text-amber-500 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded-full">{{ s.featured_blog_posts }}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <a href="{% url 'admin:cms_blogpost_changelist' %}" class="text-xs font-medium text-font-important-light dark:text-font-important-dark hover:text-primary-600 dark:hover:text-primary-400 transition-colors">{% trans 'Draft Blog Posts' %}</a>
+        <span class="text-xs font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-2 py-0.5 rounded-full">{{ s.draft_blog_posts }}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <a href="{% url 'admin:cms_service_changelist' %}" class="text-xs font-medium text-font-important-light dark:text-font-important-dark hover:text-primary-600 dark:hover:text-primary-400 transition-colors">{% trans 'Active Services' %}</a>
+        <span class="text-xs font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2 py-0.5 rounded-full">{{ s.active_services }}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <a href="{% url 'admin:users_subscriptionplan_changelist' %}" class="text-xs font-medium text-font-important-light dark:text-font-important-dark hover:text-primary-600 dark:hover:text-primary-400 transition-colors">{% trans 'Active Subscriptions' %}</a>
+        <span class="text-xs font-bold text-purple-500 bg-purple-50 dark:bg-purple-900/20 px-2 py-0.5 rounded-full">{{ s.total_subscriptions }}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <a href="{% url 'admin:cms_teammember_changelist' %}" class="text-xs font-medium text-font-important-light dark:text-font-important-dark hover:text-primary-600 dark:hover:text-primary-400 transition-colors">{% trans 'Active Team Members' %}</a>
+        <span class="text-xs font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">{{ s.total_team }}</span>
+      </div>
+      <div class="flex items-center justify-between">
+        <a href="{% url 'admin:media_library_mediafile_changelist' %}" class="text-xs font-medium text-font-important-light dark:text-font-important-dark hover:text-primary-600 dark:hover:text-primary-400 transition-colors">{% trans 'Media Files' %}</a>
+        <span class="text-xs font-bold text-sky-500 bg-sky-50 dark:bg-sky-900/20 px-2 py-0.5 rounded-full">{{ s.total_media }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white border border-base-200 rounded-default shadow-xs dark:bg-base-900 dark:border-base-800">
+    <div class="border-b border-base-200 px-5 py-4 dark:border-base-800">
+      <h2>{% trans 'Unread Inquiries' %}</h2>
+    </div>
+    {% if s.recent_contacts %}
+    <div class="divide-y divide-base-200 dark:divide-base-800">
+      {% for contact in s.recent_contacts %}
+      <a href="{% url 'admin:cms_contactinquiry_change' contact.pk %}" class="flex items-center justify-between px-5 py-3 hover:bg-base-50 dark:hover:bg-white/[.02] transition-colors">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-red-400 inline-block"></span>
+            <span class="text-sm font-medium text-font-important-light dark:text-font-important-dark">{{ contact.name }}</span>
+          </div>
+          <div class="text-xs text-base-400 dark:text-base-500 mt-0.5 truncate">{{ contact.email }}</div>
+        </div>
+        <span class="text-xs text-base-400 dark:text-base-500 whitespace-nowrap">{{ contact.created_at|date:"M d" }}</span>
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="px-5 py-8 text-center text-base-400 dark:text-base-500 text-sm">{% trans 'No unread inquiries.' %}</div>
+    {% endif %}
+    <div class="border-t border-base-200 dark:border-base-800">
+      <a href="{% url 'admin:cms_contactinquiry_changelist' %}">
+        <span>{% trans 'View all inquiries' %}</span>
+        <span class="material-symbols-outlined" style="font-size:14px">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+{% if s.recent_blog_posts %}
+<div class="bg-white border border-base-200 rounded-default shadow-xs p-5 dark:bg-base-900 dark:border-base-800 mb-8">
+  <div class="flex items-center justify-between mb-4">
+    <h2>{% trans 'Recent Blog Posts' %}</h2>
+    <a href="{% url 'admin:cms_blogpost_changelist' %}" class="text-xs font-medium text-primary-600 dark:text-primary-500 hover:underline">{% trans 'Manage Blog' %}</a>
+  </div>
+  <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+    {% for post in s.recent_blog_posts %}
+    <a href="{% url 'admin:cms_blogpost_change' post.pk %}" class="block p-3 rounded-lg border border-base-200 dark:border-base-700 hover:border-primary-300 dark:hover:border-primary-700 hover:bg-base-50 dark:hover:bg-white/[.02] transition-all">
+      <div class="flex items-start gap-2.5">
+        {% if post.featured_image %}
+        <div class="w-10 h-10 rounded-md bg-base-100 dark:bg-base-800 flex-shrink-0 overflow-hidden">
+          <img src="{{ post.featured_image.url }}" alt="" class="w-full h-full object-cover">
+        </div>
+        {% else %}
+        <div class="w-10 h-10 rounded-md bg-primary-50 dark:bg-primary-900/20 flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-primary-400" style="font-size:18px">article</span>
+        </div>
+        {% endif %}
+        <div class="min-w-0">
+          <div class="text-xs font-medium text-font-important-light dark:text-font-important-dark truncate">{{ post.title }}</div>
+          <div class="text-[0.6rem] text-base-400 dark:text-base-500 mt-0.5">
+            {% if post.is_featured %}<span class="text-amber-500 font-semibold">★ </span>{% endif %}
+            {% if post.published_at %}{{ post.published_at|date:"M d, Y" }}{% else %}{{ post.created_at|date:"M d, Y" }}{% endif %}
+          </div>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% endwith %}
+{% else %}
+{% endif %}
+{% endblock %}

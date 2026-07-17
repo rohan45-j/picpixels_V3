@@ -1,0 +1,30 @@
+{% extends "admin/base.html" %}
+
+{% load static i18n unfold %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link href="{% static 'admin/css/custom.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/custom_admin.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/custom_table.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/dashboard-redesign.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/light-mode-fix.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/responsive.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/notifications.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% static 'admin/js/theme.js' %}" defer></script>
+    <script src="{% static 'admin/js/toggle.js' %}" defer></script>
+    <script src="{% static 'admin/js/sidebar.js' %}" defer></script>
+    <script src="{% static 'admin/js/notifications.js' %}" defer></script>
+{% endblock %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

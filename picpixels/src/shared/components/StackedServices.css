@@ -1,0 +1,453 @@
+/* ─── Wrapper (scroll room for pinned section) ─── */
+.stacked-wrapper {
+  position: relative;
+  margin-bottom: 5rem;
+}
+
+/* ─── Section ─── */
+.stacked-section {
+  position: relative;
+  height: 100vh;
+  background: linear-gradient(180deg, #fafbfc 0%, #f8f9fa 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* ─── Header ─── */
+.stacked-header {
+  position: relative;
+  z-index: 300;
+  text-align: center;
+  padding: 2rem 1.5rem 0.75rem;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.stacked-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: #FF8A50;
+  text-transform: uppercase;
+  background: rgba(255, 138, 80, 0.08);
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  margin-bottom: 1rem;
+}
+
+.stacked-desc {
+  font-size: clamp(0.75rem, 1vw, 0.9rem);
+  color: #6B7280;
+  line-height: 1.5;
+  max-width: 480px;
+  margin: 0.5rem auto 0;
+}
+
+/* ─── Cards Container ─── */
+.stacked-cards-container {
+  flex: 1;
+  position: relative;
+  pointer-events: none;
+  padding-top: 5rem;
+  overflow: hidden;
+}
+
+/* ─── Individual Card ─── */
+.stack-card {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 90%;
+  max-width: 960px;
+  height: clamp(280px, 40vh, 380px);
+  border-radius: 20px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow:
+    0 25px 60px -12px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+  pointer-events: auto;
+  will-change: transform, opacity;
+}
+
+.stack-card-inner {
+  display: grid;
+  grid-template-columns: 45% 55%;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+}
+
+.stack-card-inner:focus-visible {
+  box-shadow: 0 0 0 3px #FF8A50;
+}
+
+/* ─── Alternating Layout ─── */
+.stack-card-inner.image-left .stack-card-image {
+  order: 1;
+}
+
+.stack-card-inner.image-left .stack-card-body {
+  order: 2;
+}
+
+.stack-card-inner.image-right .stack-card-image {
+  order: 2;
+}
+
+.stack-card-inner.image-right .stack-card-body {
+  order: 1;
+}
+
+/* ─── Card Image ─── */
+.stack-card-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.stack-card-inner.image-left .stack-card-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.35), transparent 55%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.stack-card-inner.image-right .stack-card-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.35), transparent 55%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.stack-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.stack-card-inner:hover .stack-card-image img {
+  transform: scale(1.05);
+}
+
+.stack-card-image-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+  font-size: 2.5rem;
+  color: #adb5bd;
+}
+
+.stack-card-price-badge {
+  position: absolute;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 0.35rem 0.85rem;
+  border-radius: 100px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #FF8A50;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  letter-spacing: 0.01em;
+}
+
+.stack-card-inner.image-left .stack-card-price-badge {
+  top: 1rem;
+  left: 1rem;
+}
+
+.stack-card-inner.image-right .stack-card-price-badge {
+  top: 1rem;
+  right: 1rem;
+}
+
+/* ─── Card Body ─── */
+.stack-card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1.25rem 1.5rem 1.25rem;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* ─── Index Badge ─── */
+.stack-card-index {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.72rem, 0.85vw, 0.85rem);
+  font-weight: 800;
+  color: #FF8A50;
+  line-height: 1;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.03em;
+}
+
+.stack-card-index::after {
+  content: '';
+  display: block;
+  width: clamp(20px, 2.5vw, 36px);
+  height: 2px;
+  background: #FF8A50;
+  opacity: 0.35;
+  border-radius: 1px;
+}
+
+.stack-card-title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 0.3rem;
+  line-height: 1.2;
+}
+
+.stack-card-desc {
+  font-size: clamp(0.68rem, 0.78vw, 0.78rem);
+  color: #6B7280;
+  line-height: 1.45;
+  margin-bottom: 0.6rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stack-card-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.stack-card-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: clamp(0.65rem, 0.75vw, 0.72rem);
+  color: #374151;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.stack-card-features li svg {
+  flex-shrink: 0;
+  color: #FF8A50;
+}
+
+.stack-card-features li span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stack-card-feature-fill {
+  opacity: 0.55;
+}
+
+.stack-card-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: #FF8A50;
+  padding: 0.45rem 1rem;
+  border-radius: 100px;
+  width: fit-content;
+  margin-top: auto;
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  letter-spacing: 0.01em;
+}
+
+.stack-card-inner:hover .stack-card-cta {
+  background: #e67a45;
+  box-shadow: 0 4px 14px rgba(255, 138, 80, 0.3);
+  transform: translateY(-1px);
+}
+
+.stack-card-cta svg {
+  transition: transform 0.25s ease;
+}
+
+.stack-card-inner:hover .stack-card-cta svg {
+  transform: translateX(3px);
+}
+
+/* ────────────────────────────────────── */
+/*  Tablet                              */
+/* ────────────────────────────────────── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .stacked-header {
+    padding: 1.5rem 1rem 0.5rem;
+  }
+
+  .stack-card {
+    max-width: 720px;
+    height: clamp(260px, 38vh, 350px);
+  }
+
+  .stack-card-body {
+    padding: 1rem 1.25rem;
+  }
+
+  .stack-card-title {
+    font-size: clamp(0.85rem, 1.6vw, 1rem);
+  }
+
+  .stack-card-index {
+    font-size: clamp(0.7rem, 1vw, 0.8rem);
+    margin-bottom: 0.3rem;
+  }
+
+  .stack-card-index::after {
+    width: 18px;
+  }
+
+  .stack-card-price-badge {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.75rem;
+  }
+
+  .stack-card-inner.image-left .stack-card-price-badge {
+    top: 0.75rem;
+    left: 0.75rem;
+  }
+
+  .stack-card-inner.image-right .stack-card-price-badge {
+    top: 0.75rem;
+    right: 0.75rem;
+  }
+}
+
+/* ────────────────────────────────────── */
+/*  Mobile: Normal vertical card list     */
+/* ────────────────────────────────────── */
+@media (max-width: 767px) {
+  .stacked-wrapper {
+    padding: 3.5rem 1rem;
+    background: #ffffff;
+    min-height: auto !important;
+    margin-bottom: 2rem;
+  }
+
+  .stacked-section {
+    position: static;
+    height: auto;
+    background: transparent;
+    display: block;
+  }
+
+  .stacked-header {
+    padding: 0 0 1.5rem;
+    pointer-events: auto;
+  }
+
+  .stacked-badge {
+    font-size: 0.62rem;
+    padding: 0.3rem 0.85rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .stacked-desc {
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+  }
+
+  .stacked-cards-container {
+    position: static;
+    inset: auto;
+    flex: none;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .stack-card {
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow:
+      0 8px 28px -6px rgba(0, 0, 0, 0.1),
+      0 0 0 1px rgba(0, 0, 0, 0.04);
+  }
+
+  .stack-card-inner {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .stack-card-image {
+    height: 200px;
+    order: -1;
+  }
+
+  .stack-card-image::after {
+    display: none;
+  }
+
+  .stack-card-body {
+    padding: 1rem 1.25rem;
+  }
+
+  .stack-card-title {
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .stack-card-desc {
+    font-size: 0.78rem;
+    -webkit-line-clamp: 3;
+  }
+
+  .stack-card-features li {
+    font-size: 0.72rem;
+  }
+
+  .stack-card-cta {
+    font-size: 0.78rem;
+    padding: 0.4rem 0.9rem;
+    margin-top: 0.4rem;
+  }
+
+  .stack-card-price-badge {
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 0.7rem;
+  }
+
+  .stack-card-inner.image-left .stack-card-price-badge,
+  .stack-card-inner.image-right .stack-card-price-badge {
+    top: 0.75rem;
+    right: 0.75rem;
+    left: auto;
+  }
+}

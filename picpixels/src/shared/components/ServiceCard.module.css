@@ -1,0 +1,92 @@
+/* Service Card component styles */
+.serviceCard {
+  background: var(--bg-light-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  transition: var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.serviceCard:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.serviceImgWrapper {
+  position: relative;
+  height: 240px;
+  overflow: hidden;
+}
+
+.serviceBadge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  background: var(--bg-light-card);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text);
+  padding: 0.4rem 1rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.serviceContent {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.serviceTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.serviceDesc {
+  color: var(--color-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  flex-grow: 1;
+}
+
+.serviceFeatures {
+  list-style: none;
+  margin-bottom: 2rem;
+}
+
+.serviceFeatures li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin-bottom: 0.6rem;
+}
+
+.checkIcon {
+  color: var(--primary-light);
+  font-weight: bold;
+}
+
+.serviceLink {
+  margin-top: auto;
+  font-weight: 600;
+  color: var(--primary-light);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.serviceLink:hover {
+  color: var(--primary);
+}

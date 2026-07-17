@@ -1,0 +1,293 @@
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ─── Breadcrumb ─── */
+.breadcrumb {
+  padding: calc(96px + 1.25rem) 2rem 1.25rem;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.breadcrumb .container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #6C757D;
+}
+
+.breadcrumb a {
+  color: #6C757D;
+  text-decoration: none;
+  transition: color 0.25s ease;
+  font-weight: 500;
+}
+
+.breadcrumb a:hover { color: #FF8A50; }
+
+.breadcrumb svg { flex-shrink: 0; color: #9CA3AF; }
+
+.breadcrumb span { color: #212529; font-weight: 700; }
+
+/* ─── Page Header ─── */
+.pageHeader {
+  padding: 3.5rem 0 2rem;
+  background: #ffffff;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.pageTitle {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #212529;
+  line-height: 1.15;
+  margin-bottom: 0;
+}
+
+/* ─── Main Details Layout ─── */
+.mainSection {
+  padding: 3rem 0 5rem;
+  background: #ffffff;
+}
+
+/* ─── Masonry Grid ─── */
+.grid {
+  column-count: 4;
+  column-gap: 10px;
+}
+
+.gridCell {
+  break-inside: avoid;
+  page-break-inside: avoid;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+  background: #f8f9fa;
+  cursor: pointer;
+  border-radius: 8px;
+
+  /* ── Animations ── */
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s ease;
+  will-change: transform, opacity;
+}
+
+.gridCellVisible {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.gridCell:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  z-index: 1;
+}
+
+.gridCell:active {
+  transform: translateY(-2px) scale(0.97);
+  transition-duration: 0.1s;
+}
+
+.gridCell img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: opacity 0.4s ease;
+}
+
+.gridCellImage:hover img {
+  opacity: 0.85;
+}
+
+.gridCellComparison > div {
+  width: 100%;
+}
+
+.gridCellComparison > div > div {
+  border-radius: 8px;
+}
+
+.gridZoomIcon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  color: #212529;
+}
+
+.gridCell:hover .gridZoomIcon {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ─── Previous / Next Navigation ─── */
+.projectNav {
+  padding: 3rem 0;
+  background: #ffffff;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.projectNavInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navLinkPrev,
+.navLinkNext {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 45%;
+  text-decoration: none;
+  color: #212529;
+  transition: color 0.25s ease;
+}
+
+.navLinkPrev {
+  text-align: left;
+}
+
+.navLinkNext {
+  text-align: right;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.navArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  background: #ffffff;
+  color: #212529;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+}
+
+.navLinkPrev:hover .navArrow,
+.navLinkNext:hover .navArrow {
+  background: #FF8A50;
+  border-color: #FF8A50;
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(255,138,80,0.25);
+}
+
+.navLinkPrev:hover .navArrow svg {
+  transform: translateX(-2px);
+}
+
+.navLinkNext:hover .navArrow svg {
+  transform: translateX(2px);
+}
+
+.navArrow svg {
+  transition: transform 0.25s ease;
+}
+
+.navInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.navInfoAlignRight {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  align-items: flex-end;
+}
+
+.navLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9CA3AF;
+}
+
+.navTitle {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
+.navPlaceholder {
+  width: 1px;
+  height: 1px;
+  visibility: hidden;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1100px) {
+  .grid { column-count: 3; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 0 1.5rem; }
+  .breadcrumb { padding: calc(72px + 1rem) 1.5rem 1rem; }
+  .pageHeader { padding: 2.5rem 0 1.5rem; }
+  .mainSection { padding: 2rem 0 3.5rem; }
+  .grid { column-count: 2; column-gap: 8px; }
+  .gridCell { margin-bottom: 8px; transform: translateY(16px); }
+  .gridCell:hover { transform: translateY(-2px) scale(1.02); }
+  .gridCell:active { transform: translateY(-1px) scale(0.98); }
+  .projectNav { padding: 2rem 0; }
+  .projectNavInner { gap: 1rem; }
+  .navTitle { max-width: 150px; font-size: 0.88rem; }
+  .navLabel { font-size: 0.7rem; }
+  .navArrow { width: 36px; height: 36px; }
+}
+
+@media (max-width: 480px) {
+  .grid { column-count: 2; column-gap: 6px; }
+  .gridCell { margin-bottom: 6px; }
+  .projectNavInner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+  .navLinkPrev,
+  .navLinkNext {
+    max-width: 100%;
+  }
+  .navLinkNext {
+    flex-direction: row-reverse;
+  }
+  .navInfoAlignRight {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .navTitle {
+    max-width: 100%;
+  }
+}

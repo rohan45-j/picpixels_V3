@@ -1,0 +1,173 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}PicPicxels{% endblock %}</title>
+  <meta name="description" content="{% block meta_desc %}Professional photo editing services{% endblock %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'portfolio/css/portfolio.css' %}">
+  {% block extra_head %}{% endblock %}
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter','Outfit',sans-serif;background:#f8f9fa;color:#212529;-webkit-font-smoothing:antialiased;padding-top:128px}
+    a{text-decoration:none;color:inherit}
+    img{max-width:100%;display:block}
+  </style>
+</head>
+<body>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="/" class="site-logo">
+        {% if site_settings and site_settings.logo %}
+        <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" class="site-logo-img" />
+        {% elif site_settings and site_settings.site_name %}
+        <span class="site-logo-text">{{ site_settings.site_name }}</span>
+        {% else %}
+        <span class="site-logo-text">PicPicxels</span>
+        {% endif %}
+      </a>
+
+      <nav class="site-nav" id="siteNav">
+        {% for item in nav_items %}
+        <a href="{{ item.url }}" class="site-nav-link{% if request.path == item.url %} site-nav-link-active{% endif %}"{% if item.opens_in_new_tab %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ item.label }}</a>
+        {% empty %}
+        <a href="/" class="site-nav-link{% if request.path == '/' %} site-nav-link-active{% endif %}">Home</a>
+        <a href="/about" class="site-nav-link{% if request.path == '/about' %} site-nav-link-active{% endif %}">About Us</a>
+        <a href="/services" class="site-nav-link{% if request.path == '/services' %} site-nav-link-active{% endif %}">Services</a>
+        <a href="/pricing" class="site-nav-link{% if request.path == '/pricing' %} site-nav-link-active{% endif %}">Pricing</a>
+        <a href="/portfolio" class="site-nav-link{% if request.path == '/portfolio' %} site-nav-link-active{% endif %}">Portfolio</a>
+        <a href="/blog" class="site-nav-link{% if request.path == '/blog' %} site-nav-link-active{% endif %}">Blog</a>
+        <a href="/contact" class="site-nav-link{% if request.path == '/contact' %} site-nav-link-active{% endif %}">Contact Us</a>
+        {% endfor %}
+      </nav>
+
+      <div class="site-actions">
+        <a href="/book-demo" class="site-cta">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Book a Free Demo
+        </a>
+      </div>
+
+      <button class="site-mobile-trigger" id="mobileTrigger" aria-label="Toggle menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile drawer -->
+  <div class="site-mobile-drawer" id="mobileDrawer">
+    <nav class="site-mobile-nav">
+      {% for item in nav_items %}
+      <a href="{{ item.url }}" class="site-mobile-link{% if request.path == item.url %} site-mobile-link-active{% endif %}"{% if item.opens_in_new_tab %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ item.label }}</a>
+      {% empty %}
+      <a href="/" class="site-mobile-link{% if request.path == '/' %} site-mobile-link-active{% endif %}">Home</a>
+      <a href="/about" class="site-mobile-link{% if request.path == '/about' %} site-mobile-link-active{% endif %}">About Us</a>
+      <a href="/services" class="site-mobile-link{% if request.path == '/services' %} site-mobile-link-active{% endif %}">Services</a>
+      <a href="/pricing" class="site-mobile-link{% if request.path == '/pricing' %} site-mobile-link-active{% endif %}">Pricing</a>
+      <a href="/portfolio" class="site-mobile-link{% if request.path == '/portfolio' %} site-mobile-link-active{% endif %}">Portfolio</a>
+      <a href="/blog" class="site-mobile-link{% if request.path == '/blog' %} site-mobile-link-active{% endif %}">Blog</a>
+      <a href="/contact" class="site-mobile-link{% if request.path == '/contact' %} site-mobile-link-active{% endif %}">Contact Us</a>
+      {% endfor %}
+    </nav>
+    <div class="site-mobile-actions">
+      <a href="/book-demo" class="site-mobile-cta">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Book a Free Demo
+      </a>
+    </div>
+  </div>
+  <div class="site-mobile-backdrop" id="mobileBackdrop"></div>
+
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="site-footer">
+    <div class="site-footer-inner">
+      <div class="site-footer-grid">
+        <div class="site-footer-brand">
+          <a href="/" class="site-footer-logo">
+            {% if site_settings and site_settings.logo %}
+            <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" />
+            {% elif site_settings and site_settings.site_name %}
+            <span>{{ site_settings.site_name }}</span>
+            {% else %}
+            <span>PicPicxels</span>
+            {% endif %}
+          </a>
+          <p class="site-footer-pitch">{{ site_settings.tagline|default:'PicPicxels offers top-quality services that enhance revenue, increase profit margins, reduce operational costs, and save valuable time.' }}</p>
+          {% if site_settings and site_settings.support_email %}
+          <div class="site-footer-contact">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <a href="mailto:{{ site_settings.support_email }}">{{ site_settings.support_email }}</a>
+          </div>
+          {% endif %}
+          {% if site_settings and site_settings.support_phone %}
+          <div class="site-footer-contact">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <a href="tel:{{ site_settings.support_phone }}">{{ site_settings.support_phone }}</a>
+          </div>
+          {% endif %}
+          {% if site_settings and site_settings.social_links %}
+          <div class="site-footer-socials">
+            {% for platform, url in site_settings.social_links.items %}
+            <a href="{{ url }}" class="site-footer-social" target="_blank" rel="noopener noreferrer" aria-label="{{ platform }}">
+              {% if platform == 'facebook' %}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12S0 5.446 0 12.073c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.234 2.686.234v2.953h-1.514c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073Z"/></svg>
+              {% elif platform == 'x' or platform == 'twitter' %}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              {% elif platform == 'linkedin' %}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+              {% elif platform == 'instagram' %}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+              {% elif platform == 'pinterest' %}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/></svg>
+              {% else %}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+              {% endif %}
+            </a>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+        <div class="site-footer-links">
+          <h4 class="site-footer-heading">Services</h4>
+          <ul class="site-footer-list">
+            <li><a href="/services/background-removal">Background Removal</a></li>
+            <li><a href="/services/clipping-path">Clipping Path</a></li>
+            <li><a href="/services/photo-retouching">Photo Retouching</a></li>
+            <li><a href="/services/ghost-mannequin">Ghost Mannequin</a></li>
+            <li><a href="/services/image-masking">Image Masking</a></li>
+            <li><a href="/services">View All Services →</a></li>
+          </ul>
+        </div>
+        <div class="site-footer-links">
+          <h4 class="site-footer-heading">Support</h4>
+          <ul class="site-footer-list">
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/terms">Terms &amp; Conditions</a></li>
+            <li><a href="/privacy">Privacy Policy</a></li>
+            <li><a href="/contact">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer-bottom">
+        <p>{{ site_settings.copyright_text|default:'© 2024 PicPicxels. All Rights Reserved.' }}</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'portfolio/js/portfolio.js' %}"></script>
+  <script>
+    (function(){var t=document.getElementById('mobileTrigger'),d=document.getElementById('mobileDrawer'),b=document.getElementById('mobileBackdrop');if(t&&d&&b){t.addEventListener('click',function(){d.classList.toggle('open');b.classList.toggle('open');t.classList.toggle('open')});b.addEventListener('click',function(){d.classList.remove('open');b.classList.remove('open');t.classList.remove('open')})}})();
+  </script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

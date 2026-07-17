@@ -1,0 +1,34 @@
+asgiref==3.11.1
+Django==5.2.15
+django-cors-headers==4.9.0
+djangorestframework==3.17.1
+djangorestframework_simplejwt==5.5.1
+psycopg2-binary==2.9.12
+PyJWT==2.12.1
+sqlparse==0.5.5
+tzdata==2026.2
+channels==4.3.2
+daphne==4.2.2
+itsdangerous==2.2.0
+Pillow==10.3.0
+
+# Admin & UI
+# django-unfold==0.94.0
+django-unfold==0.91.0
+whitenoise==6.11.0
+
+# API & Docs
+drf-spectacular==0.29.0
+django-filter==25.2
+
+# Rich Text
+django-ckeditor==6.7.3
+
+# Environment
+django-environ==0.13.0
+
+# Caching
+django-redis==5.4.0
+
+# Real-time
+channels_redis==4.3.0

@@ -1,0 +1,11 @@
+Starting Next.js from: D:\picpixels\Live_Code\picpixels
+Port: 3000
+Hostname: 0.0.0.0
+Next.js app prepared, starting server...
+> Ready on http://0.0.0.0:3000
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/

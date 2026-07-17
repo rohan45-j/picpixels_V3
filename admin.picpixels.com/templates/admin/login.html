@@ -1,0 +1,154 @@
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>{% block title %}{{ title }} | {{ site_title|default:_('Admin') }}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'admin/css/login.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">
+</head>
+<body>
+  <div id="login-container">
+    <div id="login-card">
+
+      {% block logo %}
+      <div class="login-logo">
+        {% if site_settings and site_settings.logo %}
+          <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name|default:site_header }}">
+        {% else %}
+          <div class="login-logo-fallback" aria-hidden="true">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+        {% endif %}
+      </div>
+      {% endblock %}
+
+      {% block title_area %}
+      <div class="login-title">
+        <h1>{% translate 'Sign In' %}</h1>
+      </div>
+      <div class="login-subtitle">
+        <p>{% blocktranslate %}Welcome back to {{ site_header }}{% endblocktranslate %}</p>
+      </div>
+      {% endblock %}
+
+      {% block messages %}
+      {% if messages or form.errors or form.non_field_errors %}
+      <div class="login-messages">
+        {% if user.is_authenticated %}
+        <div class="login-error-note">
+          {% blocktranslate trimmed %}
+            You are authenticated as {{ username }}, but are not authorized to access this page. Would you like to login to a different account?
+          {% endblocktranslate %}
+        </div>
+        {% endif %}
+
+        {% if form.non_field_errors %}
+        <div class="login-error">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% if form.errors %}
+        <div class="login-error">
+          <ul>
+            {% for field in form %}
+              {% for error in field.errors %}
+                <li>{{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endblock %}
+
+      {% block login_before %}{% endblock %}
+
+      <form action="{{ app_path }}" method="post" id="login-form">
+        {% csrf_token %}
+
+        {% block username_field %}
+        <div class="form-group">
+          <label for="id_username">{{ form.username.label }}</label>
+          <div class="input-wrapper">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </span>
+            {{ form.username }}
+          </div>
+        </div>
+        {% endblock %}
+
+        {% block password_field %}
+        <div class="form-group">
+          <label for="id_password">{{ form.password.label }}</label>
+          <div class="input-wrapper">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            {{ form.password }}
+            <button type="button" class="password-toggle" id="password-toggle-btn" data-toggle="id_password" aria-label="{% translate 'Show password' %}" aria-pressed="false" tabindex="-1">
+              <svg class="eye-open" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg class="eye-closed" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        {% endblock %}
+
+        <input type="hidden" name="next" value="{{ next }}">
+
+        {% block submit_button %}
+        <div class="login-submit">
+          <button type="submit" id="login-submit-btn">
+            {% translate 'Sign In' %}
+          </button>
+        </div>
+        {% endblock %}
+      </form>
+
+      {% block login_after %}
+      {% url 'admin_password_reset' as password_reset_url %}
+      {% if password_reset_url %}
+      <div class="login-footer">
+        <a href="{{ password_reset_url }}">{% translate 'Forgot your password?' %}</a>
+      </div>
+      {% endif %}
+      {% endblock %}
+
+    </div>
+
+    {% block brand_footer %}
+    <div class="login-brand-footer">
+      <p>&copy; {% now 'Y' %} {{ site_header }}. {% translate 'All rights reserved.' %}</p>
+    </div>
+    {% endblock %}
+  </div>
+
+  <script src="{% static 'admin/js/login.js' %}"></script>
+</body>
+</html>

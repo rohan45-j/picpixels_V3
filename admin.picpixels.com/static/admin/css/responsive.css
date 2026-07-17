@@ -1,0 +1,607 @@
+/* ===========================================================
+   PicPicxels Admin — Responsive Overrides
+   Mobile-first responsive design for Django Unfold Admin
+   =========================================================== */
+
+/* ── Ensure no horizontal overflow ── */
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+#container, #content, #content-main {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ── Form inputs: prevent overflow on small screens ── */
+.form-row input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.form-row textarea,
+.form-row select {
+  max-width: 100% !important;
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* ── CKEditor width fix ── */
+.cke, .cke_inner, .cke_wysiwyg_frame, .cke_wysiwyg_div {
+  max-width: 100% !important;
+}
+
+.cke_top, .cke_bottom, .cke_contents {
+  max-width: 100% !important;
+}
+
+/* ── Dashboard stat card grid ── */
+.dashboard .grid {
+  max-width: 100%;
+}
+
+/* ── Filter panel on mobile ── */
+@media (max-width: 767px) {
+  #changelist-filter {
+    position: static !important;
+    width: 100% !important;
+    margin-bottom: 16px;
+  }
+
+  #changelist-filter h3 {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  #changelist-filter ul {
+    margin-bottom: 8px;
+  }
+}
+
+/* ── Dashboard welcome banner ── */
+@media (max-width: 767px) {
+  .dashboard .bg-gradient-to-br {
+    padding: 20px 16px !important;
+  }
+
+  .dashboard .bg-gradient-to-br h1 {
+    font-size: 1.1rem !important;
+  }
+
+  .dashboard .bg-gradient-to-br .flex-wrap {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .dashboard .bg-gradient-to-br .text-xs {
+    margin-top: 8px;
+  }
+}
+
+/* ── Stat cards on mobile ── */
+@media (max-width: 639px) {
+  .dashboard .grid.gap-4.mb-8 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .dashboard .grid.gap-4.mb-8 > div {
+    padding: 16px !important;
+  }
+
+  .dashboard .grid.gap-4.mb-8 .text-2xl {
+    font-size: 1.25rem !important;
+  }
+
+  .dashboard .grid.gap-4.mb-8 .text-\\[0\\.65rem\\] {
+    font-size: 0.55rem !important;
+  }
+
+  .dashboard .grid.gap-4.mb-8 .gap-3 {
+    gap: 4px !important;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard .grid.gap-4.mb-8 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Quick links grid on mobile ── */
+@media (max-width: 767px) {
+  .dashboard .grid.gap-4.mb-8.sm\\:grid-cols-2 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard .grid.gap-4.mb-8.sm\\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Monthly trends chart ── */
+@media (max-width: 767px) {
+  .dashboard .lg\\:col-span-2 {
+    overflow-x: auto;
+  }
+
+  .dashboard .flex.items-end.gap-3.h-36 {
+    min-width: 400px;
+  }
+}
+
+/* ── Quick actions grid ── */
+@media (max-width: 767px) {
+  .dashboard .grid.grid-cols-2.gap-3 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard .grid.grid-cols-2.gap-3 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Recent blog posts grid ── */
+@media (max-width: 767px) {
+  .dashboard .grid.gap-3.sm\\:grid-cols-2 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .dashboard .grid.gap-3.sm\\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Content overview ── */
+@media (max-width: 767px) {
+  .dashboard .lg\\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Inline group tabular tables on mobile ── */
+@media (max-width: 1024px) {
+  .inline-group .tabular {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .inline-group .tabular table {
+    min-width: 600px;
+  }
+
+  .inline-group .tabular table td,
+  .inline-group .tabular table th {
+    white-space: nowrap;
+  }
+}
+
+/* ── Change form fieldset cards on mobile ── */
+@media (max-width: 767px) {
+  .module:not(.app-list .module):not(.inline-group .module) fieldset {
+    padding: 16px !important;
+    margin-left: -4px !important;
+    margin-right: -4px !important;
+  }
+
+  .form-row {
+    flex-direction: column !important;
+    padding: 8px 0 !important;
+  }
+
+  .form-row > div {
+    width: 100% !important;
+  }
+
+  .form-row label {
+    margin-bottom: 4px !important;
+  }
+
+  /* Inputs in form rows */
+  .form-row input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+  .form-row textarea,
+  .form-row select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .aligned .form-row > div {
+    margin-left: 0 !important;
+    float: none !important;
+  }
+
+  .aligned .form-row .field-box {
+    margin-left: 0 !important;
+    float: none !important;
+    width: 100% !important;
+  }
+
+  .form-row .readonly {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+}
+
+/* ── Submit row on mobile ── */
+@media (max-width: 767px) {
+  #submit-row {
+    flex-direction: column-reverse !important;
+    gap: 8px !important;
+    padding: 12px 16px !important;
+    margin: 16px -16px -16px !important;
+  }
+
+  #submit-row input[type="submit"],
+  #submit-row a.deletelink {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+
+  #submit-row input[name="_continue"],
+  #submit-row input[name="_addanother"] {
+    order: -1;
+  }
+}
+
+/* ── Object tools on mobile ── */
+@media (max-width: 767px) {
+  .object-tools {
+    float: none !important;
+    margin: 8px 0 !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .object-tools li {
+    float: none !important;
+    height: auto !important;
+  }
+
+  .object-tools a {
+    padding: 8px 14px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ── Breadcrumbs on mobile ── */
+@media (max-width: 767px) {
+  .breadcrumbs {
+    padding: 8px 12px !important;
+    font-size: 0.75rem !important;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .breadcrumbs::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── Messages on mobile ── */
+@media (max-width: 767px) {
+  .messagelist, .messages {
+    margin: 8px 0 !important;
+  }
+
+  .messagelist li, .messages li {
+    padding: 10px 14px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ── Pagination on mobile ── */
+@media (max-width: 767px) {
+  .pagination {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .pagination .page-btn,
+  .pagination a,
+  .pagination span {
+    font-size: 0.8rem !important;
+    padding: 5px 10px !important;
+  }
+
+  .pagination .page-info {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+}
+
+/* ── Search on mobile ── */
+@media (max-width: 767px) {
+  #changelist-search {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+
+  #changelist-search label {
+    width: 100% !important;
+  }
+
+  #changelist-search input[type="text"],
+  #searchbar {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  #changelist-search input[type="submit"] {
+    width: 100% !important;
+  }
+}
+
+/* ── Actions bar on mobile ── */
+@media (max-width: 767px) {
+  .actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+    padding: 12px !important;
+  }
+
+  .actions select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .actions button[type="submit"] {
+    width: 100% !important;
+  }
+}
+
+/* ── App list on mobile ── */
+@media (max-width: 767px) {
+  .app-list .module table td {
+    padding: 8px 12px !important;
+  }
+
+  .app-list .module table td a {
+    font-size: 0.85rem !important;
+  }
+}
+
+/* ── Delete confirmation on mobile ── */
+@media (max-width: 767px) {
+  .delete-confirmation ul {
+    padding: 12px !important;
+  }
+
+  .delete-confirmation ul li {
+    padding: 6px 10px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ── Login page mobile ── */
+@media (max-width: 640px) {
+  #login-card {
+    margin: 0 -4px;
+  }
+}
+
+/* ── Sidebar mobile support ── */
+@media (max-width: 1279px) {
+  #sidebar-main-wrapper {
+    z-index: 50;
+  }
+}
+
+@media (min-width: 1280px) {
+  #sidebar-main-wrapper {
+    z-index: 10;
+  }
+}
+
+/* ── Header bar compact on mobile ── */
+@media (max-width: 767px) {
+  #header {
+    padding: 8px 12px !important;
+  }
+
+  #header #branding h1 {
+    font-size: 1rem !important;
+  }
+
+  #user-tools {
+    font-size: 0.8rem !important;
+  }
+}
+
+/* ── Tabular inline card-style on small screens ── */
+@media (max-width: 767px) {
+  .inline-group .tabular table {
+    min-width: auto;
+  }
+
+  .inline-group .tabular table thead {
+    display: none;
+  }
+
+  .inline-group .tabular table tbody tr {
+    display: block;
+    border: 1px solid var(--table-border, #e5e7eb);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 8px;
+    background: var(--table-bg, #fff);
+  }
+
+  .inline-group .tabular table tbody td {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px !important;
+    border: none !important;
+    gap: 8px;
+  }
+
+  .inline-group .tabular table tbody td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6b7280;
+    min-width: 80px;
+    flex-shrink: 0;
+  }
+
+  .dark .inline-group .tabular table tbody tr {
+    border-color: #2d2e3a;
+    background: #1e1f2b;
+  }
+
+  .inline-group .tabular table tbody td:last-child {
+    border-bottom: none !important;
+  }
+
+  .inline-group .tabular .no-label td:before {
+    display: none;
+  }
+}
+
+/* ── Select2 on mobile ── */
+@media (max-width: 767px) {
+  .select2-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .select2-container .select2-selection--single,
+  .select2-container .select2-selection--multiple {
+    width: 100% !important;
+  }
+
+  .select2-dropdown {
+    width: 100% !important;
+  }
+}
+
+/* ── File input on mobile ── */
+@media (max-width: 767px) {
+  .form-row input[type="file"] {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* ── Calendar widget on mobile ── */
+@media (max-width: 767px) {
+  .calendar {
+    width: 100% !important;
+  }
+
+  .calendar table {
+    width: 100% !important;
+  }
+
+  .vDateField, .vTimeField {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+}
+
+/* ── Related widget popup on mobile ── */
+@media (max-width: 767px) {
+  .related-widget-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .related-widget-wrapper select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .related-widget-wrapper-link {
+    flex-shrink: 0;
+  }
+}
+
+/* ── List editable checkboxes on mobile ── */
+@media (max-width: 1024px) {
+  #result_list td:has(input[type="checkbox"]) {
+    padding: 8px !important;
+  }
+
+  #result_list .action-checkbox {
+    padding: 8px 12px !important;
+  }
+}
+
+/* ── Loading spinner container fix ── */
+#loading-overlay {
+  z-index: 9999;
+}
+
+/* ── Dashboard monthly trend bars ── */
+@media (max-width: 767px) {
+  .dashboard .h-36 {
+    height: 120px !important;
+  }
+}
+
+/* ── Fix table in dark mode ── */
+.dark .module:not(.app-list .module):not(.inline-group .module) fieldset {
+  background: #1e1f2b;
+  border-color: #2d2e3a;
+}
+
+.dark .form-row input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+.dark .form-row textarea,
+.dark .form-row select {
+  background-color: #1a1b2e;
+  color: #e5e7eb;
+  border-color: #374151;
+}
+
+/* ── Touch-friendly targets on mobile ── */
+@media (max-width: 767px) {
+  a, button, [type="submit"], [type="button"], [type="reset"],
+  .nav-link, .sidebar-link, .addlink, .changelink, .deletelink, .viewlink {
+    min-height: 40px;
+  }
+
+  #changelist tbody td a,
+  .module table tbody td a {
+    padding: 6px 8px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .object-tools a {
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ── Dashboard content sections spacing ── */
+@media (max-width: 767px) {
+  .dashboard .divide-y > div {
+    padding: 10px 14px !important;
+  }
+
+  .dashboard .px-5.py-4 {
+    padding: 12px 14px !important;
+  }
+
+  .dashboard .px-5.py-3 {
+    padding: 10px 14px !important;
+  }
+
+  .dashboard .p-5 {
+    padding: 16px !important;
+  }
+}

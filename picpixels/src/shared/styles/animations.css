@@ -1,0 +1,149 @@
+/* ═══════════════════════════════════════════════
+   GLOBAL SCROLL ANIMATIONS
+   Powered by IntersectionObserver + CSS transitions
+   ═══════════════════════════════════════════════ */
+
+/* ─── Base Reveal ─── */
+.reveal {
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+.reveal-visible {
+  pointer-events: auto;
+}
+
+/* ─── Fade Up ─── */
+.reveal-fadeUp {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-fadeUp.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Fade Down ─── */
+.reveal-fadeDown {
+  opacity: 0;
+  transform: translateY(-24px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-fadeDown.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Fade Left ─── */
+.reveal-fadeLeft {
+  opacity: 0;
+  transform: translateX(-30px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-fadeLeft.reveal-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ─── Fade Right ─── */
+.reveal-fadeRight {
+  opacity: 0;
+  transform: translateX(30px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-fadeRight.reveal-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ─── Fade In ─── */
+.reveal-fadeIn {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+.reveal-fadeIn.reveal-visible {
+  opacity: 1;
+}
+
+/* ─── Scale In ─── */
+.reveal-scaleIn {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-scaleIn.reveal-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ─── Flip Up ─── */
+.reveal-flipUp {
+  opacity: 0;
+  transform: perspective(600px) rotateX(8deg) translateY(20px);
+  transform-origin: top center;
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-flipUp.reveal-visible {
+  opacity: 1;
+  transform: perspective(600px) rotateX(0) translateY(0);
+}
+
+/* ─── Stagger helpers ─── */
+.reveal-stagger > .reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-stagger.reveal-visible > .reveal:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(2) { transition-delay: 80ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(3) { transition-delay: 160ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(4) { transition-delay: 240ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(5) { transition-delay: 320ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(6) { transition-delay: 400ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(7) { transition-delay: 480ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(8) { transition-delay: 560ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(9) { transition-delay: 640ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(10) { transition-delay: 720ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(11) { transition-delay: 800ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(12) { transition-delay: 880ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(13) { transition-delay: 960ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(14) { transition-delay: 1040ms; }
+.reveal-stagger.reveal-visible > .reveal:nth-child(15) { transition-delay: 1120ms; }
+
+/* ─── Skeleton shimmer ─── */
+.skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ─── Mobile: shorter distances ─── */
+@media (max-width: 768px) {
+  .reveal-fadeUp { transform: translateY(16px); }
+  .reveal-fadeDown { transform: translateY(-16px); }
+  .reveal-fadeLeft { transform: translateX(-16px); }
+  .reveal-fadeRight { transform: translateX(16px); }
+  .reveal-flipUp { transform: perspective(600px) rotateX(5deg) translateY(12px); }
+}

@@ -1,0 +1,343 @@
+{% load static %}
+<div class="content-block-preview-widget">
+  <input type="hidden" name="{{ widget.name }}" value='{{ blocks_json }}' id="id_{{ widget.name }}" />
+
+  <div class="cbp-header">
+    <h3>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+      Content Builder
+    </h3>
+    <button type="button" id="cb-add-btn" class="cbp-open-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Content Section
+    </button>
+  </div>
+
+  <div id="cb-cards-container" class="cb-cards"></div>
+</div>
+
+{# ── Block type picker modal ── #}
+<div id="cb-picker-modal" class="cb-modal-overlay" style="display:none">
+  <div class="cb-modal">
+    <div class="cb-modal-header">
+      <h3>Choose Section Type</h3>
+      <button type="button" id="cb-picker-close" class="cb-modal-close">&times;</button>
+    </div>
+    <div class="cb-modal-body">
+      {% for cat in categories %}
+      <div class="cb-category">
+        <div class="cb-category-title">{{ cat.label }}</div>
+        {% if cat.is_advanced %}<span class="cb-expert-badge">For experienced users</span>{% endif %}
+        <div class="cb-category-items">
+          {% for item in cat.items %}
+          <button type="button" class="cb-pick-btn" data-pick-type="{{ item.type }}">
+            <span class="cb-pick-icon">{{ item.icon }}</span>
+            <span class="cb-pick-label">{{ item.label }}</span>
+            <span class="cb-pick-desc">{{ item.desc }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{# ── Form field templates for each block type ── #}
+{# Heading #}
+<script type="text/html" id="cb-tpl-heading">
+<div class="cb-field-group">
+  <label class="cb-label">Heading Text</label>
+  <input type="text" data-field="content" value="" class="cb-input" placeholder="Enter heading..." />
+</div>
+<div class="cb-field-row">
+  <div class="cb-field-group">
+    <label class="cb-label">Level</label>
+    <select data-field="level" class="cb-select">
+      <option value="1">H1 - Page Title</option>
+      <option value="2" selected>H2 - Section Title</option>
+      <option value="3">H3 - Subsection</option>
+      <option value="4">H4 - Detail</option>
+    </select>
+  </div>
+</div>
+</script>
+
+{# Text #}
+<script type="text/html" id="cb-tpl-text">
+<div class="cb-field-group">
+  <label class="cb-label">Content</label>
+  <textarea data-field="content" class="cb-textarea cb-textarea-lg" placeholder="Write your content here (HTML supported)..."></textarea>
+</div>
+</script>
+
+{# Image #}
+<script type="text/html" id="cb-tpl-image">
+<div class="cb-field-group">
+  <label class="cb-label">Image URL</label>
+  <input type="text" data-field="src" value="" class="cb-input" placeholder="https://example.com/image.jpg" />
+</div>
+<div class="cb-field-row">
+  <div class="cb-field-group">
+    <label class="cb-label">Alt Text</label>
+    <input type="text" data-field="alt" value="" class="cb-input" placeholder="Describe the image" />
+  </div>
+  <div class="cb-field-group">
+    <label class="cb-label">Caption</label>
+    <input type="text" data-field="caption" value="" class="cb-input" placeholder="Optional caption" />
+  </div>
+</div>
+</script>
+
+{# Image with Text #}
+<script type="text/html" id="cb-tpl-image_with_text">
+<div class="cb-field-group">
+  <label class="cb-label">Image URL</label>
+  <input type="text" data-field="src" value="" class="cb-input" placeholder="https://example.com/image.jpg" />
+</div>
+<div class="cb-field-row">
+  <div class="cb-field-group">
+    <label class="cb-label">Alt Text</label>
+    <input type="text" data-field="alt" value="" class="cb-input" placeholder="Describe the image" />
+  </div>
+  <div class="cb-field-group">
+    <label class="cb-label">Caption</label>
+    <input type="text" data-field="caption" value="" class="cb-input" placeholder="Optional caption" />
+  </div>
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Text Content</label>
+  <textarea data-field="text" class="cb-textarea" placeholder="Descriptive text beside the image (HTML supported)..."></textarea>
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Layout</label>
+  <select data-field="layout" class="cb-select">
+    <option value="left">Image Left → Text Right</option>
+    <option value="right">Text Left → Image Right</option>
+  </select>
+</div>
+</script>
+
+{# Gallery #}
+<script type="text/html" id="cb-tpl-gallery">
+<div class="cb-field-group">
+  <label class="cb-label">Images</label>
+  <div data-list="images">
+    <div data-item="image" data-proto class="cb-gallery-item">
+      <div class="cb-field-row">
+        <input type="text" data-field="src" value="" class="cb-input" placeholder="Image URL" style="flex:2" />
+        <input type="text" data-field="alt" value="" class="cb-input" placeholder="Alt text" style="flex:1" />
+        <input type="text" data-field="caption" value="" class="cb-input" placeholder="Caption" style="flex:1" />
+        <button type="button" data-remove-btn class="cb-btn-sm" title="Remove">✕</button>
+      </div>
+    </div>
+  </div>
+  <button type="button" data-action="add-gallery-image" class="cb-btn-secondary cb-btn-sm" style="margin-top:6px">+ Add Image</button>
+</div>
+</script>
+
+{# Code #}
+<script type="text/html" id="cb-tpl-code">
+<div class="cb-field-group">
+  <label class="cb-label">Language</label>
+  <input type="text" data-field="language" value="" class="cb-input" placeholder="javascript, python, bash, html..." />
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Code</label>
+  <textarea data-field="content" class="cb-textarea cb-textarea-code" placeholder="Paste your code here..." style="font-family:monospace"></textarea>
+</div>
+</script>
+
+{# Callout #}
+<script type="text/html" id="cb-tpl-callout">
+<div class="cb-field-group">
+  <label class="cb-label">Style</label>
+  <select data-field="style" class="cb-select">
+    <option value="info">ℹ️ Info</option>
+    <option value="warning">⚠️ Warning</option>
+    <option value="success">✅ Success</option>
+  </select>
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Title <span class="cb-optional">(optional)</span></label>
+  <input type="text" data-field="title" value="" class="cb-input" placeholder="Callout title" />
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Message</label>
+  <textarea data-field="content" class="cb-textarea" placeholder="Important text to highlight..."></textarea>
+</div>
+</script>
+
+{# FAQ #}
+<script type="text/html" id="cb-tpl-faq">
+<div class="cb-field-group">
+  <label class="cb-label">Question</label>
+  <input type="text" data-field="question" value="" class="cb-input" placeholder="FAQ question..." />
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Answer</label>
+  <textarea data-field="answer" class="cb-textarea" placeholder="FAQ answer..."></textarea>
+</div>
+</script>
+
+{# List #}
+<script type="text/html" id="cb-tpl-list">
+<div class="cb-field-group">
+  <label class="cb-label">
+    <input type="checkbox" data-field="ordered" value="true" /> Numbered list
+  </label>
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Items</label>
+  <div data-list="items">
+    <div data-item="item" data-proto style="display:flex;gap:4px;margin-bottom:4px">
+      <input type="text" data-field="items[]" value="" class="cb-input" placeholder="Item text" style="flex:1" />
+      <button type="button" data-action="remove-item" class="cb-btn-sm" title="Remove">✕</button>
+    </div>
+  </div>
+  <button type="button" data-action="add-item" class="cb-btn-secondary cb-btn-sm" style="margin-top:4px">+ Add Item</button>
+</div>
+</script>
+
+{# Table #}
+<script type="text/html" id="cb-tpl-table">
+<div class="cb-field-group">
+  <label class="cb-label">Table Title <span class="cb-optional">(optional)</span></label>
+  <input type="text" data-field="title" value="" class="cb-input" placeholder="Enter table title..." />
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Column Headers <span class="cb-optional">(comma-separated)</span></label>
+  <input type="text" data-field="headers" value="" class="cb-input" placeholder="Name, Age, Location" />
+</div>
+<div class="cb-field-group" style="margin-top:8px">
+  <label class="cb-label">Columns</label>
+  <div data-list="columns" class="cb-columns-manager" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;min-height:36px"></div>
+  <div class="cb-field-row" style="gap:8px">
+    <button type="button" data-action="add-column" class="cb-btn-secondary cb-btn-sm">+ Add Column</button>
+    <button type="button" data-action="remove-last-column" class="cb-btn-secondary cb-btn-sm" style="color:#ef4444;border-color:#ef4444">− Remove Last Column</button>
+  </div>
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Rows</label>
+  <div data-list="rows">
+    <div data-item="row" data-proto style="display:flex;gap:4px;margin-bottom:4px">
+      <input type="text" class="cb-input" placeholder="…" style="flex:1" />
+      <button type="button" data-remove-btn class="cb-btn-sm" title="Remove row">✕</button>
+    </div>
+  </div>
+  <button type="button" data-action="add-row" class="cb-btn-secondary cb-btn-sm" style="margin-top:4px">+ Add Row</button>
+</div>
+</script>
+
+{# Step #}
+<script type="text/html" id="cb-tpl-step">
+<div class="cb-field-group">
+  <label class="cb-label">Step Title</label>
+  <input type="text" data-field="title" value="" class="cb-input" placeholder="Step 1: Prepare the Tools" />
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Description</label>
+  <textarea data-field="content" class="cb-textarea" placeholder="Describe what to do in this step..."></textarea>
+</div>
+</script>
+
+{# Stats #}
+<script type="text/html" id="cb-tpl-stats">
+<div class="cb-field-row">
+  <div class="cb-field-group">
+    <label class="cb-label">Value <span class="cb-required">*</span></label>
+    <input type="text" data-field="stat_value" value="" class="cb-input" placeholder="99.9%, 10x, 500+" />
+  </div>
+  <div class="cb-field-group">
+    <label class="cb-label">Label</label>
+    <input type="text" data-field="stat_label" value="" class="cb-input" placeholder="uptime, reduction" />
+  </div>
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Description <span class="cb-optional">(optional)</span></label>
+  <textarea data-field="stat_description" class="cb-textarea" placeholder="Brief context for this stat..."></textarea>
+</div>
+</script>
+
+{# Quote #}
+<script type="text/html" id="cb-tpl-quote">
+<div class="cb-field-group">
+  <label class="cb-label">Quote Text</label>
+  <textarea data-field="content" class="cb-textarea" placeholder="The quoted text..."></textarea>
+</div>
+<div class="cb-field-row">
+  <div class="cb-field-group">
+    <label class="cb-label">Author <span class="cb-optional">(optional)</span></label>
+    <input type="text" data-field="quote_author" value="" class="cb-input" placeholder="Jane Doe" />
+  </div>
+  <div class="cb-field-group">
+    <label class="cb-label">Role <span class="cb-optional">(optional)</span></label>
+    <input type="text" data-field="quote_role" value="" class="cb-input" placeholder="CEO, Company Inc." />
+  </div>
+</div>
+</script>
+
+{# CTA #}
+<script type="text/html" id="cb-tpl-cta">
+<div class="cb-field-row">
+  <div class="cb-field-group">
+    <label class="cb-label">Button Text <span class="cb-required">*</span></label>
+    <input type="text" data-field="button_text" value="" class="cb-input" placeholder="Get Started Free" />
+  </div>
+  <div class="cb-field-group">
+    <label class="cb-label">Button Link <span class="cb-required">*</span></label>
+    <input type="text" data-field="button_link" value="" class="cb-input" placeholder="/signup or https://..." />
+  </div>
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Supporting Text <span class="cb-optional">(optional)</span></label>
+  <textarea data-field="cta_description" class="cb-textarea" placeholder="Text that appears above the button..."></textarea>
+</div>
+</script>
+
+{# Full Width Image #}
+<script type="text/html" id="cb-tpl-full_width_image">
+<div class="cb-field-group">
+  <label class="cb-label">Image URL</label>
+  <input type="text" data-field="src" value="" class="cb-input" placeholder="https://example.com/hero.jpg" />
+</div>
+<div class="cb-field-row">
+  <div class="cb-field-group">
+    <label class="cb-label">Alt Text</label>
+    <input type="text" data-field="alt" value="" class="cb-input" placeholder="Describe the image" />
+  </div>
+  <div class="cb-field-group">
+    <label class="cb-label">Alignment</label>
+    <select data-field="alignment" class="cb-select">
+      <option value="full">Full Width</option>
+      <option value="centered">Centered (max-width)</option>
+      <option value="small">Small (constrained)</option>
+    </select>
+  </div>
+</div>
+<div class="cb-field-group">
+  <label class="cb-label">Caption <span class="cb-optional">(optional)</span></label>
+  <input type="text" data-field="caption" value="" class="cb-input" placeholder="Image caption" />
+</div>
+</script>
+
+{# Divider has no form fields #}
+<script type="text/html" id="cb-tpl-divider">
+<div class="cb-divider-placeholder">
+  <span class="cb-divider-line"></span>
+  <span style="color:var(--cbp-text-light);font-size:0.82rem">Horizontal Divider</span>
+  <span class="cb-divider-line"></span>
+</div>
+</script>
+
+<script src="{% static 'admin/js/content_block_builder.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    var data = {{ blocks_json_raw }};
+    ContentBlocksBuilder.init('id_{{ widget.name }}', data);
+  } catch(e) {
+    console.warn('Content builder init error:', e);
+  }
+});
+</script>

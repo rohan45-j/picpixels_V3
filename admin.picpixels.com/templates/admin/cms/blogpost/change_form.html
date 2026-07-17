@@ -1,0 +1,52 @@
+{% extends "admin/change_form.html" %}
+{% load i18n static admin_modify %}
+
+{% block field_sets %}
+  {% for fieldset in adminform %}
+    {% if fieldset.name %}
+    <div class="bpa-card">
+      <div class="bpa-card-header">
+        <h3 class="bpa-card-title">{{ fieldset.name }}</h3>
+        {% if fieldset.is_collapsible %}
+        <button type="button" class="bpa-collapse-btn" data-collapse="{{ fieldset.name|slugify }}" aria-label="Toggle section">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        {% endif %}
+      </div>
+      {% if fieldset.description %}
+      <div class="bpa-card-desc">{{ fieldset.description|safe }}</div>
+      {% endif %}
+      <div class="bpa-card-body">
+        {% include "admin/includes/fieldset.html" with fieldset=fieldset %}
+      </div>
+    </div>
+    {% else %}
+      {# For unnamed fieldsets, render without card wrapper #}
+      {% include "admin/includes/fieldset.html" with fieldset=fieldset %}
+    {% endif %}
+  {% endfor %}
+{% endblock %}
+
+{% block footer %}
+  <div class="bpa-sticky-footer" id="bpa-sticky-footer">
+    <div class="bpa-footer-inner">
+      <div class="bpa-footer-status">
+        {% if original %}
+          <span class="bpa-status-badge bpa-status-{{ original.status }}">
+            {{ original.get_status_display }}
+          </span>
+        {% else %}
+          <span class="bpa-status-badge bpa-status-draft">Draft</span>
+        {% endif %}
+        <span class="bpa-footer-id">
+          {% if add %}{% trans 'New Post' %}{% else %}{% trans 'Edit Post' %}{% endif %}
+        </span>
+      </div>
+      <div class="bpa-footer-actions">
+        {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

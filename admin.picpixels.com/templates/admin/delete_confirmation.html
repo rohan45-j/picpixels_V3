@@ -1,0 +1,70 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    {{ media }}
+    <script src="{% static 'admin/js/cancel.js' %}" async></script>
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }} app-{{ opts.app_label }} model-{{ opts.model_name }} delete-confirmation{% endblock %}
+
+{% block content %}
+    {% if perms_lacking %}
+        <div class="border border-base-200 rounded-default shadow-xs dark:border-base-800">
+            <p class="font-semibold p-4 text-font-important-light dark:text-font-important-dark">
+                {% blocktranslate with escaped_object=object %}Deleting the {{ object_name }} '{{ escaped_object }}' would result in deleting related objects, but your account doesn't have permission to delete the following types of objects:{% endblocktranslate %}
+            </p>
+            <div class="border-base-200 border-t p-4 dark:border-base-800">
+                <ul class="leading-relaxed">
+                    {% for obj in perms_lacking %}
+                        <li>{{ obj }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% elif protected %}
+        <div class="border border-base-200 rounded-default shadow-xs dark:border-base-800">
+            <p class="font-semibold p-4 text-font-important-light dark:text-font-important-dark">
+                {% blocktranslate with escaped_object=object %}Deleting the {{ object_name }} '{{ escaped_object }}' would require deleting the following protected related objects:{% endblocktranslate %}
+            </p>
+            <div class="border-t border-base-200 order-t p-4 dark:border-base-800">
+                <ul class="leading-relaxed">
+                    {% for obj in protected %}
+                        <li>{{ obj }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% else %}
+        <div class="border border-base-200 rounded-default shadow-xs dark:border-base-800">
+            <div class="p-5 text-center">
+                <span class="material-symbols-outlined text-4xl text-red-500 mb-3" style="font-size:48px">warning</span>
+                <p class="font-semibold text-lg text-font-important-light dark:text-font-important-dark mb-2">
+                    {% blocktranslate with escaped_object=object %}Delete {{ object_name }} "{{ escaped_object }}"?{% endblocktranslate %}
+                </p>
+                <p class="text-sm text-base-400 dark:text-base-500 mb-0">
+                    {% blocktranslate %}This action cannot be undone. All of the following related items will be deleted:{% endblocktranslate %}
+                </p>
+            </div>
+            {% include "admin/includes/object_delete_summary.html" %}
+            <div class="border-base-200 border-t px-5 py-4 dark:border-base-800">
+                <h2 class="font-semibold mb-2 text-sm text-font-important-light dark:text-font-important-dark">{% translate "Objects" %}</h2>
+                <ul class="leading-relaxed text-sm text-base-500 dark:text-base-400">
+                    {{ deleted_objects|unordered_list }}
+                </ul>
+            </div>
+            <form method="post" class="border-base-200 border-t px-5 py-4 dark:border-base-800">
+                {% csrf_token %}
+                <input type="hidden" name="post" value="yes">
+                {% if is_popup %}
+                    <input type="hidden" name="{{ is_popup_var }}" value="1">
+                {% endif %}
+                {% if to_field %}
+                    <input type="hidden" name="{{ to_field_var }}" value="{{ to_field }}">
+                {% endif %}
+                {% include "unfold/helpers/delete_submit_line.html" %}
+            </form>
+        </div>
+    {% endif %}
+{% endblock %}

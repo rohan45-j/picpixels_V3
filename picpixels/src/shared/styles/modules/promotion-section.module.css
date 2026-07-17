@@ -1,0 +1,238 @@
+/* ═══════════════════════════════════════════════
+   PROMOTION SECTION — SaaS hero split layout
+   ═══════════════════════════════════════════════ */
+
+.section {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--bg-light) 0%,
+    color-mix(in srgb, var(--color-primary) 4%, var(--bg-light)) 50%,
+    var(--bg-light) 100%
+  );
+  overflow: hidden;
+}
+
+.glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse 80% 60% at 65% 50%,
+    color-mix(in srgb, var(--color-primary) 8%, transparent) 0%,
+    transparent 70%
+  );
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: stretch;
+  max-width: var(--max-width, 1400px);
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  position: relative;
+  z-index: 1;
+  min-height: 420px;
+}
+
+/* ─── LEFT COLUMN: Text ─── */
+.textCol {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.25rem;
+  max-width: 540px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--primary);
+  border-radius: 50px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  width: fit-content;
+  color: var(--primary);
+}
+
+.title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+  font-weight: 900;
+  line-height: 1.12;
+  margin: 0;
+  letter-spacing: -0.025em;
+  color: var(--text-dark);
+}
+
+.subtitle {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.description {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.description p {
+  margin: 0 0 0.6rem;
+}
+
+.description p:last-child {
+  margin-bottom: 0;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  width: fit-content;
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--primary) 30%, transparent);
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+/* ─── RIGHT COLUMN: Image ─── */
+.imageCol {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--border-radius-md);
+  min-height: 320px;
+  box-shadow: 0 2px 24px color-mix(in srgb, var(--text-dark) 6%, transparent);
+}
+
+.imageDesktop {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.imageMobile {
+  display: none;
+}
+
+/* ─── RESPONSIVE ─── */
+
+/* Tablet: slightly tighter gap, smaller text */
+@media (max-width: 1024px) {
+  .grid {
+    gap: 2rem;
+    padding: 3rem 1.5rem;
+    min-height: 360px;
+  }
+
+  .textCol {
+    max-width: 460px;
+  }
+
+  .title {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+  }
+}
+
+/* Mobile: stack vertically, text above image */
+@media (max-width: 768px) {
+  .section {
+    background: linear-gradient(
+      180deg,
+      var(--bg-light) 0%,
+      color-mix(in srgb, var(--color-primary) 5%, var(--bg-light)) 100%
+    );
+  }
+
+  .glow {
+    background: radial-gradient(
+      ellipse 100% 40% at 50% 0%,
+      color-mix(in srgb, var(--color-primary) 8%, transparent) 0%,
+      transparent 70%
+    );
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2.5rem 1.25rem;
+    min-height: auto;
+  }
+
+  .textCol {
+    max-width: 100%;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .badge {
+    margin: 0;
+  }
+
+  .title {
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
+  }
+
+  .subtitle,
+  .description {
+    font-size: 0.9rem;
+  }
+
+  .cta {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.88rem;
+  }
+
+  .imageCol {
+    min-height: 240px;
+    border-radius: var(--border-radius-sm);
+  }
+
+  .imageDesktop {
+    display: none;
+  }
+
+  .imageMobile {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .grid {
+    padding: 2rem 1rem;
+    gap: 1.5rem;
+  }
+
+  .imageCol {
+    min-height: 200px;
+  }
+}

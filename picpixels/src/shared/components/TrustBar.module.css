@@ -1,0 +1,322 @@
+/* TrustBar — Premium Logo Marquee (Stripe / Linear / Framer inspired) */
+
+.section {
+  padding: 6rem 0 2rem;
+  position: relative;
+  background: #ffffff;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.inner {
+  max-width: var(--max-width, 1400px);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ---------- Header ---------- */
+.header {
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto 4rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.4rem 1.1rem;
+  background: rgba(255, 138, 80, 0.08);
+  border: 1px solid rgba(255, 138, 80, 0.18);
+  color: var(--color-primary, #FF8A50);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-radius: 100px;
+  margin-bottom: 1.4rem;
+}
+
+.title {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--color-text, #212529);
+  margin-bottom: 0.75rem;
+}
+
+.description {
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  color: var(--color-muted, #6c757d);
+  line-height: 1.65;
+}
+
+/* ---------- Logo Marquee ---------- */
+.marqueeOuter {
+  overflow: hidden;
+  width: 100%;
+  margin-bottom: 4rem;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 1) 5%,
+    rgba(0, 0, 0, 1) 95%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 1) 5%,
+    rgba(0, 0, 0, 1) 95%,
+    transparent 100%
+  );
+}
+
+.marqueeTrack {
+  display: flex;
+  gap: 1.25rem;
+  width: max-content;
+  animation: marquee 40s linear infinite;
+  will-change: transform;
+}
+
+.marqueeTrack:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section { opacity: 1; transform: none; }
+  .marqueeTrack { animation: none; }
+}
+
+/* ---------- Brand Card ---------- */
+.card {
+  flex: 0 0 auto;
+  width: 210px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  padding: 0 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  cursor: default;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Image logo — original form, no filters */
+.logoImage {
+  max-width: 80%;
+  max-height: 55%;
+  object-fit: contain;
+  opacity: 1;
+}
+
+/* Text fallback logo */
+.logoText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted, #6c757d);
+}
+
+.logoText svg {
+  width: 100%;
+  height: 28px;
+}
+
+/* ---------- Trust Metrics ---------- */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.metricCard {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 2rem 1rem;
+  background: var(--color-bg-card, #ffffff);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--radius-md, 12px);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Subtle shimmer sweep */
+.metricCard::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.06),
+    transparent
+  );
+  animation: shimmer 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(350%); }
+}
+
+.metricCard:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 138, 80, 0.35);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(255, 138, 80, 0.08);
+}
+
+/* Glow highlight on count completion (lasts ~1s) */
+.metricCompleted {
+  animation: cardGlow 1s ease-out forwards;
+}
+
+@keyframes cardGlow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 138, 80, 0);
+  }
+  30% {
+    box-shadow:
+      0 0 24px rgba(255, 138, 80, 0.15),
+      inset 0 0 24px rgba(255, 138, 80, 0.04);
+  }
+  100% {
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.04),
+      0 0 0 0 rgba(255, 138, 80, 0);
+  }
+}
+
+.metricValue {
+  display: block;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--color-primary, #FF8A50);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.1;
+  margin-bottom: 0.35rem;
+  transition: filter 0.3s ease;
+}
+
+/* Glow pulse on the number when count finishes */
+.metricPulse {
+  animation: metricGlowPulse 1s ease-out forwards;
+}
+
+@keyframes metricGlowPulse {
+  0% {
+    filter: brightness(1);
+    text-shadow: 0 0 0 rgba(255, 138, 80, 0);
+  }
+  35% {
+    filter: brightness(1.25);
+    text-shadow: 0 0 24px rgba(255, 138, 80, 0.45);
+  }
+  100% {
+    filter: brightness(1);
+    text-shadow: 0 0 0 rgba(255, 138, 80, 0);
+  }
+}
+
+.metricLabel {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--color-muted, #6c757d);
+  font-weight: 500;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .card {
+    width: 180px;
+    height: 80px;
+  }
+
+  .marqueeTrack {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 4rem 0;
+  }
+
+  .inner {
+    padding: 0 1.2rem;
+  }
+
+  .header {
+    margin-bottom: 3rem;
+  }
+
+  .card {
+    width: 150px;
+    height: 72px;
+    padding: 0 1rem;
+  }
+
+  .marqueeTrack {
+    gap: 0.9rem;
+  }
+
+  .marqueeOuter {
+    margin-bottom: 3rem;
+  }
+
+  .metricsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+  }
+
+  .metricCard {
+    padding: 1.5rem 1rem;
+  }
+
+  .metricValue {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .card {
+    width: 135px;
+    height: 64px;
+    padding: 0 0.75rem;
+  }
+
+  .marqueeTrack {
+    gap: 0.75rem;
+  }
+}

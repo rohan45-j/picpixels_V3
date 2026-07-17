@@ -1,0 +1,257 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: 1.4fr 0.6fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.canvasContainer {
+  position: relative;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  background: #000;
+  cursor: crosshair;
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+.image {
+  max-width: 100%;
+  max-height: 600px;
+  display: block;
+  object-fit: contain;
+}
+
+/* Glowing Pinpoints */
+.pin {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: var(--primary);
+  border: 2px solid var(--text-white);
+  border-radius: 50%;
+  color: var(--text-white);
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px var(--primary);
+  animation: glowPulse 2s infinite;
+  z-index: 5;
+  transition: var(--transition-fast);
+}
+
+.pinActive {
+  background: #f59e0b;
+  border-color: var(--text-white);
+  box-shadow: 0 0 20px #f59e0b;
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Temp Click Pin */
+.tempPin {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: #ef4444;
+  border: 2px solid var(--text-white);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: bounce 0.5s alternate infinite;
+  z-index: 6;
+}
+
+@keyframes bounce {
+  from { transform: translate(-50%, -60%); }
+  to { transform: translate(-50%, -40%); }
+}
+
+/* Sidebar panel */
+.sidebar {
+  background: var(--bg-dark-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  box-shadow: var(--glass-shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarTitle {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-white);
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0.8rem;
+}
+
+.emptyState {
+  color: var(--text-muted-dark);
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+/* Comment Form */
+.formCard {
+  background: var(--bg-dark-elevated);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-sm);
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+  border-left: 3px solid #ef4444;
+}
+
+.textarea {
+  width: 100%;
+  background: var(--bg-dark-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 4px;
+  padding: 0.6rem;
+  font-size: 0.85rem;
+  color: var(--text-white);
+  height: 80px;
+  outline: none;
+  resize: none;
+  margin-bottom: 0.8rem;
+}
+
+.textarea:focus {
+  border-color: var(--primary-light);
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Pin list */
+.pinList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.pinItem {
+  background: var(--bg-dark-elevated);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-sm);
+  padding: 1rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  position: relative;
+}
+
+.pinItem:hover {
+  border-color: rgba(255,255,255,0.15);
+}
+
+.pinItemActive {
+  border-color: var(--primary-light);
+  background: rgba(16, 185, 129, 0.03);
+}
+
+.pinItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.pinBadge {
+  background: var(--primary);
+  color: var(--text-white);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pinItemActive .pinBadge {
+  background: #f59e0b;
+}
+
+.pinCoords {
+  font-size: 0.7rem;
+  color: var(--text-muted-dark);
+}
+
+.pinComment {
+  font-size: 0.85rem;
+  color: var(--text-white);
+  line-height: 1.4;
+}
+
+.deleteBtn {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  background: none;
+  border: none;
+  color: var(--text-muted-dark);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.deleteBtn:hover {
+  color: #ef4444;
+}
+
+/* Mode toggles (Compare original vs edited) */
+.toggleHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.toggleGroup {
+  display: flex;
+  background: var(--bg-dark-card);
+  border: 1px solid var(--glass-border);
+  border-radius: 100px;
+  padding: 0.2rem;
+}
+
+.toggleBtn {
+  background: none;
+  border: none;
+  border-radius: 100px;
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted-dark);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.toggleBtnActive {
+  background: var(--primary);
+  color: var(--text-white);
+}

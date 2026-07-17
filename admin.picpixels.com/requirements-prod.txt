@@ -1,0 +1,30 @@
+# Production-only dependencies (no dev tools, no Redis/Channels-lite)
+Django==5.2.15
+django-cors-headers==4.9.0
+djangorestframework==3.17.1
+djangorestframework_simplejwt==5.5.1
+PyJWT==2.12.1
+sqlparse==0.5.5
+tzdata==2026.2
+Pillow==10.3.0
+
+# We keep these but use LocMemCache fallback (no redis-server needed)
+django-redis==5.4.0
+
+# Admin
+# django-unfold==0.94.0
+django-unfold==0.91.0
+whitenoise==6.11.0
+
+# API
+drf-spectacular==0.29.0
+django-filter==25.2
+
+# Rich text
+django-ckeditor==6.7.3
+
+# Environment
+django-environ==0.13.0
+
+# WSGI server (Passenger uses its own, this is fallback for dev)
+gunicorn==23.0.0

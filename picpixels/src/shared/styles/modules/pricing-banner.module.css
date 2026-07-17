@@ -1,0 +1,44 @@
+/* ═══════════════════════════════════════════════
+   PRICING BANNER — CMS-managed promotion badges
+   ═══════════════════════════════════════════════ */
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+  border-radius: 6px 6px 0 0;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 28px;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .banner {
+    font-size: 0.62rem;
+    padding: 0.25rem 0.6rem;
+    min-height: 24px;
+  }
+}

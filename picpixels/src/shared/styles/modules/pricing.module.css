@@ -1,0 +1,817 @@
+/* ═══════════════════════════════════════════════
+   PRICING MODULE — Premium SaaS Design
+   Brand orange (#FF8A50) design system
+   ═══════════════════════════════════════════════ */
+
+/* ─── Hero ─── */
+.headerSection {
+  padding: 8rem 2rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,138,80,0.06) 0%, transparent 60%);
+}
+.headerSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,138,80,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,138,80,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, black, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black, transparent 70%);
+  pointer-events: none;
+}
+.headerSection::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: var(--bg-light);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'%3E%3Cpath d='M0,30 C200,0 400,60 600,30 C800,0 1000,60 1200,30 L1200,60 L0,60 Z' fill='%23000'/%3E%3C/svg%3E");
+  mask-size: 100% 100%;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'%3E%3Cpath d='M0,30 C200,0 400,60 600,30 C800,0 1000,60 1200,30 L1200,60 L0,60 Z' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+.headerContent {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+.title {
+  font-size: clamp(2.5rem, 5vw, 3.8rem);
+  font-weight: 900;
+  margin-bottom: 1.2rem;
+  line-height: 1.1;
+  color: var(--color-text);
+}
+.subtitle {
+  font-size: 1.15rem;
+  color: var(--color-muted);
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+/* ─── Floating decorative blobs ─── */
+.floatingBlob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+.floatingBlob1 {
+  width: 200px;
+  height: 200px;
+  background: rgba(255,138,80,0.08);
+  top: -60px;
+  right: -40px;
+}
+.floatingBlob2 {
+  width: 160px;
+  height: 160px;
+  background: rgba(255,138,80,0.06);
+  bottom: 20px;
+  left: -30px;
+}
+
+/* ─── Toggle ─── */
+.toggleSection { padding: 2rem 0 0; }
+.toggleWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+.toggleLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
+}
+.toggleLabelActive { color: var(--color-text); }
+.toggleTrack {
+  position: relative;
+  width: 52px;
+  height: 28px;
+  border-radius: 50px;
+  background: rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+.toggleTrackActive { background: var(--primary); }
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.toggleThumbActive { transform: translateX(24px); }
+.saveBadge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  background: rgba(255,138,80,0.1);
+  border: 1px solid rgba(255,138,80,0.2);
+  border-radius: 50px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-left: 0.3rem;
+}
+
+/* ─── Filter Row (Service + Unit Range dropdowns) ─── */
+.pricingSectionTop { padding-top: 0; }
+
+.filterRowOpen {
+  position: relative;
+  z-index: 10;
+}
+
+.filterRow {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+.dropdownWrap {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  min-width: 240px;
+}
+
+.dropdownLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 0.5rem;
+}
+
+.dropdownTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  background: var(--bg-light-card);
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius-md, 12px);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.25s ease;
+}
+
+.dropdownTrigger:hover {
+  border-color: var(--color-primary-light);
+  box-shadow: 0 4px 16px rgba(255, 138, 80, 0.1);
+}
+
+.dropdownTrigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.dropdownTriggerPlaceholder {
+  color: var(--color-muted);
+  font-weight: 500;
+}
+
+.dropdownChevron {
+  transition: transform 0.3s ease;
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.dropdownChevronOpen {
+  transform: rotate(180deg);
+  color: var(--color-primary);
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: var(--bg-light-card);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-md, 12px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 0.8rem 1.15rem;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.dropdownItem:hover {
+  background: rgba(255, 138, 80, 0.08);
+  padding-left: 1.35rem;
+}
+
+.dropdownItemActive {
+  background: rgba(255, 138, 80, 0.12);
+  color: var(--color-primary);
+  font-weight: 700;
+  border-left: 3px solid var(--color-primary);
+}
+
+/* ─── Card Badge ─── */
+.badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: #fff;
+  padding: 0.35rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.planOldPrice {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-decoration: line-through;
+  margin-left: 0.5rem;
+}
+
+/* ─── Loading ─── */
+.loadingWrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem 2rem;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 138, 80, 0.15);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Pricing Grid ─── */
+.pricingSection { padding: 2rem 2rem 6rem; }
+.pricingInner {
+  max-width: var(--max-width, 1400px);
+  margin: 0 auto;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media (max-width: 1200px) {
+  .grid { grid-template-columns: repeat(2, 1fr); max-width: 780px; }
+}
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; max-width: 480px; }
+}
+
+/* ─── Card ─── */
+.card {
+  background: var(--bg-light-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: var(--transition-smooth);
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  height: 100%;
+  min-height: 600px;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: transparent;
+  transition: background 0.35s;
+}
+.card:hover::before {
+  background: var(--primary);
+}
+.card:hover {
+  border-color: var(--color-primary-light);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(0,0,0,0.12);
+}
+.cardPopular {
+  border-color: var(--primary);
+  box-shadow: 0 8px 32px rgba(255,138,80,0.15);
+}
+.cardPopular::before {
+  background: var(--primary);
+}
+.cardPopular:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(255,138,80,0.2);
+}
+
+.cardHeader {
+  flex-shrink: 0;
+  margin-bottom: 0.75rem;
+}
+
+.cardPricing {
+  flex-shrink: 0;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.cardCalculator {
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+}
+
+.popularBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--primary);
+  color: #fff;
+  padding: 0.35rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(255,138,80,0.3);
+}
+
+.planName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--color-text);
+}
+.planDesc {
+  font-size: 0.88rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.planPriceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  margin-bottom: 0.15rem;
+  transition: opacity 0.2s;
+}
+.planPrice {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: var(--color-text);
+  line-height: 1;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.planCurrency {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+.planPeriod {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin-bottom: 0.75rem;
+}
+.perImageLabel {
+  font-weight: 600;
+  color: var(--primary, #FF8A50);
+  background: rgba(255,138,80,0.08);
+  padding: 0.15rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+.divider {
+  border: none;
+  border-top: 1px solid var(--glass-border);
+  margin: 0.5rem 0 0.75rem;
+  flex-shrink: 0;
+}
+.featuresList {
+  list-style: none;
+  margin-bottom: 0;
+  flex: 1;
+  min-height: 0;
+}
+.featuresList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+  margin-bottom: 0.65rem;
+  line-height: 1.5;
+}
+.checkIcon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255,138,80,0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  margin-top: 1px;
+}
+
+/* ─── Card Image (uploaded or default gradient fallback) ─── */
+.cardImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  margin: 0 0 1rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.unitRangeBadge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  background: rgba(255,138,80,0.08);
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+}
+
+/* ─── Per Image Label ─── */
+
+/* ─── Count Input ─── */
+.countInput {
+  margin: 0.5rem 0;
+  flex-shrink: 0;
+}
+
+.countLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  margin-bottom: 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.countField {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.countInputField {
+  flex: 1;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  outline: none;
+  background: var(--bg-light-card);
+  color: var(--color-text);
+  transition: border-color 0.2s;
+}
+
+.countInputField:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(255,138,80,0.1);
+}
+
+.countSuffix {
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ─── Total Row ─── */
+.totalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.75rem;
+  margin-top: 0.5rem;
+  background: rgba(255,138,80,0.05);
+  border: 1px solid rgba(255,138,80,0.1);
+  border-radius: var(--radius-sm);
+}
+
+.totalLabel {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.totalValue {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-align: right;
+}
+
+.totalSub {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  margin-top: 0.1rem;
+}
+
+/* ─── Card CTA ─── */
+.cardBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: auto;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition-smooth);
+  flex-shrink: 0;
+}
+.cardBtnPrimary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(255,138,80,0.25);
+}
+.cardBtnPrimary:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255,138,80,0.35);
+}
+.cardBtnSecondary {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--glass-border);
+}
+.cardBtnSecondary:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255,138,80,0.08);
+}
+
+/* ─── Section common ─── */
+.section {
+  padding: 6rem 0;
+  position: relative;
+}
+.sectionAlt { background: var(--color-bg, #f8f9fa); }
+.sectionHeader {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 4rem;
+}
+.sectionTag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: #FF8A50;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.sectionTitle {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--color-text);
+  margin: 0 0 0.75rem;
+}
+.sectionDesc {
+  font-size: 1.05rem;
+  color: var(--color-muted);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+
+}
+/* ─── Features Comparison ─── */
+.compareSection { padding: 6rem 2rem; background: var(--bg-light); }
+.compareSectionInner { max-width: 900px; margin: 0 auto; }
+.compareTableWrap {
+  overflow-x: auto;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--glass-border);
+  background: var(--bg-light-card);
+}
+.compareTable { width: 100%; border-collapse: collapse; font-size: 0.9rem; min-width: 600px; }
+.compareTable th {
+  background: rgba(255,138,80,0.04);
+  font-weight: 700;
+  text-align: left;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--glass-border);
+  white-space: nowrap;
+}
+.compareTable th:first-child { border-radius: 16px 0 0 0; }
+.compareTable th:last-child { border-radius: 0 16px 0 0; }
+.compareTable td {
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.compareTable tr:last-child td { border-bottom: none; }
+.compareTable tr:hover td { background: rgba(255,138,80,0.02); }
+.compareFeatureName { font-weight: 600; color: var(--color-text); }
+.compareCheck { color: var(--primary); }
+.compareDash { color: var(--color-muted); opacity: 0.4; }
+.compareTdPopular { background: rgba(255,138,80,0.03); }
+
+/* ─── FAQ ─── */
+.faqSection { padding: 6rem 2rem; background: var(--color-bg, #f8f9fa); }
+.faqInner { max-width: 800px; margin: 0 auto; }
+.faqList { display: flex; flex-direction: column; gap: 0.75rem; }
+.faqItem {
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  background: var(--bg-light-card);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.faqItem:hover { border-color: rgba(255,138,80,0.12); }
+.faqQuestion {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  text-align: left;
+  padding: 1.1rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: inherit;
+  transition: color 0.2s;
+}
+.faqQuestion:hover { color: var(--primary); }
+.faqIcon {
+  font-size: 0.7rem;
+  transition: transform 0.2s ease;
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+.faqIconOpen { transform: rotate(180deg); color: var(--primary); }
+.faqAnswer {
+  padding: 0 1.5rem 1.1rem;
+  font-size: 0.92rem;
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+/* ─── CTA ─── */
+.ctaSection { padding: 6rem 2rem; }
+.ctaBanner {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, var(--bg-light-card) 0%, rgba(255,138,80,0.05) 100%);
+  border: 1px solid rgba(255,138,80,0.1);
+  border-radius: var(--border-radius-xl);
+  position: relative;
+  overflow: hidden;
+}
+.ctaBanner::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--primary) 0%, transparent 60%);
+  opacity: 0.1;
+  transform: translate(-50%, -50%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+.ctaBannerContent { position: relative; z-index: 1; }
+.ctaBannerTitle {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  color: var(--color-text);
+}
+.ctaBannerDesc {
+  color: var(--color-muted);
+  max-width: 500px;
+  margin: 0 auto 2rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+.ctaBannerGroup {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  .headerSection { padding: 6rem 1.5rem 4rem; }
+  .pricingSection { padding: 1rem 1rem 4rem; }
+  .section, .sectionAlt, .faqSection, .ctaSection, .compareSection { padding: 4rem 1rem; }
+  .card { padding: 1.75rem 1.25rem; min-height: 500px; }
+  .planPrice { font-size: 2.2rem; }
+  .planPriceRow { margin-bottom: 0.1rem; }
+  .cardImageWrapper { height: 150px; margin: 0 0 0.75rem; }
+  .cardHeader { margin-bottom: 0.5rem; }
+  .cardPricing { margin-bottom: 0.5rem; }
+  .cardCalculator { margin-top: 0.35rem; }
+  .countInput { margin: 0.35rem 0; }
+  .countInputField { padding: 0.4rem 0.6rem; font-size: 0.82rem; }
+  .divider { margin: 0.35rem 0 0.5rem; }
+  .totalRow { padding: 0.5rem 0.65rem; }
+  .totalValue { font-size: 0.9rem; }
+  .featuresList li { margin-bottom: 0.5rem; }
+  .ctaBanner { padding: 3rem 1.5rem; }
+  .dropdownWrap { max-width: 100%; min-width: 0; }
+  .filterRow { gap: 1rem; flex-direction: column; align-items: center; }
+}
+
+@media (max-width: 480px) {
+  .card { min-height: 460px; padding: 1.5rem 1rem; }
+  .planPrice { font-size: 2rem; }
+  .cardImageWrapper { height: 130px; }
+  .cardPricing { margin-bottom: 0.35rem; }
+  .countField { gap: 0.35rem; }
+  .countInputField { font-size: 0.8rem; }
+  .dropdownWrap { max-width: 100%; }
+}

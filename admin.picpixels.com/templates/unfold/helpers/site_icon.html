@@ -1,0 +1,11 @@
+{% load i18n static %}
+
+<div class="shrink-0">
+    <a href="{% url "admin:index" %}">
+        {% if site_settings and site_settings.logo %}
+            <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.logo_alt|default:site_settings.site_name }}" class="h-[38px] w-auto max-w-[40px] object-contain" />
+        {% else %}
+            <img src="{% static 'admin/img/picpicxels-logo.svg' %}" alt="{% trans 'Home' %}" class="h-[38px] w-[38px]" />
+        {% endif %}
+    </a>
+</div>

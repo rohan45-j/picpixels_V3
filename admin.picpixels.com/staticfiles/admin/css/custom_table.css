@@ -1,0 +1,517 @@
+/* ===========================================================
+   PicPicxels Admin — Modern Table Styling
+   Enhanced Django admin changelist tables with SaaS-style UI
+   =========================================================== */
+
+/* ── Custom Properties ── */
+:root {
+  --table-bg: #ffffff;
+  --table-border: #e5e7eb;
+  --table-text: #1f2937;
+  --table-muted: #6b7280;
+  --table-header-bg: #f9fafb;
+  --table-hover-bg: #f3f4f6;
+  --table-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  --table-radius: 12px;
+  --row-padding: 16px;
+  --header-padding: 14px 16px;
+  --action-gap: 8px;
+  --action-padding: 6px 10px;
+  --action-radius: 8px;
+  --transition-normal: 0.2s ease;
+}
+
+/* Dark mode variables */
+.dark {
+  --table-bg: #1e1f2b;
+  --table-border: #2d2e3a;
+  --table-text: #e5e7eb;
+  --table-muted: #9ca3af;
+  --table-header-bg: #1a1b26;
+  --table-hover-bg: #25262d;
+  --table-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* ── Main Table Container ── */
+#changelist,
+.module table,
+.table,
+#app_list table,
+formset table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--table-radius);
+  box-shadow: var(--table-shadow);
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+/* ── Sticky Header ── */
+#changelist thead,
+.module table thead,
+.table thead,
+#app_list table thead,
+formset table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--table-header-bg);
+  box-shadow: 0 1px 0 var(--table-border);
+}
+
+#changelist thead th,
+.module table thead th,
+.table thead th,
+#app_list table thead th,
+formset table thead th {
+  background: var(--table-header-bg);
+  padding: var(--header-padding);
+  font-weight: 600;
+  font-size: 0.8125rem;
+  color: var(--table-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--table-border);
+  white-space: nowrap;
+}
+
+/* ── Table Rows ── */
+#changelist tbody tr,
+.module table tbody tr,
+.table tbody tr,
+#app_list table tbody tr,
+formset table tbody tr {
+  transition: all var(--transition-normal);
+  border-bottom: 1px solid var(--table-border);
+}
+
+#changelist tbody tr:last-child,
+.module table tbody tr:last-child,
+.table tbody tr:last-child,
+#app_list table tbody tr:last-child,
+formset table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* ── Row Hover ── */
+#changelist tbody tr:hover,
+.module table tbody tr:hover,
+.table tbody tr:hover,
+#app_list table tbody tr:hover,
+formset table tbody tr:hover {
+  background: var(--table-hover-bg);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  z-index: 1;
+  position: relative;
+}
+
+/* Dark mode hover */
+.dark #changelist tbody tr:hover,
+.dark .module table tbody tr:hover,
+.dark .table tbody tr:hover,
+.dark #app_list table tbody tr:hover,
+.dark formset table tbody tr:hover {
+  background: var(--table-hover-bg);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* ── Table Cells ── */
+#changelist tbody td,
+.module table tbody td,
+.table tbody td,
+#app_list table tbody td,
+formset table tbody td {
+  padding: var(--row-padding) 16px;
+  vertical-align: middle;
+  color: var(--table-text);
+  font-size: 0.875rem;
+}
+
+/* ── Action Buttons ── */
+#changelist .actions a,
+.module table .actions a,
+.table .actions a,
+#app_list table .actions a,
+formset table .actions a,
+#changelist .changelink,
+.module table .changelink,
+.table .changelink,
+#app_list table .changelink,
+formset table .changelink,
+#changelist .viewlink,
+.module table .viewlink,
+.table .viewlink,
+#app_list table .viewlink,
+formset table .viewlink,
+#changelist .addlink,
+.module table .addlink,
+.table .addlink,
+#app_list table .addlink,
+formset table .addlink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: var(--action-padding);
+  border-radius: var(--action-radius);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all var(--transition-normal);
+  margin: 0 2px;
+}
+
+/* Change links */
+#changelist .changelink,
+.module table .changelink,
+.table .changelink,
+#app_list table .changelink,
+formset table .changelink {
+  color: var(--brand);
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+#changelist .changelink:hover,
+.module table .changelink:hover,
+.table .changelink:hover,
+#app_list table .changelink:hover,
+formset table .changelink:hover {
+  background: var(--brand-light);
+  border-color: var(--brand-border);
+  color: var(--brand-hover);
+}
+
+/* View links */
+#changelist .viewlink,
+.module table .viewlink,
+.table .viewlink,
+#app_list table .viewlink,
+formset table .viewlink {
+  color: var(--table-muted);
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+#changelist .viewlink:hover,
+.module table .viewlink:hover,
+.table .viewlink:hover,
+#app_list table .viewlink:hover,
+formset table .viewlink:hover {
+  background: var(--table-hover-bg);
+  color: var(--table-text);
+}
+
+/* Add links */
+#changelist .addlink,
+.module table .addlink,
+.table .addlink,
+#app_list table .addlink,
+formset table .addlink {
+  background: var(--brand);
+  color: white;
+  border: 1px solid var(--brand);
+  font-weight: 600;
+}
+
+#changelist .addlink:hover,
+.module table .addlink:hover,
+.table .addlink:hover,
+#app_list table .addlink:hover,
+formset table .addlink:hover {
+  background: var(--brand-hover);
+  border-color: var(--brand-hover);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.3);
+  color: white;
+}
+
+/* Delete links */
+#changelist .deletelink,
+.module table .deletelink,
+.table .deletelink,
+#app_list table .deletelink,
+formset table .deletelink {
+  color: #dc2626;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.dark #changelist .deletelink,
+.dark .module table .deletelink,
+.dark .table .deletelink,
+.dark #app_list table .deletelink,
+.dark formset table .deletelink {
+  color: #ef4444;
+}
+
+#changelist .deletelink:hover,
+.module table .deletelink:hover,
+.table .deletelink:hover,
+#app_list table .deletelink:hover,
+formset table .deletelink:hover {
+  background: #fef2f2;
+  border-color: #fee2e2;
+}
+
+.dark #changelist .deletelink:hover,
+.dark .module table .deletelink:hover,
+.dark .table .deletelink:hover,
+.dark #app_list table .deletelink:hover,
+.dark formset table .deletelink:hover {
+  background: rgba(220, 38, 38, 0.15);
+  border-color: rgba(220, 38, 38, 0.25);
+}
+
+/* Zebra striping */
+#changelist tbody tr:nth-child(even),
+.module table tbody tr:nth-child(even),
+.table tbody tr:nth-child(even),
+#app_list table tbody tr:nth-child(even),
+formset table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.dark #changelist tbody tr:nth-child(even),
+.dark .module table tbody tr:nth-child(even),
+.dark .table tbody tr:nth-child(even),
+.dark #app_list table tbody tr:nth-child(even),
+.dark formset table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ── Filter Panel ── */
+#changelist-filter,
+.module .filter,
+.filter {
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--table-radius);
+  padding: 16px;
+  margin-bottom: 24px;
+  box-shadow: var(--table-shadow);
+}
+
+/* ── Search Field ── */
+#changelist-search input,
+.search-query,
+#changelist #searchbar {
+  border-radius: 8px;
+  border: 1px solid var(--table-border);
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  transition: all var(--transition-normal);
+}
+
+#changelist-search input:focus,
+.search-query:focus,
+#changelist #searchbar:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+/* ── Pagination ── */
+.pagination,
+.module .pagination {
+  margin-top: 24px;
+}
+
+.pagination .page-btn,
+.pagination a,
+.pagination span {
+  border-radius: 8px;
+  font-size: 0.875rem;
+  padding: 6px 12px;
+  margin: 0 2px;
+  transition: all var(--transition-normal);
+}
+
+.pagination .page-btn.active,
+.pagination .current,
+.pagination span.current {
+  background: var(--brand);
+  color: white;
+  border-color: var(--brand);
+}
+
+.pagination .page-btn:hover,
+.pagination a:hover {
+  background: var(--brand-light);
+  color: var(--brand-hover);
+  border-color: var(--brand-border);
+}
+
+/* ── Actions Checkbox ── */
+#changelist .action-checkbox,
+.module table .action-checkbox,
+.table .action-checkbox,
+#app_list table .action-checkbox,
+formset table .action-checkbox {
+  width: 40px;
+  text-align: center;
+}
+
+/* ── Responsive Table ── */
+@media (max-width: 1024px) {
+  #changelist,
+  .module table,
+  .table,
+  #app_list table,
+  formset table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  #changelist thead,
+  .module table thead,
+  .table thead,
+  #app_list table thead,
+  formset table thead {
+    display: none;
+  }
+
+  #changelist tbody tr,
+  .module table tbody tr,
+  .table tbody tr,
+  #app_list table tbody tr,
+  formset table tbody tr {
+    display: block;
+    border: 1px solid var(--table-border);
+    border-radius: var(--table-radius);
+    margin-bottom: 12px;
+    background: var(--table-bg);
+    box-shadow: var(--table-shadow);
+  }
+
+  #changelist tbody tr:hover,
+  .module table tbody tr:hover,
+  .table tbody tr:hover,
+  #app_list table tbody tr:hover,
+  formset table tbody tr:hover {
+    transform: none;
+  }
+
+  #changelist tbody td,
+  .module table tbody td,
+  .table tbody td,
+  #app_list table tbody td,
+  formset table tbody td {
+    display: block;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--table-border);
+  }
+
+  #changelist tbody td:last-child,
+  .module table tbody td:last-child,
+  .table tbody td:last-child,
+  #app_list table tbody td:last-child,
+  formset table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  #changelist tbody td:before,
+  .module table tbody td:before,
+  .table tbody td:before,
+  #app_list table tbody td:before,
+  formset table tbody td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--table-muted);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+}
+
+/* ── Formset Styling ── */
+.inline-group,
+.formset {
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--table-radius);
+  box-shadow: var(--table-shadow);
+  margin-bottom: 24px;
+}
+
+.inline-group > h2,
+.formset > h2 {
+  background: var(--table-header-bg);
+  border-radius: var(--table-radius) var(--table-radius) 0 0;
+  border-bottom: 1px solid var(--table-border);
+  padding: 14px 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.inline-group .module,
+.formset .module {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+/* ── Message Styling ── */
+.messages,
+.alerts {
+  border-radius: var(--table-radius);
+  box-shadow: var(--table-shadow);
+  border: 1px solid var(--table-border);
+}
+
+/* ── Submit Row ── */
+#submit-row {
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: 0 0 var(--table-radius) var(--table-radius);
+  box-shadow: var(--table-shadow);
+  margin-top: -1px;
+  padding: 16px 20px;
+}
+
+/* ── Dashboard Stats Cards ── */
+.stat-card,
+.dashboard .grid > div {
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--table-radius);
+  box-shadow: var(--table-shadow);
+  transition: all var(--transition-normal);
+}
+
+.stat-card:hover,
+.dashboard .grid > div:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.dark .stat-card:hover,
+.dark .dashboard .grid > div:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* ── App List Cards ── */
+.app-list .module,
+.dashboard .app-list .module {
+  background: var(--table-bg);
+  border: 1px solid var(--table-border);
+  border-radius: var(--table-radius);
+  box-shadow: var(--table-shadow);
+  transition: all var(--transition-normal);
+}
+
+.app-list .module:hover,
+.dashboard .app-list .module:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.dark .app-list .module:hover,
+.dark .dashboard .app-list .module:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
