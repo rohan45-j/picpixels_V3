@@ -524,6 +524,7 @@ class ServiceAdmin(ModelAdmin):
 
 @admin.register(ServiceGalleryImage)
 class ServiceGalleryImageAdmin(ModelAdmin):
+    list_select_related = ('service',)
     list_display = ('service', 'gallery_type', 'category', 'alt_text', 'is_featured', 'is_visible', 'order', 'image_preview')
     list_filter = ('gallery_type', 'is_featured', 'is_visible')
     ordering = ('service', 'order')
@@ -556,6 +557,7 @@ class ServiceGalleryImageAdmin(ModelAdmin):
 
 @admin.register(ServiceContentSection)
 class ServiceContentSectionAdmin(ModelAdmin):
+    list_select_related = ('service',)
     list_display = ('service', 'layout', 'heading', 'order', 'image_preview')
     list_filter = ('layout',)
     ordering = ('service', 'order')
@@ -579,6 +581,7 @@ class ServiceContentSectionAdmin(ModelAdmin):
 
 @admin.register(ServiceHeroImage)
 class ServiceHeroImageAdmin(ModelAdmin):
+    list_select_related = ('service',)
     list_display = ('service', 'alt_text', 'order', 'image_preview')
     ordering = ('service', 'order')
     list_fullwidth = True
@@ -647,6 +650,7 @@ class HeroSectionAdmin(ModelAdmin):
 
 @admin.register(HeroSlide)
 class HeroSlideAdmin(ModelAdmin):
+    list_select_related = ('hero_section',)
     list_display = ('hero_section', 'alt_text', 'order', 'image_preview')
     ordering = ('hero_section', 'order')
     search_fields = ('alt_text',)
@@ -666,6 +670,7 @@ class HeroSlideAdmin(ModelAdmin):
 
 @admin.register(HeroStat)
 class HeroStatAdmin(ModelAdmin):
+    list_select_related = ('hero_section',)
     list_display = ('hero_section', 'value', 'label', 'order')
     ordering = ('hero_section', 'order')
     list_fullwidth = True
@@ -836,6 +841,7 @@ class BlogPostAdminForm(forms.ModelForm):
 class BlogPostAdmin(ModelAdmin):
     form = BlogPostAdminForm
     change_form_template = 'admin/cms/blogpost/change_form.html'
+    list_select_related = ('author_profile', 'category')
     list_display = ('title', 'category', 'status', 'is_featured', 'is_trending', 'reading_time', 'author_name', 'featured_image_thumb')
     list_filter = ('status', 'is_featured', 'is_trending', 'category', 'author_profile')
     list_filter_submit = True
@@ -896,6 +902,7 @@ class BlogPostAdmin(ModelAdmin):
 
 @admin.register(BlogContentSection)
 class BlogContentSectionAdmin(ModelAdmin):
+    list_select_related = ('blog_post',)
     list_display = ('blog_post', 'template', 'heading', 'order', 'image_preview')
     list_filter = ('template',)
     ordering = ('blog_post', 'order')
@@ -916,6 +923,7 @@ class BlogContentSectionAdmin(ModelAdmin):
 
 @admin.register(BlogDocumentBlock)
 class BlogDocumentBlockAdmin(ModelAdmin):
+    list_select_related = ('blog_post',)
     list_display = ('title', 'blog_post', 'download_text', 'sort_order', 'is_active')
     list_filter = ('is_active', 'blog_post')
     ordering = ('blog_post', 'sort_order')
@@ -946,6 +954,7 @@ class FAQCategoryAdmin(ModelAdmin):
 
 @admin.register(FAQ)
 class FAQAdmin(ModelAdmin):
+    list_select_related = ('category', 'service')
     list_display = ('question', 'category', 'linked_service', 'is_contact_faq', 'order', 'is_active')
     list_filter = ('category', 'is_active', 'is_contact_faq', 'service')
     list_filter_submit = True
@@ -1359,6 +1368,7 @@ class PricingConfigSectionAdmin(ModelAdmin):
 
 @admin.register(PricingConfigCard)
 class PricingConfigCardAdmin(ModelAdmin):
+    list_select_related = ('section',)
     list_display = ('title', 'section', 'sort_order', 'is_active', 'show_banner')
     list_editable = ('sort_order', 'is_active', 'show_banner')
     list_filter = ('section', 'is_active', 'show_banner')
@@ -1382,6 +1392,7 @@ class PricingConfigCardAdmin(ModelAdmin):
 
 @admin.register(PricingConfigDropdownOption)
 class PricingConfigDropdownOptionAdmin(ModelAdmin):
+    list_select_related = ('section',)
     list_display = ('label', 'section', 'order', 'is_active')
     list_editable = ('order', 'is_active')
     list_filter = ('section', 'is_active')
@@ -1391,6 +1402,7 @@ class PricingConfigDropdownOptionAdmin(ModelAdmin):
 
 @admin.register(PricingConfigCardPrice)
 class PricingConfigCardPriceAdmin(ModelAdmin):
+    list_select_related = ('card', 'unit_range')
     list_display = ('card_title', 'unit_range_label', 'price', 'old_price')
     list_editable = ('price', 'old_price')
     list_filter = ('card__section', 'card', 'unit_range')
@@ -1463,6 +1475,7 @@ class ServicePricingCardInline(TabularInline):
 
 @admin.register(ServiceUnitRange)
 class ServiceUnitRangeAdmin(ModelAdmin):
+    list_select_related = ('service',)
     list_display = ['label', 'service', 'sort_order', 'is_active']
     list_editable = ['sort_order', 'is_active']
     list_filter = ['service']
@@ -1471,6 +1484,7 @@ class ServiceUnitRangeAdmin(ModelAdmin):
 
 @admin.register(ServicePricingCard)
 class ServicePricingCardAdmin(ModelAdmin):
+    list_select_related = ('service',)
     list_display = ['name', 'service', 'badge_text', 'sort_order', 'is_active']
     list_editable = ['sort_order', 'is_active']
     list_filter = ['service']
@@ -1485,6 +1499,7 @@ class ServicePricingCardAdmin(ModelAdmin):
 
 @admin.register(ServicePricingCardPrice)
 class ServicePricingCardPriceAdmin(ModelAdmin):
+    list_select_related = ('card', 'unit_range')
     list_display = ['card', 'unit_range', 'price', 'original_price']
     list_editable = ['price', 'original_price']
     autocomplete_fields = ['card', 'unit_range']

@@ -29,7 +29,7 @@ class GuideViewSet(viewsets.ReadOnlyModelViewSet):
         return GuideListSerializer
 
     def get_queryset(self):
-        qs = Guide.objects.all()
+        qs = Guide.objects.select_related('category').all()
         if not settings.DEBUG:
             qs = qs.filter(is_published=True, category__is_active=True)
         category = self.request.query_params.get('category')

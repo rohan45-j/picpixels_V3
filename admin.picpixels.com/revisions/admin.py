@@ -14,6 +14,7 @@ class ImageAnnotationInline(admin.TabularInline):
 
 @admin.register(RevisionRequest)
 class RevisionRequestAdmin(ModelAdmin):
+    list_select_related = ('order_item__order', 'requested_by__user')
     list_display = ('id_short', 'order_item', 'requested_by', 'status_badge', 'annotation_count', 'created_at')
     list_filter = ('status', 'created_at')
     list_filter_submit = True

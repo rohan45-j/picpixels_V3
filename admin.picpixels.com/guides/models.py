@@ -7,7 +7,7 @@ class GuideCategory(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=250, unique=True, blank=True)
     description = models.TextField(blank=True, default='', help_text='Brief description of this category (for internal reference).')
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
     sort_order = models.IntegerField(default=0)
 
     class Meta:
@@ -99,8 +99,8 @@ class Guide(models.Model):
     )
 
     # ── Publish Settings ──
-    is_published = models.BooleanField(default=False, help_text='Make this guide visible on the website.')
-    featured = models.BooleanField(default=False, help_text='Show this guide in the featured section.')
+    is_published = models.BooleanField(default=False, db_index=True, help_text='Make this guide visible on the website.')
+    featured = models.BooleanField(default=False, db_index=True, help_text='Show this guide in the featured section.')
     author = models.CharField(
         max_length=300, blank=True, default='',
         help_text='Name of the author or content creator.',

@@ -22,8 +22,8 @@ class Order(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     profile = models.ForeignKey(UserProfile, on_delete=models.RESTRICT, related_name='orders')
     workflow_template = models.ForeignKey(WorkflowTemplate, on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
-    order_type = models.CharField(max_length=30, choices=ORDER_TYPE_CHOICES, default='image_editing')
-    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='draft')
+    order_type = models.CharField(max_length=30, choices=ORDER_TYPE_CHOICES, default='image_editing', db_index=True)
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='draft', db_index=True)
     turnaround_speed_hours = models.IntegerField(default=48) # 3, 24, 48
     unit_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     total_images = models.IntegerField(default=0)
@@ -51,7 +51,7 @@ class OrderItem(models.Model):
     filename = models.CharField(max_length=255)
     original_url = models.TextField()
     edited_url = models.TextField(blank=True, null=True)
-    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='uploaded')
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='uploaded', db_index=True)
     file_size = models.IntegerField() # in bytes
     width = models.IntegerField(blank=True, null=True)
     height = models.IntegerField(blank=True, null=True)

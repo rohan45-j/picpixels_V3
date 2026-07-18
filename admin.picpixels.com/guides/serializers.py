@@ -71,7 +71,7 @@ class GuideDetailSerializer(GuideListSerializer):
         return None
 
     def _ordered_qs(self):
-        return Guide.objects.filter(
+        return Guide.objects.select_related('category').filter(
             is_published=True, category__is_active=True
         ).order_by('sort_order', '-created_at')
 
@@ -96,7 +96,7 @@ class GuideDetailSerializer(GuideListSerializer):
     def get_related_guides(self, obj):
         if not obj.category:
             return []
-        related = Guide.objects.filter(
+        related = Guide.objects.select_related('category').filter(
             category=obj.category, is_published=True
         ).exclude(pk=obj.pk)[:3]
         return GuideListSerializer(related, many=True, context=self.context).data

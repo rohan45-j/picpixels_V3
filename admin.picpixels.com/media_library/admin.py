@@ -8,6 +8,7 @@ from .models import MediaFile
 
 @admin.register(MediaFile)
 class MediaFileAdmin(ModelAdmin):
+    list_select_related = ('uploaded_by',)
     list_display = ('title', 'file_type_badge', 'file_size_display', 'thumbnail_preview', 'uploaded_by', 'created_at')
     list_filter = ('file_type', 'created_at')
     list_filter_submit = True

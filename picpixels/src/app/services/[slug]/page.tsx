@@ -7,22 +7,22 @@ import { CheckCircle } from 'lucide-react';
 import Reveal from '../../../shared/components/Reveal';
 import Header from '../../../layouts/Header';
 import Footer from '../../../layouts/Footer';
-import ServiceGallery from '../../../shared/components/gallery/ServiceGallery';
 import HeroCarousel from '../../../shared/components/gallery/HeroCarousel';
-import FAQAccordion from '../../../shared/components/FAQAccordion';
 import SectionHeading from '../../../shared/components/SectionHeading';
 import '../../../shared/components/gallery/gallery.css';
 import styles from '../../../shared/styles/modules/services.module.css';
 import faqStyles from '../../../shared/styles/modules/faq-accordion.module.css';
-import HighEndQualitySection from '../../../shared/components/HighEndQualitySection';
-import ServiceEEATSection from '../../../shared/components/services/ServiceEEATSection';
-import TrustBar from '../../../shared/components/TrustBar';
-import ServiceWhyNeedSection from '../../../shared/components/services/ServiceWhyNeedSection';
-import ServiceProcessSection from '../../../shared/components/services/ServiceProcessSection';
-import ServiceWhyChooseSection from '../../../shared/components/services/ServiceWhyChooseSection';
-import TechExpertiseSection from '../../../shared/components/TechExpertiseSection';
-import ServicePricingSection from '../../../shared/components/services/ServicePricingSection';
 import dynamic from 'next/dynamic';
+const ServiceGallery = dynamic(() => import('../../../shared/components/gallery/ServiceGallery'), { ssr: false });
+const FAQAccordion = dynamic(() => import('../../../shared/components/FAQAccordion'), { ssr: false });
+const HighEndQualitySection = dynamic(() => import('../../../shared/components/HighEndQualitySection'), { ssr: false });
+const ServiceEEATSection = dynamic(() => import('../../../shared/components/services/ServiceEEATSection'), { ssr: false });
+const TrustBar = dynamic(() => import('../../../shared/components/TrustBar'), { ssr: false });
+const ServiceWhyNeedSection = dynamic(() => import('../../../shared/components/services/ServiceWhyNeedSection'), { ssr: false });
+const ServiceProcessSection = dynamic(() => import('../../../shared/components/services/ServiceProcessSection'), { ssr: false });
+const ServiceWhyChooseSection = dynamic(() => import('../../../shared/components/services/ServiceWhyChooseSection'), { ssr: false });
+const TechExpertiseSection = dynamic(() => import('../../../shared/components/TechExpertiseSection'), { ssr: false });
+const ServicePricingSection = dynamic(() => import('../../../shared/components/services/ServicePricingSection'), { ssr: false });
 const TestimonialCarousel = dynamic(() => import('../../../shared/components/TestimonialCarousel'), { 
   ssr: false,
   loading: () => <div style={{ height: 400 }} />

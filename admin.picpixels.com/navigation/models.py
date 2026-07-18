@@ -15,7 +15,7 @@ class NavigationItem(models.Model):
         related_name='children',
     )
     order = models.PositiveIntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
     opens_in_new_tab = models.BooleanField(default=False)
     icon = models.CharField(max_length=50, blank=True, help_text='Material icon name')
     css_class = models.CharField(max_length=100, blank=True)

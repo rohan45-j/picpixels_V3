@@ -131,7 +131,7 @@ class CaseStudyDetailSerializer(CaseStudyListSerializer):
         ]
 
     def _ordered_qs(self):
-        return CaseStudy.objects.filter(
+        return CaseStudy.objects.select_related('category').filter(
             is_published=True, category__is_active=True
         ).order_by('sort_order', '-created_at')
 
@@ -162,7 +162,7 @@ class CaseStudyDetailSerializer(CaseStudyListSerializer):
     def get_related_case_studies(self, obj):
         if not obj.category:
             return []
-        related = CaseStudy.objects.filter(
+        related = CaseStudy.objects.select_related('category').filter(
             category=obj.category, is_published=True
         ).exclude(pk=obj.pk)[:3]
         return CaseStudyListSerializer(related, many=True, context=self.context).data

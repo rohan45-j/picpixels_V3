@@ -3,11 +3,7 @@ const nextConfig = {
   compress: true,
 
  
-experimental: {
-  cpus: 1,
-  workerThreads: false,
-  webpackBuildWorker: false,
-},
+
  
 
   

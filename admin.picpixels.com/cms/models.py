@@ -78,8 +78,8 @@ class Service(models.Model):
     show_on_homepage = models.BooleanField(default=True, help_text='Show in homepage popular services section')
     show_in_footer = models.BooleanField(default=True, help_text='Show in footer services links')
     show_in_related = models.BooleanField(default=True, help_text='Show in related services section')
-    is_active = models.BooleanField(default=True, help_text='Show on website')
-    is_featured = models.BooleanField(default=False, help_text='Featured service (highlighted on homepage)')
+    is_active = models.BooleanField(default=True, db_index=True, help_text='Show on website')
+    is_featured = models.BooleanField(default=False, db_index=True, help_text='Featured service (highlighted on homepage)')
     content_blocks = models.JSONField(default=list, blank=True, help_text='Modular content blocks array. Supported types: heading, text, image, image_with_text, gallery, code, callout, faq, list, table, step, divider')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -423,10 +423,10 @@ class BlogPost(models.Model):
         null=True, blank=True, related_name='posts',
         help_text='Link to a registered author profile (provides avatar, bio, designation, social links)',
     )
-    is_featured = models.BooleanField(default=False, help_text='Show in featured section')
+    is_featured = models.BooleanField(default=False, db_index=True, help_text='Show in featured section')
     is_trending = models.BooleanField(default=False, help_text='Mark as trending/hot topic')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
-    is_published = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft', db_index=True)
+    is_published = models.BooleanField(default=False, db_index=True)
     published_at = models.DateTimeField(null=True, blank=True)
     scheduled_at = models.DateTimeField(null=True, blank=True, help_text='Schedule future publication')
     reading_time = models.PositiveIntegerField(default=0, help_text='Estimated reading time in minutes')
@@ -533,7 +533,7 @@ class FAQ(models.Model):
     )
     is_contact_faq = models.BooleanField(default=False)
     order = models.PositiveIntegerField(default=0)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
 
     class Meta:
         ordering = ['order']
@@ -548,7 +548,7 @@ class ContactInquiry(models.Model):
     subject = models.CharField(max_length=200)
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=False)
+    is_read = models.BooleanField(default=False, db_index=True)
 
     class Meta:
         ordering = ['-created_at']

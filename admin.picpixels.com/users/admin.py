@@ -47,6 +47,7 @@ class SubscriptionPlanAdmin(ModelAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(ModelAdmin):
+    list_select_related = ('user',)
     list_display = ('user', 'company_name', 'role_badge', 'credits', 'subscription_status', 'created_at')
     list_filter = ('role', 'created_at')
     list_filter_submit = True
@@ -84,6 +85,7 @@ class UserProfileAdmin(ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(ModelAdmin):
+    list_select_related = ('profile__user', 'plan')
     list_display = ('profile', 'plan', 'status_badge', 'current_period_start', 'current_period_end')
     list_filter = ('status', 'current_period_end')
     list_filter_submit = True
@@ -110,6 +112,7 @@ class SubscriptionAdmin(ModelAdmin):
 
 @admin.register(Transaction)
 class TransactionAdmin(ModelAdmin):
+    list_select_related = ('profile__user',)
     list_display = ('profile', 'amount_display', 'type_badge', 'status_badge', 'description', 'created_at')
     list_filter = ('type', 'status', 'created_at')
     list_filter_submit = True

@@ -13,7 +13,7 @@ class RevisionRequest(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE, related_name='revisions')
     requested_by = models.ForeignKey(UserProfile, on_delete=models.RESTRICT, related_name='requested_revisions')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending', db_index=True)
     feedback_text = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

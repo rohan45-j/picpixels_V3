@@ -115,25 +115,23 @@ class PortfolioSerializer(serializers.ModelSerializer):
         return None
 
     def get_prev_project(self, obj):
-        qs = Portfolio.objects.filter(is_published=True, category__is_active=True).order_by('sort_order', '-created_at')
-        items = list(qs.values('id', 'title', 'slug'))
-        try:
-            ids = [x['id'] for x in items]
-            idx = ids.index(obj.id)
-            if idx > 0:
-                return {'title': items[idx - 1]['title'], 'slug': items[idx - 1]['slug']}
-        except ValueError:
-            pass
+        qs = Portfolio.objects.select_related('category').filter(
+            is_published=True, category__is_active=True
+        ).order_by('sort_order', '-created_at')
+        prev = qs.filter(sort_order__lt=obj.sort_order).last()
+        if not prev:
+            prev = qs.filter(created_at__lt=obj.created_at).last()
+        if prev and prev.pk != obj.pk:
+            return {'title': prev.title, 'slug': prev.slug}
         return None
 
     def get_next_project(self, obj):
-        qs = Portfolio.objects.filter(is_published=True, category__is_active=True).order_by('sort_order', '-created_at')
-        items = list(qs.values('id', 'title', 'slug'))
-        try:
-            ids = [x['id'] for x in items]
-            idx = ids.index(obj.id)
-            if idx < len(items) - 1:
-                return {'title': items[idx + 1]['title'], 'slug': items[idx + 1]['slug']}
-        except ValueError:
-            pass
+        qs = Portfolio.objects.select_related('category').filter(
+            is_published=True, category__is_active=True
+        ).order_by('sort_order', '-created_at')
+        next_item = qs.filter(sort_order__gt=obj.sort_order).first()
+        if not next_item:
+            next_item = qs.filter(created_at__gt=obj.created_at).first()
+        if next_item and next_item.pk != obj.pk:
+            return {'title': next_item.title, 'slug': next_item.slug}
         return None

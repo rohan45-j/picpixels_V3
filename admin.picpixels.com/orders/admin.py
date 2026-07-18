@@ -14,6 +14,7 @@ class OrderItemInline(admin.TabularInline):
 
 @admin.register(Order)
 class OrderAdmin(ModelAdmin):
+    list_select_related = ('profile__user',)
     list_display = ('id_short', 'profile', 'order_type', 'status_badge', 'total_price', 'turnaround_speed_hours', 'created_at')
     list_filter = ('status', 'order_type', 'created_at')
     list_filter_submit = True
@@ -55,6 +56,7 @@ class OrderAdmin(ModelAdmin):
 
 @admin.register(OrderItem)
 class OrderItemAdmin(ModelAdmin):
+    list_select_related = ('order',)
     list_display = ('filename', 'order_link', 'status_badge', 'file_size', 'created_at')
     list_filter = ('status', 'created_at')
     list_filter_submit = True

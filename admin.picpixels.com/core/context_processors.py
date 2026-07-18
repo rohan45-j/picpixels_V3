@@ -1,6 +1,7 @@
 from django.db.models import Count, Sum
 from datetime import timedelta
 from django.utils import timezone
+from django.core.cache import cache
 from site_settings.models import SiteSetting
 
 
@@ -23,9 +24,17 @@ def navigation_items(request):
         return {'nav_items': []}
 
 
+_DASHBOARD_CACHE_KEY = 'admin_dashboard_stats'
+_DASHBOARD_CACHE_TTL = 300
+
+
 def admin_dashboard_stats(request):
     if not request.path.startswith('/admin/'):
         return {}
+
+    stats = cache.get(_DASHBOARD_CACHE_KEY)
+    if stats is not None:
+        return {'dashboard_stats': stats}
 
     from cms.models import (
         Page, Banner, Service, Testimonial, BlogPost,
@@ -42,8 +51,6 @@ def admin_dashboard_stats(request):
     now = timezone.now()
     month_ago = now - timedelta(days=30)
     week_ago = now - timedelta(days=7)
-    six_months_ago = now - timedelta(days=180)
-    year_ago = now - timedelta(days=365)
 
     orders = Order.objects.all()
     contacts = ContactInquiry.objects.all()
@@ -63,8 +70,7 @@ def admin_dashboard_stats(request):
             months.append({'month': start.strftime('%b'), 'count': count})
         return months
 
-    return {
-        'dashboard_stats': {
+    stats = {
             # Core content
             'total_pages': Page.objects.count(),
             'total_banners': Banner.objects.count(),
@@ -128,4 +134,6 @@ def admin_dashboard_stats(request):
             'total_workflows': WorkflowTemplate.objects.count(),
             'total_revisions': RevisionRequest.objects.count(),
         }
-    }
+
+    cache.set(_DASHBOARD_CACHE_KEY, stats, _DASHBOARD_CACHE_TTL)
+    return {'dashboard_stats': stats}

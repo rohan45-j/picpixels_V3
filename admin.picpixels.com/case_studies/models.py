@@ -5,7 +5,7 @@ from django.utils.text import slugify
 class CaseStudyCategory(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=250, unique=True, blank=True)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
     sort_order = models.IntegerField(default=0)
 
     class Meta:
@@ -89,10 +89,10 @@ class CaseStudy(models.Model):
     statistics = models.JSONField(blank=True, null=True, default=list, help_text='Array of {value, label, suffix} objects')
 
     # Publishing
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft', db_index=True)
     publish_date = models.DateField(blank=True, null=True)
-    is_published = models.BooleanField(default=False)
-    featured = models.BooleanField(default=False)
+    is_published = models.BooleanField(default=False, db_index=True)
+    featured = models.BooleanField(default=False, db_index=True)
     sort_order = models.IntegerField(default=0)
 
     # SEO

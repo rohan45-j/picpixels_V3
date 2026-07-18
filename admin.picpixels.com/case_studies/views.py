@@ -30,7 +30,7 @@ class CaseStudyViewSet(viewsets.ReadOnlyModelViewSet):
         return CaseStudyListSerializer
 
     def get_queryset(self):
-        qs = CaseStudy.objects.all()
+        qs = CaseStudy.objects.select_related('category').prefetch_related('tags').all()
         if not settings.DEBUG:
             qs = qs.filter(is_published=True, category__is_active=True)
         category = self.request.query_params.get('category')
