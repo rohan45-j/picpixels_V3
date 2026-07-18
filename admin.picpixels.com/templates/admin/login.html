@@ -12,6 +12,10 @@
   <link rel="stylesheet" href="{% static 'admin/css/login.css' %}">
   <link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">
   <link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">
+  {% if site_settings and site_settings.favicon %}
+  <link rel="icon" href="{{ site_settings.favicon.url }}">
+  <link rel="apple-touch-icon" href="{{ site_settings.favicon.url }}">
+  {% endif %}
 </head>
 <body>
   <div id="login-container">

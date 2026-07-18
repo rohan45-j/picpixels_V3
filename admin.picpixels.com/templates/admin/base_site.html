@@ -19,6 +19,22 @@
     <script src="{% static 'admin/js/toggle.js' %}" defer></script>
     <script src="{% static 'admin/js/sidebar.js' %}" defer></script>
     <script src="{% static 'admin/js/notifications.js' %}" defer></script>
+    {% if site_settings and site_settings.favicon %}
+    <script>
+        (function() {
+            var links = document.querySelectorAll('link[rel="icon"], link[rel="apple-touch-icon"]');
+            links.forEach(function(el) { el.remove(); });
+            var link = document.createElement('link');
+            link.rel = 'icon';
+            link.href = '{{ site_settings.favicon.url }}';
+            document.head.appendChild(link);
+            var apple = document.createElement('link');
+            apple.rel = 'apple-touch-icon';
+            apple.href = '{{ site_settings.favicon.url }}';
+            document.head.appendChild(apple);
+        })();
+    </script>
+    {% endif %}
 {% endblock %}
 
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
