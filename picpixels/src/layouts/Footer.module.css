@@ -194,3 +194,19 @@
 .copy {
   color: var(--color-muted);
 }
+
+.developedBy {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.developedBy a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.developedBy a:hover {
+  text-decoration: underline;
+}

@@ -129,6 +129,7 @@ export default function Footer() {
           <p className={styles.copy}>
             {siteSettings?.copyright_text || `© ${new Date().getFullYear()} ${siteSettings?.site_name || 'PicPicxels'}. All Rights Reserved.`}
           </p>
+          <p className={styles.developedBy}>Developed by <a href="https://arntech.netlify.app/" target="_blank" rel="noopener noreferrer">ARN Tech</a></p>
         </div>
       </div>
     </footer>
