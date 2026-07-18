@@ -1,5 +1,6 @@
 'use client';
 import { ServiceWhyChooseCard, mediaUrl } from '../../../services/public-api';
+import SectionHeading from '../SectionHeading';
 import Reveal from '../Reveal';
 import wcuStyles from '../HomeWhyChooseUsNew.module.css';
 
@@ -18,9 +19,7 @@ export default function ServiceWhyChooseSection({ cards, title }: Props) {
       <div className={wcuStyles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={wcuStyles.header}>
-            <span className={wcuStyles.tag}>Why Choose Us</span>
-            <h2 className={wcuStyles.title}>{title || 'Why Choose Us'}</h2>
-            <div className={wcuStyles.accentLine} />
+            <SectionHeading tag="Why Choose Us" text={title || 'Why Choose Us'} />
           </div>
         </Reveal>
 

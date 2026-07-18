@@ -749,6 +749,13 @@
   overflow: hidden;
 }
 
+@media (max-width: 640px) {
+  .testimonialSection {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
 
 
 .freeTrialSection {

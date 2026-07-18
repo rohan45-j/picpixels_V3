@@ -10,18 +10,28 @@
   padding: 0 2rem;
 }
 
+.mainSubtitle {
+  display: block;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
 /* ─── Top Row: Text + Dropdown ─── */
 .topRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3rem;
   margin-bottom: 4rem;
+  align-items: start;
 }
 
 .textGroup {
-  flex: 1;
-  max-width: 680px;
+  text-align: left;
 }
 
 .subtitle {
@@ -65,9 +75,7 @@
 /* ─── Highlighted Unit Range Dropdown ─── */
 .dropdownWrap {
   position: relative;
-  flex-shrink: 0;
-  min-width: 220px;
-  margin-top: 1.8rem;
+  min-width: 240px;
 }
 
 .dropdownLabel {
@@ -417,15 +425,14 @@
   }
 
   .topRow {
-    flex-direction: column;
-    gap: 0.5rem;
+    grid-template-columns: 1fr;
+    gap: 2rem;
     margin-bottom: 2.5rem;
   }
 
   .dropdownWrap {
     width: 100%;
     min-width: unset;
-    margin-top: 0;
   }
 
   .dropdownLabel {

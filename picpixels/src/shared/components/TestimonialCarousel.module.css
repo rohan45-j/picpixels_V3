@@ -223,20 +223,24 @@
 
 @media (max-width: 968px) {
   .wrapper { padding: 0 2.5rem; }
+  .slide { padding: 0.6rem; }
   .cardInner { padding: 28px 24px; }
+  .avatarContainer { width: 80px; height: 80px; }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .wrapper { padding: 0 0.5rem; }
-  .cardInner { padding: 20px 18px; }
-  .card, .cardInner { border-radius: 16px; }
-  .avatarContainer { width: 70px; height: 70px; }
-  .avatarFallback svg { width: 28px; height: 28px; }
-  .headerRow { gap: 12px; margin-bottom: 12px; }
-  .text { font-size: 15px; }
-  .name { font-size: 15px; }
+  .slide { padding: 0.5rem; }
+  .cardInner { padding: 20px 16px; }
+  .card, .cardInner { border-radius: 14px; }
+  .avatarContainer { width: 60px; height: 60px; }
+  .avatarFallback svg { width: 24px; height: 24px; }
+  .headerRow { gap: 10px; margin-bottom: 10px; }
+  .text { font-size: 14px; }
+  .name { font-size: 14px; }
   .role { font-size: 12px; }
-  .stars { margin-top: 12px; }
-  .stars svg { width: 18px; height: 18px; }
+  .stars { margin-top: 10px; }
+  .stars svg { width: 16px; height: 16px; }
   .arrow { display: none; }
+  .dots { margin-top: 1.5rem; }
 }

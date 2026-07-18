@@ -16,42 +16,6 @@
   margin-bottom: 4rem;
 }
 
-.tag {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: #FF8A50;
-  text-transform: uppercase;
-  margin-bottom: 0.75rem;
-}
-
-.title {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  color: #111827;
-  margin-bottom: 0.75rem;
-}
-
-.accentLine {
-  width: 60px;
-  height: 4px;
-  background: #FF8A50;
-  border-radius: 2px;
-  margin: 0 auto 1rem;
-}
-
-.subtitle {
-  font-size: 1.05rem;
-  color: var(--color-muted);
-  line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

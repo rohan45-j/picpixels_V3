@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import SectionHeading from './SectionHeading';
 import Reveal from './Reveal';
 import styles from './HomeWhyChooseUsNew.module.css';
 import { mediaUrl } from '../../services/public-api';
@@ -24,10 +25,7 @@ export default function HomeWhyChooseUsNew({ data }: { data: WhyChooseFeatureSec
       <div className={styles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={styles.header}>
-            <span className={styles.tag}>Why Choose Us</span>
-            <h2 className={styles.title}>{title}</h2>
-            <div className={styles.accentLine} />
-            {data.subtitle && <p className={styles.subtitle}>{data.subtitle}</p>}
+            <SectionHeading tag="Why Choose Us" text={title} subtitle={data.subtitle || undefined} />
           </div>
         </Reveal>
 

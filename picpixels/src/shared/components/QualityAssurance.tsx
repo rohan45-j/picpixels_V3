@@ -1,6 +1,7 @@
 'use client';
 
 import { ShieldCheck, Layers, Palette, CopyCheck, Shield, Headphones } from 'lucide-react';
+import SectionHeading from './SectionHeading';
 import Reveal from './Reveal';
 import styles from './QualityAssurance.module.css';
 
@@ -43,13 +44,11 @@ export default function QualityAssurance() {
       <div className={styles.container}>
         <Reveal variant="fadeUp">
           <div className={styles.header}>
-            <span className={styles.tag}>Quality Assurance</span>
-            <h2 className={styles.title}>Quality Assurance</h2>
-            <div className={styles.accentLine} />
-            <p className={styles.subtitle}>
-              Our quality assurance process ensures every image is carefully checked before delivery,
-              maintaining consistency, accuracy, and professional standards.
-            </p>
+            <SectionHeading
+              tag="Quality Assurance"
+              text="Quality Assurance"
+              subtitle="Our quality assurance process ensures every image is carefully checked before delivery, maintaining consistency, accuracy, and professional standards."
+            />
           </div>
         </Reveal>
 

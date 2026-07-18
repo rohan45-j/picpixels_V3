@@ -225,7 +225,7 @@ class HeroSection(models.Model):
 
     class Meta:
         verbose_name = 'Hero Section'
-        verbose_name_plural = 'Hero Section'
+        verbose_name_plural = 'Hero Sections'
 
     def __str__(self):
         return 'Landing Page Hero Section'
@@ -685,8 +685,8 @@ class PricingConfigSection(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = 'Pricing Configurator Section'
-        verbose_name_plural = 'Pricing Configurator Section'
+        verbose_name = 'Pricing Configurator'
+        verbose_name_plural = 'Pricing Configurators'
 
     def __str__(self):
         return f'Pricing Configurator ({self.pk})'
@@ -768,8 +768,8 @@ class PricingConfigCardPrice(models.Model):
     old_price = models.CharField(max_length=50, blank=True, help_text='Strikethrough price, e.g. "$180"')
 
     class Meta:
-        verbose_name = 'Card Price by Unit Range'
-        verbose_name_plural = 'Card Prices by Unit Range'
+        verbose_name = 'Pricing Card Price'
+        verbose_name_plural = 'Pricing Card Prices'
         unique_together = ('card', 'unit_range')
         ordering = ('unit_range__order',)
 
@@ -815,8 +815,8 @@ class PricingPromotionSection(models.Model):
 
     class Meta:
         ordering = ['display_order', '-created_at']
-        verbose_name = 'Pricing Promotion Section'
-        verbose_name_plural = 'Pricing Promotion Sections'
+        verbose_name = 'Promotion Campaign'
+        verbose_name_plural = 'Promotion Campaigns'
 
     def __str__(self):
         return self.title or self.badge_text or f'Promotion #{self.pk}'
@@ -905,8 +905,8 @@ class FreeTrial(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Free Trial Submission'
-        verbose_name_plural = 'Free Trial Submissions'
+        verbose_name = 'Trial Request'
+        verbose_name_plural = 'Trial Requests'
         ordering = ('-created_at',)
 
     def __str__(self):
@@ -937,8 +937,8 @@ class WhyChooseSection(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = 'Why Choose Us Section'
-        verbose_name_plural = 'Why Choose Us Section'
+        verbose_name = 'Why Choose Section'
+        verbose_name_plural = 'Why Choose Sections'
 
     def __str__(self):
         return self.title
@@ -976,7 +976,7 @@ class WhyChooseFeatureSection(models.Model):
 
     class Meta:
         verbose_name = 'Why Choose Feature Section'
-        verbose_name_plural = 'Why Choose Feature Section'
+        verbose_name_plural = 'Why Choose Feature Sections'
 
     def __str__(self):
         return self.title

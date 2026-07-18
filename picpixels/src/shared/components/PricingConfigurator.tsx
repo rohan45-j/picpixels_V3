@@ -77,10 +77,12 @@ export default function PricingConfigurator() {
     <section className={styles.section}>
       <div className={styles.inner}>
         <Reveal variant="fadeUp" once={false} className={dropdownOpen ? styles.dropdownRevealOpen : ''}>
+          <span className={styles.mainSubtitle}>{data.subtitle}</span>
+        </Reveal>
+        <SectionHeading text={data.title} />
+        <Reveal variant="fadeUp" once={false} className={dropdownOpen ? styles.dropdownRevealOpen : ''}>
         <div className={styles.topRow}>
           <div className={styles.textGroup}>
-            <span className={styles.subtitle}>{data.subtitle}</span>
-            <SectionHeading text={data.title} />
             <p className={styles.description}>{data.description}</p>
           </div>
           <div className={styles.dropdownWrap}>

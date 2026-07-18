@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import SectionHeading from './SectionHeading';
 import Reveal from './Reveal';
 import { mediaUrl } from '../../services/public-api';
 import type { CaseStudyItem } from '../../services/public-api';
@@ -47,11 +48,11 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
       <div className={styles.container}>
         <Reveal variant="fadeUp" duration={700}>
           <div className={styles.header}>
-            <span className={styles.label}>Featured Case Study</span>
-            <h2 id="featured-case-study-heading" className={styles.heading}>Case Study</h2>
-            <p className={styles.subtitle}>
-              Real results from real clients — see how we transform challenges into success stories
-            </p>
+            <SectionHeading
+              tag="Featured Case Study"
+              text="Case Study"
+              subtitle="Real results from real clients — see how we transform challenges into success stories"
+            />
           </div>
         </Reveal>
 

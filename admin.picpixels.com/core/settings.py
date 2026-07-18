@@ -343,8 +343,7 @@ CKEDITOR_CONFIGS = {
 UNFOLD = {
     "SITE_TITLE": "PicPicxels Admin",
     "SITE_HEADER": "PicPicxels",
-    "SITE_SUBHEADER": "Enterprise Administration Panel",
-    # "SITE_SYMBOL": "auto_awesome",
+    "SITE_SUBHEADER": "Content Management System",
     "SITE_FAVICONS": [
         {
             "rel": "icon",
@@ -360,10 +359,6 @@ UNFOLD = {
     "ENVIRONMENT_TITLE_PREFIX": "show",
     "SHOW_BACK_BUTTON": True,
     "SHOW_LANGUAGES": False,
-    # "SITE_ICON": {
-    #     "light": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>",
-    #     "dark": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>",
-    # },
     "STYLES": [
         "/static/admin/css/custom.css",
         "/static/admin/css/custom_admin.css",
@@ -381,17 +376,17 @@ UNFOLD = {
     },
     "COLORS": {
         "primary": {
-            "50": "238 242 255",
-            "100": "224 231 255",
-            "200": "199 210 254",
-            "300": "165 180 252",
-            "400": "129 140 248",
-            "500": "99 102 241",
-            "600": "79 70 229",
-            "700": "67 56 202",
-            "800": "55 48 163",
-            "900": "49 46 129",
-            "950": "30 27 75",
+            "50": "255 247 237",
+            "100": "255 237 213",
+            "200": "254 215 170",
+            "300": "253 186 116",
+            "400": "251 146 60",
+            "500": "255 138 80",
+            "600": "234 88 12",
+            "700": "194 65 12",
+            "800": "154 52 18",
+            "900": "124 45 18",
+            "950": "67 20 7",
         },
         "font": {
             "subtle-light": "148 163 184",
@@ -423,43 +418,68 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": False,
                 "items": [
-                    {"title": "Analytics Overview", "icon": "dashboard", "link": "/admin/"},
+                    {"title": "Overview", "icon": "dashboard", "link": "/admin/"},
                 ],
             },
             {
-                "title": "CMS",
-                "icon": "dns",
+                "title": "Content",
+                "icon": "article",
                 "separator": True,
-                "collapsible": False,
+                "collapsible": True,
                 "items": [
-                    {"title": "Pages",                    "icon": "description",      "link": "/admin/cms/page/"},
-                    {"title": "Sections",                 "icon": "layers",           "link": "/admin/cms/section/"},
-                    {"title": "Banners",                  "icon": "view_carousel",    "link": "/admin/cms/banner/"},
-                    {"title": "Hero Section",             "icon": "movie_creation",   "link": "/admin/cms/herosection/"},
-                    {"title": "Hero Slides",              "icon": "slideshow",        "link": "/admin/cms/heroslide/"},
-                    {"title": "Hero Stats",               "icon": "leaderboard",      "link": "/admin/cms/herostat/"},
-                    {"title": "Testimonials",             "icon": "format_quote",     "link": "/admin/cms/testimonial/"},
-                    {"title": "Services",                 "icon": "handyman",         "link": "/admin/cms/service/"},
-                    {"title": "Service Gallery Images",   "icon": "photo_library",    "link": "/admin/cms/servicegalleryimage/"},
-                    {"title": "Service Content Sections", "icon": "content_copy",     "link": "/admin/cms/servicecontentsection/"},
-                    {"title": "Service Hero Images",      "icon": "image",            "link": "/admin/cms/serviceheroimage/"},
-                    {"title": "Pricing Plans",            "icon": "sell",             "link": "/admin/cms/pricingplan/"},
-                    {"title": "Pricing Config Sections",  "icon": "tune",             "link": "/admin/cms/pricingconfigsection/"},
-                    {"title": "Pricing Dropdown Options", "icon": "arrow_drop_down_circle","link": "/admin/cms/pricingconfigdropdownoption/"},
-                    {"title": "Pricing Cards",            "icon": "credit_card",      "link": "/admin/cms/pricingconfigcard/"},
-                    {"title": "Pricing Card Prices",      "icon": "attach_money",     "link": "/admin/cms/pricingconfigcardprice/"},
-                    {"title": "Service Pricing Unit Ranges","icon": "linear_scale",   "link": "/admin/cms/serviceunitrange/"},
-                    {"title": "Service Pricing Cards",     "icon": "credit_score",    "link": "/admin/cms/servicepricingcard/"},
-                    {"title": "Service Pricing Card Prices","icon": "payments",       "link": "/admin/cms/servicepricingcardprice/"},
-                    {"title": "Pricing Promotion Sections","icon": "celebration",     "link": "/admin/cms/pricingpromotionsection/"},
-                    {"title": "FAQ",                      "icon": "quiz",             "link": "/admin/cms/faq/"},
-                    {"title": "FAQ Categories",           "icon": "bookmark",         "link": "/admin/cms/faqcategory/"},
-                    {"title": "Team Members",             "icon": "group",            "link": "/admin/cms/teammember/"},
-                    {"title": "Brand Logos",              "icon": "photo",             "link": "/admin/cms/brandlogo/"},
-                    {"title": "Technologies",             "icon": "biotech",          "link": "/admin/cms/technology/"},
-                    {"title": "Contact Inquiries",        "icon": "mail",             "link": "/admin/cms/contactinquiry/"},
-                    {"title": "Free Trial Requests",      "icon": "rocket_launch",    "link": "/admin/cms/freetrial/"},
-                    {"title": "Why Choose Feature Section", "icon": "checklist",       "link": "/admin/cms/whychoosefeaturesection/"},
+                    {"title": "Pages",              "icon": "description",    "link": "/admin/cms/page/"},
+                    {"title": "Banners",             "icon": "view_carousel", "link": "/admin/cms/banner/"},
+                    {"title": "Services",            "icon": "handyman",      "link": "/admin/cms/service/"},
+                    {"title": "Sections",            "icon": "layers",        "link": "/admin/cms/section/"},
+                    {"title": "Testimonials",        "icon": "format_quote",  "link": "/admin/cms/testimonial/"},
+                    {"title": "Team Members",        "icon": "group",         "link": "/admin/cms/teammember/"},
+                    {"title": "Brand Logos",         "icon": "photo",         "link": "/admin/cms/brandlogo/"},
+                    {"title": "Technologies",        "icon": "biotech",       "link": "/admin/cms/technology/"},
+                ],
+            },
+            {
+                "title": "Hero",
+                "icon": "movie_creation",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Hero Section",        "icon": "movie_creation", "link": "/admin/cms/herosection/"},
+                    {"title": "Hero Slides",         "icon": "slideshow",      "link": "/admin/cms/heroslide/"},
+                    {"title": "Hero Stats",          "icon": "leaderboard",    "link": "/admin/cms/herostat/"},
+                ],
+            },
+            {
+                "title": "Pricing",
+                "icon": "sell",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Pricing Plans",            "icon": "sell",          "link": "/admin/cms/pricingplan/"},
+                    {"title": "Pricing Config Sections",  "icon": "tune",          "link": "/admin/cms/pricingconfigsection/"},
+                    {"title": "Pricing Cards",             "icon": "credit_card",   "link": "/admin/cms/pricingconfigcard/"},
+                    {"title": "Promotion Sections",        "icon": "celebration",   "link": "/admin/cms/pricingpromotionsection/"},
+                    {"title": "Service Pricing Cards",     "icon": "credit_score",  "link": "/admin/cms/servicepricingcard/"},
+                    {"title": "Service Unit Ranges",       "icon": "linear_scale",  "link": "/admin/cms/serviceunitrange/"},
+                ],
+            },
+            {
+                "title": "FAQ",
+                "icon": "quiz",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "FAQs",         "icon": "quiz",     "link": "/admin/cms/faq/"},
+                    {"title": "FAQ Categories","icon": "bookmark","link": "/admin/cms/faqcategory/"},
+                ],
+            },
+            {
+                "title": "Inquiries",
+                "icon": "mail",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Contact Inquiries",   "icon": "mail",          "link": "/admin/cms/contactinquiry/"},
+                    {"title": "Free Trial Requests", "icon": "rocket_launch", "link": "/admin/cms/freetrial/"},
                 ],
             },
             {
@@ -468,12 +488,10 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Blog Posts",               "icon": "newspaper",        "link": "/admin/cms/blogpost/"},
-                    {"title": "Blog Categories",          "icon": "category",         "link": "/admin/cms/blogcategory/"},
-                    {"title": "Blog Tags",                "icon": "label",            "link": "/admin/cms/blogtag/"},
-                    {"title": "Authors",                  "icon": "edit_note",        "link": "/admin/cms/author/"},
-                    {"title": "Blog Content Sections",    "icon": "article",          "link": "/admin/cms/blogcontentsection/"},
-                    {"title": "Blog Document Blocks",     "icon": "description",      "link": "/admin/cms/blogdocumentblock/"},
+                    {"title": "Blog Posts",       "icon": "newspaper",  "link": "/admin/cms/blogpost/"},
+                    {"title": "Categories",        "icon": "category",  "link": "/admin/cms/blogcategory/"},
+                    {"title": "Tags",              "icon": "label",     "link": "/admin/cms/blogtag/"},
+                    {"title": "Authors",           "icon": "edit_note", "link": "/admin/cms/author/"},
                 ],
             },
             {
@@ -495,8 +513,8 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Case Studies",    "icon": "description",  "link": "/admin/case_studies/casestudy/"},
-                    {"title": "Categories",       "icon": "category",    "link": "/admin/case_studies/casestudycategory/"},
+                    {"title": "All Case Studies", "icon": "description","link": "/admin/case_studies/casestudy/"},
+                    {"title": "Categories",        "icon": "category",  "link": "/admin/case_studies/casestudycategory/"},
                 ],
             },
             {
@@ -505,8 +523,8 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Guides",          "icon": "book",         "link": "/admin/guides/guide/"},
-                    {"title": "Categories",       "icon": "category",    "link": "/admin/guides/guidecategory/"},
+                    {"title": "All Guides",    "icon": "book",     "link": "/admin/guides/guide/"},
+                    {"title": "Categories",     "icon": "category", "link": "/admin/guides/guidecategory/"},
                 ],
             },
             {
@@ -515,10 +533,9 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Orders",            "icon": "receipt_long", "link": "/admin/orders/order/"},
-                    {"title": "Order Items",       "icon": "inventory_2",  "link": "/admin/orders/orderitem/"},
-                    {"title": "Revisions",         "icon": "rate_review",  "link": "/admin/revisions/revisionrequest/"},
-                    {"title": "Image Annotations", "icon": "edit",         "link": "/admin/revisions/imageannotation/"},
+                    {"title": "Orders",        "icon": "receipt_long","link": "/admin/orders/order/"},
+                    {"title": "Order Items",   "icon": "inventory_2", "link": "/admin/orders/orderitem/"},
+                    {"title": "Revisions",     "icon": "rate_review", "link": "/admin/revisions/revisionrequest/"},
                 ],
             },
             {
@@ -527,7 +544,7 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Workflow Templates", "icon": "account_tree", "link": "/admin/workflows/workflowtemplate/"},
+                    {"title": "Templates", "icon": "account_tree", "link": "/admin/workflows/workflowtemplate/"},
                 ],
             },
             {
@@ -536,12 +553,12 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Users (Auth)",        "icon": "badge",           "link": "/admin/auth/user/"},
-                    {"title": "User Profiles",      "icon": "account_circle",   "link": "/admin/users/userprofile/"},
-                    {"title": "Groups",              "icon": "groups",          "link": "/admin/auth/group/"},
-                    {"title": "Subscription Plans",  "icon": "workspace_premium","link": "/admin/users/subscriptionplan/"},
-                    {"title": "Subscriptions",       "icon": "payments",        "link": "/admin/users/subscription/"},
-                    {"title": "Transactions",        "icon": "receipt",         "link": "/admin/users/transaction/"},
+                    {"title": "Users",            "icon": "badge",           "link": "/admin/auth/user/"},
+                    {"title": "User Profiles",    "icon": "account_circle",  "link": "/admin/users/userprofile/"},
+                    {"title": "Groups",           "icon": "groups",          "link": "/admin/auth/group/"},
+                    {"title": "Subscription Plans","icon": "workspace_premium","link": "/admin/users/subscriptionplan/"},
+                    {"title": "Subscriptions",    "icon": "payments",        "link": "/admin/users/subscription/"},
+                    {"title": "Transactions",     "icon": "receipt",         "link": "/admin/users/transaction/"},
                 ],
             },
             {
@@ -569,33 +586,17 @@ UNFOLD = {
     },
     "TABS": [
         {
-            "models": [
-                "cms.page",
-            ],
+            "models": ["cms.page"],
             "items": [
-                {
-                    "title": "All Pages",
-                    "link": "/admin/cms/page/",
-                },
+                {"title": "All Pages", "link": "/admin/cms/page/"},
             ],
         },
         {
-            "models": [
-                "cms.blogpost",
-            ],
+            "models": ["cms.blogpost"],
             "items": [
-                {
-                    "title": "All Posts",
-                    "link": "/admin/cms/blogpost/",
-                },
-                {
-                    "title": "Published",
-                    "link": "/admin/cms/blogpost/?is_published__exact=1",
-                },
-                {
-                    "title": "Drafts",
-                    "link": "/admin/cms/blogpost/?is_published__exact=0",
-                },
+                {"title": "All Posts", "link": "/admin/cms/blogpost/"},
+                {"title": "Published", "link": "/admin/cms/blogpost/?is_published__exact=1"},
+                {"title": "Drafts",    "link": "/admin/cms/blogpost/?is_published__exact=0"},
             ],
         },
     ],
