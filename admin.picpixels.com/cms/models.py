@@ -1113,7 +1113,7 @@ class ServicePricingTierCard(models.Model):
     description = models.TextField(blank=True, help_text='Card description')
     price = models.CharField(max_length=100, blank=True, help_text='e.g. "$5.00"')
     original_price = models.CharField(max_length=100, blank=True, help_text='Strikethrough price e.g. "$8.00"')
-    features = models.JSONField(default=list, blank=True, help_text='List of features as JSON array')
+    features = models.JSONField(default=list, blank=True, null=True, help_text='List of features as JSON array')
     is_popular = models.BooleanField(default=False, help_text='Highlight as popular')
     badge_text = models.CharField(max_length=100, blank=True, help_text='e.g. "Popular", "Best Value"')
     badge_color = models.CharField(max_length=20, blank=True, help_text='HEX color for badge')
