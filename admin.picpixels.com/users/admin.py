@@ -3,6 +3,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from unfold.admin import ModelAdmin
 from unfold.decorators import display
+from core.widgets import ModernDateTimeWidget
 from .models import SubscriptionPlan, UserProfile, Subscription, Transaction
 
 
@@ -108,6 +109,12 @@ class SubscriptionAdmin(ModelAdmin):
             '<span style="background:{}15;color:{};padding:2px 8px;border-radius:100px;font-size:0.65rem;font-weight:600">{}</span>',
             color, color, obj.get_status_display()
         )
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name in ('current_period_start', 'current_period_end'):
+            formfield.widget = ModernDateTimeWidget()
+        return formfield
 
 
 @admin.register(Transaction)

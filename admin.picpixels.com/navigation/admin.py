@@ -1,9 +1,10 @@
 from django.contrib import admin
+from django.db import models
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from unfold.admin import ModelAdmin
 from unfold.decorators import display
-from unfold.widgets import UnfoldBooleanSwitchWidget
+from core.widgets import CustomToggleSwitch
 from .models import NavigationItem
 
 
@@ -27,7 +28,7 @@ class NavigationItemAdmin(ModelAdmin):
         }),
     )
     formfield_overrides = {
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
 
     @display(description='Location')

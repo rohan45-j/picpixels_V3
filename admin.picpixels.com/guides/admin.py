@@ -1,10 +1,11 @@
 from django.contrib import admin
+from django.db import models
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from unfold.admin import ModelAdmin
 from unfold.decorators import display
-from unfold.widgets import UnfoldBooleanSwitchWidget
+from core.widgets import CustomToggleSwitch, ModernDateWidget
 from cms.image_guidelines import IMG as IMG_GUIDELINES
 from .models import GuideCategory, Guide
 
@@ -22,7 +23,7 @@ class GuideCategoryAdmin(ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ['name']
     formfield_overrides = {
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
 
     fieldsets = (
@@ -54,8 +55,7 @@ class GuideAdmin(ModelAdmin):
     save_on_top = True
 
     formfield_overrides = {
-        'is_published': {'widget': UnfoldBooleanSwitchWidget},
-        'featured': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
 
     fieldsets = (
@@ -184,3 +184,9 @@ class GuideAdmin(ModelAdmin):
             minutes,
             word_count,
         )
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == 'publish_date':
+            formfield.widget = ModernDateWidget()
+        return formfield

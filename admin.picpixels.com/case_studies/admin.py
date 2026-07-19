@@ -1,7 +1,8 @@
 from django.contrib import admin
+from django.db import models
 from django.utils.html import mark_safe
 from unfold.admin import ModelAdmin, TabularInline, StackedInline
-from unfold.widgets import UnfoldBooleanSwitchWidget
+from core.widgets import CustomToggleSwitch, ModernDateWidget
 from .models import CaseStudyCategory, CaseStudyTag, CaseStudy, CaseStudyImage, CaseStudyTestimonial
 
 
@@ -12,7 +13,7 @@ class CaseStudyCategoryAdmin(ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ['name']
     formfield_overrides = {
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
 
     def case_study_count(self, obj):
@@ -89,6 +90,9 @@ class CaseStudyAdmin(ModelAdmin):
     inlines = [CaseStudyImageInline, CaseStudyTestimonialInline]
     filter_horizontal = ['tags']
     date_hierarchy = 'publish_date'
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     fieldsets = (
         ('Content', {
@@ -160,3 +164,9 @@ class CaseStudyAdmin(ModelAdmin):
             f'font-weight:600;">{label}</span>'
         )
     status_badge.short_description = 'Status'
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name in ('completion_date', 'publish_date'):
+            formfield.widget = ModernDateWidget()
+        return formfield

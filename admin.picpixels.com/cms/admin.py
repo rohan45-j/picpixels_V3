@@ -1,11 +1,12 @@
 from django import forms
 from django.contrib import admin
+from django.db import models
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from unfold.admin import ModelAdmin, TabularInline
 from unfold.decorators import display
-from unfold.widgets import UnfoldBooleanSwitchWidget
+from core.widgets import CustomToggleSwitch, ModernDateTimeWidget, ModernDateWidget
 from .widgets import ContentBlockPreviewWidget
 from .image_guidelines import IMG as IMG_GUIDELINES
 
@@ -29,7 +30,7 @@ from .models import (
     PricingConfigSection, PricingConfigDropdownOption, PricingConfigCard, PricingConfigCardPrice, PricingConfigCTA,
     FreeTrial, FreeTrialAttachment,
     ServiceUnitRange, ServicePricingCard, ServicePricingCardPrice,
-    WhyChooseFeatureSection, WhyChooseFeatureItem,
+    WhyChooseSection, WhyChooseItem, WhyChooseFeatureSection, WhyChooseFeatureItem,
     ServiceEEAT, ServiceBrandLogo,
     ServiceWhyNeedFeature, ServiceProcessStep,
     ServiceWhyChooseCard, ServiceTool,
@@ -96,6 +97,9 @@ class ServiceHeroImageInline(TabularInline):
     ordering = ('order',)
     verbose_name = 'Hero Image'
     verbose_name_plural = 'Hero Images'
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     @display(description='Preview')
     def image_preview(self, obj):
@@ -152,6 +156,9 @@ class ServiceContentSectionForm(forms.ModelForm):
     class Meta:
         model = ServiceContentSection
         fields = '__all__'
+        widgets = {
+            'is_active': CustomToggleSwitch,
+        }
 
     class Media:
         js = ('admin/js/service_content_section.js',)
@@ -192,6 +199,9 @@ class ServiceFAQInline(TabularInline):
     verbose_name = 'FAQ'
     verbose_name_plural = 'FAQs'
     classes = ('collapse',)
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
 
 class ServiceEEATInline(TabularInline):
@@ -202,6 +212,9 @@ class ServiceEEATInline(TabularInline):
     verbose_name = 'EEAT'
     verbose_name_plural = 'EEAT'
     classes = ('collapse',)
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
 
 class ServiceBrandLogoInline(TabularInline):
@@ -212,6 +225,9 @@ class ServiceBrandLogoInline(TabularInline):
     ordering = ('display_order',)
     verbose_name = 'Brand Logo'
     verbose_name_plural = 'Brand Logos'
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     @display(description='Preview')
     def logo_preview(self, obj):
@@ -237,6 +253,9 @@ class ServiceWhyNeedFeatureInline(TabularInline):
     ordering = ('display_order',)
     verbose_name = 'Why Need Feature'
     verbose_name_plural = 'Why Need Features'
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     @display(description='Icon')
     def icon_preview(self, obj):
@@ -260,6 +279,9 @@ class ServiceProcessStepInline(TabularInline):
     ordering = ('display_order',)
     verbose_name = 'Process Step'
     verbose_name_plural = 'Process Steps'
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     @display(description='Image')
     def image_preview(self, obj):
@@ -283,6 +305,9 @@ class ServiceWhyChooseCardInline(TabularInline):
     ordering = ('display_order',)
     verbose_name = 'Why Choose Card'
     verbose_name_plural = 'Why Choose Cards'
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     @display(description='Icon')
     def icon_preview(self, obj):
@@ -306,6 +331,9 @@ class ServiceToolInline(TabularInline):
     ordering = ('display_order',)
     verbose_name = 'Tool'
     verbose_name_plural = 'Tools'
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     @display(description='Preview')
     def logo_preview(self, obj):
@@ -333,6 +361,9 @@ class ServicePricingTierCardInline(TabularInline):
     verbose_name = 'Pricing Tier Card'
     verbose_name_plural = 'Pricing Tier Cards'
     classes = ('collapse',)
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
 
 class ServiceClientFeedbackInline(TabularInline):
@@ -344,6 +375,9 @@ class ServiceClientFeedbackInline(TabularInline):
     ordering = ('display_order',)
     verbose_name = 'Client Feedback'
     verbose_name_plural = 'Client Feedbacks'
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     @display(description='Photo')
     def photo_preview(self, obj):
@@ -384,12 +418,7 @@ class ServiceAdmin(ModelAdmin):
     ]
     readonly_fields = ('thumbnail_preview', 'hero_bg_preview')
     formfield_overrides = {
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
-        'is_featured': {'widget': UnfoldBooleanSwitchWidget},
-        'show_in_mega_menu': {'widget': UnfoldBooleanSwitchWidget},
-        'show_on_homepage': {'widget': UnfoldBooleanSwitchWidget},
-        'show_in_footer': {'widget': UnfoldBooleanSwitchWidget},
-        'show_in_related': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
     fieldsets = (
         ('1. Basic Information', {
@@ -558,17 +587,25 @@ class ServiceGalleryImageAdmin(ModelAdmin):
 @admin.register(ServiceContentSection)
 class ServiceContentSectionAdmin(ModelAdmin):
     list_select_related = ('service',)
-    list_display = ('service', 'layout', 'heading', 'order', 'image_preview')
-    list_filter = ('layout',)
+    list_display = ('service', 'layout', 'heading', 'order', 'is_active', 'image_preview')
+    list_editable = ('is_active',)
+    list_filter = ('layout', 'is_active')
     ordering = ('service', 'order')
     search_fields = ('heading', 'content')
     list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     fieldsets = (
         ('Content Block', {
             'fields': ('service', 'layout', 'heading', 'content', 'order'),
         }),
         ('📌 Service Page Media', {
             'fields': ('image', 'image_alt'),
+        }),
+        ('Settings', {
+            'fields': ('is_active',),
+            'classes': ('collapse',),
         }),
     )
 
@@ -582,12 +619,21 @@ class ServiceContentSectionAdmin(ModelAdmin):
 @admin.register(ServiceHeroImage)
 class ServiceHeroImageAdmin(ModelAdmin):
     list_select_related = ('service',)
-    list_display = ('service', 'alt_text', 'order', 'image_preview')
+    list_display = ('service', 'alt_text', 'order', 'is_active', 'image_preview')
+    list_editable = ('is_active',)
+    list_filter = ('is_active',)
     ordering = ('service', 'order')
     list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     fieldsets = (
         ('📌 Service Page Media', {
             'fields': ('service', 'image', 'alt_text', 'order'),
+        }),
+        ('Settings', {
+            'fields': ('is_active',),
+            'classes': ('collapse',),
         }),
     )
 
@@ -626,7 +672,7 @@ class HeroSectionAdmin(ModelAdmin):
     list_fullwidth = True
     inlines = [HeroSlideInline, HeroStatInline]
     formfield_overrides = {
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
     fieldsets = (
         (None, {
@@ -690,7 +736,7 @@ class TestimonialAdmin(ModelAdmin):
     search_fields = ('client_name',)
     list_fullwidth = True
     formfield_overrides = {
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
     fieldsets = (
         (None, {
@@ -720,7 +766,7 @@ class AuthorAdmin(ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
     list_fullwidth = True
     formfield_overrides = {
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
     fieldsets = (
         ('Profile', {
@@ -808,6 +854,9 @@ class BlogDocumentBlockInline(TabularInline):
     extra = 1
     fields = ('title', 'file', 'description', 'download_text', 'sort_order', 'is_active')
     ordering = ('sort_order',)
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
 
 class BlogPostAdminForm(forms.ModelForm):
@@ -816,6 +865,8 @@ class BlogPostAdminForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'content_blocks': ContentBlockPreviewWidget(),
+            'published_at': ModernDateTimeWidget(),
+            'scheduled_at': ModernDateTimeWidget(),
         }
 
     def clean_content_blocks(self):
@@ -929,6 +980,9 @@ class BlogDocumentBlockAdmin(ModelAdmin):
     ordering = ('blog_post', 'sort_order')
     search_fields = ('title', 'description')
     list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     fieldsets = (
         (None, {
             'fields': ('blog_post', 'title', 'file', 'description', 'download_text', 'sort_order', 'is_active'),
@@ -961,6 +1015,9 @@ class FAQAdmin(ModelAdmin):
     ordering = ('order',)
     search_fields = ('question',)
     list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     fieldsets = (
         (None, {
             'fields': ('question', 'answer', 'category', 'service', 'is_contact_faq', 'order', 'is_active'),
@@ -1013,7 +1070,7 @@ class TeamMemberAdmin(ModelAdmin):
     search_fields = ('name', 'role', 'email')
     list_fullwidth = True
     formfield_overrides = {
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
     fieldsets = (
         (None, {
@@ -1038,6 +1095,9 @@ class BrandLogoAdmin(ModelAdmin):
     ordering = ('order',)
     search_fields = ('name',)
     list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     fieldsets = (
         (None, {
             'fields': ('name', 'logo', 'logo_alt', 'url', 'order', 'is_active'),
@@ -1062,8 +1122,7 @@ class PricingPlanAdmin(ModelAdmin):
     list_editable = ('order', 'is_popular', 'is_active')
     prepopulated_fields = {'slug': ('title',)}
     formfield_overrides = {
-        'is_popular': {'widget': UnfoldBooleanSwitchWidget},
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
     fieldsets = (
         (None, {
@@ -1129,6 +1188,12 @@ class PricingPlanAdmin(ModelAdmin):
     def feature_count(self, obj):
         return len(obj.features) if obj.features else 0
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == 'banner_expiry':
+            formfield.widget = ModernDateTimeWidget()
+        return formfield
+
 
 @admin.register(Technology)
 class TechnologyAdmin(ModelAdmin):
@@ -1138,6 +1203,9 @@ class TechnologyAdmin(ModelAdmin):
     ordering = ('display_order',)
     search_fields = ('title',)
     list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     fieldsets = (
         (None, {
             'fields': ('title', 'icon', 'icon_alt', 'display_order', 'is_active'),
@@ -1156,11 +1224,13 @@ class PricingPromotionSectionForm(forms.ModelForm):
         model = PricingPromotionSection
         fields = '__all__'
         widgets = {
-            'is_active': UnfoldBooleanSwitchWidget,
-            'use_theme_color': UnfoldBooleanSwitchWidget,
+            'is_active': CustomToggleSwitch,
+            'use_theme_color': CustomToggleSwitch,
             'bg_color': forms.TextInput(attrs={'type': 'color', 'class': 'vColorField'}),
             'text_color': forms.TextInput(attrs={'type': 'color', 'class': 'vColorField'}),
             'accent_color': forms.TextInput(attrs={'type': 'color', 'class': 'vColorField'}),
+            'start_date': ModernDateTimeWidget(),
+            'end_date': ModernDateTimeWidget(),
         }
         help_texts = {
             'is_active': 'Toggle ON to show this promotion on the pricing page.',
@@ -1198,7 +1268,7 @@ class PricingPromotionSectionAdmin(ModelAdmin):
     list_filter = ('is_active',)
     search_fields = ('title', 'badge_text', 'description')
     formfield_overrides = {
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
     ordering = ('display_order', '-created_at')
     list_fullwidth = True
@@ -1268,6 +1338,9 @@ class PricingConfigDropdownOptionInline(TabularInline):
     extra = 1
     fields = ('label', 'order', 'is_active')
     ordering = ('order',)
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
 
 class PricingConfigCardInline(TabularInline):
@@ -1276,6 +1349,9 @@ class PricingConfigCardInline(TabularInline):
     fields = ('image', 'image_alt', 'title', 'description', 'button_text', 'sort_order', 'is_active', 'image_preview', 'show_banner')
     readonly_fields = ('image_preview',)
     ordering = ('sort_order',)
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     @display(description='Preview')
     def image_preview(self, obj):
@@ -1328,6 +1404,9 @@ class PricingConfigSectionAdmin(ModelAdmin):
     list_display = ('title_preview', 'cards_count', 'dropdown_count', 'has_cta', 'is_active', 'updated_at')
     list_editable = ('is_active',)
     list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     inlines = [PricingConfigDropdownOptionInline, PricingConfigCardInline, PricingConfigCardPriceInline, PricingConfigCTAInline]
 
     def save_related(self, request, form, formsets, change):
@@ -1374,6 +1453,9 @@ class PricingConfigCardAdmin(ModelAdmin):
     list_filter = ('section', 'is_active', 'show_banner')
     search_fields = ('title',)
     ordering = ('section', 'sort_order')
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     fieldsets = (
         (None, {
             'fields': ('section', 'image', 'image_alt', 'title', 'description', 'button_text', 'sort_order', 'is_active'),
@@ -1389,6 +1471,12 @@ class PricingConfigCardAdmin(ModelAdmin):
         }),
     )
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == 'banner_expiry':
+            formfield.widget = ModernDateTimeWidget()
+        return formfield
+
 
 @admin.register(PricingConfigDropdownOption)
 class PricingConfigDropdownOptionAdmin(ModelAdmin):
@@ -1398,6 +1486,9 @@ class PricingConfigDropdownOptionAdmin(ModelAdmin):
     list_filter = ('section', 'is_active')
     search_fields = ('label',)
     ordering = ('section', 'order')
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
 
 @admin.register(PricingConfigCardPrice)
@@ -1457,6 +1548,9 @@ class ServiceUnitRangeInline(TabularInline):
     model = ServiceUnitRange
     extra = 1
     fields = ['label', 'sort_order', 'is_active']
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
 
 class ServicePricingCardPriceInline(TabularInline):
@@ -1471,6 +1565,9 @@ class ServicePricingCardInline(TabularInline):
     extra = 1
     show_change_link = True
     fields = ['name', 'description', 'badge_text', 'badge_color', 'sort_order', 'is_active']
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
 
 @admin.register(ServiceUnitRange)
@@ -1480,6 +1577,9 @@ class ServiceUnitRangeAdmin(ModelAdmin):
     list_editable = ['sort_order', 'is_active']
     list_filter = ['service']
     search_fields = ['label']
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
 
 @admin.register(ServicePricingCard)
@@ -1489,6 +1589,9 @@ class ServicePricingCardAdmin(ModelAdmin):
     list_editable = ['sort_order', 'is_active']
     list_filter = ['service']
     search_fields = ['name', 'description']
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     inlines = [ServicePricingCardPriceInline]
     fieldsets = (
         (None, {
@@ -1512,6 +1615,9 @@ class WhyChooseFeatureItemInline(TabularInline):
     show_change_link = True
     fields = ('icon', 'title', 'description', 'display_order', 'is_active')
     ordering = ('display_order',)
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     def has_delete_permission(self, request, obj=None):
         return True
@@ -1522,9 +1628,61 @@ class WhyChooseFeatureSectionAdmin(ModelAdmin):
     list_display = ('title', 'is_active', 'updated_at')
     list_editable = ('is_active',)
     list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     inlines = [WhyChooseFeatureItemInline]
     fieldsets = (
         (None, {
             'fields': ('title', 'subtitle', 'featured_image', 'featured_image_alt', 'is_active'),
+        }),
+    )
+
+
+class WhyChooseItemInline(TabularInline):
+    model = WhyChooseItem
+    extra = 1
+    can_delete = True
+    show_change_link = True
+    fields = ('company_name', 'description', 'speed', 'flexibility', 'quality', 'scalability', 'cost_effectiveness', 'display_order', 'is_active')
+    ordering = ('display_order',)
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+
+
+@admin.register(WhyChooseSection)
+class WhyChooseSectionAdmin(ModelAdmin):
+    list_display = ('title', 'is_active', 'updated_at')
+    list_editable = ('is_active',)
+    list_fullwidth = True
+    inlines = [WhyChooseItemInline]
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        (None, {
+            'fields': ('title', 'highlighted_word', 'subtitle', 'is_active'),
+        }),
+    )
+
+
+@admin.register(WhyChooseItem)
+class WhyChooseItemAdmin(ModelAdmin):
+    list_display = ('company_name', 'section', 'display_order', 'is_active')
+    list_editable = ('is_active',)
+    list_filter = ('section', 'is_active')
+    list_fullwidth = True
+    search_fields = ('company_name',)
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        (None, {
+            'fields': ('section', 'company_name', 'description', 'display_order', 'is_active'),
+        }),
+        ('Feature Flags', {
+            'fields': ('speed', 'flexibility', 'quality', 'scalability', 'cost_effectiveness'),
+            'classes': ('collapse',),
         }),
     )

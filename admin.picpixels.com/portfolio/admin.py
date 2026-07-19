@@ -1,8 +1,9 @@
 from django.contrib import admin
+from django.db import models
 from unfold.admin import ModelAdmin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from unfold.widgets import UnfoldBooleanSwitchWidget
+from core.widgets import CustomToggleSwitch, ModernDateWidget
 from .models import Category, Service, Portfolio, PortfolioGallery, PortfolioComparison
 
 
@@ -14,7 +15,7 @@ class CategoryAdmin(ModelAdmin):
     list_filter = ['is_active']
     prepopulated_fields = {'slug': ('name',)}
     formfield_overrides = {
-        'is_active': {'widget': UnfoldBooleanSwitchWidget},
+        models.BooleanField: {'widget': CustomToggleSwitch},
     }
 
     def portfolio_count(self, obj):
@@ -93,6 +94,15 @@ class PortfolioAdmin(ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
     readonly_fields = ['image_preview', 'created_at', 'updated_at']
     inlines = [PortfolioGalleryInline, PortfolioComparisonInline]
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == 'completion_date':
+            formfield.widget = ModernDateWidget()
+        return formfield
 
     fieldsets = [
         ('Content', {
