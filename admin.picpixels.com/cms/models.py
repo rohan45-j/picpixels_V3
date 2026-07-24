@@ -80,7 +80,7 @@ class Service(models.Model):
     show_in_related = models.BooleanField(default=True, help_text='Show in related services section')
     is_active = models.BooleanField(default=True, db_index=True, help_text='Show on website')
     is_featured = models.BooleanField(default=False, db_index=True, help_text='Featured service (highlighted on homepage)')
-    content_blocks = models.JSONField(default=list, blank=True, help_text='Modular content blocks array. Supported types: heading, text, image, image_with_text, gallery, code, callout, faq, list, table, step, divider')
+    content_blocks = models.JSONField(default=list, blank=True, null=True, help_text='Modular content blocks array. Supported types: heading, text, image, image_with_text, gallery, code, callout, faq, list, table, step, divider')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     brand_section_title = models.CharField(max_length=200, default='Trusted by Brands & Partners', blank=True)
@@ -435,7 +435,7 @@ class BlogPost(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     # Executive Summary / Key Takeaways
-    key_takeaways = models.JSONField(default=list, blank=True, help_text='Key takeaways / learning objectives as JSON array of strings')
+    key_takeaways = models.JSONField(default=list, blank=True, null=True, help_text='Key takeaways / learning objectives as JSON array of strings')
 
     # SEO Fields
     meta_title = models.CharField(max_length=200, blank=True, help_text='Custom SEO title (overrides title)')
@@ -453,13 +453,13 @@ class BlogPost(models.Model):
 
     # AI SEO Keywords
     focus_keyword = models.CharField(max_length=100, blank=True, help_text='Primary focus keyword for SEO')
-    secondary_keywords = models.JSONField(default=list, blank=True, help_text='Secondary keywords as JSON array')
+    secondary_keywords = models.JSONField(default=list, blank=True, null=True, help_text='Secondary keywords as JSON array')
 
     # Block-based Content System
-    content_blocks = models.JSONField(default=list, blank=True, help_text='Modular content blocks array. Supported types: heading, text, image, image_with_text, gallery, code, callout, faq, list, table, step, divider, stats, quote, cta, full_width_image')
+    content_blocks = models.JSONField(default=list, blank=True, null=True, help_text='Modular content blocks array. Supported types: heading, text, image, image_with_text, gallery, code, callout, faq, list, table, step, divider, stats, quote, cta, full_width_image')
 
     # Structured Data
-    faq_schema = models.JSONField(default=list, blank=True, help_text='FAQPage structured data items: [{"question":"...","answer":"..."}]')
+    faq_schema = models.JSONField(default=list, blank=True, null=True, help_text='FAQPage structured data items: [{"question":"...","answer":"..."}]')
 
     # Internal Linking
     related_services = models.ManyToManyField('Service', blank=True, help_text='Related services to link')

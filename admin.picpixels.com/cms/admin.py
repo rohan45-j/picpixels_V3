@@ -865,8 +865,8 @@ class BlogPostAdminForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'content_blocks': ContentBlockPreviewWidget(),
-            'published_at': ModernDateTimeWidget(),
-            'scheduled_at': ModernDateTimeWidget(),
+            # 'published_at': ModernDateTimeWidget(),
+            # 'scheduled_at': ModernDateTimeWidget(),
         }
 
     def clean_content_blocks(self):
