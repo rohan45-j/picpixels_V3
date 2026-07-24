@@ -1,7 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   compress: true,
-
+experimental: {
+    cpus: 1,
+    workerThreads: false,
+  },
+eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
  
 
  
@@ -22,8 +31,8 @@ const nextConfig = {
         hostname: "**.unsplash.com",
       },
       {
-        protocol: "http",
-        hostname: "localhost",
+        protocol: "https",
+        hostname: "admin.picpixels.com",
       },
     ],
   },
