@@ -50,6 +50,10 @@ eslint: {
         protocol: "https",
         hostname: "admin.picpixels.com",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+      },
     ],
   },
 

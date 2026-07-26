@@ -1,0 +1,34 @@
+ ⨯ Error: Invalid src prop (http://localhost:8000/media/why-choose-features/icons/photo_camera_PNG7834.png) on `next/image`, hostname "localhost" is not configured under images in your `next.config.js`
+See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host
+    at defaultLoader (..\..\..\src\shared\lib\image-loader.ts:74:17)
+    at eval (..\..\..\src\shared\lib\get-img-props.ts:239:14)
+    at Array.map (<anonymous>)
+    at generateImgAttrs (..\..\..\src\shared\lib\get-img-props.ts:237:8)
+    at getImgProps (..\..\..\src\shared\lib\get-img-props.ts:711:25)
+    at eval (..\..\src\client\image-component.tsx:389:53)
+  72 |           !hasRemoteMatch(config.domains!, config.remotePatterns!, parsedSrc)
+  73 |         ) {
+> 74 |           throw new Error(
+     |                 ^
+  75 |             `Invalid src prop (${src}) on \`next/image\`, hostname "${parsedSrc.hostname}" is not configured under images in your \`next.config.js\`\n` +
+  76 |               `See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host`
+  77 |           ) {
+  digest: '2313655705'
+}
+ ⨯ Error: Invalid src prop (http://localhost:8000/media/why-choose-features/icons/photo_camera_PNG7834.png) on `next/image`, hostname "localhost" is not configured under images in your `next.config.js`
+See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host
+    at defaultLoader (..\..\..\src\shared\lib\image-loader.ts:74:17)
+    at eval (..\..\..\src\shared\lib\get-img-props.ts:239:14)
+    at Array.map (<anonymous>)
+    at generateImgAttrs (..\..\..\src\shared\lib\get-img-props.ts:237:8)
+    at getImgProps (..\..\..\src\shared\lib\get-img-props.ts:711:25)
+    at eval (..\..\src\client\image-component.tsx:389:53)
+  72 |           !hasRemoteMatch(config.domains!, config.remotePatterns!, parsedSrc)
+  73 |         ) {
+> 74 |           throw new Error(
+     |                 ^
+  75 |             `Invalid src prop (${src}) on \`next/image\`, hostname "${parsedSrc.hostname}" is not configured under images in your \`next.config.js\`\n` +
+  76 |               `See more info: https://nextjs.org/docs/messages/next-image-unconfigured-host`
+  77 |           ) {
+  digest: '2313655705'
+}
