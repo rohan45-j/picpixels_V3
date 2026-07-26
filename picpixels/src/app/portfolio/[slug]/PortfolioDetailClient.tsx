@@ -1,10 +1,10 @@
 'use client';
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { mediaUrl, type PortfolioItem } from '../../../services/public-api';
-import BeforeAfter from '../../../shared/components/BeforeAfter';
-import GalleryLightbox from '../../../shared/components/GalleryLightbox';
-import detailStyles from '../../../shared/styles/modules/portfolio-detail.module.css';
+import { mediaUrl, type PortfolioItem } from '@/services/public-api';
+import BeforeAfter from '@/components/ui/BeforeAfter';
+import GalleryLightbox from '@/components/media/GalleryLightbox';
+import detailStyles from '@/styles/modules/portfolio-detail.module.css';
 
 interface FlatGalleryImage {
   src: string;

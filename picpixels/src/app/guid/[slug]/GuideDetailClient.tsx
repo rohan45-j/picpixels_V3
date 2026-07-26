@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { mediaUrl, type GuideItem } from '../../../services/public-api';
-import styles from '../../../shared/styles/modules/guides.module.css';
+import { mediaUrl, type GuideItem } from '@/services/public-api';
+import styles from '@/styles/modules/guides.module.css';
 
 function readingTime(html: string | undefined | null): number {
   if (!html) return 1;

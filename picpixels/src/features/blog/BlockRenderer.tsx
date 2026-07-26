@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { Info, AlertTriangle, CheckCircle, Copy, Check, ChevronDown, ArrowRight } from 'lucide-react';
-import { mediaUrl, type ContentBlock } from '../../services/public-api';
-import styles from '../../shared/styles/modules/blog.module.css';
+import { mediaUrl, type ContentBlock } from '@/services/public-api';
+import styles from '@/styles/modules/blog.module.css';
 
 function CalloutIcon({ style }: { style?: string }) {
   switch (style) {

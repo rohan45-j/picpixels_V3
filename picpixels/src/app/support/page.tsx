@@ -1,8 +1,8 @@
 "use client";
-import Header from "../../layouts/Header";
-import Footer from "../../layouts/Footer";
-import SectionHeading from "../../shared/components/SectionHeading";
-import styles from "../../shared/styles/modules/company.module.css";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import SectionHeading from "@/components/ui/SectionHeading";
+import styles from "@/styles/modules/company.module.css";
 import { useState } from "react";
 
 const faqs = [
@@ -35,7 +35,7 @@ export default function Support() {
       {/* Hero */}
       <section className={styles.hero}>
         <span className={styles.heroBadge}>Contact Support</span>
-        <h1 className={styles.heroTitle}>We're Here to Help<br />Around the Clock</h1>
+        <h1 className={styles.heroTitle}>We&apos;re Here to Help<br />Around the Clock</h1>
         <p className={styles.heroSub}>
           Our support team is available 24/7. Reach us via chat, email, or phone —
           however you prefer. Expect fast, expert help every time.

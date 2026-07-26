@@ -1,10 +1,12 @@
-import { Suspense } from 'react';
-import Header from '../layouts/Header';
-import Footer from '../layouts/Footer';
-import Hero from '../shared/components/Hero';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import Hero from '@/features/home/components/Hero';
 import HomeClient from './HomeClient';
-import type { Service, Testimonial, Technology, PortfolioItem, PortfolioCategory, BlogPost, CaseStudyItem, WhyChooseSection, WhyChooseFeatureSection } from '../services/public-api';
-import { fetchWhyChooseUs, fetchLatestBlogPosts, fetchHomepageCaseStudiesSection, fetchWhyChooseFeatures } from '../services/public-api';
+import type {
+  Service, Testimonial, Technology, PortfolioItem, PortfolioCategory, BlogPost, CaseStudyItem,
+  WhyChooseSection, WhyChooseFeatureSection, HeroSection, BrandLogo, PricingConfigSectionData, SiteSetting,
+} from '@/services/public-api';
+import { fetchWhyChooseUs, fetchLatestBlogPosts, fetchHomepageCaseStudiesSection, fetchWhyChooseFeatures, fetchHeroData, fetchBrandLogos, fetchPricingConfig, fetchSiteSettings } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
@@ -13,7 +15,7 @@ export const revalidate = 60;
 import { fetchJSON } from '@/lib/fetch';
 
 async function getHomepageData() {
-  const [servicesRes, testimonialsRes, technologiesRes, portfolioRes, categoriesRes, whyChooseUsRes, latestBlogsRes, caseStudiesRes, whyChooseFeaturesRes] = await Promise.all([
+  const [servicesRes, testimonialsRes, technologiesRes, portfolioRes, categoriesRes, whyChooseUsRes, latestBlogsRes, caseStudiesRes, whyChooseFeaturesRes, heroRes, brandsRes, pricingRes, settingsRes] = await Promise.all([
     fetchJSON<Service[]>(`${BASE_URL}/api/v1/cms/services/homepage/`),
     fetchJSON<{ results: Testimonial[] }>(`${BASE_URL}/api/v1/cms/testimonials/`),
     fetchJSON<{ results: Technology[] }>(`${BASE_URL}/api/v1/cms/technologies/`),
@@ -23,6 +25,10 @@ async function getHomepageData() {
     fetchLatestBlogPosts(),
     fetchHomepageCaseStudiesSection(),
     fetchWhyChooseFeatures(),
+    fetchHeroData(),
+    fetchBrandLogos(),
+    fetchPricingConfig(),
+    fetchSiteSettings(),
   ]);
   return {
     services: servicesRes ?? [],
@@ -34,17 +40,21 @@ async function getHomepageData() {
     latestBlogs: latestBlogsRes ?? [],
     caseStudies: caseStudiesRes ?? [],
     whyChooseFeatures: whyChooseFeaturesRes,
+    heroData: heroRes,
+    brandLogos: brandsRes,
+    pricingConfig: pricingRes,
+    siteSettings: settingsRes,
   };
 }
 
 export default async function Home() {
-  const { services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures } = await getHomepageData();
+  const { services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures, heroData, brandLogos, pricingConfig, siteSettings } = await getHomepageData();
 
   return (
     <>
       <Header />
-      <Hero />
-      <Suspense fallback={<div style={{ height: 200 }} />}>
+      <main id="main-content">
+      <Hero hero={heroData} />
         <HomeClient
           services={services}
           testimonials={testimonials}
@@ -55,9 +65,12 @@ export default async function Home() {
           latestBlogs={latestBlogs}
           caseStudies={caseStudies}
           whyChooseFeatures={whyChooseFeatures}
+          heroData={heroData}
+          brandLogos={brandLogos}
+          pricingConfig={pricingConfig}
         />
-      </Suspense>
-      <Footer />
+      </main>
+      <Footer siteSettings={siteSettings} />
     </>
   );
 }

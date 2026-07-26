@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import SectionHeading from '../../shared/components/SectionHeading';
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
-import styles from '../../shared/styles/modules/book-demo.module.css';
+import SectionHeading from '@/components/ui/SectionHeading';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import styles from '@/styles/modules/book-demo.module.css';
 
 interface FormData {
   fullName: string;

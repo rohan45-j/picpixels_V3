@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-import { useSiteSettings } from '../../shared/contexts/SiteSettingsContext';
-import NotificationCenter from '../../shared/components/NotificationCenter';
-import styles from '../../shared/styles/modules/dashboard.module.css';
+import { useSiteSettings } from '@/store/SiteSettingsContext';
+import NotificationCenter from '@/components/ui/NotificationCenter';
+import styles from '@/styles/modules/dashboard.module.css';
 
 
 export default function DashboardLayout({
@@ -18,6 +18,7 @@ export default function DashboardLayout({
   const [email, setEmail] = useState('guest@company.com');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const savedEmail = localStorage.getItem('user_email');
@@ -38,7 +39,7 @@ export default function DashboardLayout({
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user_email');
-    window.location.href = '/';
+    router.push('/');
   };
 
   return (

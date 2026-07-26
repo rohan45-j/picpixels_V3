@@ -1,11 +1,22 @@
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
+import type { Metadata } from 'next';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 import ServicesClient from './ServicesClient';
-import type { Service } from '../../services/public-api';
+import type { Service } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Services',
+  description: 'Professional photo editing services including clipping path, background removal, ghost mannequin, retouching, color correction, and more.',
+  openGraph: {
+    title: 'Photo Editing Services | PicPicxels',
+    description: 'Professional photo editing services. Clipping path, background removal, ghost mannequin, retouching & more.',
+    type: 'website',
+  },
+};
 
 export default async function Services() {
   let services: Service[] = [];
@@ -20,7 +31,9 @@ export default async function Services() {
   return (
     <>
       <Header />
-      <ServicesClient services={services} />
+      <main id="main-content">
+        <ServicesClient services={services} />
+      </main>
       <Footer />
     </>
   );

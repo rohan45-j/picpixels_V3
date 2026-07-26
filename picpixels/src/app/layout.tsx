@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import { SiteSettingsProvider } from "../shared/contexts/SiteSettingsContext";
-import { DynamicFavicon } from "../shared/components/DynamicFavicon";
-import FloatingActionButtons from "../shared/components/FloatingActionButtons";
+import { SiteSettingsProvider } from "@/store/SiteSettingsContext";
+import { DynamicFavicon } from "@/components/media/DynamicFavicon";
+import FloatingActionButtons from "@/components/ui/FloatingActionButtons";
 import "./globals.css";
-import "../shared/styles/animations.css";
+import "@/styles/animations.css";
 
 export const viewport: Viewport = {
   width: "device-width",

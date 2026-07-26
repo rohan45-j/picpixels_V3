@@ -1,8 +1,18 @@
-import { Suspense } from 'react';
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
-import type { PortfolioItem, PortfolioCategory } from '../../services/public-api';
+import type { Metadata } from 'next';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import type { PortfolioItem, PortfolioCategory } from '@/services/public-api';
 import PortfolioListClient from './PortfolioListClient';
+
+export const metadata: Metadata = {
+  title: 'Portfolio',
+  description: 'Browse our portfolio of professional photo editing projects. See before and after examples of clipping path, retouching, ghost mannequin, and more.',
+  openGraph: {
+    title: 'Portfolio | PicPicxels Photo Editing',
+    description: 'See our portfolio of professional photo editing projects. Before and after examples across multiple categories.',
+    type: 'website',
+  },
+};
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
@@ -29,12 +39,10 @@ export default async function PortfolioPage() {
   return (
     <>
       <Header />
-      <Suspense fallback={<div style={{ padding: '5rem', textAlign: 'center' }}>Loading portfolio...</div>}>
-        <PortfolioListClient
-          initialPortfolios={initialPortfolios}
-          categories={categories ?? []}
-        />
-      </Suspense>
+      <PortfolioListClient
+        initialPortfolios={initialPortfolios}
+        categories={categories ?? []}
+      />
       <Footer />
     </>
   );

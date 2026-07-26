@@ -22,6 +22,22 @@ const nextConfig = {
         hostname: "**.unsplash.com",
       },
       {
+        protocol: "https",
+        hostname: "admin.picpixels.com",
+      },
+      {
+        protocol: "https",
+        hostname: "picpixels.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.picpicxels.com",
+      },
+      {
+        protocol: "https",
+        hostname: "admin.picpicxels.com",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
       },

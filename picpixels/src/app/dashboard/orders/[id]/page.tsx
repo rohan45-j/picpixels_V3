@@ -1,17 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState, use } from 'react';
 import Link from 'next/link';
-import AnnotationCanvas from '../../../../shared/components/AnnotationCanvas';
-import styles from '../../../../shared/styles/modules/dashboard.module.css';
+import AnnotationCanvas from '@/components/ui/AnnotationCanvas';
+import styles from '@/styles/modules/dashboard.module.css';
 
-type PageProps = {
-  params: Promise<{ id: string }>;
-};
-
-export default async function OrderDetails({ params }: PageProps) {
-  const { id } = await params;
+export default function OrderDetails({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [selectedAsset, setSelectedAsset] = useState<{ id: string; name: string; original: string; edited: string; status: string } | null>({
     id: 'asset-1',
     name: 'nike_air_max_red_side.jpg',

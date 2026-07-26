@@ -1,28 +1,26 @@
 'use client';
-import SectionHeading from '../shared/components/SectionHeading';
-
-import dynamic from 'next/dynamic';
+import SectionHeading from '@/components/ui/SectionHeading';
 
 import Link from 'next/link';
-import Reveal from '../shared/components/Reveal';
-import HighEndQualitySection from '../shared/components/HighEndQualitySection';
-import PortfolioGrid from '../shared/components/PortfolioGrid';
-import styles from '../shared/styles/modules/homepage.module.css';
-import type { Service, Testimonial, Technology, PortfolioItem, PortfolioCategory, BlogPost, CaseStudyItem, WhyChooseSection, WhyChooseFeatureSection } from '../services/public-api';
+import Reveal from '@/components/animations/Reveal';
+import HighEndQualitySection from '@/components/ui/HighEndQualitySection';
+import PortfolioGrid from '@/features/portfolio/components/PortfolioGrid';
+import styles from '@/styles/modules/homepage.module.css';
+import type { Service, Testimonial, Technology, PortfolioItem, PortfolioCategory, BlogPost, CaseStudyItem, WhyChooseSection, WhyChooseFeatureSection, HeroSection, BrandLogo, PricingConfigSectionData } from '@/services/public-api';
 import { FileText, Mail, ClipboardCheck, Image, TrendingUp, Star } from 'lucide-react';
 
-const TrustBar = dynamic(() => import('../shared/components/TrustBar'), { ssr: false });
-const StackedServices = dynamic(() => import('../shared/components/StackedServices'), { ssr: false });
-const TestimonialCarousel = dynamic(() => import('../shared/components/TestimonialCarousel'), { ssr: false });
-import TechExpertiseSection from '../shared/components/TechExpertiseSection';
-import PricingConfigurator from '../shared/components/PricingConfigurator';
-import ContactSection from '../shared/components/ContactSection';
-import HomeWhyChooseUsNew from '../shared/components/HomeWhyChooseUsNew';
-import LatestBlogs from '../shared/components/LatestBlogs';
+import TrustBar from '@/components/ui/TrustBar';
+import StackedServices from '@/features/home/components/StackedServices';
+import TestimonialCarousel from '@/components/ui/TestimonialCarousel';
+import TechExpertiseSection from '@/components/ui/TechExpertiseSection';
+import PricingConfigurator from '@/features/pricing/components/PricingConfigurator';
+import ContactSection from '@/components/ui/ContactSection';
+import HomeWhyChooseUsNew from '@/components/ui/HomeWhyChooseUsNew';
+import LatestBlogs from '@/components/ui/LatestBlogs';
 
-import FAQSection from '../shared/components/FAQSection';
-import HomeFeaturedCaseStudy from '../shared/components/HomeFeaturedCaseStudy';
-import QualityAssurance from '../shared/components/QualityAssurance';
+import FAQSection from '@/components/ui/FAQSection';
+import HomeFeaturedCaseStudy from '@/components/ui/HomeFeaturedCaseStudy';
+import QualityAssurance from '@/components/ui/QualityAssurance';
 
 const processSteps = [
   { step: '01', title: 'Request a quote', desc: 'Use our quotation/free trial to send us a quote request for the photographs you need to edit.', icon: FileText },
@@ -33,11 +31,13 @@ const processSteps = [
   { step: '06', title: 'Give us review', desc: 'Your review is important to us. Help us improve and serve you better.', icon: Star },
 ];
 
-export default function HomeClient({ services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures }: { services: Service[]; testimonials: Testimonial[]; technologies: Technology[]; portfolios: PortfolioItem[]; portfolioCategories: PortfolioCategory[]; whyChooseUs: WhyChooseSection | null; latestBlogs: BlogPost[]; caseStudies: CaseStudyItem[]; whyChooseFeatures: WhyChooseFeatureSection | null }) {
+export default function HomeClient({ services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures, heroData, brandLogos, pricingConfig }: {
+  services: Service[]; testimonials: Testimonial[]; technologies: Technology[]; portfolios: PortfolioItem[]; portfolioCategories: PortfolioCategory[]; whyChooseUs: WhyChooseSection | null; latestBlogs: BlogPost[]; caseStudies: CaseStudyItem[]; whyChooseFeatures: WhyChooseFeatureSection | null; heroData: HeroSection | null; brandLogos: BrandLogo[]; pricingConfig: PricingConfigSectionData | null;
+}) {
 
   return (
     <>
-      <Reveal variant="fadeIn"><TrustBar /></Reveal>
+      <Reveal variant="fadeIn"><TrustBar brands={brandLogos} /></Reveal>
 
       <HighEndQualitySection />
 
@@ -46,7 +46,7 @@ export default function HomeClient({ services, testimonials, technologies, portf
 
       <StackedServices services={services} />
 
-      <Reveal variant="fadeUp"><PricingConfigurator /></Reveal>
+      <Reveal variant="fadeUp"><PricingConfigurator pricingData={pricingConfig} /></Reveal>
 
       <HomeWhyChooseUsNew data={whyChooseFeatures} />
 

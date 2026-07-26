@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useSiteSettings } from '../../shared/contexts/SiteSettingsContext';
-import styles from '../../shared/styles/modules/login.module.css';
+import { useSiteSettings } from '@/store/SiteSettingsContext';
+import styles from '@/styles/modules/login.module.css';
 
 export default function ForgotPassword() {
   const { siteSettings } = useSiteSettings();

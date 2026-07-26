@@ -1,9 +1,19 @@
-"use client";
-import Header from "../../layouts/Header";
-import Footer from "../../layouts/Footer";
-import SectionHeading from "../../shared/components/SectionHeading";
-import styles from "../../shared/styles/modules/company.module.css";
+import type { Metadata } from "next";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import SectionHeading from "@/components/ui/SectionHeading";
+import styles from "@/styles/modules/company.module.css";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Press & Media",
+  description: "PicPicxels in the news. Press releases, media coverage, and brand assets for journalists and media partners.",
+  openGraph: {
+    title: "PicPicxels Press & Media",
+    description: "Find the latest press releases, media coverage, and brand assets.",
+    type: "website",
+  },
+};
 
 const articles = [
   {

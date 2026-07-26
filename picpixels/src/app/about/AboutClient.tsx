@@ -1,19 +1,18 @@
 'use client';
 
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import SectionHeading from '../../shared/components/SectionHeading';
-import AnimatedStatCard from '../../shared/components/AnimatedStatCard';
-import Reveal from '../../shared/components/Reveal';
-import styles from '../../shared/styles/modules/about.module.css';
+import SectionHeading from '@/components/ui/SectionHeading';
+import AnimatedStatCard from '@/components/ui/AnimatedStatCard';
+import Reveal from '@/components/animations/Reveal';
+import styles from '@/styles/modules/about.module.css';
 import {
   Target, Eye, Star, Zap, Sparkles, Shield, Globe, DollarSign,
   FileText, Mail, ClipboardCheck, Image, TrendingUp, CheckCircle,
 } from 'lucide-react';
-import type { Testimonial } from '../../services/public-api';
+import type { Testimonial, BrandLogo } from '@/services/public-api';
 
-const TrustBar = dynamic(() => import('../../shared/components/TrustBar'), { ssr: false });
-const TestimonialCarousel = dynamic(() => import('../../shared/components/TestimonialCarousel'), { ssr: false });
+import TrustBar from '@/components/ui/TrustBar';
+import TestimonialCarousel from '@/components/ui/TestimonialCarousel';
 
 const values = [
   { icon: Star, title: 'Quality First', desc: 'We never compromise on quality. Every image goes through rigorous 3-stage quality assurance.' },
@@ -33,7 +32,7 @@ const processSteps = [
   { step: '06', title: 'Increase Sales', desc: 'Receive your edited images and sell more with high-quality visuals.', icon: TrendingUp },
 ];
 
-export default function AboutClient({ testimonials }: { testimonials: Testimonial[] }) {
+export default function AboutClient({ testimonials, brandLogos }: { testimonials: Testimonial[]; brandLogos: BrandLogo[] }) {
 
   return (
     <>
@@ -53,7 +52,7 @@ export default function AboutClient({ testimonials }: { testimonials: Testimonia
         </section>
       </Reveal>
 
-      <Reveal variant="fadeIn"><TrustBar /></Reveal>
+      <Reveal variant="fadeIn"><TrustBar brands={brandLogos} /></Reveal>
 
       <section className={styles.sectionAlt}>
         <div className={styles.statsRow}>

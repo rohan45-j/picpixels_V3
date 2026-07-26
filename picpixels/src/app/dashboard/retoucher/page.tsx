@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import styles from '../../../shared/styles/modules/retoucher.module.css';
+import styles from '@/styles/modules/retoucher.module.css';
 
 interface Annotation {
   id: string;

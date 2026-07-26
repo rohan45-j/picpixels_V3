@@ -1,8 +1,18 @@
-import { Suspense } from 'react';
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
-import type { GuideItem, GuideCategory } from '../../services/public-api';
+import type { Metadata } from 'next';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import type { GuideItem, GuideCategory } from '@/services/public-api';
 import GuideListClient from './GuideListClient';
+
+export const metadata: Metadata = {
+  title: 'Guides & Resources',
+  description: 'Comprehensive guides and resources for professional photo editing, e-commerce imagery, and visual content optimization.',
+  openGraph: {
+    title: 'Guides & Resources | PicPicxels',
+    description: 'Expert guides for photo editing, e-commerce imagery, and visual content optimization.',
+    type: 'website',
+  },
+};
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
@@ -27,12 +37,10 @@ export default async function GuidePage() {
   return (
     <>
       <Header />
-      <Suspense fallback={<div style={{ padding: '5rem', textAlign: 'center' }}>Loading guides...</div>}>
-        <GuideListClient
-          initialItems={initialItems}
-          categories={categories ?? []}
-        />
-      </Suspense>
+      <GuideListClient
+        initialItems={initialItems}
+        categories={categories ?? []}
+      />
       <Footer />
     </>
   );

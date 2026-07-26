@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import Header from '../../../layouts/Header';
-import Footer from '../../../layouts/Footer';
-import type { CaseStudyItem } from '../../../services/public-api';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import type { CaseStudyItem } from '@/services/public-api';
 import CaseStudiesDetailClient from './CaseStudiesDetailClient';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';

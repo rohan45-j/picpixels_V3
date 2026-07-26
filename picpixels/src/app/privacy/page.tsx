@@ -1,13 +1,22 @@
-'use client';
-
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
-import styles from '../../shared/styles/modules/legal.module.css';
+import type { Metadata } from 'next';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import styles from '@/styles/modules/legal.module.css';
 import {
   Shield, Lock, Eye, Cookie, UserCheck, Mail, HelpCircle,
 } from 'lucide-react';
 import Link from 'next/link';
-import Reveal from '../../shared/components/Reveal';
+import Reveal from '@/components/animations/Reveal';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy',
+  description: 'PicPicxels Privacy Policy. Learn how we collect, use, and protect your personal data. GDPR and CCPA compliant.',
+  openGraph: {
+    title: 'Privacy Policy | PicPicxels',
+    description: 'Your privacy matters. Learn how PicPicxels protects your personal information.',
+    type: 'website',
+  },
+};
 
 const stats = [
   { value: 'AES-256', label: 'Encryption Standard' },

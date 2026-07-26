@@ -2,13 +2,13 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, Lightbulb, Award, Layers, ChevronRight, Search, CheckCircle, Quote } from 'lucide-react';
-import { mediaUrl, type CaseStudyItem } from '../../../services/public-api';
-import listStyles from '../../../shared/styles/modules/case-studies.module.css';
-import detailStyles from '../../../shared/styles/modules/case-studies-detail.module.css';
-import Reveal from '../../../shared/components/Reveal';
-import SectionHeading from '../../../shared/components/SectionHeading';
-import AnimatedStatCard from '../../../shared/components/AnimatedStatCard';
-import GalleryLightbox from '../../../shared/components/GalleryLightbox';
+import { mediaUrl, type CaseStudyItem } from '@/services/public-api';
+import listStyles from '@/styles/modules/case-studies.module.css';
+import detailStyles from '@/styles/modules/case-studies-detail.module.css';
+import Reveal from '@/components/animations/Reveal';
+import SectionHeading from '@/components/ui/SectionHeading';
+import AnimatedStatCard from '@/components/ui/AnimatedStatCard';
+import GalleryLightbox from '@/components/media/GalleryLightbox';
 
 function formatDate(dateStr: string | null | undefined): string {
   if (!dateStr) return '';

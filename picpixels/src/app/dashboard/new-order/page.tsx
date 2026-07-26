@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import FileUploadZone from '../../../shared/components/FileUploadZone';
-import styles from '../../../shared/styles/modules/dashboard.module.css';
+import { useRouter } from 'next/navigation';
+import FileUploadZone from '@/components/ui/FileUploadZone';
+import styles from '@/styles/modules/dashboard.module.css';
 
 export default function NewOrder() {
+  const router = useRouter();
   const [step, setStep] = useState(1);
   const [files, setFiles] = useState<File[]>([]);
   const [projectName, setProjectName] = useState('');
@@ -56,7 +57,7 @@ export default function NewOrder() {
 
   const handleSubmitOrder = () => {
     alert('Order successfully submitted to retoucher team! Redirecting...');
-    window.location.href = '/dashboard/overview';
+    router.push('/dashboard/overview');
   };
 
   return (

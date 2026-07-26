@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import Reveal from '../../shared/components/Reveal';
-import styles from '../../shared/styles/modules/services.module.css';
-import type { Service } from '../../services/public-api';
+import Reveal from '@/components/animations/Reveal';
+import styles from '@/styles/modules/services.module.css';
+import type { Service } from '@/services/public-api';
+import OptimizedImage from '@/components/media/OptimizedImage';
 
 export default function ServicesClient({ services }: { services: Service[] }) {
   return (
@@ -32,7 +33,7 @@ export default function ServicesClient({ services }: { services: Service[] }) {
               return (
                 <Link href={link} key={svc.id || i} className={styles.serviceIndexCard}>
                   {svc.image ? (
-                    <img src={svc.image} alt={svc.image_alt || svc.title} style={{ width: '100%', height: 180, objectFit: 'cover', borderRadius: 8 }} loading="lazy" />
+                    <OptimizedImage src={svc.image} alt={svc.image_alt || svc.title} width={400} height={180} className={styles.serviceCardImg} />
                   ) : svc.icon ? (
                     <span className={styles.serviceIndexIcon}>{svc.icon}</span>
                   ) : null}

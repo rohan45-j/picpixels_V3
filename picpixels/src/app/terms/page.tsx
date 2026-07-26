@@ -1,12 +1,21 @@
-'use client';
-
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
-import styles from '../../shared/styles/modules/legal.module.css';
+import type { Metadata } from 'next';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import styles from '@/styles/modules/legal.module.css';
 import { Shield, Scale, FileText, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
-import SectionHeading from '../../shared/components/SectionHeading';
-import Reveal from '../../shared/components/Reveal';
+import SectionHeading from '@/components/ui/SectionHeading';
+import Reveal from '@/components/animations/Reveal';
+
+export const metadata: Metadata = {
+  title: 'Terms & Conditions',
+  description: 'PicPicxels Terms and Conditions. Read about service usage, payments, intellectual property, data protection, and your legal rights.',
+  openGraph: {
+    title: 'Terms & Conditions | PicPicxels',
+    description: 'Read the PicPicxels Terms and Conditions governing your use of our platform and services.',
+    type: 'website',
+  },
+};
 
 const highlights = [
   { num: '01', title: 'Fair Usage', desc: 'Transparent, fair usage policies that protect both our platform and our clients.' },

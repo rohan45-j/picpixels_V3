@@ -1,11 +1,27 @@
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
+import type { Metadata } from 'next';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
 import BlogClient from './BlogClient';
-import type { BlogPost, BlogCategory } from '../../services/public-api';
+import type { BlogPost, BlogCategory } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Blog',
+  description: 'Expert insights, industry trends, and actionable strategies for professional photo editing and e-commerce visual content.',
+  openGraph: {
+    title: 'PicPicxels Blog | Photo Editing Insights & Tips',
+    description: 'Expert insights and strategies for professional photo editing and e-commerce visual content.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'PicPicxels Blog | Photo Editing Insights & Tips',
+    description: 'Expert insights and strategies for professional photo editing and e-commerce visual content.',
+  },
+};
 
 export default async function Blog() {
   let posts: BlogPost[] = [];
@@ -30,7 +46,9 @@ export default async function Blog() {
   return (
     <>
       <Header />
-      <BlogClient posts={posts} categories={categories} featured={featured} trending={trending} />
+      <main id="main-content">
+        <BlogClient posts={posts} categories={categories} featured={featured} trending={trending} />
+      </main>
       <Footer />
     </>
   );

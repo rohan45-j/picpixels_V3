@@ -1,8 +1,7 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
-import type { CaseStudyItem, CaseStudyCategory } from '../../services/public-api';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import type { CaseStudyItem, CaseStudyCategory } from '@/services/public-api';
 import CaseStudiesListClient from './CaseStudiesListClient';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
@@ -41,13 +40,11 @@ export default async function CaseStudiesPage() {
   return (
     <>
       <Header />
-      <Suspense fallback={<div style={{ padding: '5rem', textAlign: 'center' }}>Loading case studies...</div>}>
-        <CaseStudiesListClient
-          initialItems={initialItems}
-          categories={categories ?? []}
-          totalInitial={totalInitial}
-        />
-      </Suspense>
+      <CaseStudiesListClient
+        initialItems={initialItems}
+        categories={categories ?? []}
+        totalInitial={totalInitial}
+      />
       <Footer />
     </>
   );

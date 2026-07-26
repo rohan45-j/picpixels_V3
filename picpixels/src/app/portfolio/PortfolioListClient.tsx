@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
-import { mediaUrl, type PortfolioItem, type PortfolioCategory } from '../../services/public-api';
-import styles from '../../shared/styles/modules/portfolio-grid.module.css';
+import { mediaUrl, type PortfolioItem, type PortfolioCategory } from '@/services/public-api';
+import styles from '@/styles/modules/portfolio-grid.module.css';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 

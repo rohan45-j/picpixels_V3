@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useSiteSettings } from '../../shared/contexts/SiteSettingsContext';
-import styles from '../../shared/styles/modules/login.module.css';
+import { useSiteSettings } from '@/store/SiteSettingsContext';
+import styles from '@/styles/modules/login.module.css';
 
 export default function Login() {
   const { siteSettings } = useSiteSettings();
@@ -48,7 +48,7 @@ export default function Login() {
       localStorage.setItem('access_token', data.access);
       localStorage.setItem('user_email', formData.email);
 
-      window.location.href = '/dashboard/overview';
+      router.push('/dashboard/overview');
     } catch (err) {
       setErrorMsg('Unable to connect to server. Please try again.');
     } finally {

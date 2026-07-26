@@ -1,0 +1,326 @@
+
+> frontend@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.5.3
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.68.116:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 5.4s
+ ○ Compiling / ...
+ ✓ Compiled / in 23.1s (1899 modules)
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+ GET / 200 in 26938ms
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 1196ms (942 modules)
+ GET /icon.svg 200 in 2363ms
+ ○ Compiling /favicon.ico ...
+ ✓ Compiled /favicon.ico in 990ms (944 modules)
+ GET /favicon.ico 200 in 1488ms
+ GET /icon.svg 200 in 39ms
+ GET /icon.svg 200 in 33ms
+ GET /favicon.ico 200 in 34ms
+ GET /icon.svg 200 in 31ms
+ GET /icon.svg 200 in 30ms
+ GET /favicon.ico 200 in 38ms
+ ○ Compiling /services/[slug] ...
+ ✓ Compiled /services/[slug] in 2.5s (1852 modules)
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+ GET / 200 in 322ms
+ GET /favicon.ico 200 in 90ms
+ GET /icon.svg 200 in 94ms
+ GET /icon.svg 200 in 26ms
+ GET /favicon.ico 200 in 32ms
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+ GET /services/image-masking-service 200 in 6687ms
+ ○ Compiling /pricing ...
+ ✓ Compiled /pricing in 1498ms (1823 modules)
+[API] Fetching: http://localhost:8000/api/v1/cms/services/pricing/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/services/pricing/
+ GET /pricing 200 in 2650ms
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+ GET / 200 in 1753ms
+ GET /icon.svg 200 in 60ms
+ GET /favicon.ico 200 in 56ms
+ GET /icon.svg 200 in 43ms
+ GET /icon.svg 200 in 40ms
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+ GET / 200 in 1074ms
+ GET /icon.svg 200 in 37ms
+ GET /favicon.ico 200 in 32ms
+ GET /icon.svg 200 in 29ms
+ GET /icon.svg 200 in 34ms
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+ GET / 200 in 1230ms
+ GET /icon.svg 200 in 39ms
+ GET /favicon.ico 200 in 30ms
+ GET /icon.svg 200 in 33ms
+ GET /icon.svg 200 in 28ms
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+ GET / 200 in 1148ms
+ GET /icon.svg 200 in 40ms
+ GET /favicon.ico 200 in 36ms
+ GET /icon.svg 200 in 45ms
+ GET /icon.svg 200 in 40ms
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+ GET / 200 in 1140ms
+ GET /icon.svg 200 in 26ms
+ GET /favicon.ico 200 in 26ms
+ ○ Compiling /services ...
+ ✓ Compiled /services in 1415ms (1765 modules)
+ GET /services 200 in 2385ms
+ GET /icon.svg 200 in 73ms
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+ GET / 200 in 1612ms
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+ GET /icon.svg 200 in 39ms
+ GET /favicon.ico 200 in 64ms
+ GET / 200 in 1629ms
+ GET /icon.svg 200 in 39ms
+ GET /favicon.ico 200 in 39ms
+ GET /icon.svg 200 in 38ms
+ GET /icon.svg 200 in 35ms
+ ✓ Compiled in 2.7s (1753 modules)
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+ GET / 200 in 1524ms
+ ○ Compiling /icon.svg ...
+ ✓ Compiled /icon.svg in 1104ms (942 modules)
+ ✓ Compiled (944 modules)
+ GET /icon.svg 200 in 1916ms
+ GET /favicon.ico 200 in 1949ms
+ GET /favicon.ico 200 in 30ms
+ GET /icon.svg 200 in 28ms
+ GET /favicon.ico 200 in 31ms
+ ✓ Compiled in 2.5s (1772 modules)
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+ GET / 200 in 746ms
+ GET /favicon.ico 200 in 50ms
+ GET /favicon.ico 200 in 30ms
+ GET /icon.svg 200 in 35ms
+ GET /icon.svg 200 in 34ms
+ GET /favicon.ico 200 in 37ms
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+ ○ Compiling /_error ...
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+ ✓ Compiled /_error in 5.9s (2093 modules)
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+ GET / 200 in 2569ms
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Fetching: http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Fetching: http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Fetching: http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Fetching: http://localhost:8000/api/v1/cms/hero/
+[API] Fetching: http://localhost:8000/api/v1/cms/brands/
+[API] Fetching: http://localhost:8000/api/v1/cms/pricing-config/
+[API] Fetching: http://localhost:8000/api/v1/settings/site/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-us/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/blog/posts/latest/
+[API] Response status: 200 for http://localhost:8000/api/v1/case-studies/api/items/homepage-section/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/why-choose-features/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/hero/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/brands/
+[API] Response status: 200 for http://localhost:8000/api/v1/cms/pricing-config/
+[API] Response status: 200 for http://localhost:8000/api/v1/settings/site/
+ GET / 500 in 14380ms
+ GET / 200 in 458ms
+ ✓ Compiled /favicon.ico in 306ms (1130 modules)
+ GET /favicon.ico 500 in 411ms

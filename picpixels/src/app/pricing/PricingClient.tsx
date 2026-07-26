@@ -4,13 +4,13 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Check, ArrowRight, ChevronDown, HelpCircle } from 'lucide-react';
-import SectionHeading from '../../shared/components/SectionHeading';
-import Reveal from '../../shared/components/Reveal';
-import { mediaUrl, fetchPricingServices, storeOrderSummary, type PricingService } from '../../services/public-api';
-import PricingBanner from '../../shared/components/PricingBanner';
-import PromotionSection from '../../shared/components/PromotionSection';
-import styles from '../../shared/styles/modules/pricing.module.css';
-import type { FAQ, PricingPromotion } from '../../services/public-api';
+import SectionHeading from '@/components/ui/SectionHeading';
+import Reveal from '@/components/animations/Reveal';
+import { mediaUrl, storeOrderSummary, type PricingService } from '@/services/public-api';
+import PricingBanner from '@/components/ui/PricingBanner';
+import PromotionSection from '@/components/ui/PromotionSection';
+import styles from '@/styles/modules/pricing.module.css';
+import type { FAQ, PricingPromotion } from '@/services/public-api';
 
 function StructuredData({ services }: { services: PricingService[] }) {
   const offers = services.flatMap((svc) =>
@@ -94,13 +94,15 @@ function Dropdown({
 export default function PricingClient({
   faqs,
   promotions,
+  services: serverServices,
 }: {
   faqs: FAQ[];
   promotions: PricingPromotion[];
+  services: PricingService[];
 }) {
   const router = useRouter();
-  const [services, setServices] = useState<PricingService[]>([]);
-  const [loadingServices, setLoadingServices] = useState(true);
+  const [services, setServices] = useState<PricingService[]>(serverServices);
+  const [loadingServices, setLoadingServices] = useState(false);
   const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null);
   const [selectedUnitRangeId, setSelectedUnitRangeId] = useState<number | null>(null);
   const [serviceDropdownOpen, setServiceDropdownOpen] = useState(false);
@@ -108,18 +110,14 @@ export default function PricingClient({
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchPricingServices().then((result) => {
-      setServices(result);
-      if (result.length > 0) {
-        setSelectedServiceId(result[0].id);
-        const firstSvc = result[0];
-        if (firstSvc.unit_ranges.length > 0) {
-          setSelectedUnitRangeId(firstSvc.unit_ranges[0].id);
-        }
+    if (serverServices.length > 0) {
+      setSelectedServiceId(serverServices[0].id);
+      const firstSvc = serverServices[0];
+      if (firstSvc.unit_ranges.length > 0) {
+        setSelectedUnitRangeId(firstSvc.unit_ranges[0].id);
       }
-      setLoadingServices(false);
-    });
-  }, []);
+    }
+  }, [serverServices]);
 
   const activeServices = useMemo(() => services.filter((s) => s.is_active), [services]);
 
@@ -155,19 +153,22 @@ export default function PricingClient({
   }, [promotions]);
 
   const handleContinueToOrder = useCallback(
-    (card: typeof cards[number]) => {
+    (card: typeof cards[number], e?: React.FormEvent) => {
+      if (e) e.preventDefault();
       const unitRange = unitRanges.find((u) => u.id === selectedUnitRangeId);
       const priceData = card.prices.find((p) => p.unit_range === selectedUnitRangeId);
-      storeOrderSummary({
-        source: 'pricing',
+      const data = {
+        source: 'pricing' as const,
         title: `${selectedService?.name} - ${card.name}`,
-        description: card.description,
-        image: card.image,
+        description: card.description || '',
+        image: card.image || '',
         price: priceData ? `$${priceData.price}` : '',
-        features: card.features,
-        unitRange: unitRange?.label,
-      });
-      window.location.href = '/order-summary';
+        features: card.features || [],
+        unitRange: unitRange?.label || '',
+      };
+      storeOrderSummary(data);
+      fetch('/api/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(() => {});
+      router.push('/order-summary');
     },
     [selectedService, selectedUnitRangeId, unitRanges, router],
   );
@@ -294,14 +295,27 @@ export default function PricingClient({
                           </>
                         )}
 
-                        <button
-                          type="button"
-                          onClick={() => handleContinueToOrder(card)}
-                          disabled={!priceData}
-                          className={`${styles.cardBtn} ${i === 1 ? styles.cardBtnPrimary : styles.cardBtnSecondary}`}
+                        <form
+                          action="/api/order"
+                          method="POST"
+                          onSubmit={(e) => { handleContinueToOrder(card, e); }}
+                          style={{ display: 'contents' }}
                         >
-                          {card.button_text || 'Continue to Order'} <ArrowRight size={16} />
-                        </button>
+                          <input type="hidden" name="source" value="pricing" />
+                          <input type="hidden" name="title" value={`${selectedService?.name || ''} - ${card.name}`} />
+                          <input type="hidden" name="description" value={card.description || ''} />
+                          <input type="hidden" name="image" value={card.image || ''} />
+                          <input type="hidden" name="price" value={priceData ? `$${priceData.price}` : ''} />
+                          <input type="hidden" name="features" value={JSON.stringify(card.features || [])} />
+                          <input type="hidden" name="unitRange" value={unitRange?.label || ''} />
+                          <button
+                            type="submit"
+                            disabled={!priceData}
+                            className={`${styles.cardBtn} ${i === 1 ? styles.cardBtnPrimary : styles.cardBtnSecondary}`}
+                          >
+                            {card.button_text || 'Continue to Order'} <ArrowRight size={16} />
+                          </button>
+                        </form>
                       </div>
                     </Reveal>
                   );

@@ -3,9 +3,10 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, Clock, ArrowRight, TrendingUp, Star, Mail } from 'lucide-react';
-import Reveal from '../../shared/components/Reveal';
-import styles from '../../shared/styles/modules/blog.module.css';
-import type { BlogPost, BlogCategory } from '../../services/public-api';
+import Reveal from '@/components/animations/Reveal';
+import styles from '@/styles/modules/blog.module.css';
+import type { BlogPost, BlogCategory } from '@/services/public-api';
+import OptimizedImage from '@/components/media/OptimizedImage';
 
 const POSTS_PER_PAGE = 9;
 
@@ -19,7 +20,7 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
       <Link href={`/blog/${post.slug}`} className={styles.card}>
         <div className={styles.cardImageWrap}>
           {post.featured_image ? (
-            <img src={post.featured_image} alt={post.title} className={styles.cardImg} loading="lazy" />
+            <OptimizedImage src={post.featured_image} alt={post.title} className={styles.cardImg} width={400} height={260} />
           ) : (
             <div className={styles.cardImgPlaceholder}>
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
@@ -95,7 +96,7 @@ export default function BlogClient({
                 <Reveal key={post.id} variant="fadeUp" delay={i * 120}>
                   <Link href={`/blog/${post.slug}`} className={styles.featuredCard}>
                     <div className={styles.featuredCardImg}>
-                      {post.featured_image ? <img src={post.featured_image} alt={post.title} /> : <div className={styles.cardImgPlaceholder} />}
+                      {post.featured_image ? <OptimizedImage src={post.featured_image} alt={post.title} width={600} height={400} /> : <div className={styles.cardImgPlaceholder} />}
                     </div>
                     <div className={styles.featuredCardBody}>
                       {post.category_name && <span className={styles.cardCategory}>{post.category_name}</span>}

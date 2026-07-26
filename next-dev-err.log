@@ -1,0 +1,70 @@
+ ⨯ Error: Could not find the module "D:\picpixels\Live_Code\picpixels\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3679198240'
+}
+ ⨯ Error: Could not find the module "D:\picpixels\Live_Code\picpixels\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>)
+    at stringify (<anonymous>)
+    at stringify (<anonymous>) {
+  digest: '4180578698'
+}
+ ⨯ Error: Could not find the module "D:\picpixels\Live_Code\picpixels\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3679198240'
+}
+ ⨯ Error: Could not find the module "D:\picpixels\Live_Code\picpixels\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3679198240'
+}
+ ⨯ Error: Could not find the module "D:\picpixels\Live_Code\picpixels\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2940756724'
+}
+ ⨯ Error: Could not find the module "D:\picpixels\Live_Code\picpixels\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2940756724'
+}
+ ⨯ Error: Could not find the module "D:\picpixels\Live_Code\picpixels\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2940756724'
+}
+ ⨯ Error: Could not find the module "D:\picpixels\Live_Code\picpixels\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2940756724'
+}
+ ⨯ Error: Could not find the module "D:\picpixels\Live_Code\picpixels\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '2940756724'
+}
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  digest: '3351908331'
+}
+ ⨯ Error: Could not find the module "D:\picpixels\Live_Code\picpixels\node_modules\next\dist\next-devtools\userspace\app\segment-explorer-node.js#SegmentViewNode" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '3679198240'
+}
+[TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function]
+ ⨯ [TypeError: __webpack_modules__[moduleId] is not a function] {
+  page: '/'
+}
+ ⨯ Error: Cannot find module './4586.js'
+Require stack:
+- D:\picpixels\Live_Code\picpixels\.next\server\webpack-runtime.js
+- D:\picpixels\Live_Code\picpixels\.next\server\app\favicon.ico\route.js
+- D:\picpixels\Live_Code\picpixels\node_modules\next\dist\server\require.js
+- D:\picpixels\Live_Code\picpixels\node_modules\next\dist\server\load-components.js
+- D:\picpixels\Live_Code\picpixels\node_modules\next\dist\build\utils.js
+- D:\picpixels\Live_Code\picpixels\node_modules\next\dist\build\swc\options.js
+- D:\picpixels\Live_Code\picpixels\node_modules\next\dist\build\swc\index.js
+- D:\picpixels\Live_Code\picpixels\node_modules\next\dist\build\analysis\parse-module.js
+- D:\picpixels\Live_Code\picpixels\node_modules\next\dist\build\analysis\get-page-static-info.js
+- D:\picpixels\Live_Code\picpixels\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- D:\picpixels\Live_Code\picpixels\node_modules\next\dist\server\lib\router-server.js
+- D:\picpixels\Live_Code\picpixels\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\picpixels\Live_Code\picpixels\.next\server\app\favicon.ico\route.js:1:41255)
+    at Object.<anonymous> (D:\picpixels\Live_Code\picpixels\.next\server\app\favicon.ico\route.js:1:41307) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}

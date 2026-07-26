@@ -1,9 +1,19 @@
-"use client";
-import Header from "../../layouts/Header";
-import Footer from "../../layouts/Footer";
-import SectionHeading from "../../shared/components/SectionHeading";
-import styles from "../../shared/styles/modules/company.module.css";
+import type { Metadata } from "next";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import SectionHeading from "@/components/ui/SectionHeading";
+import styles from "@/styles/modules/company.module.css";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Careers",
+  description: "Join the PicPicxels team. We're hiring Senior AI Engineers, UI/UX Designers, Image Retouching Specialists, and more. Remote-friendly culture.",
+  openGraph: {
+    title: "Careers at PicPicxels | Join Our Team",
+    description: "Join the team that's redefining visual commerce. Remote-first culture, competitive pay, and growth opportunities.",
+    type: "website",
+  },
+};
 
 const openRoles = [
   { title: "Senior AI Engineer", dept: "Engineering", type: "Full-time", location: "Remote" },
@@ -33,7 +43,7 @@ export default function Careers() {
         <span className={styles.heroBadge}>Careers</span>
         <h1 className={styles.heroTitle}>Join the Team That's<br />Redefining Visual Commerce</h1>
         <p className={styles.heroSub}>
-          We're a passionate team of photo editors, engineers, and designers crafting
+          We&apos;re a passionate team of photo editors, engineers, and designers crafting
           world-class imagery. If you love visual perfection, PicPicxels is for you.
         </p>
         <div className={styles.heroCta}>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import styles from '../../../shared/styles/modules/dashboard.module.css';
+import styles from '@/styles/modules/dashboard.module.css';
 
 export default function ApiFtpPortal() {
   const [activeTab, setActiveTab] = useState<'curl' | 'python' | 'node'>('curl');

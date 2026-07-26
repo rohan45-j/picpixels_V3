@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
-import Reveal from '../../shared/components/Reveal';
-import FAQAccordion from '../../shared/components/FAQAccordion';
-import SectionHeading from '../../shared/components/SectionHeading';
-import styles from '../../shared/styles/modules/contact.module.css';
-import faqStyles from '../../shared/styles/modules/faq-accordion.module.css';
-import { fetchContactFAQs, type FAQ } from '../../services/public-api';
+import Reveal from '@/components/animations/Reveal';
+import FAQAccordion from '@/components/ui/FAQAccordion';
+import SectionHeading from '@/components/ui/SectionHeading';
+import styles from '@/styles/modules/contact.module.css';
+import faqStyles from '@/styles/modules/faq-accordion.module.css';
+import type { FAQ } from '@/services/public-api';
 
 interface FormData {
   name: string;
@@ -23,17 +23,12 @@ interface FormErrors {
   message?: string;
 }
 
-export default function ContactClient() {
+export default function ContactClient({ faqs }: { faqs: FAQ[] }) {
   const [formData, setFormData] = useState<FormData>({ name: '', email: '', phone: '', service: '', message: '' });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [contactFaqs, setContactFaqs] = useState<FAQ[]>([]);
-
-  useEffect(() => {
-    fetchContactFAQs().then(setContactFaqs).catch(() => {});
-  }, []);
 
   const validate = (): boolean => {
     const errs: FormErrors = {};
@@ -202,7 +197,7 @@ export default function ContactClient() {
         </div>
       </section>
 
-      {contactFaqs.length > 0 && (
+      {faqs.length > 0 && (
         <section className={faqStyles.faqSection}>
           <div className={faqStyles.faqInner}>
             <SectionHeading
@@ -210,7 +205,7 @@ export default function ContactClient() {
               text="Frequently Asked Questions"
               subtitle="Find answers to common questions about our services and support."
             />
-            <FAQAccordion faqs={contactFaqs} />
+            <FAQAccordion faqs={faqs} />
           </div>
         </section>
       )}

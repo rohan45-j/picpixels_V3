@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { CheckCircle, AlertCircle, Send, Zap, Shield, RefreshCw, Users, ChevronDown, FileText, Link as LinkIcon, Upload } from 'lucide-react';
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
-import FileUploadZone from '../../shared/components/FileUploadZone';
-import { submitFreeTrial } from '../../services/public-api';
-import styles from '../../shared/styles/modules/free-trial.module.css';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import FileUploadZone from '@/components/ui/FileUploadZone';
+import { submitFreeTrial } from '@/services/public-api';
+import styles from '@/styles/modules/free-trial.module.css';
 
 interface FormData {
   full_name: string;

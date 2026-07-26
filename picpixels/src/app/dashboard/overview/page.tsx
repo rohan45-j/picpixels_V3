@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import styles from '../../../shared/styles/modules/dashboard.module.css';
+import styles from '@/styles/modules/dashboard.module.css';
 
 interface DashboardOrder {
   id: string;

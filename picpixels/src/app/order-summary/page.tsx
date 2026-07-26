@@ -26,10 +26,10 @@ import {
   Phone,
   HelpCircle,
 } from 'lucide-react';
-import Header from '../../layouts/Header';
-import Footer from '../../layouts/Footer';
-import { mediaUrl, getOrderSummary, type OrderSummaryData } from '../../services/public-api';
-import styles from '../../shared/styles/modules/order-summary.module.css';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import { mediaUrl, getOrderSummary, type OrderSummaryData } from '@/services/public-api';
+import styles from '@/styles/modules/order-summary.module.css';
 
 /* ══════════════════════════════════════
    PROJECT REQUIREMENTS
@@ -407,7 +407,13 @@ export default function OrderSummaryPage() {
   const [zipFile, setZipFile] = useState<File | null>(null);
 
   useEffect(() => {
-    const summary = getOrderSummary();
+    let summary = getOrderSummary();
+    if (!summary) {
+      try {
+        const match = document.cookie.match(/(?:^|;\s*)order_summary=([^;]*)/);
+        if (match) summary = JSON.parse(decodeURIComponent(match[1]));
+      } catch { /* ignore */ }
+    }
     setData(summary);
     setLoading(false);
   }, []);

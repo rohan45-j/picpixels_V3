@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { fetchNotifications, markNotificationRead, markAllNotificationsRead, deleteNotification, type NotificationItem } from '../../../services/notifications-api';
-import styles from '../../../shared/styles/modules/dashboard.module.css';
+import { fetchNotifications, markNotificationRead, markAllNotificationsRead, deleteNotification, type NotificationItem } from '@/services/notifications-api';
+import styles from '@/styles/modules/dashboard.module.css';
 
 type FilterTab = 'all' | 'unread';
 

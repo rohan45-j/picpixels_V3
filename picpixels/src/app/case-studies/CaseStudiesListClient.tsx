@@ -1,8 +1,8 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
-import { mediaUrl, type CaseStudyItem, type CaseStudyCategory } from '../../services/public-api';
-import styles from '../../shared/styles/modules/case-studies.module.css';
+import { mediaUrl, type CaseStudyItem, type CaseStudyCategory } from '@/services/public-api';
+import styles from '@/styles/modules/case-studies.module.css';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 const PER_PAGE = 12;
@@ -39,6 +39,7 @@ export default function CaseStudiesListClient({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const isInitialMount = useRef(true);
   const totalPages = Math.ceil(totalCount / PER_PAGE);
 
   const hasActiveFilters = activeCategory || debouncedSearch || sort !== 'newest';
@@ -80,6 +81,10 @@ export default function CaseStudiesListClient({
   }, []);
 
   useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
     fetchItems(1, activeCategory, debouncedSearch, sort);
   }, [activeCategory, debouncedSearch, sort, fetchItems]);
 
