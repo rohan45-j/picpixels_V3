@@ -937,7 +937,7 @@ export async function fetchCMSPage(slug: string): Promise<CMSPage | null> {
 
 export async function fetchSiteSettings(): Promise<SiteSetting | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/settings/site/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/settings/site/?_=${Date.now()}`);
     if (!resp.ok) return null;
     const data = await resp.json();
     return data.results?.[0] ?? null;
