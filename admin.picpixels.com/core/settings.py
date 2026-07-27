@@ -344,14 +344,7 @@ UNFOLD = {
     "SITE_TITLE": "PicPicxels Admin",
     "SITE_HEADER": "PicPicxels",
     "SITE_SUBHEADER": "Content Management System",
-    "SITE_FAVICONS": [
-        {
-            "rel": "icon",
-            "sizes": "32x32",
-            "type": "image/svg+xml",
-            "href": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>",
-        },
-    ],
+    "SITE_FAVICONS": [],
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
     "THEME": "light",
