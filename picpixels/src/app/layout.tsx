@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { SiteSettingsProvider } from "@/store/SiteSettingsContext";
+import { SharedDataProvider } from "@/store/SharedDataContext";
 import { DynamicFavicon } from "@/components/media/DynamicFavicon";
 import FloatingActionButtons from "@/components/ui/FloatingActionButtons";
 import "./globals.css";
 import "@/styles/animations.css";
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -30,11 +33,25 @@ export const metadata: Metadata = {
   }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch shared data server-side for SSR — enables instant header/footer on initial load
+  const [siteSettings, navItems, services] = await Promise.all([
+    fetch(`${BASE_URL}/api/v1/settings/site/`, { next: { revalidate: 60 } })
+      .then(r => r.ok ? r.json() : null)
+      .catch(() => null),
+    fetch(`${BASE_URL}/api/v1/navigation/?location=header`, { next: { revalidate: 60 } })
+      .then(r => r.ok ? r.json() : [])
+      .catch(() => []),
+    fetch(`${BASE_URL}/api/v1/cms/services/?mega_menu=true`, { next: { revalidate: 60 } })
+      .then(r => r.ok ? r.json() : [])
+      .then(data => data.results || data || [])
+      .catch(() => []),
+  ]);
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -72,10 +89,12 @@ export default function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
-        <SiteSettingsProvider>
-          <DynamicFavicon />
-          {children}
-          <FloatingActionButtons />
+        <SiteSettingsProvider initialSettings={siteSettings}>
+          <SharedDataProvider initialNavItems={navItems} initialServices={services}>
+            <DynamicFavicon />
+            {children}
+            <FloatingActionButtons />
+          </SharedDataProvider>
         </SiteSettingsProvider>
       </body>
     </html>

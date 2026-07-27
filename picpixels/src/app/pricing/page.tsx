@@ -4,7 +4,9 @@ import Footer from '@/components/layout/Footer';
 import PricingClient from './PricingClient';
 import { fetchPricingServices, type FAQ, type PricingPromotion, type PricingService } from '@/services/public-api';
 
-export const dynamic = 'force-dynamic';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Pricing',
@@ -23,8 +25,8 @@ export default async function Pricing() {
 
   try {
     const [faqsResp, promoResp] = await Promise.all([
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com'}/api/v1/cms/faqs/`, { cache: 'no-store' }),
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com'}/api/v1/cms/pricing-promotions/`, { cache: 'no-store' }),
+      fetch(`${BASE_URL}/api/v1/cms/faqs/`, { next: { revalidate: 60 } }),
+      fetch(`${BASE_URL}/api/v1/cms/pricing-promotions/`, { next: { revalidate: 60 } }),
     ]);
     if (faqsResp.ok) {
       const data = await faqsResp.json();

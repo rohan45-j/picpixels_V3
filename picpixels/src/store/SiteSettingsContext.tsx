@@ -25,12 +25,16 @@ const SiteSettingsContext = createContext<SiteSettingsContextValue>({
   error: false,
 });
 
-export function SiteSettingsProvider({ children }: { children: ReactNode }) {
-  const [siteSettings, setSiteSettings] = useState<SiteSetting | null>(DEFAULT_SETTINGS);
-  const [loading, setLoading] = useState(true);
+export function SiteSettingsProvider({ children, initialSettings }: { children: ReactNode; initialSettings?: SiteSetting | null }) {
+  const [siteSettings, setSiteSettings] = useState<SiteSetting | null>(initialSettings ?? DEFAULT_SETTINGS);
+  const [loading, setLoading] = useState(!initialSettings);
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    if (initialSettings) {
+      setLoading(false);
+      return;
+    }
     fetchSiteSettings()
       .then((data) => {
         setSiteSettings(data);
@@ -40,7 +44,7 @@ export function SiteSettingsProvider({ children }: { children: ReactNode }) {
         setError(true);
         setLoading(false);
       });
-  }, []);
+  }, [initialSettings]);
 
   return (
     <SiteSettingsContext.Provider value={{ siteSettings, loading, error }}>

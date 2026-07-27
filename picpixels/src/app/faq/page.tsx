@@ -5,7 +5,7 @@ import type { FAQ, FAQCategory } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function FAQPage() {
   let faqs: FAQ[] = [];
@@ -13,8 +13,8 @@ export default async function FAQPage() {
 
   try {
     const [faqResp, catResp] = await Promise.all([
-      fetch(`${BASE_URL}/api/v1/cms/faqs/`, { cache: 'no-store' }),
-      fetch(`${BASE_URL}/api/v1/cms/faq/categories/`, { cache: 'no-store' }),
+      fetch(`${BASE_URL}/api/v1/cms/faqs/`, { next: { revalidate: 60 } }),
+      fetch(`${BASE_URL}/api/v1/cms/faq/categories/`, { next: { revalidate: 60 } }),
     ]);
     if (faqResp.ok) { const d = await faqResp.json(); faqs = d.results || d; }
     if (catResp.ok) { const d = await catResp.json(); categories = d.results || d; }

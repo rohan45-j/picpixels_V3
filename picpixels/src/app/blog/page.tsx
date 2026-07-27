@@ -6,7 +6,7 @@ import type { BlogPost, BlogCategory } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Blog',
@@ -31,10 +31,10 @@ export default async function Blog() {
 
   try {
     const [postsResp, catsResp, featuredResp, trendingResp] = await Promise.all([
-      fetch(`${BASE_URL}/api/v1/cms/blog/posts/`, { cache: 'no-store' }),
-      fetch(`${BASE_URL}/api/v1/cms/blog/categories/`, { cache: 'no-store' }),
-      fetch(`${BASE_URL}/api/v1/cms/blog/posts/?is_featured=true`, { cache: 'no-store' }),
-      fetch(`${BASE_URL}/api/v1/cms/blog/posts/?is_trending=true`, { cache: 'no-store' }),
+      fetch(`${BASE_URL}/api/v1/cms/blog/posts/`, { next: { revalidate: 60 } }),
+      fetch(`${BASE_URL}/api/v1/cms/blog/categories/`, { next: { revalidate: 60 } }),
+      fetch(`${BASE_URL}/api/v1/cms/blog/posts/?is_featured=true`, { next: { revalidate: 60 } }),
+      fetch(`${BASE_URL}/api/v1/cms/blog/posts/?is_trending=true`, { next: { revalidate: 60 } }),
     ]);
 
     if (postsResp.ok) { const d = await postsResp.json(); posts = d.results || d; }

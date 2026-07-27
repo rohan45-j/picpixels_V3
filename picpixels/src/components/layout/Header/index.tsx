@@ -2,28 +2,22 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Menu, X, Phone } from 'lucide-react';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import HomeLink from '@/components/layout/HomeLink';
 import MegaMenu from './MegaMenu';
 import { useSiteSettings } from '@/store/SiteSettingsContext';
+import { useSharedData } from '@/store/SharedDataContext';
 import styles from './styles.module.css';
-import { fetchNavigationItems, fetchMegaMenuServices, mediaUrl, type Service, type NavigationItem } from '@/services/public-api';
+import { mediaUrl } from '@/services/public-api';
 
 export default function Header() {
   const pathname = usePathname();
   const { siteSettings, loading: settingsLoading } = useSiteSettings();
+  const { navItems, services } = useSharedData();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
-  const [services, setServices] = useState<Service[]>([]);
-  const [navItems, setNavItems] = useState<NavigationItem[]>([]);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    fetchNavigationItems('header').then(setNavItems).catch(() => {});
-    fetchMegaMenuServices().then(setServices).catch(() => {});
-  }, []);
 
   useEffect(() => {
     setActiveDropdown(null);
@@ -61,10 +55,10 @@ export default function Header() {
   };
 
   const isExternal = (url: string) => url?.startsWith('http://') || url?.startsWith('https://');
-  const hasChildren = (item: NavigationItem) => item.children && item.children.length > 0;
-  const isMegaMenu = (item: NavigationItem) => item.css_class?.includes('mega-menu');
+  const hasChildren = (item: any) => item.children && item.children.length > 0;
+  const isMegaMenu = (item: any) => item.css_class?.includes('mega-menu');
 
-  const renderDesktopLink = (item: NavigationItem) => {
+  const renderDesktopLink = (item: any) => {
     if (isExternal(item.url)) {
       return (
         <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" className={styles.navLink}>
@@ -79,7 +73,7 @@ export default function Header() {
     );
   };
 
-  const renderDesktopDropdown = (item: NavigationItem) => {
+  const renderDesktopDropdown = (item: any) => {
     const children = item.children || [];
     const isOpen = activeDropdown === item.label;
     return (
@@ -96,9 +90,7 @@ export default function Header() {
           aria-haspopup="true"
         >
           {item.label}
-          <span
-            className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}
-          >
+          <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}>
             <ChevronDown />
           </span>
         </button>
@@ -107,7 +99,7 @@ export default function Header() {
             <MegaMenu services={services} />
           ) : (
             <div className={styles.simpleDropdown}>
-              {children.map((child) => {
+              {children.map((child: any) => {
                 if (isExternal(child.url)) {
                   return (
                     <a key={child.id} href={child.url} target="_blank" rel="noopener noreferrer" className={styles.simpleDropdownItem}>
@@ -128,7 +120,7 @@ export default function Header() {
     );
   };
 
-  const renderMobileLink = (item: NavigationItem) => {
+  const renderMobileLink = (item: any) => {
     if (isExternal(item.url)) {
       return (
         <a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer" className={styles.mobileNavBtn} onClick={() => setMobileOpen(false)}>
@@ -143,7 +135,7 @@ export default function Header() {
     );
   };
 
-  const renderMobileAccordion = (item: NavigationItem) => {
+  const renderMobileAccordion = (item: any) => {
     const children = item.children || [];
     const isOpen = mobileAccordion === item.label;
     return (
@@ -182,7 +174,7 @@ export default function Header() {
               </a>
             </>
           ) : (
-            children.map((child) => {
+            children.map((child: any) => {
               if (isExternal(child.url)) {
                 return (
                   <a key={child.id} href={child.url} target="_blank" rel="noopener noreferrer" className={styles.mobileSubItem} onClick={() => setMobileOpen(false)}>
@@ -226,10 +218,7 @@ export default function Header() {
         </nav>
 
         <div className={styles.desktopActions}>
-          <a
-            href="/book-demo"
-            className={styles.demoCta}
-          >
+          <a href="/book-demo" className={styles.demoCta}>
             <Phone />
             Book a Free Demo
           </a>
@@ -255,10 +244,7 @@ export default function Header() {
           <div className={styles.mobileDivider} />
         </div>
         <div className={styles.mobileActions}>
-          <a
-            href="/book-demo"
-            className={`${styles.mobileActionBtn} ${styles.mobileActionBtnPrimary}`}
-          >
+          <a href="/book-demo" className={`${styles.mobileActionBtn} ${styles.mobileActionBtnPrimary}`}>
             <Phone />
             Book a Free Demo
           </a>

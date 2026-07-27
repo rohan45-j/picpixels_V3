@@ -9,7 +9,7 @@ export function mediaUrl(path: string | null | undefined): string | undefined {
 function apiFetch(url: string): Promise<Response> {
   console.log('[API] Fetching:', url);
   return fetch(url, {
-    cache: 'no-store',
+    cache: 'force-cache',
   }).then((resp) => {
     console.log('[API] Response status:', resp.status, 'for', url);
     return resp;

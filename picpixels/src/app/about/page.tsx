@@ -7,7 +7,7 @@ import { fetchBrandLogos, fetchSiteSettings } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -24,7 +24,7 @@ export default async function About() {
   let brandLogos: BrandLogo[] = [];
   let siteSettings: SiteSetting | null = null;
   try {
-    const resp = await fetch(`${BASE_URL}/api/v1/cms/testimonials/`, { cache: 'no-store' });
+    const resp = await fetch(`${BASE_URL}/api/v1/cms/testimonials/`, { next: { revalidate: 60 } });
     if (resp.ok) {
       const data = await resp.json();
       testimonials = data.results || [];

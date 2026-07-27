@@ -6,7 +6,7 @@ import type { Service } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Services',
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 export default async function Services() {
   let services: Service[] = [];
   try {
-    const resp = await fetch(`${BASE_URL}/api/v1/cms/services/?brief=1`, { cache: 'no-store' });
+    const resp = await fetch(`${BASE_URL}/api/v1/cms/services/?brief=1`, { next: { revalidate: 60 } });
     if (resp.ok) {
       const data = await resp.json();
       services = data.results || data;

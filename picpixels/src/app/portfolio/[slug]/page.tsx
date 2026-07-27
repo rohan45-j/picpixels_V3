@@ -7,11 +7,11 @@ import PortfolioDetailClient from './PortfolioDetailClient';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 async function fetchJson<T>(url: string): Promise<T | null> {
   try {
-    const resp = await fetch(url, { cache: 'no-store' });
+    const resp = await fetch(url, { next: { revalidate: 60 } });
     if (!resp.ok) return null;
     return await resp.json();
   } catch {

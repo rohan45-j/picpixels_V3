@@ -4,7 +4,9 @@ import Footer from '@/components/layout/Footer';
 import ContactClient from './ContactClient';
 import type { FAQ } from '@/services/public-api';
 
-export const dynamic = 'force-dynamic';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: 'Contact Us | PicPicxels',
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
 export default async function Contact() {
   let faqs: FAQ[] = [];
   try {
-    const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com'}/api/v1/cms/faqs/contact/`, { cache: 'no-store' });
+    const resp = await fetch(`${BASE_URL}/api/v1/cms/faqs/contact/`, { next: { revalidate: 60 } });
     if (resp.ok) { const d = await resp.json(); faqs = d.results || d; }
   } catch {}
 
