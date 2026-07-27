@@ -43,6 +43,7 @@ export interface SiteSetting {
   logo?: string;
   logo_alt?: string;
   favicon?: string;
+  updated_at?: string;
   support_email?: string;
   support_phone?: string;
   address?: string;

@@ -26,10 +26,11 @@ export function DynamicFavicon() {
     if (!href) return;
 
     const url = faviconUrl(href);
+    const version = siteSettings?.updated_at ? `?v=${siteSettings.updated_at}` : '';
     ['icon', 'apple-touch-icon'].forEach(rel => {
       const link = document.createElement('link');
       link.rel = rel;
-      link.href = url;
+      link.href = `${url}${version}`;
       document.head.appendChild(link);
     });
   }, [siteSettings?.favicon]);
