@@ -6,7 +6,10 @@ import { useSiteSettings } from '@/store/SiteSettingsContext';
 function faviconUrl(path: string): string {
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
   const base = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
-  const normalized = path.startsWith('/') ? path : `/${path}`;
+  const normalized = path.startsWith('/media/') ? path : `/${path}`;
+  if (normalized.startsWith('/media/')) {
+    return `${base}${normalized}`;
+  }
   return `${base}/media${normalized}`;
 }
 

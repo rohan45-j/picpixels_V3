@@ -3,8 +3,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com
 export function mediaUrl(path: string | null | undefined): string | undefined {
   if (!path) return undefined;
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  // Django MEDIA_URL is /media/ — ensure relative image paths include it
-  const normalized = path.startsWith('/') ? path : `/${path}`;
+  // Django MEDIA_URL is /media/ — handle both relative paths with and without /media/ prefix
+  const normalized = path.startsWith('/media/') ? path : `/${path}`;
+  if (normalized.startsWith('/media/')) {
+    return `${BASE_URL}${normalized}`;
+  }
   return `${BASE_URL}/media${normalized}`;
 }
 
