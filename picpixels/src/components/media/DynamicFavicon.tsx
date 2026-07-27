@@ -18,21 +18,20 @@ export function DynamicFavicon() {
 
   useEffect(() => {
     const href = siteSettings?.favicon;
+    // First, remove ALL existing favicon links to prevent defaults
+    document.querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="apple-touch-icon"], link[rel="shortcut icon"]')
+      .forEach(el => el.remove());
+
+    // Then add the one from admin panel settings (if set)
     if (!href) return;
 
     const url = faviconUrl(href);
-    const links = document.querySelectorAll<HTMLLinkElement>('link[rel="icon"], link[rel="apple-touch-icon"]');
-
-    if (links.length > 0) {
-      links.forEach(el => { el.href = url; });
-    } else {
-      ['icon', 'apple-touch-icon'].forEach(rel => {
-        const link = document.createElement('link');
-        link.rel = rel;
-        link.href = url;
-        document.head.appendChild(link);
-      });
-    }
+    ['icon', 'apple-touch-icon'].forEach(rel => {
+      const link = document.createElement('link');
+      link.rel = rel;
+      link.href = url;
+      document.head.appendChild(link);
+    });
   }, [siteSettings?.favicon]);
 
   return null;
