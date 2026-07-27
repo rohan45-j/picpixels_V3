@@ -52,6 +52,13 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="preconnect" href="https://admin.picpixels.com" />
+        {siteSettings?.favicon && (
+          <>
+            <link rel="icon" href={`${siteSettings.favicon}?v=${siteSettings.updated_at || ''}`} />
+            <link rel="apple-touch-icon" href={`${siteSettings.favicon}?v=${siteSettings.updated_at || ''}`} />
+          </>
+        )}
         <script
           dangerouslySetInnerHTML={{
             __html: `
