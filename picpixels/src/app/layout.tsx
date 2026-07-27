@@ -38,6 +38,7 @@ export default async function RootLayout({
   const [siteSettings, navItems, services] = await Promise.all([
     fetch(`${BASE_URL}/api/v1/settings/site/`, { next: { revalidate: 60 } })
       .then(r => r.ok ? r.json() : null)
+      .then(data => (data?.results && data.results.length > 0) ? data.results[0] : data)
       .catch(() => null),
     fetch(`${BASE_URL}/api/v1/navigation/?location=header`, { next: { revalidate: 60 } })
       .then(r => r.ok ? r.json() : { results: [] })
