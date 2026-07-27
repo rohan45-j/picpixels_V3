@@ -44,11 +44,12 @@ export default async function RootLayout({
       .then(r => r.ok ? r.json() : null)
       .catch(() => null),
     fetch(`${BASE_URL}/api/v1/navigation/?location=header`, { next: { revalidate: 60 } })
-      .then(r => r.ok ? r.json() : [])
+      .then(r => r.ok ? r.json() : { results: [] })
+      .then(data => Array.isArray(data) ? data : (data?.results ?? []))
       .catch(() => []),
     fetch(`${BASE_URL}/api/v1/cms/services/?mega_menu=true`, { next: { revalidate: 60 } })
-      .then(r => r.ok ? r.json() : [])
-      .then(data => data.results || data || [])
+      .then(r => r.ok ? r.json() : { results: [] })
+      .then(data => Array.isArray(data) ? data : (data?.results ?? []))
       .catch(() => []),
   ]);
 
