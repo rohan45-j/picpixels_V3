@@ -19,11 +19,7 @@ export const metadata: Metadata = {
   description: "Get pixel-perfect photo editing services at affordable pricing. We offer clipping path, background removal, image masking, ghost mannequin, retouching, color correction & more. 5M+ images edited.",
   keywords: ["photo editing", "clipping path", "background removal", "image retouching", "ghost mannequin", "color correction", "ecommerce image editing", "PicPicxels"],
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/icon.svg", type: "image/svg+xml" },
-    ],
-    apple: [{ url: "/favicon.ico" }],
+    // DynamicFavicon component handles favicon from admin-panel settings
   },
   openGraph: {
     title: "PicPicxels | Professional Photo Editing Services at Affordable Pricing",
