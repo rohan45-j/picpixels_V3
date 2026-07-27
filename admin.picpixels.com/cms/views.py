@@ -47,7 +47,7 @@ class NoCacheOnWriteMixin:
     def finalize_response(self, request, response, *args, **kwargs):
         response = super().finalize_response(request, response, *args, **kwargs)
         if request.method == 'GET' and not DEBUG:
-            response['Cache-Control'] = f'public, max-age={CACHE_TTL}, s-maxage={CACHE_TTL * 2}, stale-while-revalidate={CACHE_TTL * 10}'
+            response['Cache-Control'] = 'public, max-age=5, s-maxage=0, must-revalidate'
         else:
             response['Cache-Control'] = 'no-store'
         return response

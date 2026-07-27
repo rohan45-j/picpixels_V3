@@ -29,7 +29,7 @@ class SiteSettingViewSet(viewsets.ModelViewSet):
     def finalize_response(self, request, response, *args, **kwargs):
         response = super().finalize_response(request, response, *args, **kwargs)
         if request.method == 'GET':
-            response['Cache-Control'] = f'public, max-age={CACHE_TTL * 10}, s-maxage={CACHE_TTL * 20}, stale-while-revalidate={CACHE_TTL * 60}'
+            response['Cache-Control'] = 'public, max-age=5, s-maxage=0, must-revalidate'
         else:
             response['Cache-Control'] = 'no-store'
         return response
