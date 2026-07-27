@@ -5,8 +5,9 @@ import { useSiteSettings } from '@/store/SiteSettingsContext';
 
 function faviconUrl(path: string): string {
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  const base = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-  return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
+  const base = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  return `${base}/media${normalized}`;
 }
 
 export function DynamicFavicon() {
