@@ -21,8 +21,8 @@ export default function PortfolioGrid({
       activeCategory === ''
         ? portfolios.map((item, index) => ({ ...item, index: index + 1 }))
         : portfolios
-            .filter((item) => item.category_slug === activeCategory)
-            .map((item, index) => ({ ...item, index: index + 1 })),
+          .filter((item) => item.category_slug === activeCategory)
+          .map((item, index) => ({ ...item, index: index + 1 })),
     [activeCategory, portfolios]
   );
 
@@ -57,7 +57,7 @@ export default function PortfolioGrid({
       <div className={styles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={styles.header}>
-            <div className={styles.tag}>Project Portfolio</div>
+            {/* <div className={styles.tag}>Project Portfolio</div> */}
             <SectionHeading text="Our Latest Work" className={styles.title} />
             <div className={styles.divider} />
             <p className={styles.subtitle}>

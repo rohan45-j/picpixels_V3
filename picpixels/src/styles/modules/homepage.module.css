@@ -580,14 +580,17 @@
   font-size: 3.5rem;
   font-weight: 900;
   font-family: Arial, Helvetica, sans-serif;
-  color: rgba(255, 138, 80, 0.08);
+  color: var(--color-primary);
   line-height: 1;
   margin-bottom: 0.75rem;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 8px rgba(255, 138, 80, 0.3);
 }
 
 .processCard:hover .processStepNum {
-  color: rgba(255, 138, 80, 0.18);
+  color: var(--color-primary);
+  transform: scale(1.05);
+  text-shadow: 0 0 16px rgba(255, 138, 80, 0.5), 0 0 32px rgba(255, 138, 80, 0.3);
 }
 
 .processIconWrap {
@@ -658,6 +661,14 @@
 
   .processStepNum {
     font-size: 2.5rem;
+    color: var(--color-primary);
+    text-shadow: 0 0 8px rgba(255, 138, 80, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .processCard:hover .processStepNum {
+    transform: scale(1.08);
+    text-shadow: 0 0 16px rgba(255, 138, 80, 0.5), 0 0 32px rgba(255, 138, 80, 0.3);
   }
 }
 
@@ -703,19 +714,20 @@
     position: absolute;
     left: 0;
     top: 1.25rem;
-    width: 30px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: var(--color-primary);
-    background: rgba(255, 138, 80, 0.1);
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    font-weight: 900;
+    color: #fff;
+    background: var(--color-primary);
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 0;
     line-height: 1;
+    box-shadow: 0 4px 16px rgba(255, 138, 80, 0.4);
+    border: 2px solid #fff;
   }
 
   .processIconWrap {
