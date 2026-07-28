@@ -19,8 +19,7 @@ export default function ServiceToolsSection({ tools, title }: Props) {
       <div className={techStyles.container}>
         <Reveal variant="fadeUp" once={false}>
           <SectionHeading
-            tag="Expertise"
-            text={title || 'Our Technology Expertise in Photo Editing'}
+            text={title || 'Tech Expertise in Photo Editing'}
             subtitle="Every image is processed using professional-grade tools trusted by industry leaders worldwide."
           />
         </Reveal>

@@ -225,7 +225,6 @@ function AboutFeaturesSection({ service }: { service: Service }) {
     <section className={styles.aboutFeaturesSection}>
       <div className="container">
         <SectionHeading
-          tag="About This Service"
           text={`Overview of ${service.title}`}
           subtitle={`Learn how our professional ${service.title.toLowerCase()} service can transform your product photography`}
         />
@@ -293,7 +292,7 @@ export default function ServiceDetailClient({
       <section className={styles.sectionPaddingLg} style={{ background: 'var(--color-bg, #f8f9fa)' }}>
         <div className="container">
           <Reveal variant="fadeUp" once={false}>
-            <SectionHeading tag="Clients Feedback" text="Our Clients &amp; Reviews" />
+            <SectionHeading text="Our Clients &amp; Reviews" />
           </Reveal>
           <Reveal variant="fadeIn" delay={200}>
             <TestimonialCarousel testimonials={testimonials} />
@@ -321,7 +320,6 @@ export default function ServiceDetailClient({
         <section className={faqStyles.faqSection}>
           <div className={faqStyles.faqInner}>
             <SectionHeading
-              tag="FAQ"
               text={`${service.title} - FAQs`}
               subtitle={`Frequently asked questions about our ${service.title.toLowerCase()} service.`}
             />
@@ -332,7 +330,7 @@ export default function ServiceDetailClient({
       {related.length > 0 && (
         <section className={styles.relatedSection}>
           <div className="container">
-            <SectionHeading tag="More Services" text="Related Services" subtitle="Explore more of our professional photo editing services" />
+            <SectionHeading text="Related Services" subtitle="Explore more of our professional photo editing services" />
             <div className={styles.serviceIndexGrid}>
               {related.map((svc) => (
                 <Link key={svc.id} href={`/services/${svc.slug}`} className={styles.serviceIndexCard}>

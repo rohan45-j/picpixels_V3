@@ -19,7 +19,7 @@ export default function ServiceWhyChooseSection({ cards, title }: Props) {
       <div className={wcuStyles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={wcuStyles.header}>
-            <SectionHeading tag="Why Choose Us" text={title || 'Why Choose Us'} />
+            <SectionHeading text={title || 'Why Choose Us'} />
           </div>
         </Reveal>
 

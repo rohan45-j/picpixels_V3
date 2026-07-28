@@ -48,7 +48,6 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
         <Reveal variant="fadeUp" duration={700}>
           <div className={styles.header}>
             <SectionHeading
-              tag="Featured Case Study"
               text="Case Study"
               subtitle="Real results from real clients — see how we transform challenges into success stories"
             />

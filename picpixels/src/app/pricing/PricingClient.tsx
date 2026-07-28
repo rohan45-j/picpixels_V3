@@ -330,7 +330,6 @@ export default function PricingClient({
             <div className={styles.faqInner}>
               <Reveal variant="fadeUp">
                 <SectionHeading
-                  tag="FAQ"
                   text="Frequently Asked Questions"
                 />
               </Reveal>

@@ -15,8 +15,7 @@ export default function TechExpertiseSection({ technologies }: { technologies: T
       <div className={styles.container}>
         <Reveal variant="fadeUp" once={false}>
         <SectionHeading
-          tag="Expertise"
-          text="Our Technology Expertise in Photo Editing"
+          text="Tech Expertise in Photo Editing"
           subtitle="No technologies available. Add them in the Django Admin."
         />
         </Reveal>
@@ -30,8 +29,7 @@ export default function TechExpertiseSection({ technologies }: { technologies: T
       <div className={styles.container}>
         <Reveal variant="fadeUp" once={false}>
         <SectionHeading
-          tag="Expertise"
-          text="Our Technology Expertise in Photo Editing"
+          text="Tech Expertise in Photo Editing"
           subtitle="Every image is processed using professional-grade tools trusted by industry leaders worldwide."
         />
         </Reveal>

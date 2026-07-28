@@ -80,8 +80,7 @@ export default function ContactSection({ siteSettings: serverSettings }: { siteS
         <Reveal variant="fadeUp" once={false}>
         <header className={styles.header}>
           <SectionHeading
-            tag="Contact Us"
-            text="Have a project in mind? We&apos;d love to hear from you."
+            text="Have a project in mind? We'd love to hear from you."
             subtitle="Contact us for custom 3D product visualization, pricing inquiries, or support."
           />
         </header>

@@ -45,7 +45,7 @@ export default function Support() {
       {/* Contact Methods */}
       <section className={styles.sectionAlt}>
         <div className={styles.sectionAltInner}>
-          <SectionHeading tag="Get in Touch" text="Contact Options" />
+          <SectionHeading text="Contact Options" />
           <div className={styles.cardsGrid}>
             {contactMethods.map((c) => (
               <div key={c.title} className={styles.card}>
@@ -65,7 +65,7 @@ export default function Support() {
       <section className={styles.section}>
         <div className={styles.contactGrid}>
           <div>
-            <SectionHeading tag="Send a Message" text="Get in Touch" center={false} />
+            <SectionHeading text="Get in Touch" center={false} />
             <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
               <div className={styles.formRow}>
                 <input
@@ -105,7 +105,7 @@ export default function Support() {
           </div>
 
           <div>
-            <SectionHeading tag="Quick Info" text="Support Details" center={false} />
+            <SectionHeading text="Support Details" center={false} />
             <div className={styles.contactInfo} style={{ marginTop: "1.5rem" }}>
               <div className={styles.contactItem}>
                 <span className={styles.contactItemIcon}>🕐</span>
@@ -143,7 +143,7 @@ export default function Support() {
       {/* FAQ */}
       <section className={styles.sectionAlt}>
         <div className={styles.sectionAltInner}>
-          <SectionHeading tag="Common Questions" text="Frequently Asked Questions" />
+          <SectionHeading text="Frequently Asked Questions" />
           <div className={styles.faqList}>
             {faqs.map((f) => (
               <div key={f.q} className={styles.faqItem}>

@@ -34,7 +34,7 @@ export default function FAQSection() {
     <section className={styles.sectionAlt}>
       <div className="container max-w-3xl mx-auto px-6">
         <Reveal variant="fadeUp" once={false}>
-          <SectionHeading tag="FAQ" text="Frequently Asked Questions" subtitle="We&apos;ve got all your answers." />
+          <SectionHeading text="Frequently Asked Questions" subtitle="We've got all your answers." />
         </Reveal>
 
         <div className={styles.faqGrid}>

@@ -86,7 +86,6 @@ export default function ContactClient({ faqs }: { faqs: FAQ[] }) {
       <section className={styles.section}>
         <div className="container">
           <SectionHeading
-            tag="Contact"
             text="Send Us a Message"
             subtitle="Fill out the form below and our team will get back to you within 24 hours."
           />
@@ -187,7 +186,6 @@ export default function ContactClient({ faqs }: { faqs: FAQ[] }) {
       <section className={styles.mapSection}>
         <div className="container">
           <SectionHeading
-            tag="Location"
             text="Visit Our Studio"
           />
           <div className={styles.mapPlaceholder}>
@@ -201,7 +199,6 @@ export default function ContactClient({ faqs }: { faqs: FAQ[] }) {
         <section className={faqStyles.faqSection}>
           <div className={faqStyles.faqInner}>
             <SectionHeading
-              tag="FAQ"
               text="Frequently Asked Questions"
               subtitle="Find answers to common questions about our services and support."
             />

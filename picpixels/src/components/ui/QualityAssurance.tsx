@@ -43,7 +43,6 @@ export default function QualityAssurance() {
         <Reveal variant="fadeUp">
           <div className={styles.header}>
             <SectionHeading
-              tag="Quality Assurance"
               text="Quality Assurance"
               subtitle="Our quality assurance process ensures every image is carefully checked before delivery, maintaining consistency, accuracy, and professional standards."
             />

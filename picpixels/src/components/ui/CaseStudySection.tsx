@@ -15,7 +15,7 @@ export default function CaseStudySection({ items }: { items: CaseStudyItem[] }) 
     <section className={styles.section}>
       <div className="container max-w-7xl mx-auto px-6">
         <Reveal variant="fadeUp" once={false}>
-          <SectionHeading tag="Success Stories" text="Case Study" />
+          <SectionHeading text="Case Study" />
         </Reveal>
 
         {items.length === 1 ? (

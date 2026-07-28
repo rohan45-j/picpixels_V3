@@ -21,7 +21,7 @@ export default function LatestBlogs({ posts }: { posts: BlogPost[] }) {
     <section className={styles.sectionAlt}>
       <div className="container max-w-7xl mx-auto px-6">
         <Reveal variant="fadeUp" once={false}>
-          <SectionHeading tag="Our Blog" text="Latest Blogs" />
+          <SectionHeading text="Latest Blogs" />
         </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

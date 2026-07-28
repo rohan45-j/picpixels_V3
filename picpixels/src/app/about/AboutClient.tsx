@@ -67,7 +67,6 @@ export default function AboutClient({ testimonials, brandLogos }: { testimonials
         <div className={styles.sectionInner}>
           <Reveal variant="fadeUp">
             <SectionHeading
-              tag="Who We Are"
               text="More Than a Photo Editing Company"
               subtitle="We are a team of passionate photo editors, retouchers, and creative professionals dedicated to helping businesses present their products in the best possible light."
             />
@@ -91,7 +90,6 @@ export default function AboutClient({ testimonials, brandLogos }: { testimonials
         <div className={styles.sectionInner}>
           <Reveal variant="fadeUp">
             <SectionHeading
-              tag="Our Purpose"
               text="Mission &amp; Vision"
             />
           </Reveal>
@@ -118,7 +116,6 @@ export default function AboutClient({ testimonials, brandLogos }: { testimonials
         <div className={styles.sectionInner}>
           <Reveal variant="fadeUp">
             <SectionHeading
-              tag="Why Choose Us"
               text="Our Core Values"
             />
           </Reveal>
@@ -143,7 +140,6 @@ export default function AboutClient({ testimonials, brandLogos }: { testimonials
         <div className={styles.processInner}>
           <Reveal variant="fadeUp">
             <SectionHeading
-              tag="How It Works"
               text="Our Simple 6-Step Process"
             />
           </Reveal>
@@ -172,7 +168,6 @@ export default function AboutClient({ testimonials, brandLogos }: { testimonials
         <div className={styles.sectionInner}>
           <Reveal variant="fadeUp">
             <SectionHeading
-              tag="Client Feedback"
               text="What Our Clients Say"
             />
           </Reveal>

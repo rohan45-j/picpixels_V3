@@ -55,7 +55,7 @@ export default function Careers() {
       {/* Perks */}
       <section className={styles.sectionAlt}>
         <div className={styles.sectionAltInner}>
-          <SectionHeading tag="Why Join Us" text="Perks & Benefits" />
+          <SectionHeading text="Perks &amp; Benefits" />
           <div className={styles.cardsGrid}>
             {perks.map((p) => (
               <div key={p.title} className={styles.card}>
@@ -70,7 +70,7 @@ export default function Careers() {
 
       {/* Open Roles */}
       <section className={styles.section} id="open-roles">
-        <SectionHeading tag="Now Hiring" text="Open Positions" />
+        <SectionHeading text="Open Positions" />
         <div className={styles.jobsGrid}>
           {openRoles.map((job) => (
             <div key={job.title} className={styles.jobCard}>

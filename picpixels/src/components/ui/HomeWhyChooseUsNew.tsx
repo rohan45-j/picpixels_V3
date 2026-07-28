@@ -23,7 +23,7 @@ export default function HomeWhyChooseUsNew({ data }: { data: WhyChooseFeatureSec
       <div className={styles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={styles.header}>
-            <SectionHeading tag="Why Choose Us" text={title} subtitle={data.subtitle || undefined} />
+            <SectionHeading text={title} subtitle={data.subtitle || undefined} />
           </div>
         </Reveal>
 

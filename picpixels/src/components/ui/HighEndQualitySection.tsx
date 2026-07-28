@@ -9,7 +9,6 @@ export default function HighEndQualitySection() {
       <div className="container">
         <Reveal variant="fadeUp" once={false}>
           <SectionHeading
-            tag="Unbeatable rates"
             text="Excellent High-End Quality Editing"
             subtitle="We provide 100% handmade image editing services using Photoshop. We always strive to deliver your order within 24 hours or less."
           />

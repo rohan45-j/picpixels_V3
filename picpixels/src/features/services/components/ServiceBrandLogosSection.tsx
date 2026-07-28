@@ -40,8 +40,7 @@ export default function ServiceBrandLogosSection({ logos, title }: Props) {
     >
       <div className={trustStyles.inner}>
         <div className={trustStyles.header}>
-          <span className={trustStyles.badge}>Trusted by Businesses Worldwide</span>
-          <SectionHeading text={title || 'Trusted by Leading Brands & Growing Businesses'} className={trustStyles.title} />
+          <SectionHeading text={title || 'Trusted by Leading Brands &amp; Businesses'} className={trustStyles.title} />
           <p className={trustStyles.description}>
             Join thousands of businesses that trust us for professional photo editing —
             delivered with speed, precision, and reliability.

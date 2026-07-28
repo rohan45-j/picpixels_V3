@@ -81,7 +81,7 @@ export default function Press() {
 
       {/* Articles */}
       <section className={styles.section}>
-        <SectionHeading tag="Media Coverage" text="Latest Press & News" />
+        <SectionHeading text="Latest Press &amp; News" />
         <div className={styles.pressGrid}>
           {articles.map((a) => (
             <div key={a.title} className={styles.pressCard}>
@@ -99,7 +99,7 @@ export default function Press() {
       {/* Media Contact */}
       <section className={styles.sectionAlt} id="media-kit">
         <div className={styles.sectionAltInner}>
-          <SectionHeading tag="Get in Touch" text="Media Contact" />
+          <SectionHeading text="Media Contact" />
           <div className={styles.contactInfo} style={{ maxWidth: 600, marginTop: "2rem" }}>
             {mediaContacts.map((c) => (
               <div key={c.title} className={styles.contactItem}>
