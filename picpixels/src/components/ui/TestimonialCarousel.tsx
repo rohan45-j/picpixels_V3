@@ -64,13 +64,13 @@ function TestimonialCard({ t, show }: { t: Testimonial; show: boolean }) {
 }
 
 function useVisibleCount(): number {
-  const [count, setCount] = useState(3);
+  const [count, setCount] = useState(2);
   useEffect(() => {
     function update() {
       const w = window.innerWidth;
       if (w < 600) setCount(1);
       else if (w < 968) setCount(2);
-      else setCount(3);
+      else setCount(2);
     }
     update();
     window.addEventListener('resize', update, { passive: true });

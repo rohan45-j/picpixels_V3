@@ -63,7 +63,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 32px 28px;
+  padding: 40px 36px;
 }
 
 .headerRow {
@@ -74,8 +74,8 @@
 }
 
 .avatarContainer {
-  width: 90px;
-  height: 90px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
@@ -110,7 +110,7 @@
 }
 
 .text {
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.75;
   font-weight: 450;
   color: #555555;
@@ -127,7 +127,7 @@
 }
 
 .name {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #111111;
   word-break: break-word;
@@ -135,7 +135,7 @@
 }
 
 .role {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 450;
   color: #666666;
   margin-top: 2px;
@@ -224,23 +224,23 @@
 @media (max-width: 968px) {
   .wrapper { padding: 0 2.5rem; }
   .slide { padding: 0.6rem; }
-  .cardInner { padding: 28px 24px; }
+  .cardInner { padding: 32px 28px; }
   .avatarContainer { width: 80px; height: 80px; }
 }
 
 @media (max-width: 640px) {
   .wrapper { padding: 0 0.5rem; }
   .slide { padding: 0.5rem; }
-  .cardInner { padding: 20px 16px; }
+  .cardInner { padding: 24px 20px; }
   .card, .cardInner { border-radius: 14px; }
-  .avatarContainer { width: 60px; height: 60px; }
-  .avatarFallback svg { width: 24px; height: 24px; }
-  .headerRow { gap: 10px; margin-bottom: 10px; }
-  .text { font-size: 14px; }
-  .name { font-size: 14px; }
-  .role { font-size: 12px; }
-  .stars { margin-top: 10px; }
-  .stars svg { width: 16px; height: 16px; }
+  .avatarContainer { width: 70px; height: 70px; }
+  .avatarFallback svg { width: 28px; height: 28px; }
+  .headerRow { gap: 12px; margin-bottom: 12px; }
+  .text { font-size: 16px; }
+  .name { font-size: 16px; }
+  .role { font-size: 13px; }
+  .stars { margin-top: 12px; }
+  .stars svg { width: 18px; height: 18px; }
   .arrow { display: none; }
   .dots { margin-top: 1.5rem; }
 }
