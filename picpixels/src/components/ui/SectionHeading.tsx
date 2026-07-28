@@ -30,7 +30,6 @@ export default function SectionHeading({
 
   return (
     <div className={wrapperClass}>
-      {tag && <span className={styles.tag}>{tag}</span>}
       <Tag className={styles.title}>
         <span className={styles.brand}>{brandPart}</span>
         {blackPart && <span className={styles.black}>{' '}{blackPart}</span>}
