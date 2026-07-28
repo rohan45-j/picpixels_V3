@@ -19,10 +19,8 @@ export default function PortfolioGrid({
   const items = useMemo(
     () =>
       activeCategory === ''
-        ? portfolios.map((item, index) => ({ ...item, index: index + 1 }))
-        : portfolios
-          .filter((item) => item.category_slug === activeCategory)
-          .map((item, index) => ({ ...item, index: index + 1 })),
+        ? portfolios
+        : portfolios.filter((item) => item.category_slug === activeCategory),
     [activeCategory, portfolios]
   );
 
@@ -89,12 +87,7 @@ export default function PortfolioGrid({
         <div ref={gridRef} className={styles.grid}>
           {items.length > 0 ? (
             items.map((item) => (
-              <Link key={item.id} href={`/portfolio/${item.slug}`} className={`${styles.card} ${styles.highlightable} ${item.index ? styles.hasNumber : ''}`}>
-                {item.index && (
-                  <div className={styles.projectNumber}>
-                    <span>{String(item.index).padStart(2, '0')}</span>
-                  </div>
-                )}
+              <Link key={item.id} href={`/portfolio/${item.slug}`} className={styles.card}>
                 <div className={styles.visual}>
                   {item.featured_image_url || item.featured_image ? (
                     <img
