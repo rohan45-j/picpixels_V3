@@ -19,8 +19,10 @@ export default function PortfolioGrid({
   const items = useMemo(
     () =>
       activeCategory === ''
-        ? portfolios
-        : portfolios.filter((item) => item.category_slug === activeCategory),
+        ? portfolios.map((item, index) => ({ ...item, index: index + 1 }))
+        : portfolios
+            .filter((item) => item.category_slug === activeCategory)
+            .map((item, index) => ({ ...item, index: index + 1 })),
     [activeCategory, portfolios]
   );
 
@@ -55,8 +57,9 @@ export default function PortfolioGrid({
       <div className={styles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={styles.header}>
-            <span className={styles.tag}>Our Work</span>
+            <div className={styles.tag}>Project Portfolio</div>
             <SectionHeading text="Our Latest Work" className={styles.title} />
+            <div className={styles.divider} />
             <p className={styles.subtitle}>
               A curated selection of our finest projects — each one reflects our commitment to quality and creative excellence.
             </p>
@@ -86,7 +89,12 @@ export default function PortfolioGrid({
         <div ref={gridRef} className={styles.grid}>
           {items.length > 0 ? (
             items.map((item) => (
-              <Link key={item.id} href={`/portfolio/${item.slug}`} className={styles.card}>
+              <Link key={item.id} href={`/portfolio/${item.slug}`} className={`${styles.card} ${styles.highlightable} ${item.index ? styles.hasNumber : ''}`}>
+                {item.index && (
+                  <div className={styles.projectNumber}>
+                    <span>{String(item.index).padStart(2, '0')}</span>
+                  </div>
+                )}
                 <div className={styles.visual}>
                   {item.featured_image_url || item.featured_image ? (
                     <img
@@ -121,7 +129,8 @@ export default function PortfolioGrid({
             <Link href="/portfolio" className={styles.viewAllBtn}>
               <span>View All Projects</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
               </svg>
             </Link>
           </div>

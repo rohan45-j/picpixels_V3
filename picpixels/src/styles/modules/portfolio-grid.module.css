@@ -28,6 +28,50 @@
   margin: 0;
 }
 
+.divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #FF8A50, #FF6B35);
+  border-radius: 9999px;
+  margin: 1.25rem auto 1rem;
+  opacity: 0.8;
+}
+
+.highlightable {
+  transition: box-shadow 0.3s cubic-bezier(0.22,1,0.36,1), transform 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+
+.highlightable:hover {
+  box-shadow: 0 24px 56px rgba(0,0,0,0.16);
+  transform: translateY(-8px);
+}
+
+.hasNumber {
+  padding-top: 48px;
+}
+
+.projectNumber {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #FF8A50 0%, #FF6B35 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  border-top-left-radius: 16px;
+}
+
+.projectNumber span {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
 .viewAllBtn {
   display: inline-flex;
   align-items: center;
@@ -83,6 +127,55 @@
   color: inherit;
   overflow: hidden;
   animation: cardFadeIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+}
+
+.highlightable {
+  z-index: 1;
+}
+
+.highlightable::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 3px solid transparent;
+  border-radius: 16px;
+  transition: border-color 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.highlightable:hover::before,
+.hasNumber:hover::before {
+  border-color: #FF8A50;
+  box-shadow: 0 0 0 4px rgba(255,138,80,0.15), 0 20px 48px rgba(0,0,0,0.12);
+}
+
+.projectNumber {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #FF8A50 0%, #FF6B35 100%);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(255,138,80,0.35);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #fff;
+  opacity: 0;
+  transform: translate(8px, -8px) scale(0.9);
+  transition: all 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+
+.highlightable:hover .projectNumber,
+.hasNumber .projectNumber {
+  opacity: 1;
+  transform: translate(0, 0) scale(1);
 }
 
 @keyframes cardFadeIn {
