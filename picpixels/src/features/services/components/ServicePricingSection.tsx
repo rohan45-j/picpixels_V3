@@ -46,7 +46,6 @@ export default function ServicePricingSection({
       <div className={pricingStyles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={pricingStyles.header}>
-            {badgeText && <span className={pricingStyles.badge}>{badgeText}</span>}
             {heading && <SectionHeading text={heading} className={pricingStyles.heading} />}
             {description && <p className={pricingStyles.description}>{description}</p>}
           </div>
@@ -127,7 +126,6 @@ export default function ServicePricingSection({
 
           <Reveal variant="fadeUp" delay={200} once={false}>
             <div className={pricingStyles.contentRight}>
-              <span className={pricingStyles.featuredTag}>What&apos;s Included</span>
               <h3 className={pricingStyles.contentTitle}>
                 Everything you need for <span className={pricingStyles.highlight}>professional results</span>
               </h3>

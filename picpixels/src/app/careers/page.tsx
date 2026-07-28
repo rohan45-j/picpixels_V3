@@ -40,7 +40,6 @@ export default function Careers() {
 
       {/* Hero */}
       <section className={styles.hero}>
-        <span className={styles.heroBadge}>Careers</span>
         <h1 className={styles.heroTitle}>Join the Team That's<br />Redefining Visual Commerce</h1>
         <p className={styles.heroSub}>
           We&apos;re a passionate team of photo editors, engineers, and designers crafting

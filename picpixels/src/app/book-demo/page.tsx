@@ -118,10 +118,7 @@ export default function BookDemo() {
         {/* Hero Section */}
         <section className={styles.hero}>
           <div className={styles.heroContent}>
-            <span className={styles.tagline}>Free Consultation</span>
-            <h1 className={`${styles.title} gradient-text`}>
-              Book a Free Consultation
-            </h1>
+            <h1 className={styles.title}>Book a Free Consultation</h1>
             <p className={styles.subtitle}>
               Let&apos;s discuss your goals and discover the best digital solution for your business.
             </p>
@@ -137,7 +134,6 @@ export default function BookDemo() {
         <section className={styles.section}>
           <div className="container">
             <SectionHeading
-              tag="Why Book A Demo"
               text="See the Difference We Make"
               subtitle="Discover how our professional photo editing services can transform your business."
             />
@@ -171,7 +167,6 @@ export default function BookDemo() {
         <section className={styles.formSection} id="form">
           <div className="container">
             <SectionHeading
-              tag="Get Started"
               text="Request Your Demo"
               subtitle="Fill out the form below and our team will reach out to schedule your personalized demo."
             />
@@ -367,7 +362,6 @@ export default function BookDemo() {
         <section className={styles.faqSection}>
           <div className="container">
             <SectionHeading
-              tag="FAQ"
               text="Frequently Asked Questions"
               subtitle="Common questions about our demo and consultation process."
             />

@@ -183,7 +183,6 @@ export default function PrivacyPage() {
         {/* Hero */}
         <Reveal variant="fadeDown">
           <section className={styles.hero}>
-            <span className={styles.heroBadge}>Legal</span>
             <h1 className={styles.heroTitle}>Privacy Policy</h1>
             <p className={styles.heroSub}>
               Your privacy matters to us. This policy explains how PicPicxels collects, uses, and

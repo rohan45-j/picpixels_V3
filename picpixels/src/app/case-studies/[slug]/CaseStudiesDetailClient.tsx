@@ -152,11 +152,6 @@ export default function CaseStudiesDetailClient({
           <div className={detailStyles.heroBgAccent} />
           <div className={detailStyles.heroContent}>
             <div className={container}>
-              <Reveal variant="fadeUp">
-                {item.category_name && (
-                  <span className={detailStyles.heroBadge}>{item.category_name}</span>
-                )}
-              </Reveal>
               <Reveal variant="fadeUp" delay={100}>
                 <h1 className={detailStyles.heroTitle}>{item.title}</h1>
               </Reveal>
@@ -229,7 +224,6 @@ export default function CaseStudiesDetailClient({
           <div className={sectionInner}>
             <Reveal variant="fadeUp">
               <SectionHeading
-                tag="Client"
                 text="Client Overview"
                 subtitle="About the brand and project objectives"
               />
@@ -308,7 +302,6 @@ export default function CaseStudiesDetailClient({
           <div className={sectionInner}>
             <Reveal variant="fadeUp">
               <SectionHeading
-                tag="Challenges"
                 text="Project Challenges"
                 subtitle="Understanding the obstacles we needed to overcome"
               />
@@ -336,7 +329,6 @@ export default function CaseStudiesDetailClient({
           <div className={sectionInner}>
             <Reveal variant="fadeUp">
               <SectionHeading
-                tag="Solution"
                 text="Our Approach"
                 subtitle="How we addressed each challenge with precision and creativity"
               />
@@ -383,7 +375,6 @@ export default function CaseStudiesDetailClient({
           <div className={sectionInner}>
             <Reveal variant="fadeUp">
               <SectionHeading
-                tag="Scope"
                 text="Scope of Work"
                 subtitle="Everything we delivered for this project"
               />
@@ -411,7 +402,6 @@ export default function CaseStudiesDetailClient({
           <div className={sectionInner}>
             <Reveal variant="fadeUp">
               <SectionHeading
-                tag="Process"
                 text="Production Workflow"
                 subtitle="Our step-by-step workflow from discovery to delivery"
               />
@@ -457,7 +447,6 @@ export default function CaseStudiesDetailClient({
           <div className={sectionInner}>
             <Reveal variant="fadeUp">
               <SectionHeading
-                tag="Gallery"
                 text="Project Gallery"
                 subtitle="Visual highlights from the project"
               />
@@ -492,7 +481,6 @@ export default function CaseStudiesDetailClient({
           <div className={sectionInner}>
             <Reveal variant="fadeUp">
               <SectionHeading
-                tag="Results"
                 text="Project Results"
                 subtitle="Measurable outcomes and key achievements"
               />
@@ -514,7 +502,6 @@ export default function CaseStudiesDetailClient({
           <div className={sectionInner}>
             <Reveal variant="fadeUp">
               <SectionHeading
-                tag="Results"
                 text="The Outcome"
                 subtitle="What we achieved together"
               />

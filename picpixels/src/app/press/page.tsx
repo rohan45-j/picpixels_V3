@@ -67,7 +67,6 @@ export default function Press() {
 
       {/* Hero */}
       <section className={styles.hero}>
-        <span className={styles.heroBadge}>Press & Media</span>
         <h1 className={styles.heroTitle}>PicPicxels<br />in the News</h1>
         <p className={styles.heroSub}>
           Find the latest press releases, media coverage, and brand assets. Our team is

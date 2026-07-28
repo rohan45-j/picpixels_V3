@@ -99,7 +99,6 @@ export default function PortfolioListClient({
       <header className={styles.hero}>
         <div className={styles.heroBg} />
         <div className={styles.heroInner}>
-          <span className={styles.heroLabel}>OUR PORTFOLIO</span>
           <h1 className={styles.heroTitle}>Portfolio</h1>
           <p className={styles.heroDesc}>Browse our latest projects and creative work.</p>
           <div className={styles.searchWrap}>

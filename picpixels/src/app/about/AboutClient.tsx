@@ -38,7 +38,6 @@ export default function AboutClient({ testimonials, brandLogos }: { testimonials
     <>
       <Reveal variant="fadeDown">
         <section className={styles.hero}>
-          <span className={styles.heroBadge}>About PicPicxels</span>
           <h1 className={styles.heroTitle}>Your Trusted Virtual Photo<br />Editing Solution &amp; Design Studio</h1>
           <p className={styles.heroSub}>
             PicPicxels offers top-quality services that enhance revenue, increase profit margins,

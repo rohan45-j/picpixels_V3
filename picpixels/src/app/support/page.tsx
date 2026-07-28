@@ -34,7 +34,6 @@ export default function Support() {
 
       {/* Hero */}
       <section className={styles.hero}>
-        <span className={styles.heroBadge}>Contact Support</span>
         <h1 className={styles.heroTitle}>We&apos;re Here to Help<br />Around the Clock</h1>
         <p className={styles.heroSub}>
           Our support team is available 24/7. Reach us via chat, email, or phone —

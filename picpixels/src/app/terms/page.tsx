@@ -239,7 +239,6 @@ export default function TermsPage() {
         {/* Hero */}
         <Reveal variant="fadeDown">
           <section className={styles.hero}>
-            <span className={styles.heroBadge}>Legal</span>
             <h1 className={styles.heroTitle}>Terms &amp; Conditions</h1>
             <p className={styles.heroSub}>
               Please read these terms carefully before using our platform. They govern your

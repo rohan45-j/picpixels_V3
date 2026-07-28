@@ -76,7 +76,6 @@ export default function FAQClient({ initialFAQs, initialCategories }: { initialF
 
       <Reveal variant="fadeDown">
         <section className={styles.hero}>
-          <span className={styles.heroBadge}>Help Center</span>
           <h1 className={styles.heroTitle}>Frequently Asked Questions</h1>
           <p className={styles.heroSub}>
             Find answers to common questions about PicPicxels photo editing services, pricing, turnaround times, and more.
