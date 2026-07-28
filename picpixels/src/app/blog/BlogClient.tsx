@@ -78,7 +78,6 @@ export default function BlogClient({
       <Reveal variant="fadeDown">
         <section className={styles.heroSection}>
           <div className="container">
-            <span className={styles.badge}>Insights & Expertise</span>
             <h1 className={styles.listingHeroTitle}>Our Blog</h1>
             <p className={styles.heroSub}>Expert insights, industry trends, and actionable strategies for professional photo editing and e-commerce visual content</p>
           </div>
