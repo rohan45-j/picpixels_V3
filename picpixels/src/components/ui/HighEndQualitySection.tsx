@@ -14,10 +14,11 @@ export default function HighEndQualitySection() {
           />
         </Reveal>
         <div className={styles.statsRow}>
-          <AnimatedStatCard value="500+" label="Projects Completed" index={0} />
-          <AnimatedStatCard value="98%" label="Client Satisfaction" index={1} />
-          <AnimatedStatCard value="50+" label="Business Partners" index={2} />
-          <AnimatedStatCard value="24/7" label="Support Available" index={3} />
+          <AnimatedStatCard value="8,000+" label="Photos Edited" index={0} />
+          <AnimatedStatCard value="500+" label="Projects Completed" index={1} />
+          <AnimatedStatCard value="98%" label="Client Satisfaction" index={2} />
+          <AnimatedStatCard value="50+" label="Business Partners" index={3} />
+          <AnimatedStatCard value="24/7" label="Support Available" index={4} />
         </div>
       </div>
     </section>

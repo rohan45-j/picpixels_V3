@@ -58,9 +58,31 @@ export default function PricingConfigurator({ pricingData: initialData }: { pric
       unitRange: unitRange || '',
     };
     storeOrderSummary(orderData);
-    fetch('/api/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) }).catch(() => {});
+    fetch('/api/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) }).catch(() => { });
     router.push('/order-summary');
   }, [selectedCard, data, selectedDropdown, activeOptions, router]);
+
+  const handleSelectCard = useCallback((card: typeof activeCards[number]) => {
+    if (!data) return;
+    const unitRange = activeOptions.find((o) => o.id === selectedDropdown)?.label;
+    let displayPrice = '';
+    if (selectedDropdown != null) {
+      const p = getPriceForUnitRange(card.prices, selectedDropdown);
+      displayPrice = p.price;
+    }
+    const orderData = {
+      source: 'configurator' as const,
+      title: card.title,
+      description: card.description || '',
+      image: card.image || '',
+      price: displayPrice,
+      features: card.description ? [card.description] : [],
+      unitRange: unitRange || '',
+    };
+    storeOrderSummary(orderData);
+    fetch('/api/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) }).catch(() => { });
+    router.push('/order-summary');
+  }, [data, selectedDropdown, activeOptions, router]);
 
   if (!data || !data.is_active) return null;
 
@@ -75,40 +97,40 @@ export default function PricingConfigurator({ pricingData: initialData }: { pric
         </Reveal>
         <SectionHeading text={data.title} />
         <Reveal variant="fadeUp" once={false} className={dropdownOpen ? styles.dropdownRevealOpen : ''}>
-        <div className={styles.topRow}>
-          <div className={styles.textGroup}>
-            <p className={styles.description}>{data.description}</p>
+          <div className={styles.topRow}>
+            <div className={styles.textGroup}>
+              <p className={styles.description}>{data.description}</p>
+            </div>
+            <div className={styles.dropdownWrap}>
+              <span className={styles.dropdownLabel}>Unit Range</span>
+              <button
+                type="button"
+                className={styles.dropdownTrigger}
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                onBlur={() => setTimeout(() => setDropdownOpen(false), 150)}
+              >
+                <span>{selectedOptionLabel || 'Select volume'}</span>
+                <ChevronDown size={18} className={`${styles.dropdownChevron} ${dropdownOpen ? styles.dropdownChevronOpen : ''}`} />
+              </button>
+              {dropdownOpen && (
+                <div className={styles.dropdownMenu}>
+                  {activeOptions.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      className={`${styles.dropdownItem} ${selectedDropdown === opt.id ? styles.dropdownItemActive : ''}`}
+                      onMouseDown={() => {
+                        setSelectedDropdown(opt.id);
+                        setDropdownOpen(false);
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-          <div className={styles.dropdownWrap}>
-            <span className={styles.dropdownLabel}>Unit Range</span>
-            <button
-              type="button"
-              className={styles.dropdownTrigger}
-              onClick={() => setDropdownOpen(!dropdownOpen)}
-              onBlur={() => setTimeout(() => setDropdownOpen(false), 150)}
-            >
-              <span>{selectedOptionLabel || 'Select volume'}</span>
-              <ChevronDown size={18} className={`${styles.dropdownChevron} ${dropdownOpen ? styles.dropdownChevronOpen : ''}`} />
-            </button>
-            {dropdownOpen && (
-              <div className={styles.dropdownMenu}>
-                {activeOptions.map((opt) => (
-                  <button
-                    key={opt.id}
-                    type="button"
-                    className={`${styles.dropdownItem} ${selectedDropdown === opt.id ? styles.dropdownItemActive : ''}`}
-                    onMouseDown={() => {
-                      setSelectedDropdown(opt.id);
-                      setDropdownOpen(false);
-                    }}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
         </Reveal>
 
         <div className={styles.cardGrid}>
@@ -145,7 +167,16 @@ export default function PricingConfigurator({ pricingData: initialData }: { pric
                   {card.description && <p className={styles.cardDesc}>{card.description}</p>}
                 </div>
                 <div className={styles.cardFooter}>
-                  <span className={styles.cardBtn}>{card.button_text}</span>
+                  <span
+                    className={styles.cardBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelectCard(card);
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelectCard(card); } }}
+                  >{card.button_text}</span>
                   {isSelected && (
                     <span className={styles.cardCheck}>
                       <Check size={14} />
@@ -166,13 +197,13 @@ export default function PricingConfigurator({ pricingData: initialData }: { pric
             <input type="hidden" name="price" value={(() => { if (!selectedCard || selectedDropdown == null) return ''; const p = getPriceForUnitRange(selectedCard.prices, selectedDropdown); return p.price; })()} />
             <input type="hidden" name="features" value={selectedCard?.description ? JSON.stringify([selectedCard.description]) : '[]'} />
             <input type="hidden" name="unitRange" value={activeOptions.find((o) => o.id === selectedDropdown)?.label || ''} />
-            <button
+            {/* <button
               type="submit"
               disabled={!selectedCard}
               className={`${styles.ctaBtn} ${selectedCard ? styles.ctaBtnActive : ''}`}
             >
               {cta?.button_text || 'Continue to Order'} <ArrowRight size={18} />
-            </button>
+            </button> */}
           </form>
         </div>
       </div>

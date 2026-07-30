@@ -55,10 +55,11 @@ export default function AboutClient({ testimonials, brandLogos }: { testimonials
 
       <section className={styles.sectionAlt}>
         <div className={styles.statsRow}>
-          <AnimatedStatCard value="5M+" label="Images Processed" index={0} />
-          <AnimatedStatCard value="500+" label="Active Clients" index={1} />
-          <AnimatedStatCard value="10+" label="Years Experience" index={2} />
-          <AnimatedStatCard value="24/7" label="Client Support" index={3} />
+          <AnimatedStatCard value="8,000+" label="Photos Edited" index={0} />
+          <AnimatedStatCard value="5M+" label="Images Processed" index={1} />
+          <AnimatedStatCard value="500+" label="Active Clients" index={2} />
+          <AnimatedStatCard value="10+" label="Years Experience" index={3} />
+          <AnimatedStatCard value="24/7" label="Client Support" index={4} />
         </div>
       </section>
 

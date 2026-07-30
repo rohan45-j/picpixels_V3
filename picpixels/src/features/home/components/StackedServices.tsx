@@ -182,7 +182,7 @@ export default function StackedServices({ services }: StackedServicesProps) {
     <div ref={wrapperRef} className="stacked-wrapper">
       <section ref={sectionRef} className="stacked-section">
         <div className="stacked-header">
-          <span className="stacked-badge">Our Most Popular Photo Editing Services</span>
+          {/* <span className="stacked-badge">Our Most Popular Photo Editing Services</span> */}
           <SectionHeading text="Premium Photo Editing Services" />
           <p className="stacked-desc">
             Professional image editing solutions tailored to your needs

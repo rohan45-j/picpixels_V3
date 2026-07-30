@@ -40,9 +40,9 @@ export default function ServicesShowcase({ services }: ServicesShowcaseProps) {
       <div className="services-container">
         {/* Section Header */}
         <div className="section-header">
-          <span className="badge-tag">
+          {/* <span className="badge-tag">
             Our Most Popular Photo Editing Services
-          </span>
+          </span> */}
           <h2 className="section-title">
             Tap into the power of high-end visual experiences.
           </h2>
