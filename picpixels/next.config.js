@@ -1,22 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   compress: true,
-experimental: {
-    cpus: 1,
-    workerThreads: false,
-  },
-eslint: {
+  output: 'standalone',
+  eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
   },
- 
-
- 
-
-  
-
   images: {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [480, 768, 1024, 1280, 1536],
