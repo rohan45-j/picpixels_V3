@@ -34,7 +34,7 @@ export default function TrustBar({ brands: initialBrands }: { brands: BrandLogo[
       <section ref={sectionRef} className={`${styles.section} ${visible ? styles.visible : ''}`}>
         <div className={styles.inner}>
           <div className={styles.header}>
-            <SectionHeading text="Trusted by Leading Brands &amp; Businesses" className={styles.title} />
+            <SectionHeading text="Trusted by Leading Brands & Businesses" className={styles.title} />
             <p className={styles.description}>
               Join thousands of businesses that trust us for professional photo editing —
               delivered with speed, precision, and reliability.
@@ -63,7 +63,7 @@ export default function TrustBar({ brands: initialBrands }: { brands: BrandLogo[
     >
       <div className={styles.inner}>
         <div className={styles.header}>
-            <SectionHeading text="Trusted by Leading Brands &amp; Businesses" className={styles.title} />
+            <SectionHeading text="Trusted by Leading Brands & Businesses" className={styles.title} />
           <p className={styles.description}>
             Join thousands of businesses that trust us for professional photo editing —
             delivered with speed, precision, and reliability.

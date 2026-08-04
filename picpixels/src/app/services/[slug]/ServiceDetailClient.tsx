@@ -195,9 +195,7 @@ function HeroSection({ service }: { service: Service }) {
           {parseFloat(service.price || '0') > 0 && (
             <span className={styles.serviceBadge}>${parseFloat(service.price).toFixed(2)} Per Image</span>
           )}
-          {service.icon && (
-            <div className={styles.heroIcon}>{service.icon}</div>
-          )}
+          
           <h1 className={`${styles.title} gradient-text`}>{service.title}</h1>
           {(service.hero_subtitle || service.short_description) && (
             <p className={styles.heroSubtitle}>{service.hero_subtitle || service.short_description}</p>
@@ -334,7 +332,6 @@ export default function ServiceDetailClient({
             <div className={styles.serviceIndexGrid}>
               {related.map((svc) => (
                 <Link key={svc.id} href={`/services/${svc.slug}`} className={styles.serviceIndexCard}>
-                  {svc.icon && <span className={styles.serviceIndexIcon}>{svc.icon}</span>}
                   <h3 className={styles.serviceIndexTitle}>{svc.title}</h3>
                   <p className={styles.serviceIndexDesc}>{svc.short_description || svc.description}</p>
                   {svc.price && parseFloat(svc.price) > 0 && (

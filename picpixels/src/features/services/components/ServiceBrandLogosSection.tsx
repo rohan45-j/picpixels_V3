@@ -32,6 +32,7 @@ export default function ServiceBrandLogosSection({ logos, title }: Props) {
   if (!logos?.length) return null;
 
   const uniqueLogos = [...new Map(logos.map(logo => [logo.id, logo])).values()];
+  const duplicatedLogos = [...uniqueLogos, ...uniqueLogos];
 
   return (
     <section
@@ -40,7 +41,7 @@ export default function ServiceBrandLogosSection({ logos, title }: Props) {
     >
       <div className={trustStyles.inner}>
         <div className={trustStyles.header}>
-          <SectionHeading text={title || 'Trusted by Leading Brands &amp; Businesses'} className={trustStyles.title} />
+          <SectionHeading text={title || 'Trusted by Leading Brands & Businesses'} className={trustStyles.title} />
           <p className={trustStyles.description}>
             Join thousands of businesses that trust us for professional photo editing —
             delivered with speed, precision, and reliability.
@@ -49,17 +50,17 @@ export default function ServiceBrandLogosSection({ logos, title }: Props) {
 
         <div className={trustStyles.marqueeOuter}>
           <div className={trustStyles.marqueeTrack}>
-            {uniqueLogos.map((logo, i) => {
+            {duplicatedLogos.map((logo, i) => {
               const logoSrc = logo.logo ? mediaUrl(logo.logo) : null;
               if (!logoSrc) {
                 return (
-                  <div key={logo.id} className={trustStyles.card}>
+                  <div key={`${logo.id}-${i}`} className={trustStyles.card}>
                     <span className={trustStyles.logoText}>{logo.brand_name}</span>
                   </div>
                 );
               }
               return (
-                <div key={logo.id} className={trustStyles.card}>
+                <div key={`${logo.id}-${i}`} className={trustStyles.card}>
                   <img
                     src={logoSrc}
                     alt={logo.logo_alt || logo.brand_name}
