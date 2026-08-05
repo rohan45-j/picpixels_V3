@@ -13,6 +13,92 @@
 }
 
 /* ===========================
+   Services Listing Page Header
+   (fixed navbar clearance: 96px desktop / 72px mobile + offset)
+   =========================== */
+.headerSection {
+  padding: 9.5rem 2rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255,138,80,0.06) 0%, transparent 60%);
+}
+
+.headerSection::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,138,80,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,138,80,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, black, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black, transparent 70%);
+  pointer-events: none;
+}
+
+.headerSection::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: var(--bg-light);
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'%3E%3Cpath d='M0,30 C200,0 400,60 600,30 C800,0 1000,60 1200,30 L1200,60 L0,60 Z' fill='%23000'/%3E%3C/svg%3E");
+  mask-size: 100% 100%;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'%3E%3Cpath d='M0,30 C200,0 400,60 600,30 C800,0 1000,60 1200,30 L1200,60 L0,60 Z' fill='%23000'/%3E%3C/svg%3E");
+  -webkit-mask-size: 100% 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.headerContent {
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.subtitle {
+  font-size: 1.15rem;
+  color: var(--color-muted);
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+@media (max-width: 992px) {
+  .headerSection {
+    padding: 7.5rem 1.5rem 4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerSection {
+    padding: 6.5rem 1.25rem 3.5rem;
+  }
+
+  .headerSection::after {
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .headerSection {
+    padding: 6rem 1rem 3rem;
+  }
+
+  .headerSection::after {
+    height: 30px;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+}
+
+/* ===========================
    Section Header
    =========================== */
 .sectionHeader {
@@ -1221,4 +1307,223 @@
   background: linear-gradient(to right, transparent, var(--glass-border), transparent);
   border: none;
   margin: 0;
+}
+
+/* ===========================
+   13. Mobile Responsiveness (Service Detail Page)
+   =========================== */
+@media (max-width: 768px) {
+  /* Hero Section */
+  .heroSection {
+    padding: 4.5rem 1.25rem 3.5rem;
+  }
+
+  .heroSection::before {
+    height: 50px;
+  }
+
+  .heroSection::after {
+    height: 45px;
+  }
+
+  .heroSplit {
+    gap: 2rem;
+  }
+
+  .title {
+    font-size: clamp(1.7rem, 7vw, 2.4rem);
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+
+  .serviceBadge {
+    font-size: 0.7rem;
+    padding: 0.35rem 1rem;
+  }
+
+  .heroCta {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .heroCtaBtn,
+  .heroCtaSecondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .heroRight {
+    width: 100%;
+  }
+
+  /* About & Features */
+  .aboutFeaturesSection {
+    padding: 3.5rem 0 4rem;
+  }
+
+  .aboutColumn {
+    padding: 1.5rem;
+  }
+
+  .aboutContent {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .featuresColumnTitle {
+    font-size: 1.15rem;
+  }
+
+  .featureItem {
+    padding: 0.85rem 1rem;
+  }
+
+  .featureText {
+    font-size: 0.9rem;
+  }
+
+  /* Content Sections (CMS) */
+  .contentSectionWrapper {
+    padding: 3.5rem 0;
+  }
+
+  .contentHeading {
+    font-size: 1.45rem;
+  }
+
+  .contentBody {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .contentImg {
+    height: 240px;
+  }
+
+  .contentH2 {
+    font-size: 1.3rem;
+  }
+
+  .contentGalleryGrid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+
+  /* Process Timeline */
+  .processTimeline {
+    margin-top: 2rem;
+  }
+
+  .processStepContent {
+    padding: 1.25rem;
+  }
+
+  .processStepNumber {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+
+  /* Related Services */
+  .relatedSection {
+    padding: 3.5rem 0;
+  }
+
+  .serviceIndexCard {
+    padding: 1.25rem;
+  }
+
+  /* CTA Section */
+  .ctaSection {
+    padding: 4rem 0;
+  }
+
+  .ctaCard {
+    padding: 3rem 1.5rem;
+  }
+
+  .ctaTitle {
+    font-size: 1.7rem;
+  }
+
+  .ctaDesc {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .ctaGroup {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .ctaBtnPrimary,
+  .ctaBtnSecondary {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Hero Section */
+  .heroSection {
+    padding: 4rem 1rem 3rem;
+  }
+
+  .title {
+    font-size: clamp(1.5rem, 6.5vw, 2.1rem);
+  }
+
+  .heroSubtitle {
+    font-size: 0.95rem;
+  }
+
+  /* About & Features */
+  .aboutColumn {
+    padding: 1.25rem;
+  }
+
+  .aboutFeaturesGrid {
+    gap: 2rem;
+  }
+
+  /* Content Sections (CMS) */
+  .contentSectionWrapper {
+    padding: 3rem 0;
+  }
+
+  .contentImg {
+    height: 200px;
+  }
+
+  .contentHeading {
+    font-size: 1.3rem;
+  }
+
+  .contentGalleryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Process Timeline */
+  .processStepContent {
+    padding: 1rem;
+  }
+
+  /* CTA Section */
+  .ctaCard {
+    padding: 2.5rem 1.25rem;
+    border-radius: 20px;
+  }
+
+  .ctaTitle {
+    font-size: 1.5rem;
+  }
+
+  .ctaBtnPrimary,
+  .ctaBtnSecondary {
+    padding: 0.8rem 1.5rem;
+  }
 }

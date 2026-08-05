@@ -531,3 +531,25 @@
   background: #fff;
   transform: scale(1.3);
 }
+
+/* ===== Hero Carousel Mobile Optimizations ===== */
+@media (max-width: 768px) {
+  .hero-carousel-arrow {
+    /* Arrows are hidden until hover by default — force them visible on touch devices */
+    opacity: 1;
+    width: 36px;
+    height: 36px;
+  }
+
+  .hero-carousel-arrow-left {
+    left: 8px;
+  }
+
+  .hero-carousel-arrow-right {
+    right: 8px;
+  }
+
+  .hero-carousel-dots {
+    bottom: 10px;
+  }
+}
