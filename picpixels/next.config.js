@@ -106,6 +106,53 @@ const nextConfig = {
       },
     ];
   },
+
+  // Optimize bundle splitting
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion', 'gsap'],
+  },
+
+  // Webpack optimizations
+  webpack: (config, { dev, isServer }) => {
+    // Production optimizations
+    if (!dev && !isServer) {
+      // Split chunks more aggressively
+      config.optimization.splitChunks = {
+        ...config.optimization.splitChunks,
+        chunks: 'all',
+        minSize: 20000,
+        maxSize: 244000,
+        minChunks: 1,
+        maxAsyncRequests: 30,
+        maxInitialRequests: 30,
+        cacheGroups: {
+          ...config.optimization.splitChunks.cacheGroups,
+          // Vendor chunk for common dependencies
+          vendors: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: 10,
+            reuseExistingChunk: true,
+          },
+          // Separate chunk for heavy UI libraries
+          uiLibs: {
+            test: /[\\/]node_modules[\\/](framer-motion|gsap|lucide-react)[\\/]/,
+            name: 'ui-libs',
+            priority: 20,
+            reuseExistingChunk: true,
+          },
+          // Default chunk for everything else
+          default: {
+            minChunks: 2,
+            priority: -20,
+            reuseExistingChunk: true,
+          },
+        },
+      };
+    }
+
+    return config;
+  },
 };
 
 module.exports = nextConfig;

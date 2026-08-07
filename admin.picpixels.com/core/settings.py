@@ -109,6 +109,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -224,15 +225,6 @@ if REDIS_URL:
             "CONFIG": {"hosts": [REDIS_URL]},
         },
     }
-else:
-    CHANNEL_LAYERS = {
-        "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
-    }
-
-# ---------------------------------------------------------------------------
-# Caching
-# ---------------------------------------------------------------------------
-if REDIS_URL:
     CACHES = {
         'default': {
             'BACKEND': 'django_redis.cache.RedisCache',
@@ -244,6 +236,9 @@ if REDIS_URL:
         }
     }
 else:
+    CHANNEL_LAYERS = {
+        "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
+    }
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -254,6 +249,9 @@ else:
 PUBLIC_CACHE_TTL = 60
 CACHE_MIDDLEWARE_SECONDS = PUBLIC_CACHE_TTL
 CACHE_MIDDLEWARE_KEY_PREFIX = 'picpicxels'
+
+# Database connection pooling
+CONN_MAX_AGE = 60 if not DEBUG else 0
 
 # ---------------------------------------------------------------------------
 # CORS

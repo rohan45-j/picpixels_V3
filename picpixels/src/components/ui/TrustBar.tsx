@@ -4,13 +4,13 @@ import { mediaUrl, type BrandLogo } from '@/services/public-api';
 import SectionHeading from './SectionHeading';
 import styles from './TrustBar.module.css';
 
-export default function TrustBar({ brands: initialBrands }: { brands: BrandLogo[] }) {
-  const [brands, setBrands] = useState<BrandLogo[]>(initialBrands);
+export default function TrustBar({ brands: initialBrands }: { brands?: BrandLogo[] }) {
+  const [brands, setBrands] = useState<BrandLogo[]>(Array.isArray(initialBrands) ? initialBrands : []);
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    setBrands(initialBrands);
+    setBrands(Array.isArray(initialBrands) ? initialBrands : []);
   }, [initialBrands]);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function TrustBar({ brands: initialBrands }: { brands: BrandLogo[
     );
   }
 
-  const duplicatedBrands = [...brands, ...brands];
+  const duplicatedBrands = [...(brands ?? []), ...(brands ?? [])];
 
   return (
     <section

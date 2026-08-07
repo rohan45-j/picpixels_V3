@@ -1,5 +1,59 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
+const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_REVALIDATE = 60;
+
+function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCache } = {}): Promise<Response> {
+  const { revalidate = DEFAULT_REVALIDATE, cache = 'force-cache' } = options;
+  console.log('[API] Fetching:', url);
+  return fetch(url, {
+    cache,
+    next: { revalidate },
+    // Add timeout via AbortController
+    signal: AbortSignal.timeout(DEFAULT_TIMEOUT),
+  })
+    .then((resp) => {
+      console.log('[API] Response status:', resp.status, 'for', url);
+      return resp;
+    })
+    .catch((err) => {
+      console.error(`[API] Network error fetching ${url}:`, err);
+      return new Response(null, { status: 503, statusText: 'Service Unavailable' });
+    });
+}
+
+/**
+ * Consolidated homepage data fetch - single API call replaces 13 separate calls
+ * This should be implemented as a Django endpoint at /api/v1/homepage/
+ * Returns all data needed for homepage in one request (~1-2s vs 13x3s=39s)
+ */
+export interface HomepageData {
+  services: Service[];
+  testimonials: Testimonial[];
+  technologies: Technology[];
+  portfolios: PortfolioItem[];
+  portfolioCategories: PortfolioCategory[];
+  whyChooseUs: WhyChooseSection | null;
+  latestBlogs: BlogPost[];
+  caseStudies: CaseStudyItem[];
+  whyChooseFeatures: WhyChooseFeatureSection | null;
+  heroData: HeroSection | null;
+  brandLogos: BrandLogo[];
+  pricingConfig: PricingConfigSectionData | null;
+  siteSettings: SiteSetting | null;
+}
+
+export async function fetchHomepageData(): Promise<HomepageData | null> {
+  try {
+    const resp = await apiFetch(`${BASE_URL}/api/v1/homepage/`, { revalidate: 300 });
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch (e) {
+    console.error('Failed to fetch consolidated homepage data', e);
+    return null;
+  }
+}
+
 export function mediaUrl(path: string | null | undefined): string | undefined {
   if (!path) return undefined;
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
@@ -9,19 +63,6 @@ export function mediaUrl(path: string | null | undefined): string | undefined {
     return `${BASE_URL}${normalized}`;
   }
   return `${BASE_URL}/media${normalized}`;
-}
-
-function apiFetch(url: string): Promise<Response> {
-  console.log('[API] Fetching:', url);
-  return fetch(url, {
-    cache: 'force-cache',
-  }).then((resp) => {
-    console.log('[API] Response status:', resp.status, 'for', url);
-    return resp;
-  }).catch((err) => {
-    console.error(`[API] Network error fetching ${url}:`, err);
-    return new Response(null, { status: 503, statusText: 'Service Unavailable' });
-  });
 }
 
 export interface CMSPage {

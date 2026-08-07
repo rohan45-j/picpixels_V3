@@ -3,12 +3,19 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Menu, X, Phone } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import HomeLink from '@/components/layout/HomeLink';
-import MegaMenu from './MegaMenu';
 import { useSiteSettings } from '@/store/SiteSettingsContext';
 import { useSharedData } from '@/store/SharedDataContext';
+import { usePrefetchRoutes } from '@/hooks/usePrefetchRoutes';
 import styles from './styles.module.css';
 import { mediaUrl } from '@/services/public-api';
+
+// Lazy load MegaMenu only when the dropdown is opened
+const MegaMenu = dynamic(() => import('./MegaMenu'), {
+  ssr: false,
+  loading: () => <div className={styles.megaMenuSkeleton} />,
+});
 
 export default function Header() {
   const pathname = usePathname();
@@ -18,6 +25,17 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Prefetch main routes + service pages for instant navigation
+  const allServiceRoutes = services?.map((svc) => `/services/${svc.slug}`) ?? [];
+  const staticRoutes = ['/services', '/portfolio', '/blog', '/contact', '/pricing', '/free-trial', '/about', '/book-demo'];
+  const { prefetchOnHover, prefetchAll } = usePrefetchRoutes([...staticRoutes, ...allServiceRoutes]);
+
+  useEffect(() => {
+    // Prefetch all routes after initial load settles
+    const t = setTimeout(() => prefetchAll(), 2500);
+    return () => clearTimeout(t);
+  }, [prefetchAll]);
 
   useEffect(() => {
     setActiveDropdown(null);
@@ -67,7 +85,7 @@ export default function Header() {
       );
     }
     return (
-      <a key={item.id} href={item.url} className={styles.navLink}>
+      <a key={item.id} href={item.url} className={styles.navLink} onMouseEnter={() => prefetchOnHover(item.url)} onFocus={() => prefetchOnHover(item.url)}>
         {item.label}
       </a>
     );
@@ -108,7 +126,7 @@ export default function Header() {
                   );
                 }
                 return (
-                  <a key={child.id} href={child.url} className={styles.simpleDropdownItem}>
+                  <a key={child.id} href={child.url} className={styles.simpleDropdownItem} onMouseEnter={() => prefetchOnHover(child.url)}>
                     {child.label}
                   </a>
                 );

@@ -454,3 +454,31 @@
     top: calc(12px + 72px + 8px);
   }
 }
+
+.megaMenuSkeleton {
+  width: 100%;
+  max-width: 1320px;
+  padding: 2rem;
+  background: var(--bg-light-card);
+  border-radius: var(--radius-lg);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.megaMenuSkeleton {
+  width: 100%;
+  max-width: 1320px;
+  padding: 2rem;
+  background: var(--bg-light-card);
+  border-radius: var(--radius-lg);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

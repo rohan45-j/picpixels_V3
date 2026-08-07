@@ -38,15 +38,19 @@ export default function Hero({ hero }: { hero: HeroSection | null }) {
             {hero.description}
           </p>
           <div className={styles.ctaGroup}>
+            {hero.cta_primary_link && (
             <Link href={hero.cta_primary_link} className="btn btn-primary btn-lg">
               {hero.cta_primary_text} <span>➔</span>
             </Link>
+          )}
+            {hero.cta_secondary_link && (
             <Link href={hero.cta_secondary_link} className="btn btn-secondary btn-lg">
               {hero.cta_secondary_text}
             </Link>
+          )}
           </div>
 
-          {hero.stats.length > 0 && (
+          {hero.stats?.length > 0 && (
             <div className={styles.heroStats}>
               {hero.stats.map((stat) => (
                 <div key={stat.id} className={styles.heroStat}>
@@ -60,7 +64,7 @@ export default function Hero({ hero }: { hero: HeroSection | null }) {
 
         <div className={styles.heroSlider}>
           <div className={styles.sliderWindow}>
-            {slides.map((slide, i) => (
+            {slides?.map((slide, i) => (
               <div
                 key={slide.id || i}
                 className={`${styles.slide} ${i === current ? styles.slideActive : ''}`}
@@ -79,9 +83,9 @@ export default function Hero({ hero }: { hero: HeroSection | null }) {
             ))}
           </div>
 
-          {slides.length > 1 && (
+          {slides?.length > 1 && (
             <div className={styles.sliderDots}>
-              {slides.map((_, i) => (
+              {slides?.map((_, i) => (
                 <button
                   key={i}
                   className={`${styles.dot} ${i === current ? styles.dotActive : ''}`}

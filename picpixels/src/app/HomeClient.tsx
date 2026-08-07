@@ -1,10 +1,9 @@
 'use client';
+import dynamic from 'next/dynamic';
 import SectionHeading from '@/components/ui/SectionHeading';
 
 import Link from 'next/link';
 import Reveal from '@/components/animations/Reveal';
-import HighEndQualitySection from '@/components/ui/HighEndQualitySection';
-import PortfolioGrid from '@/features/portfolio/components/PortfolioGrid';
 import styles from '@/styles/modules/homepage.module.css';
 import type { Service, Testimonial, Technology, PortfolioItem, PortfolioCategory, BlogPost, CaseStudyItem, WhyChooseSection, WhyChooseFeatureSection, HeroSection, BrandLogo, PricingConfigSectionData } from '@/services/public-api';
 import { FileText, Mail, ClipboardCheck, Image, TrendingUp, Star } from 'lucide-react';
@@ -13,14 +12,29 @@ import TrustBar from '@/components/ui/TrustBar';
 import StackedServices from '@/features/home/components/StackedServices';
 import TestimonialCarousel from '@/components/ui/TestimonialCarousel';
 import TechExpertiseSection from '@/components/ui/TechExpertiseSection';
-import PricingConfigurator from '@/features/pricing/components/PricingConfigurator';
 import ContactSection from '@/components/ui/ContactSection';
-import HomeWhyChooseUsNew from '@/components/ui/HomeWhyChooseUsNew';
 import LatestBlogs from '@/components/ui/LatestBlogs';
-
-import FAQSection from '@/components/ui/FAQSection';
 import HomeFeaturedCaseStudy from '@/components/ui/HomeFeaturedCaseStudy';
+import FAQSection from '@/components/ui/FAQSection';
 import QualityAssurance from '@/components/ui/QualityAssurance';
+
+// Lazy load heavy components that are below the fold
+const HighEndQualitySection = dynamic(() => import('@/components/ui/HighEndQualitySection'), {
+  ssr: false,
+  loading: () => <div className={styles.skeletonSection} />,
+});
+const PortfolioGrid = dynamic(() => import('@/features/portfolio/components/PortfolioGrid'), {
+  ssr: false,
+  loading: () => <div className={styles.skeletonSection} />,
+});
+const PricingConfigurator = dynamic(() => import('@/features/pricing/components/PricingConfigurator'), {
+  ssr: false,
+  loading: () => <div className={styles.skeletonSection} />,
+});
+const HomeWhyChooseUsNew = dynamic(() => import('@/components/ui/HomeWhyChooseUsNew'), {
+  ssr: false,
+  loading: () => <div className={styles.skeletonSection} />,
+});
 
 const processSteps = [
   { step: '01', title: 'Request a quote', desc: 'Use our quotation/free trial to send us a quote request for the photographs you need to edit.', icon: FileText },

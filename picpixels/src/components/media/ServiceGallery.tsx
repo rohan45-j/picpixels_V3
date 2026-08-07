@@ -63,13 +63,7 @@ export default function ServiceGallery({ images, serviceTitle }: ServiceGalleryP
     [visible],
   );
 
-  const [lightboxBeforeAfter, setLightboxBeforeAfter] = useState<number | null>(null);
   const [lightboxPortfolio, setLightboxPortfolio] = useState<number | null>(null);
-
-  const baLightboxImages = useMemo(
-    () => beforeAfter.map((img) => ({ src: img.after_image || img.image, alt: img.alt_text || img.caption })),
-    [beforeAfter],
-  );
 
   const portfolioLightboxImages = useMemo(
     () => portfolio.map((img) => ({ src: img.image, alt: img.alt_text || img.caption })),
@@ -91,15 +85,9 @@ export default function ServiceGallery({ images, serviceTitle }: ServiceGalleryP
               </p>
             </div>
             <div className="ba-grid">
-              {beforeAfter.slice(0, 3).map((img, i) => (
+              {beforeAfter.map((img, i) => (
                 <AnimatedSection key={img.id || i} delay={i * 150}>
-                  <div
-                    className="ba-card"
-                    onClick={() => {
-                      const idx = beforeAfter.indexOf(img);
-                      setLightboxBeforeAfter(idx);
-                    }}
-                  >
+                  <div className="ba-card">
                     <BeforeAfterSlider
                       beforeImage={img.before_image!}
                       afterImage={img.after_image!}
@@ -114,16 +102,6 @@ export default function ServiceGallery({ images, serviceTitle }: ServiceGalleryP
             </div>
           </div>
         </AnimatedSection>
-      )}
-
-      {lightboxBeforeAfter !== null && beforeAfter[lightboxBeforeAfter] && (
-        <GalleryLightbox
-          images={baLightboxImages}
-          currentIndex={lightboxBeforeAfter}
-          onClose={() => setLightboxBeforeAfter(null)}
-          onPrev={() => setLightboxBeforeAfter((i) => (i! > 0 ? i! - 1 : beforeAfter.length - 1))}
-          onNext={() => setLightboxBeforeAfter((i) => (i! < beforeAfter.length - 1 ? i! + 1 : 0))}
-        />
       )}
 
       {/* Section 2: Recent Portfolio Examples */}
