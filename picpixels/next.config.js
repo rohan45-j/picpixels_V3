@@ -108,7 +108,14 @@ const nextConfig = {
   },
 
   // Optimize bundle splitting
+  // Resource-saving options for cPanel builds (reduces CPU/RAM usage):
+  //   cpus: 1               → single build worker count
+  //   workerThreads: false  → use child processes instead of worker threads
+  //   webpackBuildWorker: false → run webpack in-process instead of a separate worker
   experimental: {
+    cpus: 1,
+    workerThreads: false,
+    webpackBuildWorker: false,
     optimizePackageImports: ['lucide-react', 'framer-motion', 'gsap'],
   },
 

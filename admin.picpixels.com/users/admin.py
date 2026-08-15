@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
@@ -111,10 +112,14 @@ class SubscriptionAdmin(ModelAdmin):
         )
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
-        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name in ('current_period_start', 'current_period_end'):
-            formfield.widget = ModernDateTimeWidget()
-        return formfield
+            # Single-value DateTimeField to match the single-input
+            # ModernDateTimeWidget. The admin default (SplitDateTimeField /
+            # MultiValueField) crashes with "NoneType has no len()" when the
+            # field is submitted empty (MultiValueField.has_changed).
+            kwargs['form_class'] = forms.DateTimeField
+            kwargs['widget'] = ModernDateTimeWidget()
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 @admin.register(Transaction)

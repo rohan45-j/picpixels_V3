@@ -1189,10 +1189,14 @@ class PricingPlanAdmin(ModelAdmin):
         return len(obj.features) if obj.features else 0
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
-        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name == 'banner_expiry':
-            formfield.widget = ModernDateTimeWidget()
-        return formfield
+            # Use a single-value DateTimeField matching the single-input
+            # ModernDateTimeWidget. The admin default (SplitDateTimeField /
+            # MultiValueField) crashes with "NoneType has no len()" when the
+            # field is submitted empty (see MultiValueField.has_changed).
+            kwargs['form_class'] = forms.DateTimeField
+            kwargs['widget'] = ModernDateTimeWidget()
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 @admin.register(Technology)
@@ -1220,6 +1224,19 @@ class TechnologyAdmin(ModelAdmin):
 
 
 class PricingPromotionSectionForm(forms.ModelForm):
+    # Declared explicitly so the single-input ModernDateTimeWidget is paired
+    # with a single-value DateTimeField. Otherwise the admin default
+    # (SplitDateTimeField / MultiValueField) crashes with "NoneType has no
+    # len()" in MultiValueField.has_changed when the field is empty.
+    start_date = forms.DateTimeField(
+        widget=ModernDateTimeWidget(), required=False,
+        help_text='Campaign goes live automatically on this date and time. Leave blank to start immediately.'
+    )
+    end_date = forms.DateTimeField(
+        widget=ModernDateTimeWidget(), required=False,
+        help_text='Campaign expires automatically after this date and time. Leave blank for no end date.'
+    )
+
     class Meta:
         model = PricingPromotionSection
         fields = '__all__'
@@ -1229,8 +1246,6 @@ class PricingPromotionSectionForm(forms.ModelForm):
             'bg_color': forms.TextInput(attrs={'type': 'color', 'class': 'vColorField'}),
             'text_color': forms.TextInput(attrs={'type': 'color', 'class': 'vColorField'}),
             'accent_color': forms.TextInput(attrs={'type': 'color', 'class': 'vColorField'}),
-            'start_date': ModernDateTimeWidget(),
-            'end_date': ModernDateTimeWidget(),
         }
         help_texts = {
             'is_active': 'Toggle ON to show this promotion on the pricing page.',
@@ -1472,10 +1487,14 @@ class PricingConfigCardAdmin(ModelAdmin):
     )
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
-        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
         if db_field.name == 'banner_expiry':
-            formfield.widget = ModernDateTimeWidget()
-        return formfield
+            # Use a single-value DateTimeField matching the single-input
+            # ModernDateTimeWidget. The admin default (SplitDateTimeField /
+            # MultiValueField) crashes with "NoneType has no len()" when the
+            # field is submitted empty (see MultiValueField.has_changed).
+            kwargs['form_class'] = forms.DateTimeField
+            kwargs['widget'] = ModernDateTimeWidget()
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 @admin.register(PricingConfigDropdownOption)
