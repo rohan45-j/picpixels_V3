@@ -249,6 +249,7 @@ export interface ServiceClientFeedback {
 export interface Service {
   id: number;
   title: string;
+  title_color?: string;
   slug: string;
   short_description: string;
   description: string;
@@ -256,6 +257,7 @@ export interface Service {
   icon?: string;
   image?: string;
   image_alt?: string;
+  hero_title?: string;
   hero_subtitle?: string;
   hero_background?: string;
   hero_image_alt?: string;
@@ -281,13 +283,23 @@ export interface Service {
   eeat?: ServiceEEAT;
   brand_section_title?: string;
   why_need_section_title?: string;
+  why_need_title_color?: string;
   why_need_section_description?: string;
   process_section_title?: string;
+  process_title_color?: string;
   why_choose_title?: string;
+  why_choose_title_color?: string;
+  overview_title?: string;
+  overview_title_color?: string;
+  faq_title?: string;
+  faq_title_color?: string;
+  review_title?: string;
+  review_title_color?: string;
   tools_section_title?: string;
   pricing_title?: string;
   pricing_badge_text?: string;
   pricing_heading?: string;
+  pricing_heading_color?: string;
   pricing_description?: string;
   pricing_starting_price?: string;
   pricing_unit?: string;
@@ -507,6 +519,7 @@ export interface HeroSection {
   is_active: boolean;
   tagline: string;
   title: string;
+  title_color?: string;
   description: string;
   background_image: string | null;
   background_image_alt?: string;

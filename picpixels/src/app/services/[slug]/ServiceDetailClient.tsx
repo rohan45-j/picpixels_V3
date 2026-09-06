@@ -5,6 +5,7 @@ import { CheckCircle } from 'lucide-react';
 import Reveal from '@/components/animations/Reveal';
 import HeroCarousel from '@/components/media/HeroCarousel';
 import SectionHeading from '@/components/ui/SectionHeading';
+import { renderHighlightedText } from '@/utils/textHighlight';
 import '@/components/media/gallery.css';
 import styles from '@/styles/modules/services.module.css';
 import faqStyles from '@/styles/modules/faq-accordion.module.css';
@@ -34,7 +35,7 @@ function ContentSectionBlock({ section, index }: { section: ServiceContentSectio
       <section className={`${styles.contentSectionWrapper} ${wrapperClass}`}>
         <div className="container">
           <div className={styles.fullWidthContent}>
-            {section.heading && <h2 className={`${styles.contentHeading} gradient-text`}>{section.heading}</h2>}
+            {section.heading && <h2 className={styles.contentHeading} style={{ color: '#000000' }}>{renderHighlightedText(section.heading)}</h2>}
             {section.content && <div className={styles.contentBody}>{section.content}</div>}
             {section.image && (
               <div className={styles.contentImageBlock}>
@@ -70,7 +71,7 @@ function ContentSectionBlock({ section, index }: { section: ServiceContentSectio
               </div>
             )}
             <div className={styles.imageTopContent}>
-              {section.heading && <h2 className={`${styles.contentHeading} gradient-text`}>{section.heading}</h2>}
+              {section.heading && <h2 className={styles.contentHeading} style={{ color: '#000000' }}>{renderHighlightedText(section.heading)}</h2>}
               {section.content && <div className={styles.contentBody}>{section.content}</div>}
             </div>
           </div>
@@ -84,7 +85,7 @@ function ContentSectionBlock({ section, index }: { section: ServiceContentSectio
       <section className={`${styles.contentSectionWrapper} ${wrapperClass}`}>
         <div className="container">
           <div className={styles.fullWidthContent}>
-            {section.heading && <h2 className={`${styles.contentHeading} gradient-text`}>{section.heading}</h2>}
+            {section.heading && <h2 className={styles.contentHeading} style={{ color: '#000000' }}>{renderHighlightedText(section.heading)}</h2>}
             {section.content && <div className={styles.contentBody}>{section.content}</div>}
           </div>
         </div>
@@ -99,7 +100,7 @@ function ContentSectionBlock({ section, index }: { section: ServiceContentSectio
     <section className={`${styles.contentSectionWrapper} ${wrapperClass}`}>
       <div className={`container ${styles.contentBlockGrid}`}>
         <div className={styles.contentText} style={{ order: textOrder }}>
-          {section.heading && <h2 className={`${styles.contentHeading} gradient-text`}>{section.heading}</h2>}
+          {section.heading && <h2 className={styles.contentHeading} style={{ color: '#000000' }}>{renderHighlightedText(section.heading)}</h2>}
           {section.content && <div className={styles.contentBody}>{section.content}</div>}
         </div>
         {section.image && (
@@ -184,9 +185,16 @@ function ServiceBlockRenderer({ blocks }: { blocks: ContentBlock[] }) {
 }
 
 function HeroSection({ service }: { service: Service }) {
+  const heroHeadline = service.hero_title || service.hero_subtitle || service.short_description;
+  const heroSub = service.hero_title
+    ? (service.hero_subtitle || service.short_description)
+    : (service.short_description && service.short_description !== service.hero_subtitle
+        ? service.short_description
+        : null);
+
   const heroImages = service.hero_images && service.hero_images.length > 0
     ? service.hero_images
-    : (service.image ? [{ id: 0, image: service.image, alt_text: service.title, order: 0 }] : []);
+    : (service.image ? [{ id: 0, image: service.image, alt_text: service.image_alt || heroHeadline || '', order: 0 }] : []);
 
   return (
     <section className={styles.heroSection}>
@@ -196,10 +204,16 @@ function HeroSection({ service }: { service: Service }) {
             <span className={styles.serviceBadge}>${parseFloat(service.price).toFixed(2)} Per Image</span>
           )}
           
-          <h1 className={`${styles.title} gradient-text`}>{service.title}</h1>
-          {(service.hero_subtitle || service.short_description) && (
-            <p className={styles.heroSubtitle}>{service.hero_subtitle || service.short_description}</p>
+          {heroHeadline && (
+            <h1 className={styles.title} style={{ color: service.title_color || '#000000' }}>
+              {renderHighlightedText(heroHeadline, service.title_color)}
+            </h1>
           )}
+
+          {heroSub && (
+            <p className={styles.heroSubtitle}>{heroSub}</p>
+          )}
+
           <div className={styles.heroCta}>
             <Link href={service.hero_cta_link || '/free-trial'} className={styles.heroCtaBtn}>
               {service.hero_cta_text || 'Start Free Trial'}
@@ -223,7 +237,8 @@ function AboutFeaturesSection({ service }: { service: Service }) {
     <section className={styles.aboutFeaturesSection}>
       <div className="container">
         <SectionHeading
-          text={`Overview of ${service.title}`}
+          text={service.overview_title || `Overview of ${service.title}`}
+          color={service.overview_title_color}
           subtitle={`Learn how our professional ${service.title.toLowerCase()} service can transform your product photography`}
         />
         <div className={styles.aboutFeaturesGrid}>
@@ -268,15 +283,25 @@ export default function ServiceDetailClient({
       <ServiceWhyNeedSection
         features={service.why_need_features ?? []}
         title={service.why_need_section_title}
+        titleColor={service.why_need_title_color}
         description={service.why_need_section_description}
       />
-      <ServiceProcessSection steps={service.process_steps ?? []} title={service.process_section_title} />
-      <ServiceWhyChooseSection cards={service.why_choose_cards ?? []} title={service.why_choose_title} />
+      <ServiceProcessSection
+        steps={service.process_steps ?? []}
+        title={service.process_section_title}
+        titleColor={service.process_title_color}
+      />
+      <ServiceWhyChooseSection
+        cards={service.why_choose_cards ?? []}
+        title={service.why_choose_title}
+        titleColor={service.why_choose_title_color}
+      />
       <TechExpertiseSection technologies={technologies} />
       <ServicePricingSection
         cards={service.pricing_tier_cards ?? []}
         badgeText={service.pricing_title}
         heading={service.pricing_heading}
+        headingColor={service.pricing_heading_color}
         description={service.pricing_description}
         startingPrice={service.pricing_starting_price}
         unit={service.pricing_unit}
@@ -290,7 +315,10 @@ export default function ServiceDetailClient({
       <section className={styles.sectionPaddingLg} style={{ background: 'var(--color-bg, #f8f9fa)' }}>
         <div className="container">
           <Reveal variant="fadeUp" once={false}>
-            <SectionHeading text="Our Clients &amp; Reviews" />
+            <SectionHeading
+              text={service.review_title || "Our Clients & Reviews"}
+              color={service.review_title_color}
+            />
           </Reveal>
           <Reveal variant="fadeIn" delay={200}>
             <TestimonialCarousel testimonials={testimonials} />
@@ -318,7 +346,8 @@ export default function ServiceDetailClient({
         <section className={faqStyles.faqSection}>
           <div className={faqStyles.faqInner}>
             <SectionHeading
-              text={`${service.title} - FAQs`}
+              text={service.faq_title || `${service.title} - FAQs`}
+              color={service.faq_title_color}
               subtitle={`Frequently asked questions about our ${service.title.toLowerCase()} service.`}
             />
             <FAQAccordion faqs={service.faqs} />

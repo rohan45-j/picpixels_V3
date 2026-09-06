@@ -1,0 +1,69 @@
+{% load i18n static %}
+<div class="tag-input-widget" data-widget-name="{{ widget_name }}" id="tag-widget-{{ widget_name }}">
+  <div class="tag-input-header">
+    <div class="tag-input-header-left">
+      <span class="tag-input-badge">
+        <span class="tag-input-count">{{ items|length }}</span>
+        <span class="tag-input-count-text">{% if items|length == 1 %}Feature{% else %}Features{% endif %}</span>
+      </span>
+    </div>
+    <div class="tag-input-header-right">
+      <button type="button" class="tag-btn tag-btn-ghost tag-bulk-toggle-btn" title="Paste multiple features or edit as plain text">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        <span>Bulk Edit / Paste List</span>
+      </button>
+      <button type="button" class="tag-btn tag-btn-ghost tag-clear-all-btn" title="Remove all features" {% if not items %}style="display:none;"{% endif %}>
+        Clear All
+      </button>
+    </div>
+  </div>
+
+  {# ── List Mode ── #}
+  <div class="tag-input-list-mode">
+    <div class="tag-input-list">
+      {% for item in items %}
+      <div class="tag-input-row" data-index="{{ forloop.counter0 }}">
+        <span class="tag-input-index">{{ forloop.counter }}</span>
+        <div class="tag-input-field-wrap">
+          <input type="text" class="tag-input-field" value="{{ item }}" placeholder="Enter feature text (e.g. 50 revisions included)..." autocomplete="off">
+        </div>
+        <div class="tag-input-row-controls">
+          <button type="button" class="tag-row-btn tag-move-up" title="Move Up">↑</button>
+          <button type="button" class="tag-row-btn tag-move-down" title="Move Down">↓</button>
+          <button type="button" class="tag-row-btn tag-row-del" title="Delete feature">&times;</button>
+        </div>
+      </div>
+      {% empty %}
+      <div class="tag-input-empty-msg">No features added yet. Click "+ Add Feature" or paste a list using "Bulk Edit".</div>
+      {% endfor %}
+    </div>
+
+    <div class="tag-input-footer">
+      <button type="button" class="tag-btn tag-btn-primary tag-add-row-btn">
+        <span class="tag-plus-icon">+</span> Add Feature
+      </button>
+      <div class="tag-input-hint">
+        💡 <strong>Quick tip:</strong> Press <kbd>Enter</kbd> to add next feature. You can also paste multiple lines directly.
+      </div>
+    </div>
+  </div>
+
+  {# ── Bulk Edit Mode ── #}
+  <div class="tag-input-bulk-mode" style="display: none;">
+    <div class="tag-bulk-info">
+      <span>Paste or type features below — <strong>one feature per line</strong>:</span>
+    </div>
+    <textarea class="tag-bulk-textarea" rows="6" placeholder="User accounts&#10;Role-based access&#10;Dashboard analytics&#10;Reports export"></textarea>
+    <div class="tag-bulk-actions">
+      <button type="button" class="tag-btn tag-btn-primary tag-bulk-apply-btn">✓ Apply Features</button>
+      <button type="button" class="tag-btn tag-btn-ghost tag-bulk-cancel-btn">Cancel</button>
+    </div>
+  </div>
+
+  <input type="hidden" name="{{ widget_name }}" class="tag-hidden-input" value="{{ items_json }}">
+</div>
+<script>
+if (window.initTagInputWidgets) {
+  window.initTagInputWidgets(document.getElementById("tag-widget-{{ widget_name }}"));
+}
+</script>

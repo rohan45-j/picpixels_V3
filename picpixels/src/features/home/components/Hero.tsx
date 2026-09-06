@@ -31,7 +31,7 @@ export default function Hero({ hero }: { hero: HeroSection | null }) {
       <div className={styles.heroInner}>
         <div className={`${styles.heroText} animate-fade-in`}>
           <span className={styles.tagline}>{hero.tagline}</span>
-          <h1 className={`${styles.title} gradient-text`}>
+          <h1 className={styles.title} style={{ color: hero.title_color || '#000000' }}>
             {hero.title}
           </h1>
           <p className={styles.description}>

@@ -45,15 +45,15 @@
   z-index: 1;
 }
 .title {
-  font-size: clamp(2.5rem, 5vw, 3.8rem);
-  font-weight: 900;
-  margin-bottom: 1.2rem;
-  line-height: 1.1;
-  color: var(--color-text);
+  font-size: clamp(1.75rem, 2.8vw, 2.4rem);
+  font-weight: 800;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  color: #000000;
 }
 .subtitle {
-  font-size: 1.15rem;
-  color: var(--color-muted);
+  font-size: 1.05rem;
+  color: #000000;
   max-width: 650px;
   margin: 0 auto;
   line-height: 1.7;

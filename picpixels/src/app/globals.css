@@ -32,14 +32,14 @@
   --bg-dark-card: hsl(222, 30%, 16%);
   --bg-dark-elevated: hsl(222, 25%, 20%);
 
-  /* Text Colors */
-  --color-text: #2B2F33;
-  --text-dark: hsl(222, 47%, 11%);
+  /* Text Colors - All paragraph and general text default to black */
+  --color-text: #000000;
+  --text-dark: #000000;
   --text-white: #000000;
-  --text-muted: hsl(215, 16%, 47%);
-  --text-muted-light: hsl(215, 16%, 47%);
-  --text-muted-dark: hsl(215, 16%, 47%);
-  --color-muted: #6c757d;
+  --text-muted: #111827;
+  --text-muted-light: #1f2937;
+  --text-muted-dark: #111827;
+  --color-muted: #1f2937;
 
   /* Utility colors */
   --color-success: #c148c3;
@@ -95,7 +95,7 @@
 html {
   width: 100%;
   background-color: var(--bg-light);
-  color: var(--color-text);
+  color: #000000;
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.6;
   font-size: 16px;
@@ -106,6 +106,11 @@ body {
   width: 100%;
   overflow-x: hidden;
   position: relative;
+  color: #000000;
+}
+
+p {
+  color: #000000;
 }
 
 h1,
@@ -117,6 +122,7 @@ h6 {
   font-family: Arial, Helvetica, sans-serif;
   font-weight: 700;
   line-height: 1.25;
+  color: #000000;
 }
 
 a {

@@ -36,7 +36,7 @@ export default function PortfolioGallery({ images, title, subtitle, onImageClick
   return (
     <section className="portfolio-gallery">
       <div className="container">
-        {title && <h2 className="portfolio-gallery-title gradient-text">{title}</h2>}
+        {title && <h2 className="portfolio-gallery-title" style={{ color: '#000000' }}>{title}</h2>}
         {subtitle && <p className="portfolio-gallery-subtitle">{subtitle}</p>}
 
         {categories.length > 1 && (

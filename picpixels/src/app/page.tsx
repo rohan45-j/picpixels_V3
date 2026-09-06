@@ -104,23 +104,23 @@ async function getHomepageData() {
   ]);
 
   // Extract values from Promise.allSettled results
-  const extractValue = <T>(result: PromiseSettledResult<T | null>): T | null => {
+  const extractValue = <T,>(result: PromiseSettledResult<T | null>): T | null => {
     if (result.status === 'fulfilled') return result.value;
     console.error('API call failed:', result.reason);
     return null;
   };
 
-  const extractArray = <T>(result: PromiseSettledResult<{ results: T[] } | null>): T[] => {
-    if (result.status === 'fulfilled' && result.value?.results) return result.value.results;
-    console.error('API call failed:', result.reason);
+  const extractArray = <T,>(result: PromiseSettledResult<{ results: T[] } | null>): T[] => {
+    if (result.status === 'fulfilled') return result.value?.results ?? [];
+    console.error('API call failed:', (result as PromiseRejectedResult).reason);
     return [];
   };
 
   // Some endpoints (hero, why-choose-us, pricing-config, settings) return paginated {results:[...]}
   // even though they are singletons. Extract the first item.
-  const extractFirst = <T>(result: PromiseSettledResult<{ results: T[] } | null>): T | null => {
-    if (result.status === 'fulfilled' && result.value?.results?.length) return result.value.results[0];
-    console.error('API call failed:', result.reason);
+  const extractFirst = <T,>(result: PromiseSettledResult<{ results: T[] } | null>): T | null => {
+    if (result.status === 'fulfilled') return result.value?.results?.[0] ?? null;
+    console.error('API call failed:', (result as PromiseRejectedResult).reason);
     return null;
   };
 

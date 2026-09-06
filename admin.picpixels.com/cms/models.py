@@ -8,6 +8,7 @@ from .image_guidelines import IMG
 
 class Page(models.Model):
     title = models.CharField(max_length=200)
+    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for the page title (e.g. #FF8A50). Default is black.')
     slug = models.SlugField(unique=True, max_length=200)
     meta_title = models.CharField(max_length=200, blank=True)
     seo_title = models.CharField(max_length=200, blank=True)
@@ -58,6 +59,7 @@ class Banner(models.Model):
 
 class Service(models.Model):
     title = models.CharField(max_length=150)
+    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for the service title (e.g. #FF8A50). Default is black.')
     slug = models.SlugField(unique=True, max_length=200, blank=True, help_text='URL identifier (auto-generated from title)')
     short_description = models.CharField(max_length=300, blank=True, help_text='Brief description for service cards')
     description = models.TextField(help_text='Detailed service description')
@@ -65,6 +67,7 @@ class Service(models.Model):
     icon = models.CharField(max_length=100, blank=True, help_text='Material icon name or emoji')
     image = models.ImageField(upload_to='services/', blank=True, null=True, help_text=IMG['service_thumbnail'])
     image_alt = models.CharField(max_length=200, blank=True, help_text='Alt text for the service thumbnail image')
+    hero_title = models.CharField(max_length=255, blank=True, default='', help_text='Primary H1 headline for the hero section. Overrides the service title in the hero. If blank, hero_subtitle is used.')
     hero_subtitle = models.CharField(max_length=300, blank=True, help_text='Subtitle displayed in the hero section')
     hero_background = models.ImageField(upload_to='services/hero/', blank=True, null=True, help_text=IMG['service_hero_bg'])
     hero_image_alt = models.CharField(max_length=200, blank=True, help_text='Alt text for the hero background image')
@@ -85,13 +88,23 @@ class Service(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=True)
     brand_section_title = models.CharField(max_length=200, default='Trusted by Brands & Partners', blank=True)
     why_need_section_title = models.CharField(max_length=200, default='Why Should You Need Our Service', blank=True)
+    why_need_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for "Why Should You Need Our Service" heading (HEX e.g. #000000 or #FF8A50)')
     why_need_section_description = models.TextField(blank=True, default='')
     process_section_title = models.CharField(max_length=200, default='Process & Workflow', blank=True)
-    why_choose_title = models.CharField(max_length=200, default='Why Choose Us', blank=True)
+    process_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for "Process & Workflow" heading (HEX e.g. #000000 or #FF8A50)')
+    why_choose_title = models.CharField(max_length=200, default='Why Choose Us', blank=True, help_text='Heading for "Why Choose Us" section')
+    why_choose_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for "Why Choose Us" heading (HEX e.g. #000000 or #FF8A50)')
+    overview_title = models.CharField(max_length=200, blank=True, default='', help_text='Custom heading for Overview section. Leave blank for "Overview of [Service Title]"')
+    overview_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for Overview section heading (HEX e.g. #000000 or #FF8A50)')
+    faq_title = models.CharField(max_length=200, blank=True, default='', help_text='Custom heading for FAQs section. Leave blank for "[Service Title] - FAQs"')
+    faq_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for FAQs heading (HEX e.g. #000000 or #FF8A50)')
+    review_title = models.CharField(max_length=200, blank=True, default='', help_text='Custom heading for Reviews section. Leave blank for "Our Clients & Reviews"')
+    review_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for Reviews heading (HEX e.g. #000000 or #FF8A50)')
     tools_section_title = models.CharField(max_length=200, default='Tools We Use', blank=True)
     pricing_title = models.CharField(max_length=200, default='Pricing', blank=True)
     pricing_badge_text = models.CharField(max_length=200, blank=True, default='', help_text='e.g. "Simple, Transparent Pricing"')
     pricing_heading = models.CharField(max_length=300, blank=True, default='', help_text='Main heading for premium pricing section')
+    pricing_heading_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for main Pricing section heading (HEX e.g. #000000 or #FF8A50)')
     pricing_description = models.TextField(blank=True, default='', help_text='Description text for pricing section')
     pricing_starting_price = models.CharField(max_length=100, blank=True, default='', help_text='e.g. "$5.00"')
     pricing_unit = models.CharField(max_length=50, blank=True, default='/image', help_text='Price unit e.g. "/image", "/hour", "/project"')
@@ -134,17 +147,17 @@ class ServiceGalleryImage(models.Model):
         max_length=100, blank=True,
         help_text='Filter category (e.g. "ecommerce", "fashion", "jewelry")',
     )
-    image = models.ImageField(upload_to='services/gallery/', help_text=IMG['service_gallery'])
+    image = models.ImageField(upload_to='services/gallery/', blank=True, null=True, help_text='Recommended: 1600 × 1200 px (4:3)')
     before_image = models.ImageField(
         upload_to='services/gallery/before_after/', blank=True, null=True,
-        help_text=IMG['service_before_after'],
+        help_text='Recommended: 1600 × 1200 px (4:3)',
     )
     after_image = models.ImageField(
         upload_to='services/gallery/before_after/', blank=True, null=True,
-        help_text=IMG['service_before_after'],
+        help_text='Recommended: 1600 × 1200 px (4:3)',
     )
-    before_image_alt = models.CharField(max_length=200, blank=True, help_text='Alt text for the before image')
-    after_image_alt = models.CharField(max_length=200, blank=True, help_text='Alt text for the after image')
+    before_image_alt = models.CharField(max_length=200, blank=True, help_text='')
+    after_image_alt = models.CharField(max_length=200, blank=True, help_text='')
     alt_text = models.CharField(max_length=200, blank=True)
     caption = models.CharField(max_length=300, blank=True)
     is_featured = models.BooleanField(default=False, help_text='Show in featured showcase')
@@ -195,7 +208,7 @@ class ServiceHeroImage(models.Model):
         Service, on_delete=models.CASCADE,
         related_name='hero_images',
     )
-    image = models.ImageField(upload_to='services/hero/', help_text=IMG['service_hero_slide'])
+    image = models.ImageField(upload_to='services/hero/', help_text='Recommended: 1600 × 1200 px (4:3)')
     alt_text = models.CharField(max_length=200, blank=True)
     order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True, help_text='Show on website')
@@ -213,6 +226,7 @@ class HeroSection(models.Model):
     is_active = models.BooleanField(default=True, help_text='Show on homepage')
     tagline = models.CharField(max_length=200, blank=True, default='Photo Editing Services at Affordable Pricing')
     title = models.CharField(max_length=500, default='Get pixel-perfect photo editing services with quality as our top priority')
+    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for the hero title (e.g. #FF8A50). Default is black.')
     description = models.TextField(blank=True, default='We edited over 5M+ images for brands, retailers, media agencies, and commercial photographers. Bulk order discounts available. Ready to assist 24/7.')
     background_image = models.ImageField(upload_to='hero/', blank=True, null=True, help_text=IMG['hero_section_bg'])
     background_image_alt = models.CharField(max_length=200, blank=True, help_text='Alt text for the hero background image')

@@ -10,13 +10,14 @@
 }
 
 .service-gallery-heading {
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  color: #000000;
   margin-bottom: 0.75rem;
 }
 
 .service-gallery-desc {
-  color: var(--text-muted-dark);
-  font-size: 1.1rem;
+  color: #000000;
+  font-size: 1.05rem;
   max-width: 600px;
   margin: 0 auto;
 }
@@ -158,13 +159,14 @@
 
 .portfolio-gallery-title {
   text-align: center;
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  color: #000000;
   margin-bottom: 0.5rem;
 }
 
 .portfolio-gallery-subtitle {
   text-align: center;
-  color: var(--text-muted-dark);
+  color: #000000;
   font-size: 1.05rem;
   margin-bottom: 2rem;
 }

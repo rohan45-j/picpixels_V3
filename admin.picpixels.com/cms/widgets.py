@@ -130,3 +130,104 @@ class ContentBlockPreviewWidget(forms.Widget):
             'categories': categories,
         })
         return context
+
+
+class TagInputWidget(forms.Widget):
+    """
+    Renders a JSON array of strings as a friendly repeatable list with
+    add / remove buttons — no raw JSON visible to the admin.
+    """
+    template_name = 'admin/widgets/tag_input.html'
+
+    class Media:
+        css = {'all': ('admin/css/tag_input.css',)}
+        js = ('admin/js/tag_input.js',)
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        import json as _json
+        items = []
+        if value:
+            if isinstance(value, str):
+                try:
+                    items = _json.loads(value)
+                except _json.JSONDecodeError:
+                    items = []
+            elif isinstance(value, list):
+                items = value
+        context.update({
+            'items_json': _json.dumps(items),
+            'items': items,
+            'widget_name': name,
+        })
+        return context
+
+    def value_from_datadict(self, data, files, name):
+        import json as _json
+        raw = data.get(name)
+        if raw is None:
+            return '[]'
+        if isinstance(raw, (list, dict)):
+            return _json.dumps(raw)
+        if isinstance(raw, str):
+            raw = raw.strip()
+            if not raw:
+                return '[]'
+            try:
+                _json.loads(raw)
+                return raw
+            except _json.JSONDecodeError:
+                return '[]'
+        return '[]'
+
+    def value_omitted_from_data(self, data, files, name):
+        return name not in data
+
+
+class ColorPickerWidget(forms.TextInput):
+    """
+    A modern color picker widget providing:
+    - HTML5 native color wheel picker
+    - Hex input field
+    - Quick-select color presets (Black #000000, Brand Orange #FF8A50, Indigo #6366F1, Emerald #10B981, Crimson #EF4444, Violet #8B5CF6)
+    - Reset to default black button
+    """
+    def __init__(self, attrs=None):
+        default_attrs = {'class': 'vTextField color-hex-field', 'placeholder': '#000000'}
+        if attrs:
+            default_attrs.update(attrs)
+        super().__init__(default_attrs)
+
+    def render(self, name, value, attrs=None, renderer=None):
+        val = value or ''
+        color_val = val if (val and val.startswith('#') and len(val) in (4, 7)) else '#000000'
+        html = f'''
+        <div class="modern-color-picker-wrap" id="cp_wrap_{name}">
+            <div class="color-picker-controls">
+                <input type="color" class="color-picker-wheel" value="{color_val}"
+                    oninput="var txt = document.getElementById('id_{name}'); if (txt) {{ txt.value = this.value; txt.dispatchEvent(new Event('change')); }}" />
+                <input type="text" name="{name}" id="id_{name}" value="{val}" class="vTextField color-hex-field" placeholder="#000000 (Default Black)"
+                    oninput="if (/^#[0-9A-Fa-f]{{6}}$/.test(this.value)) {{ var c = this.previousElementSibling; if (c) c.value = this.value; }}" />
+                <button type="button" class="color-clear-btn" title="Reset to default black"
+                    onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = ''; var c = this.parentElement.querySelector('input[type=color]'); if (c) c.value = '#000000';">
+                    Reset
+                </button>
+            </div>
+            <div class="color-swatches">
+                <span class="color-swatch-label">Presets:</span>
+                <button type="button" class="color-swatch" style="background:#000000;" title="Default Black (#000000)"
+                    onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = '#000000'; var w = this.closest('.modern-color-picker-wrap'); if (w) w.querySelector('input[type=color]').value = '#000000';"></button>
+                <button type="button" class="color-swatch" style="background:#FF8A50;" title="Brand Orange (#FF8A50)"
+                    onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = '#FF8A50'; var w = this.closest('.modern-color-picker-wrap'); if (w) w.querySelector('input[type=color]').value = '#FF8A50';"></button>
+                <button type="button" class="color-swatch" style="background:#6366F1;" title="Indigo (#6366F1)"
+                    onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = '#6366F1'; var w = this.closest('.modern-color-picker-wrap'); if (w) w.querySelector('input[type=color]').value = '#6366F1';"></button>
+                <button type="button" class="color-swatch" style="background:#10B981;" title="Emerald (#10B981)"
+                    onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = '#10B981'; var w = this.closest('.modern-color-picker-wrap'); if (w) w.querySelector('input[type=color]').value = '#10B981';"></button>
+                <button type="button" class="color-swatch" style="background:#EF4444;" title="Red (#EF4444)"
+                    onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = '#EF4444'; var w = this.closest('.modern-color-picker-wrap'); if (w) w.querySelector('input[type=color]').value = '#EF4444';"></button>
+                <button type="button" class="color-swatch" style="background:#8B5CF6;" title="Violet (#8B5CF6)"
+                    onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = '#8B5CF6'; var w = this.closest('.modern-color-picker-wrap'); if (w) w.querySelector('input[type=color]').value = '#8B5CF6';"></button>
+            </div>
+        </div>
+        '''
+        return mark_safe(html)

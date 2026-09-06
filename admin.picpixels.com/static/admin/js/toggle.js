@@ -44,19 +44,32 @@
     });
   }
 
+  function startObserver() {
+    var target = document.body || document.documentElement;
+    if (!target || !(target instanceof Node)) {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          startObserver();
+        }, { once: true });
+      }
+      return;
+    }
+    var observer = new MutationObserver(function () {
+      initToggles();
+      initListEditableToggles();
+    });
+    observer.observe(target, { childList: true, subtree: true });
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
       initToggles();
       initListEditableToggles();
+      startObserver();
     });
   } else {
     initToggles();
     initListEditableToggles();
+    startObserver();
   }
-
-  var observer = new MutationObserver(function () {
-    initToggles();
-    initListEditableToggles();
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
 })();

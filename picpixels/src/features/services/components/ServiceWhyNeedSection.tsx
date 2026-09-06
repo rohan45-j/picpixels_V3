@@ -5,16 +5,17 @@ import SectionHeading from '@/components/ui/SectionHeading'
 interface Props {
   features: ServiceWhyNeedFeature[]
   title?: string
+  titleColor?: string
   description?: string
 }
 
-export default function ServiceWhyNeedSection({ features, title, description }: Props) {
+export default function ServiceWhyNeedSection({ features, title, titleColor, description }: Props) {
   if (!features?.length) return null
   return (
     <section className={styles.sectionPadding} style={{ background: 'var(--tint-bg)' }}>
       <div className="container">
         <div className={styles.sectionHeader}>
-          <SectionHeading text={title || 'Why Should You Need Our Service'} />
+          <SectionHeading text={title || 'Why Should You Need Our Service'} color={titleColor} />
         </div>
         <div className={styles.whyNeedGrid}>
           {features.map((f, i) => (

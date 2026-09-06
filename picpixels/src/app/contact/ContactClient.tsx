@@ -71,7 +71,7 @@ export default function ContactClient({ faqs }: { faqs: FAQ[] }) {
       <Reveal variant="fadeDown">
         <section className={styles.hero}>
           <div className={styles.heroContent}>
-            <h1 className={`${styles.title} gradient-text`}>Get in Touch With Us</h1>
+            <h1 className={styles.title} style={{ color: '#000000' }}>Get in Touch With Us</h1>
             <p className={styles.subtitle}>
               We are looking forward to hearing from you! Please upload your images via Wetransfer or Dropbox and send us the download link. Your first (3-5) images are free. No credit card required.
             </p>

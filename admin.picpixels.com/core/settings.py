@@ -359,7 +359,7 @@ UNFOLD = {
     ],
     "SCRIPTS": [
         "/static/admin/js/sidebar.js",
-        "/static/admin/js/toggle.js",
+        "/static/admin/js/toggle.js?v=2",
     ],
     "COMMAND": {
         "search_models": True,

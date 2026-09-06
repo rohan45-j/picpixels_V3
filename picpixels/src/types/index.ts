@@ -116,12 +116,14 @@ export interface ContentBlock {
 export interface Service {
   id: number;
   title: string;
+  title_color?: string;
   slug: string;
   short_description: string;
   description: string;
   features: string[];
   icon?: string;
   image?: string;
+  hero_title?: string;
   hero_subtitle?: string;
   hero_background?: string;
   price: string;

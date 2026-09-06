@@ -37,8 +37,8 @@ export function usePrefetchRoutes(routes: string[], enabled = true) {
         }, 1500) as unknown as number);
 
     return () => {
-      if (window.requestIdleCallback) {
-        window.cancelIdleCallback(idleId);
+      if (typeof window !== 'undefined' && typeof (window as unknown as { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback === 'function') {
+        (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleId);
       } else {
         clearTimeout(idleId as unknown as ReturnType<typeof setTimeout>);
       }

@@ -1,0 +1,326 @@
+{% extends "admin/change_form.html" %}
+{% load i18n static admin_modify %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'admin/css/tag_input.css' %}?v=3">
+  <link rel="stylesheet" href="{% static 'admin/css/service_admin_image_enhancer.css' %}?v=3">
+  <link rel="stylesheet" href="{% static 'admin/css/title_word_highlighter.css' %}?v=1">
+  <script src="{% static 'admin/js/tag_input.js' %}?v=3"></script>
+  <script src="{% static 'admin/js/service_admin_image_enhancer.js' %}?v=3"></script>
+  <script src="{% static 'admin/js/title_word_highlighter.js' %}?v=1"></script>
+{% endblock %}
+
+{% block field_sets %}
+  {# ── Modern Segmented Tab Bar ── #}
+  <div class="svc-tab-nav-container" id="svc-tab-nav">
+    <div class="svc-tab-header">
+      <div class="svc-tab-title-wrap">
+        <span class="svc-service-chip">Service Editor</span>
+        <h2 class="svc-active-title">{% if original %}{{ original.title }}{% else %}New Service{% endif %}</h2>
+      </div>
+      <div class="svc-tab-quick-actions">
+        <a href="/admin/cms/service/" class="svc-back-btn">← Back to List</a>
+        {% if original.slug %}
+        <a href="http://localhost:3000/services/{{ original.slug }}" target="_blank" class="svc-preview-btn">
+          <span>View on Site</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="svc-tab-bar" role="tablist">
+      <button type="button" class="svc-tab-btn active" data-tab="general" role="tab" aria-selected="true">
+        <span class="svc-tab-icon">📄</span>
+        <span class="svc-tab-label">General & Media</span>
+      </button>
+      <button type="button" class="svc-tab-btn" data-tab="hero" role="tab" aria-selected="false">
+        <span class="svc-tab-icon">🖼️</span>
+        <span class="svc-tab-label">Hero & Slides</span>
+        <span class="svc-tab-badge" id="badge-hero">0</span>
+      </button>
+      <button type="button" class="svc-tab-btn" data-tab="gallery" role="tab" aria-selected="false">
+        <span class="svc-tab-icon">🎨</span>
+        <span class="svc-tab-label">Gallery & Showcase</span>
+        <span class="svc-tab-badge" id="badge-gallery">0</span>
+      </button>
+      <button type="button" class="svc-tab-btn" data-tab="features" role="tab" aria-selected="false">
+        <span class="svc-tab-icon">🛠️</span>
+        <span class="svc-tab-label">Features & Workflow</span>
+      </button>
+      <button type="button" class="svc-tab-btn" data-tab="headings" role="tab" aria-selected="false">
+        <span class="svc-tab-icon">🏷️</span>
+        <span class="svc-tab-label">Section Titles</span>
+      </button>
+      <button type="button" class="svc-tab-btn" data-tab="pricing" role="tab" aria-selected="false">
+        <span class="svc-tab-icon">💰</span>
+        <span class="svc-tab-label">Pricing & Plans</span>
+      </button>
+      <button type="button" class="svc-tab-btn" data-tab="others_content" role="tab" aria-selected="false">
+        <span class="svc-tab-icon">📑</span>
+        <span class="svc-tab-label">Others Content</span>
+        <span class="svc-tab-badge" id="badge-content-sections">0</span>
+      </button>
+      <button type="button" class="svc-tab-btn" data-tab="faqs" role="tab" aria-selected="false">
+        <span class="svc-tab-icon">❓</span>
+        <span class="svc-tab-label">FAQs</span>
+        <span class="svc-tab-badge" id="badge-faq">0</span>
+      </button>
+      <button type="button" class="svc-tab-btn" data-tab="seo" role="tab" aria-selected="false">
+        <span class="svc-tab-icon">⚙️</span>
+        <span class="svc-tab-label">SEO & Settings</span>
+      </button>
+      <button type="button" class="svc-tab-btn svc-tab-all" data-tab="all" role="tab" aria-selected="false">
+        <span class="svc-tab-icon">👁️</span>
+        <span class="svc-tab-label">View All</span>
+      </button>
+    </div>
+  </div>
+
+  {# ── Fieldsets wrapped in cards with data-tab tags ── #}
+  {% for fieldset in adminform %}
+    {% if fieldset.name %}
+    <div class="bpa-card" data-fieldset-name="{{ fieldset.name }}">
+      <div class="bpa-card-header">
+        <div class="bpa-card-header-left">
+          <span class="bpa-card-dot"></span>
+          <h3 class="bpa-card-title">{{ fieldset.name }}</h3>
+        </div>
+        {% if fieldset.is_collapsible %}
+        <button type="button" class="bpa-collapse-btn" data-collapse="{{ fieldset.name|slugify }}" aria-label="Toggle section">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        {% endif %}
+      </div>
+      {% if fieldset.description %}
+      <div class="bpa-card-desc">{{ fieldset.description|safe }}</div>
+      {% endif %}
+      <div class="bpa-card-body">
+        {% include "admin/includes/fieldset.html" with fieldset=fieldset %}
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+{% endblock %}
+
+{% block footer %}
+  {# ── Sticky Save & Status Footer ── #}
+  <div class="bpa-sticky-footer" id="bpa-sticky-footer">
+    <div class="bpa-footer-inner">
+      <div class="bpa-footer-status">
+        {% if original %}
+          <span class="bpa-status-badge bpa-status-active">
+            {% if original.is_active %}● Active{% else %}○ Draft{% endif %}
+          </span>
+          <span class="bpa-footer-id">{{ original.title }}</span>
+          {% if original.price %}
+            <span class="bpa-footer-price">${{ original.price }}</span>
+          {% endif %}
+        {% else %}
+          <span class="bpa-status-badge bpa-status-draft">New Service</span>
+        {% endif %}
+      </div>
+      <div class="bpa-footer-actions">
+        {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
+      </div>
+    </div>
+  </div>
+
+  {# ── Service Admin Interactive Tab & Badge Controller ── #}
+  <script>
+  (function() {
+    'use strict';
+
+    var TAB_MAPPINGS = {
+      'general': {
+        fieldsets: ['Service Information'],
+        inlines: []
+      },
+      'hero': {
+        fieldsets: ['Hero Section'],
+        inlines: ['serviceheroimage-group']
+      },
+      'gallery': {
+        fieldsets: [],
+        inlines: ['gallery_images-group']
+      },
+      'headings': {
+        fieldsets: ['Section Titles & Headings'],
+        inlines: []
+      },
+      'features': {
+        fieldsets: ['Section Titles & Headings'],
+        inlines: ['why_need_features-group', 'process_steps-group', 'why_choose_cards-group', 'eeat-group']
+      },
+      'pricing': {
+        fieldsets: ['Pricing'],
+        inlines: ['pricing_tier_cards-group']
+      },
+      'others_content': {
+        fieldsets: [],
+        inlines: ['content_sections-group']
+      },
+      'faqs': {
+        fieldsets: [],
+        inlines: ['faqs-group']
+      },
+      'seo': {
+        fieldsets: ['SEO & Display'],
+        inlines: []
+      }
+    };
+
+    var currentTab = 'general';
+
+    function getElementsForTab(tabId) {
+      if (tabId === 'all') {
+        return {
+          fieldsets: document.querySelectorAll('.bpa-card'),
+          inlines: document.querySelectorAll('.inline-group')
+        };
+      }
+      var config = TAB_MAPPINGS[tabId] || { fieldsets: [], inlines: [] };
+      var fieldsets = [];
+      var inlines = [];
+
+      document.querySelectorAll('.bpa-card').forEach(function(card) {
+        var name = card.getAttribute('data-fieldset-name');
+        if (config.fieldsets.indexOf(name) !== -1) {
+          fieldsets.push(card);
+        }
+      });
+
+      config.inlines.forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el) inlines.push(el);
+      });
+
+      return { fieldsets: fieldsets, inlines: inlines };
+    }
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+
+      // Update button active states
+      document.querySelectorAll('.svc-tab-btn').forEach(function(btn) {
+        var active = btn.getAttribute('data-tab') === tabId;
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-selected', active);
+      });
+
+      if (tabId === 'all') {
+        document.querySelectorAll('.bpa-card, .inline-group').forEach(function(el) {
+          el.style.display = '';
+        });
+        return;
+      }
+
+      var activeElements = getElementsForTab(tabId);
+      var activeSet = new Set();
+      activeElements.fieldsets.forEach(function(el) { activeSet.add(el); });
+      activeElements.inlines.forEach(function(el) { activeSet.add(el); });
+
+      // Hide all fieldsets and inlines not in this tab
+      document.querySelectorAll('.bpa-card').forEach(function(card) {
+        card.style.display = activeSet.has(card) ? '' : 'none';
+      });
+      document.querySelectorAll('.inline-group').forEach(function(grp) {
+        grp.style.display = activeSet.has(grp) ? '' : 'none';
+      });
+
+      // Also scroll slightly to keep tab bar visible
+      var nav = document.getElementById('svc-tab-nav');
+      if (nav) {
+        var rect = nav.getBoundingClientRect();
+        if (rect.top < 0) {
+          nav.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }
+
+    function updateBadgeCounts() {
+      // Hero slides count
+      var heroGroup = document.getElementById('serviceheroimage-group');
+      if (heroGroup) {
+        var heroRows = heroGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form)');
+        var heroBadge = document.getElementById('badge-hero');
+        if (heroBadge) heroBadge.textContent = heroRows.length;
+      }
+
+      // Gallery count
+      var galleryGroup = document.getElementById('gallery_images-group');
+      if (galleryGroup) {
+        var galRows = galleryGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form)');
+        var galBadge = document.getElementById('badge-gallery');
+        if (galBadge) galBadge.textContent = galRows.length;
+      }
+
+      // FAQ count
+      var faqGroup = document.getElementById('faqs-group');
+      if (faqGroup) {
+        var faqRows = faqGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form)');
+        var faqBadge = document.getElementById('badge-faq');
+        if (faqBadge) faqBadge.textContent = faqRows.length;
+      }
+
+      // Others Content count
+      var contentGroup = document.getElementById('content_sections-group');
+      if (contentGroup) {
+        var contentRows = contentGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form)');
+        var contentBadge = document.getElementById('badge-content-sections');
+        if (contentBadge) contentBadge.textContent = contentRows.length;
+      }
+    }
+
+    function initTabs() {
+      document.querySelectorAll('.svc-tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          var tab = btn.getAttribute('data-tab');
+          if (tab) switchTab(tab);
+        });
+      });
+
+      updateBadgeCounts();
+      switchTab('general');
+    }
+
+    /* ── Collapsible Card Toggle ── */
+    function initCollapse() {
+      document.querySelectorAll('.bpa-collapse-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var card = btn.closest('.bpa-card');
+          if (!card) return;
+          card.classList.toggle('bpa-collapsed');
+        });
+      });
+
+      document.querySelectorAll('.bpa-card-header').forEach(function(header) {
+        header.addEventListener('click', function() {
+          var btn = header.querySelector('.bpa-collapse-btn');
+          if (btn) btn.click();
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        initTabs();
+        initCollapse();
+      });
+    } else {
+      initTabs();
+      initCollapse();
+    }
+
+    if (typeof django !== 'undefined' && django.jQuery) {
+      django.jQuery(document).on('formset:added formset:removed', function() {
+        updateBadgeCounts();
+      });
+    }
+  })();
+  </script>
+{% endblock %}

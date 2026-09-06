@@ -12,7 +12,7 @@ export default function ServicesClient({ services }: { services: Service[] }) {
       <Reveal variant="fadeDown">
         <section className={styles.headerSection}>
           <div className={styles.headerContent}>
-            <h1 className={`${styles.title} gradient-text`}>Our Photo Editing Services</h1>
+            <h1 className={styles.title} style={{ color: '#000000' }}>Our Photo Editing Services</h1>
             <p className={styles.subtitle}>
               {services.length} services available. Your trusted virtual photo editing studio.
             </p>

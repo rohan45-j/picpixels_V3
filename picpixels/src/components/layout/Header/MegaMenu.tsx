@@ -50,12 +50,7 @@ export default function MegaMenu({ services }: MegaMenuProps) {
                       <FileText />
                     )}
                   </div>
-                  <div className={styles.itemContent}>
-                    <span className={styles.menuLabel}>{svc.title}</span>
-                    {svc.short_description && (
-                      <span className={styles.menuDesc}>{svc.short_description}</span>
-                    )}
-                  </div>
+                  <span className={styles.menuLabel}>{svc.title}</span>
                 </motion.a>
               ))}
             </div>
@@ -80,12 +75,7 @@ export default function MegaMenu({ services }: MegaMenuProps) {
                       <FileText />
                     )}
                   </div>
-                  <div className={styles.itemContent}>
-                    <span className={styles.menuLabel}>{svc.title}</span>
-                    {svc.short_description && (
-                      <span className={styles.menuDesc}>{svc.short_description}</span>
-                    )}
-                  </div>
+                  <span className={styles.menuLabel}>{svc.title}</span>
                 </motion.a>
               ))}
             </div>

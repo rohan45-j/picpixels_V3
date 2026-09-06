@@ -7,9 +7,10 @@ import wcuStyles from '@/components/ui/HomeWhyChooseUsNew.module.css';
 interface Props {
   cards: ServiceWhyChooseCard[]
   title?: string
+  titleColor?: string
 }
 
-export default function ServiceWhyChooseSection({ cards, title }: Props) {
+export default function ServiceWhyChooseSection({ cards, title, titleColor }: Props) {
   if (!cards?.length) return null
 
   const uniqueCards = [...new Map(cards.map(card => [card.id, card])).values()];
@@ -19,7 +20,7 @@ export default function ServiceWhyChooseSection({ cards, title }: Props) {
       <div className={wcuStyles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={wcuStyles.header}>
-            <SectionHeading text={title || 'Why Choose Us'} />
+            <SectionHeading text={title || 'Why Choose Us'} color={titleColor} />
           </div>
         </Reveal>
 

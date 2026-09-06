@@ -5,15 +5,16 @@ import SectionHeading from '@/components/ui/SectionHeading'
 interface Props {
   steps: ServiceProcessStep[]
   title?: string
+  titleColor?: string
 }
 
-export default function ServiceProcessSection({ steps, title }: Props) {
+export default function ServiceProcessSection({ steps, title, titleColor }: Props) {
   if (!steps?.length) return null
   return (
     <section className={styles.sectionPaddingLg} style={{ background: 'var(--bg-light-card)' }}>
       <div className="container">
         <div className={styles.sectionHeader}>
-          <SectionHeading text={title || 'Process & Workflow'} />
+          <SectionHeading text={title || 'Process & Workflow'} color={titleColor} />
         </div>
         <div className={styles.processTimeline}>
           <div className={styles.processLine} />

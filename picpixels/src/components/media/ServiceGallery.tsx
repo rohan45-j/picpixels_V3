@@ -79,7 +79,7 @@ export default function ServiceGallery({ images, serviceTitle }: ServiceGalleryP
         <AnimatedSection>
           <div className="container">
             <div className="service-gallery-section">
-              <h2 className="service-gallery-heading gradient-text">Featured Before & After Showcase</h2>
+              <h2 className="service-gallery-heading" style={{ color: '#000000' }}>Featured Before & After Showcase</h2>
               <p className="service-gallery-desc">
                 See the transformation quality of our {serviceTitle.toLowerCase()} service
               </p>

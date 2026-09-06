@@ -8,6 +8,7 @@ interface Props {
   cards: ServicePricingTierCard[]
   badgeText?: string
   heading?: string
+  headingColor?: string
   description?: string
   startingPrice?: string
   unit?: string
@@ -23,6 +24,7 @@ export default function ServicePricingSection({
   cards,
   badgeText,
   heading,
+  headingColor,
   description,
   startingPrice,
   unit = '/image',
@@ -46,7 +48,7 @@ export default function ServicePricingSection({
       <div className={pricingStyles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={pricingStyles.header}>
-            {heading && <SectionHeading text={heading} className={pricingStyles.heading} />}
+            {heading && <SectionHeading text={heading} color={headingColor} className={pricingStyles.heading} />}
             {description && <p className={pricingStyles.description}>{description}</p>}
           </div>
         </Reveal>

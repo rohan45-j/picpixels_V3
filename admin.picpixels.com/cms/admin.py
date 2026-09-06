@@ -4,10 +4,10 @@ from django.db import models
 from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from unfold.admin import ModelAdmin, TabularInline
+from unfold.admin import ModelAdmin, TabularInline, StackedInline
 from unfold.decorators import display
 from core.widgets import CustomToggleSwitch, ModernDateTimeWidget, ModernDateWidget
-from .widgets import ContentBlockPreviewWidget
+from .widgets import ContentBlockPreviewWidget, TagInputWidget, ColorPickerWidget
 from .image_guidelines import IMG as IMG_GUIDELINES
 
 def _size_guide(key):
@@ -46,7 +46,7 @@ class PageAdmin(ModelAdmin):
     list_fullwidth = True
     fieldsets = (
         (None, {
-            'fields': ('title', 'slug', 'content'),
+            'fields': ('title', 'title_color', 'slug', 'content'),
         }),
         ('SEO & Meta', {
             'classes': ('collapse',),
@@ -96,7 +96,7 @@ class ServiceHeroImageInline(TabularInline):
     readonly_fields = ('image_preview',)
     ordering = ('order',)
     verbose_name = 'Hero Image'
-    verbose_name_plural = 'Hero Images'
+    verbose_name_plural = 'Hero Slides (Carousel)'
     formfield_overrides = {
         models.BooleanField: {'widget': CustomToggleSwitch},
     }
@@ -104,21 +104,53 @@ class ServiceHeroImageInline(TabularInline):
     @display(description='Preview')
     def image_preview(self, obj):
         if obj.image:
-            return format_html(
-                '<div style="display:flex;align-items:center;gap:8px">'
-                '{}<span style="font-size:10px;color:#6b7280">{}</span>'
-                '</div>',
-                _img_preview_html(obj.image.url),
-                _size_guide('service_hero_slide')
-            )
-        return format_html(
-            '<span style="font-size:10px;color:#6b7280">{}</span>',
-            _size_guide('service_hero_slide')
-        )
+            return _img_preview_html(obj.image.url)
+        return '-'
+
+
+class ServiceGalleryImageForm(forms.ModelForm):
+    class Meta:
+        model = ServiceGalleryImage
+        fields = '__all__'
+        help_texts = {
+            'gallery_type': '',
+            'category': '',
+            'image': 'Recommended: 1600 × 1200 px (4:3)',
+            'before_image': 'Recommended: 1600 × 1200 px (4:3)',
+            'after_image': 'Recommended: 1600 × 1200 px (4:3)',
+            'before_image_alt': '',
+            'after_image_alt': '',
+            'alt_text': '',
+            'caption': '',
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data.get('DELETE'):
+            return cleaned_data
+
+        gallery_type = cleaned_data.get('gallery_type')
+        image = cleaned_data.get('image')
+        before_image = cleaned_data.get('before_image')
+        after_image = cleaned_data.get('after_image')
+
+        if gallery_type in ('portfolio', 'case_study'):
+            if not image and not getattr(self.instance, 'image', None):
+                self.add_error('image', 'Image is required for Portfolio / Case Study.')
+        elif gallery_type == 'before_after':
+            has_before = bool(before_image or getattr(self.instance, 'before_image', None))
+            has_after = bool(after_image or getattr(self.instance, 'after_image', None))
+            if has_before and not has_after:
+                self.add_error('after_image', 'After image is required to complete the Before & After pair.')
+            elif has_after and not has_before:
+                self.add_error('before_image', 'Before image is required to complete the Before & After pair.')
+
+        return cleaned_data
 
 
 class ServiceGalleryImageInline(TabularInline):
     model = ServiceGalleryImage
+    form = ServiceGalleryImageForm
     extra = 1
     fields = ('gallery_type', 'category', 'image', 'image_preview', 'alt_text',
               'before_image', 'before_image_alt', 'after_image', 'after_image_alt',
@@ -127,29 +159,14 @@ class ServiceGalleryImageInline(TabularInline):
     ordering = ('order',)
     classes = ('collapse',)
     verbose_name = 'Gallery Image'
-    verbose_name_plural = 'Gallery Images'
+    verbose_name_plural = 'Portfolio, Gallery & Before / After'
 
     @display(description='Preview')
     def image_preview(self, obj):
-        parts = []
-        if obj.image:
-            parts.append(
-                f'<div>{_img_preview_html(obj.image.url)}'
-                f'<div style="font-size:10px;color:#6b7280;margin-top:2px">{_size_guide("service_gallery")}</div></div>'
-            )
-        if obj.before_image:
-            parts.append(
-                f'<div><div style="font-size:10px;color:#6b7280;font-weight:500;margin-bottom:2px">Before:</div>'
-                f'{_img_preview_html(obj.before_image.url, "max-height:40px;border-radius:4px")}'
-                f'<div style="font-size:10px;color:#6b7280;margin-top:2px">{_size_guide("service_before_after")}</div></div>'
-            )
-        if obj.after_image:
-            parts.append(
-                f'<div><div style="font-size:10px;color:#6b7280;font-weight:500;margin-bottom:2px">After:</div>'
-                f'{_img_preview_html(obj.after_image.url, "max-height:40px;border-radius:4px")}'
-                f'<div style="font-size:10px;color:#6b7280;margin-top:2px">{_size_guide("service_before_after")}</div></div>'
-            )
-        return mark_safe('<div style="display:flex;gap:12px;align-items:start">' + ''.join(parts) + '</div>') if parts else '-'
+        # Preview is strictly for Portfolio / Case Study showcase images, not Before & After
+        if obj.gallery_type in ('portfolio', 'case_study') and obj.image:
+            return _img_preview_html(obj.image.url, 'max-height:44px;border-radius:4px')
+        return '-'
 
 
 class ServiceContentSectionForm(forms.ModelForm):
@@ -158,10 +175,11 @@ class ServiceContentSectionForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'is_active': CustomToggleSwitch,
+            'content': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Write your content here. Plain text only.'}),
         }
 
     class Media:
-        js = ('admin/js/service_content_section.js',)
+        js = ('admin/js/service_content_section.js?v=2',)
 
 
 class ServiceContentSectionInline(TabularInline):
@@ -171,9 +189,11 @@ class ServiceContentSectionInline(TabularInline):
     fields = ('layout', 'heading', 'content', 'image', 'image_preview', 'image_alt', 'order', 'is_active')
     readonly_fields = ('image_preview',)
     ordering = ('order',)
-    classes = ('collapse',)
-    verbose_name = 'Content Section'
-    verbose_name_plural = 'Content Sections'
+    verbose_name = 'Other Content'
+    verbose_name_plural = 'Others Content'
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
 
     @display(description='Preview')
     def image_preview(self, obj):
@@ -196,21 +216,35 @@ class ServiceFAQInline(TabularInline):
     extra = 1
     fields = ('question', 'answer', 'order', 'is_active')
     ordering = ('order',)
-    verbose_name = 'FAQ'
-    verbose_name_plural = 'FAQs'
+    verbose_name = 'Question'
+    verbose_name_plural = 'Frequently Asked Questions'
     classes = ('collapse',)
     formfield_overrides = {
         models.BooleanField: {'widget': CustomToggleSwitch},
     }
 
 
+class ServiceEEATForm(forms.ModelForm):
+    class Meta:
+        model = ServiceEEAT
+        fields = '__all__'
+        widgets = {
+            'is_active': CustomToggleSwitch,
+            'experience': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe your hands-on experience in this field...'}),
+            'expertise': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Highlight your technical expertise and specializations...'}),
+            'authoritativeness': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Mention awards, certifications, or industry recognition...'}),
+            'trustworthiness': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Share trust signals like client count, guarantees, or policies...'}),
+        }
+
+
 class ServiceEEATInline(TabularInline):
     model = ServiceEEAT
+    form = ServiceEEATForm
     max_num = 1
     extra = 0
     fields = ('experience', 'expertise', 'authoritativeness', 'trustworthiness', 'is_active')
-    verbose_name = 'EEAT'
-    verbose_name_plural = 'EEAT'
+    verbose_name = 'Expertise & Trust'
+    verbose_name_plural = 'Expertise & Trust'
     classes = ('collapse',)
     formfield_overrides = {
         models.BooleanField: {'widget': CustomToggleSwitch},
@@ -251,8 +285,8 @@ class ServiceWhyNeedFeatureInline(TabularInline):
     fields = ('title', 'description', 'icon_image', 'icon_preview', 'display_order', 'is_active')
     readonly_fields = ('icon_preview',)
     ordering = ('display_order',)
-    verbose_name = 'Why Need Feature'
-    verbose_name_plural = 'Why Need Features'
+    verbose_name = 'Service Benefit'
+    verbose_name_plural = 'Service Benefits'
     formfield_overrides = {
         models.BooleanField: {'widget': CustomToggleSwitch},
     }
@@ -277,8 +311,8 @@ class ServiceProcessStepInline(TabularInline):
     fields = ('step_number', 'title', 'description', 'image', 'image_preview', 'image_alt', 'display_order', 'is_active')
     readonly_fields = ('image_preview',)
     ordering = ('display_order',)
-    verbose_name = 'Process Step'
-    verbose_name_plural = 'Process Steps'
+    verbose_name = 'Step'
+    verbose_name_plural = 'Steps'
     formfield_overrides = {
         models.BooleanField: {'widget': CustomToggleSwitch},
     }
@@ -303,8 +337,8 @@ class ServiceWhyChooseCardInline(TabularInline):
     fields = ('title', 'description', 'icon_image', 'icon_preview', 'display_order', 'is_active')
     readonly_fields = ('icon_preview',)
     ordering = ('display_order',)
-    verbose_name = 'Why Choose Card'
-    verbose_name_plural = 'Why Choose Cards'
+    verbose_name = 'Why Choose Us Benefit'
+    verbose_name_plural = 'Why Choose Us Benefits'
     formfield_overrides = {
         models.BooleanField: {'widget': CustomToggleSwitch},
     }
@@ -351,19 +385,46 @@ class ServiceToolInline(TabularInline):
         )
 
 
-class ServicePricingTierCardInline(TabularInline):
+class ServicePricingTierCardForm(forms.ModelForm):
+    class Meta:
+        model = ServicePricingTierCard
+        fields = '__all__'
+        widgets = {
+            'features': TagInputWidget(),
+        }
+
+    def clean_features(self):
+        data = self.cleaned_data.get('features')
+        if isinstance(data, str):
+            try:
+                return json.loads(data)
+            except json.JSONDecodeError:
+                return []
+        return data if isinstance(data, list) else []
+
+
+class ServicePricingTierCardInline(StackedInline):
     model = ServicePricingTierCard
-    extra = 1
-    fields = ('name', 'price', 'original_price', 'description', 'features',
-              'is_popular', 'badge_text', 'badge_color',
-              'button_text', 'button_link', 'display_order', 'is_active')
+    form = ServicePricingTierCardForm
+    extra = 0
     ordering = ('display_order',)
-    verbose_name = 'Pricing Tier Card'
-    verbose_name_plural = 'Pricing Tier Cards'
-    classes = ('collapse',)
+    verbose_name = 'Pricing Plan'
+    verbose_name_plural = 'Pricing Plans'
     formfield_overrides = {
         models.BooleanField: {'widget': CustomToggleSwitch},
     }
+    fieldsets = (
+        ('Plan Details', {
+            'fields': (
+                ('name', 'display_order', 'is_active', 'is_popular'),
+                ('price', 'original_price'),
+                'description',
+                'features',
+                ('badge_text', 'badge_color'),
+                ('button_text', 'button_link'),
+            ),
+        }),
+    )
 
 
 class ServiceClientFeedbackInline(TabularInline):
@@ -395,8 +456,88 @@ class ServiceClientFeedbackInline(TabularInline):
         )
 
 
+class ServiceAdminForm(forms.ModelForm):
+    class Meta:
+        model = Service
+        fields = '__all__'
+        widgets = {
+            'title_color': ColorPickerWidget(),
+            'why_choose_title_color': ColorPickerWidget(),
+            'why_need_title_color': ColorPickerWidget(),
+            'process_title_color': ColorPickerWidget(),
+            'overview_title_color': ColorPickerWidget(),
+            'faq_title_color': ColorPickerWidget(),
+            'review_title_color': ColorPickerWidget(),
+            'pricing_heading_color': ColorPickerWidget(),
+            'features': TagInputWidget(),
+            'pricing_features': TagInputWidget(),
+            'is_active': CustomToggleSwitch,
+            'is_featured': CustomToggleSwitch,
+            'show_in_mega_menu': CustomToggleSwitch,
+            'show_on_homepage': CustomToggleSwitch,
+            'show_in_footer': CustomToggleSwitch,
+            'show_in_related': CustomToggleSwitch,
+        }
+        help_texts = {
+            'title': 'The main name of this service, e.g. "Background Removal".',
+            'title_color': 'Custom color for title (hex e.g. #FF8A50). Default is solid black.',
+            'slug': 'Auto-generated from title. Used in the page URL.',
+            'short_description': 'Brief one-liner shown on service cards across the site.',
+            'description': 'Full description displayed on the service detail page.',
+            'icon': 'Material icon name or emoji, e.g. "brush", "✨".',
+            'image': 'Recommended: 800 × 600 px (4:3). Thumbnail shown on service cards and listings.',
+            'image_alt': 'Describes the thumbnail for screen readers and SEO. Auto-fills with filename by default.',
+            'hero_title': 'Main H1 headline for the hero section. (The service title will not appear in the hero). If blank, hero subtitle is used.',
+            'hero_subtitle': 'Supporting subtitle or description shown in the hero section below the H1.',
+            'hero_background': 'Recommended: 1600 × 1200 px (4:3). Large background image for the hero area.',
+            'hero_image_alt': 'Alt text for the hero background image. Auto-fills with filename by default.',
+            'hero_cta_text': 'Button label, e.g. "Start Free Trial".',
+            'hero_cta_link': 'Button destination, e.g. "/free-trial" or "https://..."',
+            'seo_title': 'Custom page title for search engines (overrides service title).',
+            'seo_description': 'Brief description shown in search engine results.',
+            'order': 'Controls the display order. Lower numbers appear first.',
+            'why_choose_title': 'Section heading for the "Why Choose Us" section. (Default: "Why Choose Us")',
+            'why_need_section_title': 'Section heading for the "Why Should You Need Our Service" section. (Default: "Why Should You Need Our Service")',
+            'why_need_section_description': 'Brief intro text below the "Why Need" heading.',
+            'process_section_title': 'Section heading for the "Process & Workflow" timeline. (Default: "Process & Workflow")',
+            'overview_title': 'Section heading for the Overview / Key Features section. (Default: "Overview of [Service Title]")',
+            'faq_title': 'Section heading for the FAQ section. (Default: "[Service Title] - FAQs")',
+            'review_title': 'Section heading for the Client Reviews section. (Default: "Our Clients & Reviews")',
+            'pricing_title': 'Pricing section heading, e.g. "Transparent Pricing".',
+            'pricing_badge_text': 'Small label above pricing, e.g. "Simple, Transparent Pricing".',
+            'pricing_heading': 'Main heading for the pricing section.',
+            'pricing_description': 'Description text below the pricing heading.',
+            'pricing_starting_price': 'Starting price shown prominently, e.g. "$5.00".',
+            'pricing_unit': 'Price unit, e.g. "/image", "/hour", "/project".',
+            'pricing_notes': 'Short note shown near the pricing, e.g. "No hidden fees".',
+            'pricing_cta_text': 'Primary pricing button label, e.g. "Get Started".',
+            'pricing_cta_link': 'Primary pricing button URL.',
+            'pricing_cta2_text': 'Secondary button label, e.g. "View All Plans".',
+            'pricing_cta2_link': 'Secondary button URL.',
+        }
+
+    def clean_features(self):
+        data = self.cleaned_data.get('features')
+        if isinstance(data, str):
+            try:
+                return json.loads(data)
+            except json.JSONDecodeError:
+                return []
+        return data if isinstance(data, list) else []
+
+    def clean_pricing_features(self):
+        data = self.cleaned_data.get('pricing_features')
+        if isinstance(data, str):
+            try:
+                return json.loads(data)
+            except json.JSONDecodeError:
+                return []
+        return data if isinstance(data, list) else []
+
+
 @admin.register(Service)
 class ServiceAdmin(ModelAdmin):
+    form = ServiceAdminForm
     list_display = ('title', 'slug', 'price_display', 'order', 'is_active', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'icon_display', 'image_preview')
     list_filter = ('is_active', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer')
     list_filter_submit = True
@@ -407,13 +548,13 @@ class ServiceAdmin(ModelAdmin):
     list_fullwidth = True
     inlines = [
         ServiceHeroImageInline,
-        ServiceEEATInline,
+        ServiceGalleryImageInline,
+        ServicePricingTierCardInline,
+        ServiceFAQInline,
         ServiceWhyNeedFeatureInline,
         ServiceProcessStepInline,
         ServiceWhyChooseCardInline,
-        ServicePricingTierCardInline,
-        ServiceFAQInline,
-        ServiceGalleryImageInline,
+        ServiceEEATInline,
         ServiceContentSectionInline,
     ]
     readonly_fields = ('thumbnail_preview', 'hero_bg_preview')
@@ -421,82 +562,75 @@ class ServiceAdmin(ModelAdmin):
         models.BooleanField: {'widget': CustomToggleSwitch},
     }
     fieldsets = (
-        ('1. Basic Information', {
+        ('Service Information', {
             'fields': (
-                'title', 'slug',
-                'short_description',
-                'description',
-                'features',
-                'icon',
+                'title', 'title_color', 'slug',
+                'short_description', 'description',
+                'features', 'icon',
                 'image', 'thumbnail_preview', 'image_alt',
             ),
             'description': _size_guide('service_thumbnail'),
         }),
-        ('2. Hero Section', {
+        ('Hero Section', {
             'classes': ('collapse',),
             'fields': (
+                'hero_title',
                 'hero_subtitle',
                 'hero_background', 'hero_bg_preview', 'hero_image_alt',
                 'hero_cta_text', 'hero_cta_link',
             ),
             'description': _size_guide('service_hero_bg'),
         }),
-        ('3. EEAT — Expertise, Experience, Authority & Trust', {
-            'fields': (),
-            'description': 'Configure the EEAT fields in the inline section below. '
-                           'These showcase your credibility and domain expertise on the service page.',
+        ('Section Titles & Headings', {
+            'fields': (
+                ('why_choose_title', 'why_choose_title_color'),
+                ('why_need_section_title', 'why_need_title_color'),
+                'why_need_section_description',
+                ('process_section_title', 'process_title_color'),
+                ('overview_title', 'overview_title_color'),
+                ('faq_title', 'faq_title_color'),
+                ('review_title', 'review_title_color'),
+            ),
+            'description': 'Customize section titles and their colors. 💡 Word Highlight Tip: Wrap any word in {Word} to highlight it in brand orange, or use {#FF8A50}Word{/#} for a custom color (e.g. "Why {Choose} Us").',
         }),
-        ('4. Why Should You Need Our Service', {
-            'classes': ('collapse',),
-            'fields': ('why_need_section_title', 'why_need_section_description'),
-            'description': 'Set the section heading above, then add feature cards in the '
-                           '"Why Need Features" inline below. Each card = one reason.',
-        }),
-        ('5. Process & Workflow', {
-            'classes': ('collapse',),
-            'fields': ('process_section_title',),
-            'description': 'Set the section title above, then add workflow steps in the '
-                           '"Process Steps" inline below. Each step is a stage in your delivery.',
-        }),
-        ('6. Why Choose Us', {
-            'classes': ('collapse',),
-            'fields': ('why_choose_title',),
-            'description': 'Set the heading above, then add benefit cards in the '
-                           '"Why Choose Cards" inline below. Each card = one differentiator.',
-        }),
-        ('7. Pricing', {
+        ('Pricing', {
             'classes': ('collapse',),
             'fields': (
                 'pricing_title', 'pricing_badge_text',
-                'pricing_heading', 'pricing_description',
+                ('pricing_heading', 'pricing_heading_color'),
+                'pricing_description',
                 'pricing_starting_price', 'pricing_unit', 'pricing_notes',
                 'pricing_features',
                 'pricing_cta_text', 'pricing_cta_link',
                 'pricing_cta2_text', 'pricing_cta2_link',
             ),
-            'description': 'Configure the pricing section text above, then add tier cards in the '
-                           '"Pricing Tier Cards" inline below.',
         }),
-        ('8. FAQ', {
-            'fields': (),
-            'description': 'Add frequently asked questions in the "FAQs" inline below. '
-                           'Each appears in the accordion on the service page.',
-        }),
-        ('9. SEO & Meta', {
+        ('SEO & Display', {
             'classes': ('collapse',),
-            'fields': ('seo_title', 'seo_description'),
-            'description': 'Optional meta fields for search engine optimization.',
-        }),
-        ('10. Publish Settings', {
             'fields': (
+                'seo_title', 'seo_description',
                 'order', 'price',
                 'is_active', 'is_featured',
                 'show_in_mega_menu', 'show_on_homepage',
                 'show_in_footer', 'show_in_related',
             ),
-            'description': 'Control visibility, ordering, and display across the site.',
         }),
     )
+
+    change_form_template = 'admin/cms/service/change_form.html'
+
+    class Media:
+        css = {
+            'all': (
+                'admin/css/service_admin.css',
+                'admin/css/service_bulk_upload.css',
+                'admin/css/service_admin_image_enhancer.css',
+            ),
+        }
+        js = (
+            'admin/js/service_bulk_upload.js',
+            'admin/js/service_admin_image_enhancer.js',
+        )
 
     @display(description='Price')
     def price_display(self, obj):
@@ -550,6 +684,155 @@ class ServiceAdmin(ModelAdmin):
             return mark_safe('<span style="color:#10b981">Active</span>')
         return mark_safe('<span style="color:#ef4444">Inactive</span>')
 
+    def save_model(self, request, obj, form, change):
+        """Save the service, then process any bulk-uploaded images.
+
+        All bulk record creation is wrapped in transaction.atomic() so that
+        a failure during bulk processing never leaves orphan records.
+        """
+        from django.db import transaction
+        from urllib.parse import urlparse
+        from django.core.files.base import ContentFile
+        from django.core.files.storage import default_storage
+
+        def _resolve_path(url):
+            if url.startswith('/media/'):
+                return url[len('/media/'):]
+            elif url.startswith('http'):
+                parsed = urlparse(url)
+                p = parsed.path.lstrip('/')
+                return p[len('media/'):] if p.startswith('media/') else p
+            return url
+
+        def _read_file(url):
+            rel_path = _resolve_path(url)
+            return default_storage.open(rel_path).read(), rel_path.split('/')[-1]
+
+        # Process bulk upload data from the hidden JSON field
+        raw = request.POST.get('bulk_uploads_json', '')
+        bulk_data = {}
+        if raw:
+            if isinstance(raw, str):
+                raw = raw.strip()
+                if raw:
+                    try:
+                        bulk_data = json.loads(raw)
+                    except (json.JSONDecodeError, ValueError, TypeError):
+                        bulk_data = {}
+            elif isinstance(raw, dict):
+                bulk_data = raw
+
+        has_hero = bool(bulk_data.get('hero_images'))
+        has_gallery = bool(bulk_data.get('gallery_images'))
+        has_ba = bool(bulk_data.get('before_after_pairs'))
+
+        if not (has_hero or has_gallery or has_ba):
+            super().save_model(request, obj, form, change)
+            return
+
+        try:
+            with transaction.atomic():
+                super().save_model(request, obj, form, change)
+
+                # Process hero images
+                hero_items = bulk_data.get('hero_images', [])
+                if hero_items:
+                    max_order = ServiceHeroImage.objects.filter(
+                        service=obj
+                    ).order_by('-order').values_list('order', flat=True).first() or 0
+                    for idx, item in enumerate(hero_items):
+                        url = item.get('url', '')
+                        if not url:
+                            continue
+                        try:
+                            file_content, file_name = _read_file(url)
+                            hero_image = ServiceHeroImage(
+                                service=obj,
+                                alt_text=item.get('alt_text', ''),
+                                order=max_order + idx + 1,
+                                is_active=True,
+                            )
+                            hero_image.image.save(file_name, ContentFile(file_content), save=True)
+                        except Exception as e:
+                            messages.warning(
+                                request,
+                                'Bulk hero image "{}" failed: {}'.format(item.get("url", ""), e),
+                            )
+
+                # Process gallery images
+                gallery_items = bulk_data.get('gallery_images', [])
+                if gallery_items:
+                    max_order = ServiceGalleryImage.objects.filter(
+                        service=obj
+                    ).order_by('-order').values_list('order', flat=True).first() or 0
+                    for idx, item in enumerate(gallery_items):
+                        url = item.get('url', '')
+                        if not url:
+                            continue
+                        try:
+                            file_content, file_name = _read_file(url)
+                            gallery_image = ServiceGalleryImage(
+                                service=obj,
+                                gallery_type=item.get('gallery_type', 'portfolio'),
+                                category=item.get('category', ''),
+                                alt_text=item.get('alt_text', ''),
+                                caption=item.get('caption', ''),
+                                is_featured=item.get('is_featured', False),
+                                is_visible=item.get('is_visible', True),
+                                order=max_order + idx + 1,
+                            )
+                            gallery_image.image.save(file_name, ContentFile(file_content), save=True)
+                        except Exception as e:
+                            messages.warning(
+                                request,
+                                'Bulk gallery image "{}" failed: {}'.format(item.get("url", ""), e),
+                            )
+
+                # Process before/after pairs
+                ba_items = bulk_data.get('before_after_pairs', [])
+                if ba_items:
+                    max_order = ServiceGalleryImage.objects.filter(
+                        service=obj
+                    ).order_by('-order').values_list('order', flat=True).first() or 0
+                    for idx, item in enumerate(ba_items):
+                        before_url = item.get('url', '')
+                        after_url = item.get('after_url', '')
+                        if not before_url or not after_url:
+                            continue
+                        try:
+                            before_content, before_name = _read_file(before_url)
+                            after_content, after_name = _read_file(after_url)
+
+                            ba_image = ServiceGalleryImage(
+                                service=obj,
+                                gallery_type='before_after',
+                                before_image_alt=item.get('before_image_alt', ''),
+                                after_image_alt=item.get('after_image_alt', ''),
+                                caption=item.get('caption', ''),
+                                is_featured=item.get('is_featured', False),
+                                is_visible=item.get('is_visible', True),
+                                order=max_order + idx + 1,
+                            )
+                            ba_image.before_image.save(
+                                before_name, ContentFile(before_content), save=False
+                            )
+                            ba_image.after_image.save(
+                                after_name, ContentFile(after_content), save=True
+                            )
+                        except Exception as e:
+                            messages.warning(
+                                request,
+                                'Bulk before/after pair #{} failed: {}'.format(idx + 1, e),
+                            )
+        except Exception:
+            # Fallback: save service without bulk images if atomic block fails
+            super().save_model(request, obj, form, change)
+            messages.error(
+                request,
+                'One or more bulk uploads failed. '
+                'The service was saved without the bulk images.',
+            )
+
 
 @admin.register(ServiceGalleryImage)
 class ServiceGalleryImageAdmin(ModelAdmin):
@@ -563,9 +846,9 @@ class ServiceGalleryImageAdmin(ModelAdmin):
         ('📌 Service Page Media', {
             'fields': ('service', 'gallery_type', 'category', 'image', 'alt_text', 'caption'),
         }),
-        ('📌 Comparison Media (Before/After)', {
+        ('📌 Before & After Comparison', {
             'fields': ('before_image', 'before_image_alt', 'after_image', 'after_image_alt'),
-            'description': 'Upload paired before/after images with matching dimensions for the comparison slider.',
+            'description': 'For the best comparison, use before and after images with the same angle, framing, and lighting.',
         }),
         ('Display Settings', {
             'fields': ('is_featured', 'is_visible', 'order'),
@@ -679,7 +962,7 @@ class HeroSectionAdmin(ModelAdmin):
             'fields': ('is_active',),
         }),
         ('Hero Content', {
-            'fields': ('tagline', 'title', 'description', 'background_image', 'background_image_alt'),
+            'fields': ('tagline', 'title', 'title_color', 'description', 'background_image', 'background_image_alt'),
         }),
         ('Primary CTA', {
             'fields': ('cta_primary_text', 'cta_primary_link'),
@@ -1617,6 +1900,11 @@ class ServicePricingCardAdmin(ModelAdmin):
             'fields': ('service', 'name', 'description', 'features', 'image', 'image_alt', 'badge_text', 'badge_color', 'button_text', 'sort_order', 'is_active'),
         }),
     )
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == 'features':
+            kwargs['widget'] = TagInputWidget()
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 @admin.register(ServicePricingCardPrice)

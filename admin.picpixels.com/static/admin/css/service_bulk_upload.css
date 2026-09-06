@@ -1,0 +1,764 @@
+/* ═══════════════════════════════════════════════════════════
+   Service Bulk Upload — Enhanced Modal & Action Panels
+   PicPixels CMS
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Bulk Actions Panel (Embedded Above Inline Formsets) ── */
+.svc-bulk-actions-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin: 14px 0 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.svc-bulk-panel-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.svc-bulk-panel-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  font-size: 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.svc-bulk-panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 2px;
+}
+
+.svc-bulk-panel-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin: 0;
+}
+
+.svc-bulk-panel-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── Trigger Buttons ───────────────────────────────────── */
+.bulk-upload-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #4f46e5;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(79, 70, 229, 0.25);
+}
+
+.bulk-upload-trigger:hover {
+  background: #4338ca;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+  transform: translateY(-1px);
+}
+
+.bulk-upload-trigger.ba-trigger {
+  background: #059669;
+  box-shadow: 0 1px 3px rgba(5, 150, 105, 0.25);
+}
+
+.bulk-upload-trigger.ba-trigger:hover {
+  background: #047857;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.35);
+}
+
+/* ── Queued Status Banner ──────────────────────────────── */
+.svc-bulk-queued-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  animation: slideDown 0.25s ease;
+  gap: 12px;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.svc-queued-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: #1e40af;
+}
+
+.svc-queued-icon {
+  font-size: 20px;
+}
+
+.svc-queued-sub {
+  font-size: 11px;
+  color: #3b82f6;
+  margin-top: 2px;
+}
+
+.svc-queued-clear {
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ef4444;
+  background: #ffffff;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.svc-queued-clear:hover {
+  background: #fee2e2;
+  border-color: #f87171;
+}
+
+/* ── Modal Overlay & Panel ─────────────────────────────── */
+.bulk-modal-overlay {
+  opacity: 0;
+  visibility: hidden;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.bulk-modal-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.bulk-modal {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  width: min(92vw, 880px);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  transform: scale(0.97);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bulk-modal-overlay.visible .bulk-modal {
+  transform: scale(1);
+}
+
+.bulk-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.bulk-modal-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.bulk-modal-subtitle {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.bulk-modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: #f1f5f9;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 18px;
+  transition: all 0.15s ease;
+}
+
+.bulk-modal-close:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.bulk-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.bulk-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-top: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.bulk-footer-info {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.bulk-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bulk-btn {
+  padding: 8px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.bulk-btn-cancel {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+}
+
+.bulk-btn-cancel:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.bulk-btn-upload {
+  background: #4f46e5;
+  border: 1px solid #4f46e5;
+  color: #ffffff;
+}
+
+.bulk-btn-upload:hover:not(:disabled) {
+  background: #4338ca;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+}
+
+.bulk-btn-upload:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Meta Inputs inside Modal ──────────────────────────── */
+.bulk-meta-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 16px;
+  background: #f8fafc;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.bulk-meta-group label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.bulk-select,
+.bulk-input {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 12px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.bulk-select:focus,
+.bulk-input:focus {
+  border-color: #6366f1;
+  outline: none;
+}
+
+/* ── Dropzone ──────────────────────────────────────────── */
+.bulk-dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  background: #f8fafc;
+  transition: all 0.18s ease;
+}
+
+.bulk-dropzone:hover,
+.bulk-dropzone.drag-over {
+  border-color: #4f46e5;
+  background: #eef2ff;
+}
+
+.bulk-dropzone-icon {
+  font-size: 32px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.bulk-dropzone-label {
+  font-size: 13px;
+  color: #475569;
+}
+
+.bulk-dropzone-label strong {
+  color: #4f46e5;
+}
+
+.bulk-dropzone-sub {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* ── File Grid & Cards ─────────────────────────────────── */
+.bulk-file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.bulk-file-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.bulk-file-thumb-wrap {
+  position: relative;
+  height: 140px;
+  background: #f1f5f9;
+}
+
+.bulk-file-thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bulk-remove-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.7);
+  color: #ffffff;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+
+.bulk-remove-btn:hover {
+  background: #ef4444;
+}
+
+.bulk-file-details {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bulk-file-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bulk-file-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+.bulk-file-size {
+  font-size: 10px;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.bulk-card-input {
+  width: 100%;
+  padding: 5px 8px;
+  font-size: 11px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+.bulk-card-input:focus {
+  border-color: #6366f1;
+  background: #ffffff;
+  outline: none;
+}
+
+.bulk-progress-wrap {
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.bulk-progress-bar {
+  height: 100%;
+  background: #4f46e5;
+  width: 0%;
+  transition: width 0.2s ease;
+}
+
+.bulk-status-msg {
+  font-size: 10px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+.bulk-status-msg.success { color: #10b981; }
+.bulk-status-msg.error { color: #ef4444; }
+
+/* ── Before & After Dual Dropzone ──────────────────────── */
+.ba-dual-dropzone-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.ba-dz-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ba-pill {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 800;
+}
+
+.ba-pill.before { background: #fef3c7; color: #92400e; }
+.ba-pill.after { background: #d1fae5; color: #065f46; }
+
+.ba-sub-dz {
+  padding: 20px 14px;
+}
+
+.ba-matched-section {
+  margin-top: 14px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 14px;
+}
+
+.ba-matched-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 10px;
+}
+
+.ba-pairs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.ba-empty-hint {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.ba-pair-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 8px;
+  background: #ffffff;
+}
+
+.ba-pair-previews {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.ba-thumb-box {
+  position: relative;
+  height: 100px;
+  background: #f1f5f9;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.ba-thumb-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ba-thumb-tag {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+}
+
+.ba-pair-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.ba-alt-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.ba-pair-details .ba-remove-pair-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.ba-remove-pair-btn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: #fee2e2;
+  color: #ef4444;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.ba-remove-pair-btn:hover {
+  background: #fca5a5;
+  color: #b91c1c;
+}
+
+/* ── Toast Notifications ───────────────────────────────── */
+.bulk-toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100000;
+  background: #0f172a;
+  color: #ffffff;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: toastIn 0.2s ease;
+}
+
+.bulk-toast.hide {
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+}
+
+.bulk-toast.success { background: #065f46; border: 1px solid #059669; }
+.bulk-toast.error { background: #991b1b; border: 1px solid #dc2626; }
+.bulk-toast.info { background: #1e40af; border: 1px solid #3b82f6; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Recommended Size Badges & Banners ─────────────────── */
+.svc-bulk-rec-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.bulk-size-banner {
+  margin-bottom: 12px;
+}
+
+.bulk-size-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #1e40af;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+/* ── Mobile Responsive Overrides ───────────────────────── */
+@media (max-width: 640px) {
+  .bulk-modal {
+    width: 96vw !important;
+    max-height: 92vh !important;
+    border-radius: 12px !important;
+  }
+
+  .bulk-modal-header {
+    padding: 14px 16px !important;
+  }
+
+  .bulk-modal-body {
+    padding: 14px 16px !important;
+  }
+
+  .bulk-modal-footer {
+    padding: 12px 16px !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+  }
+
+  .bulk-footer-actions {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+  }
+
+  .bulk-meta-bar {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .ba-dual-dropzone-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .bulk-file-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ba-pairs-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .ba-alt-inputs {
+    grid-template-columns: 1fr !important;
+  }
+
+  .svc-bulk-actions-panel {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    padding: 12px 14px !important;
+  }
+
+  .svc-bulk-panel-btns {
+    width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  .bulk-upload-trigger {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+}
+

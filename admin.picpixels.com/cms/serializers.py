@@ -23,7 +23,7 @@ from .models import (
 class PageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Page
-        fields = ['id', 'title', 'slug', 'meta_title', 'meta_description', 'content', 'created_at', 'updated_at']
+        fields = ['id', 'title', 'title_color', 'slug', 'meta_title', 'meta_description', 'content', 'created_at', 'updated_at']
 
 
 class SectionSerializer(serializers.ModelSerializer):
@@ -133,15 +133,15 @@ class ServiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Service
-        fields = ['id', 'title', 'slug', 'short_description', 'description', 'features', 'icon', 'image', 'image_alt',
-                  'hero_subtitle', 'hero_background', 'hero_image_alt', 'hero_cta_text', 'hero_cta_link',
+        fields = ['id', 'title', 'title_color', 'slug', 'short_description', 'description', 'features', 'icon', 'image', 'image_alt',
+                  'hero_title', 'hero_subtitle', 'hero_background', 'hero_image_alt', 'hero_cta_text', 'hero_cta_link',
                   'price', 'order', 'seo_title', 'seo_description',
                   'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'show_in_related',
                   'is_active', 'is_featured', 'content_blocks', 'created_at', 'updated_at',
                   'gallery_images', 'content_sections', 'hero_images', 'faqs',
-               'eeat', 'brand_section_title', 'why_need_section_title', 'why_need_section_description',
-                   'process_section_title', 'why_choose_title', 'tools_section_title',
-                    'pricing_title', 'pricing_badge_text', 'pricing_heading', 'pricing_description',
+               'eeat', 'brand_section_title', 'why_need_section_title', 'why_need_title_color', 'why_need_section_description',
+                   'process_section_title', 'process_title_color', 'why_choose_title', 'why_choose_title_color', 'overview_title', 'overview_title_color', 'faq_title', 'faq_title_color', 'review_title', 'review_title_color', 'tools_section_title',
+                    'pricing_title', 'pricing_badge_text', 'pricing_heading', 'pricing_heading_color', 'pricing_description',
                     'pricing_starting_price', 'pricing_unit', 'pricing_notes', 'pricing_features',
                     'pricing_cta_text', 'pricing_cta_link', 'pricing_cta2_text', 'pricing_cta2_link',
                    'brand_logos', 'why_need_features', 'process_steps', 'why_choose_cards',
@@ -162,7 +162,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 class ServiceListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
-        fields = ['id', 'title', 'slug', 'short_description', 'description', 'features', 'icon', 'image', 'image_alt', 'price', 'order', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'show_in_related', 'is_active']
+        fields = ['id', 'title', 'title_color', 'slug', 'short_description', 'description', 'features', 'icon', 'image', 'image_alt', 'price', 'order', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'show_in_related', 'is_active']
 
 
 class HeroSlideSerializer(serializers.ModelSerializer):
@@ -183,7 +183,7 @@ class HeroSectionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HeroSection
-        fields = ['id', 'is_active', 'tagline', 'title', 'description', 'background_image', 'background_image_alt',
+        fields = ['id', 'is_active', 'tagline', 'title', 'title_color', 'description', 'background_image', 'background_image_alt',
                   'cta_primary_text', 'cta_primary_link', 'cta_secondary_text', 'cta_secondary_link',
                   'slides', 'stats', 'created_at', 'updated_at']
 

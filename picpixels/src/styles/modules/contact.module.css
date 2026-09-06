@@ -45,17 +45,18 @@
 }
 
 .title {
-  font-size: clamp(2.5rem, 5vw, 3.8rem);
-  font-weight: 900;
-  margin-bottom: 1.5rem;
-  line-height: 1.1;
+  font-size: clamp(1.75rem, 2.8vw, 2.4rem);
+  font-weight: 800;
+  margin-bottom: 1.2rem;
+  line-height: 1.2;
+  color: #000000;
 }
 
 .subtitle {
-  font-size: 1.2rem;
-  color: var(--color-muted);
+  font-size: 1.1rem;
+  color: #000000;
   max-width: 700px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2.5rem;
   line-height: 1.6;
 }
 

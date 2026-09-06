@@ -1,0 +1,310 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls static admin_modify unfold %}
+
+{#
+  Custom Service change form template that interleaves fieldsets and inlines
+  into unified sections, eliminating duplicate headings.
+#}
+
+{% block extrahead %}{{ block.super }}
+<style>
+  /* Hide Unfold's default section heading styling for inlines in service form */
+  .service-section .inline-heading { display: none; }
+  /* Clean section separator */
+  .service-section {
+    border: 1px solid var(--border-base-200, #e5e7eb);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+  .service-section > .section-header {
+    background: var(--bg-base-50, #f9fafb);
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-base-200, #e5e7eb);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--font-base-300, #111827);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .service-section > .section-header .section-num {
+    background: var(--primary, #6366f1);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .service-section > .section-body {
+    padding: 20px;
+  }
+  .service-section > .section-body .section-desc {
+    font-size: 0.8125rem;
+    color: var(--font-base-400, #6b7280);
+    margin-bottom: 16px;
+    padding: 8px 12px;
+    background: var(--bg-base-50, #f9fafb);
+    border-radius: 6px;
+    border-left: 3px solid var(--primary, #6366f1);
+  }
+  /* Hide inline header inside our sections */
+  .service-section .module > h2,
+  .service-section .tabular .inline-heading,
+  .service-section .inline-related > fieldset > h2 { display: none !important; }
+  /* Remove Unfold default fieldset borders inside our sections */
+  .service-section > .section-body fieldset.module {
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+  }
+  .service-section > .section-body fieldset.module h2 { display: none; }
+</style>
+{% endblock %}
+
+{% block field_sets %}
+  {# Section 1: Service Information #}
+  {% with section_num=1 section_name="Service Information" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for fieldset in adminform %}
+        {% if fieldset.name == "Service Information" %}
+          <div class="fieldset-description">{{ fieldset.description|safe }}</div>
+          <div class="flex flex-col gap-4">
+            {% for line in fieldset %}
+              {% include "unfold/helpers/fieldset_row.html" %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 2: Service Header + Hero Slides #}
+  {% with section_num=2 section_name="Service Header" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for fieldset in adminform %}
+        {% if fieldset.name == "Service Header" %}
+          <div class="fieldset-description">{{ fieldset.description|safe }}</div>
+          <div class="flex flex-col gap-4">
+            {% for line in fieldset %}
+              {% include "unfold/helpers/fieldset_row.html" %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% for inline_admin_formset in inline_admin_formsets %}
+        {% if inline_admin_formset.opts.verbose_name == "Hero Slide" or inline_admin_formset.opts.verbose_name_plural == "Hero Slides" %}
+          {% include inline_admin_formset.opts.template %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 3: Expertise & Trust #}
+  {% with section_num=3 section_name="Expertise & Trust" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for inline_admin_formset in inline_admin_formsets %}
+        {% if inline_admin_formset.opts.verbose_name == "Expertise & Trust" or inline_admin_formset.opts.verbose_name_plural == "Expertise & Trust" %}
+          {% include inline_admin_formset.opts.template %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 4: Why Choose This Service + Service Benefits #}
+  {% with section_num=4 section_name="Why Choose This Service" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for fieldset in adminform %}
+        {% if fieldset.name == "Why Choose This Service" %}
+          <div class="flex flex-col gap-4 mb-4">
+            {% for line in fieldset %}
+              {% include "unfold/helpers/fieldset_row.html" %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% for inline_admin_formset in inline_admin_formsets %}
+        {% if inline_admin_formset.opts.verbose_name == "Service Benefit" or inline_admin_formset.opts.verbose_name_plural == "Service Benefits" %}
+          {% include inline_admin_formset.opts.template %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 5: How It Works + Steps #}
+  {% with section_num=5 section_name="How It Works" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for fieldset in adminform %}
+        {% if fieldset.name == "How It Works" %}
+          <div class="flex flex-col gap-4 mb-4">
+            {% for line in fieldset %}
+              {% include "unfold/helpers/fieldset_row.html" %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% for inline_admin_formset in inline_admin_formsets %}
+        {% if inline_admin_formset.opts.verbose_name == "Step" or inline_admin_formset.opts.verbose_name_plural == "Steps" %}
+          {% include inline_admin_formset.opts.template %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 6: Why Choose Us + Why Choose Us Benefits #}
+  {% with section_num=6 section_name="Why Choose Us" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for fieldset in adminform %}
+        {% if fieldset.name == "Why Choose Us" %}
+          <div class="flex flex-col gap-4 mb-4">
+            {% for line in fieldset %}
+              {% include "unfold/helpers/fieldset_row.html" %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% for inline_admin_formset in inline_admin_formsets %}
+        {% if inline_admin_formset.opts.verbose_name == "Why Choose Us Benefit" or inline_admin_formset.opts.verbose_name_plural == "Why Choose Us Benefits" %}
+          {% include inline_admin_formset.opts.template %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 7: Pricing & Plans + Pricing Plans #}
+  {% with section_num=7 section_name="Pricing & Plans" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for fieldset in adminform %}
+        {% if fieldset.name == "Pricing & Plans" %}
+          <div class="flex flex-col gap-4 mb-4">
+            {% for line in fieldset %}
+              {% include "unfold/helpers/fieldset_row.html" %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% for inline_admin_formset in inline_admin_formsets %}
+        {% if inline_admin_formset.opts.verbose_name == "Pricing Plan" or inline_admin_formset.opts.verbose_name_plural == "Pricing Plans" %}
+          {% include inline_admin_formset.opts.template %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 8: Frequently Asked Questions #}
+  {% with section_num=8 section_name="Frequently Asked Questions" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for inline_admin_formset in inline_admin_formsets %}
+        {% if inline_admin_formset.opts.verbose_name == "Question" or inline_admin_formset.opts.verbose_name_plural == "Frequently Asked Questions" %}
+          {% include inline_admin_formset.opts.template %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 9: Portfolio & Gallery #}
+  {% with section_num=9 section_name="Portfolio & Gallery" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for inline_admin_formset in inline_admin_formsets %}
+        {% if inline_admin_formset.opts.verbose_name == "Gallery Item" or inline_admin_formset.opts.verbose_name_plural == "Portfolio & Gallery" %}
+          {% include inline_admin_formset.opts.template %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 10: Additional Content #}
+  {% with section_num=10 section_name="Additional Content" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for inline_admin_formset in inline_admin_formsets %}
+        {% if inline_admin_formset.opts.verbose_name == "Content Section" or inline_admin_formset.opts.verbose_name_plural == "Additional Content" %}
+          {% include inline_admin_formset.opts.template %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 11: SEO & Search Settings #}
+  {% with section_num=11 section_name="SEO & Search Settings" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for fieldset in adminform %}
+        {% if fieldset.name == "SEO & Search Settings" %}
+          <div class="flex flex-col gap-4">
+            {% for line in fieldset %}
+              {% include "unfold/helpers/fieldset_row.html" %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Section 12: Website Display Settings #}
+  {% with section_num=12 section_name="Website Display Settings" %}
+  <div class="service-section">
+    <div class="section-header"><span class="section-num">{{ section_num }}</span> {{ section_name }}</div>
+    <div class="section-body">
+      {% for fieldset in adminform %}
+        {% if fieldset.name == "Website Display Settings" %}
+          <div class="flex flex-col gap-4">
+            {% for line in fieldset %}
+              {% include "unfold/helpers/fieldset_row.html" %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  {% endwith %}
+
+  {# Hidden fallback: render any remaining fieldsets not matched above #}
+  {% for fieldset in adminform %}
+    {% if fieldset.name != "Service Information" and fieldset.name != "Service Header" and fieldset.name != "Expertise & Trust" and fieldset.name != "Why Choose This Service" and fieldset.name != "How It Works" and fieldset.name != "Why Choose Us" and fieldset.name != "Pricing & Plans" and fieldset.name != "Frequently Asked Questions" and fieldset.name != "Portfolio & Gallery" and fieldset.name != "Additional Content" and fieldset.name != "SEO & Search Settings" and fieldset.name != "Website Display Settings" %}
+      {% include 'admin/includes/fieldset.html' %}
+    {% endif %}
+  {% endfor %}
+{% endblock %}
+
+{# Override inline_field_sets to empty — we handle inlines inside field_sets block #}
+{% block inline_field_sets %}{% endblock %}
+
+{% block after_related_objects %}{% endblock %}

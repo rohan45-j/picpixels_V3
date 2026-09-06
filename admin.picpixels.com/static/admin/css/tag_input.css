@@ -1,0 +1,370 @@
+/* ═══════════════════════════════════════════════════════════
+   TagInputWidget — Premium Repeatable Feature & Tag Editor
+   ═══════════════════════════════════════════════════════════ */
+
+.tag-input-widget {
+  width: 100%;
+  box-sizing: border-box;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 4px;
+}
+
+/* ── Header Bar ────────────────────────────────────────── */
+.tag-input-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-input-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  border: 1px solid #c7d2fe;
+}
+
+.tag-input-count {
+  font-weight: 800;
+}
+
+.tag-input-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Shared Buttons ────────────────────────────────────── */
+.tag-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 6px 12px !important;
+  border-radius: 7px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  line-height: 1.2 !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+}
+
+.tag-btn-ghost {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+.tag-btn-ghost:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+
+.tag-clear-all-btn {
+  color: #ef4444 !important;
+  border-color: #fca5a5 !important;
+  background: #ffffff !important;
+}
+
+.tag-clear-all-btn:hover {
+  background: #fef2f2 !important;
+  color: #dc2626 !important;
+  border-color: #f87171 !important;
+}
+
+.tag-btn-primary {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+  border-color: #4338ca !important;
+}
+
+.tag-btn-primary:hover {
+  background: #4338ca !important;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25) !important;
+}
+
+/* ── List Mode Rows ────────────────────────────────────── */
+.tag-input-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.tag-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 4px 8px 4px 10px;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.tag-input-row:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.tag-input-row:focus-within {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12);
+}
+
+.tag-input-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.tag-input-field-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.tag-input-field {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  border: none !important;
+  background: transparent !important;
+  padding: 7px 4px !important;
+  font-size: 13px !important;
+  color: #0f172a !important;
+  font-weight: 500 !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+.tag-input-field::placeholder {
+  color: #94a3b8 !important;
+  font-weight: 400 !important;
+}
+
+.tag-input-row-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.tag-row-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 6px !important;
+  background: #f8fafc !important;
+  color: #64748b !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.12s ease !important;
+  line-height: 1 !important;
+}
+
+.tag-row-btn:hover {
+  background: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+.tag-row-del {
+  font-size: 15px !important;
+  color: #94a3b8 !important;
+}
+
+.tag-row-del:hover {
+  background: #fef2f2 !important;
+  color: #ef4444 !important;
+  border-color: #fca5a5 !important;
+}
+
+.tag-input-empty-msg {
+  padding: 18px !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  color: #94a3b8 !important;
+  background: #ffffff !important;
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: 8px !important;
+}
+
+/* ── Footer ────────────────────────────────────────────── */
+.tag-input-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+  padding-top: 6px !important;
+}
+
+.tag-add-row-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding: 8px 16px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #4f46e5 !important;
+  background: #ffffff !important;
+  border: 1px dashed #6366f1 !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.tag-add-row-btn:hover {
+  background: #eef2ff !important;
+  border-style: solid !important;
+  color: #4338ca !important;
+}
+
+.tag-plus-icon {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.tag-input-hint {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.tag-input-hint kbd {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 10px;
+  font-family: monospace;
+  color: #334155;
+}
+
+/* ── Bulk Edit Mode ────────────────────────────────────── */
+.tag-input-bulk-mode {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.tag-bulk-info {
+  font-size: 12px;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.tag-bulk-textarea {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 10px 12px !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  color: #0f172a !important;
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  outline: none !important;
+  resize: vertical !important;
+  min-height: 130px !important;
+  font-family: inherit !important;
+}
+
+.tag-bulk-textarea:focus {
+  border-color: #6366f1 !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.12) !important;
+}
+
+.tag-bulk-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* ── Defensive: Ensure proper display even if in a table ── */
+td.field-features,
+.field-features {
+  min-width: 320px !important;
+}
+
+@media (max-width: 640px) {
+  td.field-features,
+  .field-features {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .tag-input-widget {
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .tag-input-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .tag-input-actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+  }
+
+  .tag-btn {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+  }
+
+  .tag-input-row {
+    padding: 3px 6px !important;
+  }
+
+  .tag-input-field {
+    font-size: 12px !important;
+  }
+
+  .tag-input-footer {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+
+  .tag-add-row-btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .tag-input-hint {
+    text-align: center !important;
+  }
+}

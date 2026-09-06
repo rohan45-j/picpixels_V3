@@ -1,33 +1,37 @@
-(function($) {
+(function() {
   'use strict';
 
-  function toggleImageFields($select) {
-    var $row = $select.closest('.inline-related') || $select.closest('.tabular-inline-panel > .form-row');
-    if (!$row.length) {
-      $row = $select.closest('tr');
+  function initSectionLayoutToggles() {
+    function toggleImageFields(select) {
+      if (!select) return;
+      var row = select.closest('.inline-related') || select.closest('.form-row') || select.closest('tr');
+      if (!row) return;
+      var layout = select.value;
+      var imageFields = row.querySelectorAll('.field-image, .field-image_alt, .field-image_preview');
+      imageFields.forEach(function(el) {
+        el.style.display = (layout === 'text_only') ? 'none' : '';
+      });
     }
-    var layout = $select.val();
-    var $imageField = $row.find('.field-image, .field-image_alt, .field-image_preview');
-    if (layout === 'text_only') {
-      $imageField.hide();
-    } else {
-      $imageField.show();
-    }
+
+    document.addEventListener('change', function(e) {
+      if (e.target && e.target.matches && e.target.matches('select[name$="-layout"]')) {
+        toggleImageFields(e.target);
+      }
+    });
+
+    document.querySelectorAll('select[name$="-layout"]').forEach(toggleImageFields);
+
+    document.addEventListener('formset:added', function(e) {
+      if (e.target && e.target.querySelectorAll) {
+        e.target.querySelectorAll('select[name$="-layout"]').forEach(toggleImageFields);
+      }
+    });
   }
 
-  $(document).on('change', 'select[name$="-layout"]', function() {
-    toggleImageFields($(this));
-  });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSectionLayoutToggles);
+  } else {
+    initSectionLayoutToggles();
+  }
+})();
 
-  $(document).on('formset:added', function(event, $row, formsetName) {
-    $row.find('select[name$="-layout"]').each(function() {
-      toggleImageFields($(this));
-    });
-  });
-
-  $(document).ready(function() {
-    $('select[name$="-layout"]').each(function() {
-      toggleImageFields($(this));
-    });
-  });
-})(django.jQuery);

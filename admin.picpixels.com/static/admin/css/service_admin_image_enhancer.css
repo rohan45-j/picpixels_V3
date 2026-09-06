@@ -1,0 +1,273 @@
+/* ── Service Admin Image Enhancer & Auto-Alt Styles ── */
+
+.img-enhancer-dropzone {
+  position: relative;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+  display: inline-block;
+  min-width: 240px;
+  max-width: 100%;
+}
+
+.img-enhancer-dropzone:hover {
+  border-color: #94a3b8;
+  background: #f1f5f9;
+}
+
+.img-enhancer-dropzone.drag-over {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.img-enhancer-dropzone input[type="file"] {
+  cursor: pointer;
+  font-size: 12px;
+  color: #334155;
+  max-width: 100%;
+}
+
+/* Inline tabular dropzone: sleek and compact inside table cells */
+.img-enhancer-dropzone.img-enhancer-inline-dropzone {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 180px !important;
+  padding: 4px 6px !important;
+  margin-top: 2px !important;
+  border-radius: 6px !important;
+  border-width: 1px !important;
+}
+
+.img-enhancer-dropzone.img-enhancer-inline-dropzone input[type="file"] {
+  font-size: 11px;
+}
+
+/* Compact mini preview inside table cells */
+.live-img-mini-thumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.live-img-mini-thumb img {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.live-img-mini-check {
+  color: #10b981;
+  font-weight: 800;
+  font-size: 11px;
+}
+
+/* Auto-Alt Badge */
+.auto-alt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 6px;
+  margin-top: 4px;
+  transition: opacity 0.4s ease;
+}
+
+.auto-alt-badge em {
+  font-style: normal;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.auto-alt-badge.fade-out {
+  opacity: 0;
+}
+
+/* Live Image Preview Card (for main fields) */
+.live-img-preview-wrap {
+  margin-top: 6px;
+}
+
+.live-img-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.live-img-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #f1f5f9;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.live-img-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.live-img-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11px;
+  overflow: hidden;
+}
+
+.live-img-name {
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 200px;
+}
+
+.live-img-size {
+  color: #64748b;
+}
+
+.live-img-status {
+  color: #10b981;
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── COMPACT RECOMMENDED SIZE BADGES IN TABLES & FORMS ─── */
+.tabular td .help,
+.tabular td p.help,
+.tabular td span.help,
+.tabular td .help-tooltip {
+  display: none !important; /* Hide Django default multi-line help wrappers in tables since .svc-size-badge is cleanly injected */
+}
+
+.svc-size-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  color: #1d4ed8 !important;
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 4px !important;
+  padding: 2px 6px !important;
+  margin-top: 4px !important;
+  line-height: 1.3 !important;
+  white-space: nowrap !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.svc-size-badge-icon {
+  font-size: 10px !important;
+  color: #3b82f6 !important;
+}
+
+/* ── DYNAMIC GALLERY ROW MODE (Portfolio vs Before/After) ── */
+
+/* 1. When Portfolio or Case Study:
+   Hide Before & After fields and show clean placeholder */
+.svc-row-portfolio .field-before_image .img-enhancer-dropzone,
+.svc-row-portfolio .field-before_image input,
+.svc-row-portfolio .field-before_image .live-img-preview-wrap,
+.svc-row-portfolio .field-before_image a,
+.svc-row-portfolio .field-before_image_alt input,
+.svc-row-portfolio .field-after_image .img-enhancer-dropzone,
+.svc-row-portfolio .field-after_image input,
+.svc-row-portfolio .field-after_image .live-img-preview-wrap,
+.svc-row-portfolio .field-after_image a,
+.svc-row-portfolio .field-after_image_alt input {
+  display: none !important;
+}
+
+.svc-row-portfolio .field-before_image::after,
+.svc-row-portfolio .field-before_image_alt::after,
+.svc-row-portfolio .field-after_image::after,
+.svc-row-portfolio .field-after_image_alt::after {
+  content: '—';
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 600;
+  display: block;
+  text-align: center;
+  padding: 6px 0;
+}
+
+/* 2. When Before & After:
+   Hide single Image, Preview, and Alt Text fields (preview is only for portfolio) */
+.svc-row-before-after .field-image .img-enhancer-dropzone,
+.svc-row-before-after .field-image input,
+.svc-row-before-after .field-image .live-img-preview-wrap,
+.svc-row-before-after .field-image a,
+.svc-row-before-after .field-image_preview *,
+.svc-row-before-after .field-alt_text input {
+  display: none !important;
+}
+
+.svc-row-before-after .field-image::after,
+.svc-row-before-after .field-image_preview::after,
+.svc-row-before-after .field-alt_text::after {
+  content: '—';
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 600;
+  display: block;
+  text-align: center;
+  padding: 6px 0;
+}
+
+/* ── Mobile Responsive Overrides ───────────────────────── */
+@media (max-width: 640px) {
+  .img-enhancer-dropzone {
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 6px 8px !important;
+  }
+
+  .live-img-card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .live-img-name {
+    max-width: 150px !important;
+  }
+
+  .auto-alt-badge {
+    max-width: 100% !important;
+    white-space: normal !important;
+    word-break: break-all !important;
+  }
+
+  .svc-size-badge {
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+}

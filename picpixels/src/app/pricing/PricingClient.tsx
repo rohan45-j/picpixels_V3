@@ -178,7 +178,7 @@ export default function PricingClient({
       <main>
         <div className={styles.headerSection}>
           <div className={styles.headerContent}>
-            <h1 className={`${styles.title} gradient-text`}>Pricing Plans</h1>
+            <h1 className={styles.title} style={{ color: '#000000' }}>Pricing Plans</h1>
             <p className={styles.subtitle}>Pay only for what you need.</p>
           </div>
         </div>
@@ -198,7 +198,7 @@ export default function PricingClient({
             <div className={styles.floatingBlob} style={{ width: 200, height: 200, background: 'rgba(255,138,80,0.08)', top: -60, right: -40 }} />
             <div className={styles.floatingBlob} style={{ width: 160, height: 160, background: 'rgba(255,138,80,0.06)', bottom: 20, left: -30 }} />
             <div className={styles.headerContent}>
-              <h1 className={`${styles.title} gradient-text`}>Pricing Plans</h1>
+              <h1 className={styles.title} style={{ color: '#000000' }}>Pricing Plans</h1>
               <p className={styles.subtitle}>Pay only for what you need. Transparent per-image pricing for every plan.</p>
             </div>
           </section>

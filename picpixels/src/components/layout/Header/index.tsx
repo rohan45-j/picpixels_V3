@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Menu, X, Phone } from 'lucide-react';
 import { usePathname } from 'next/navigation';
-import dynamic from 'next/dynamic';
 import HomeLink from '@/components/layout/HomeLink';
 import { useSiteSettings } from '@/store/SiteSettingsContext';
 import { useSharedData } from '@/store/SharedDataContext';
@@ -11,11 +10,7 @@ import { usePrefetchRoutes } from '@/hooks/usePrefetchRoutes';
 import styles from './styles.module.css';
 import { mediaUrl } from '@/services/public-api';
 
-// Lazy load MegaMenu only when the dropdown is opened
-const MegaMenu = dynamic(() => import('./MegaMenu'), {
-  ssr: false,
-  loading: () => <div className={styles.megaMenuSkeleton} />,
-});
+import MegaMenu from './MegaMenu';
 
 export default function Header() {
   const pathname = usePathname();
