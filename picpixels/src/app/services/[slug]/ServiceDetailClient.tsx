@@ -373,18 +373,6 @@ export default function ServiceDetailClient({
           </div>
         </section>
       )}
-      <section className={styles.ctaSection}>
-        <div className="container">
-          <div className={styles.ctaCard}>
-            <h2 className={styles.ctaTitle}>Start with a Free Trial</h2>
-            <p className={styles.ctaDesc}>Get 3-5 images edited for free. No credit card required.</p>
-            <div className={styles.ctaGroup}>
-              <Link href="/free-trial" className={styles.ctaBtnPrimary}>Free Trial →</Link>
-              <Link href="/pricing" className={styles.ctaBtnSecondary}>View Pricing</Link>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
   );
 }

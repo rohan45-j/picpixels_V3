@@ -5,7 +5,7 @@ import SectionHeading from '@/components/ui/SectionHeading';
 import Link from 'next/link';
 import Reveal from '@/components/animations/Reveal';
 import styles from '@/styles/modules/homepage.module.css';
-import type { Service, Testimonial, Technology, PortfolioItem, PortfolioCategory, BlogPost, CaseStudyItem, WhyChooseSection, WhyChooseFeatureSection, HeroSection, BrandLogo, PricingConfigSectionData } from '@/services/public-api';
+import type { Service, Testimonial, Technology, PortfolioItem, PortfolioCategory, BlogPost, CaseStudyItem, WhyChooseSection, WhyChooseFeatureSection, HeroSection, BrandLogo, PricingConfigSectionData, HomepageCTASection as HomepageCTADataType, FAQ } from '@/services/public-api';
 import { FileText, Mail, ClipboardCheck, Image, TrendingUp, Star } from 'lucide-react';
 
 import TrustBar from '@/components/ui/TrustBar';
@@ -17,6 +17,7 @@ import LatestBlogs from '@/components/ui/LatestBlogs';
 import HomeFeaturedCaseStudy from '@/components/ui/HomeFeaturedCaseStudy';
 import FAQSection from '@/components/ui/FAQSection';
 import QualityAssurance from '@/components/ui/QualityAssurance';
+import HomeCTASection from '@/components/ui/HomeCTASection';
 
 // Lazy load heavy components that are below the fold
 const HighEndQualitySection = dynamic(() => import('@/components/ui/HighEndQualitySection'), {
@@ -45,8 +46,8 @@ const processSteps = [
   { step: '06', title: 'Give us review', desc: 'Your review is important to us. Help us improve and serve you better.', icon: Star },
 ];
 
-export default function HomeClient({ services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures, heroData, brandLogos, pricingConfig }: {
-  services: Service[]; testimonials: Testimonial[]; technologies: Technology[]; portfolios: PortfolioItem[]; portfolioCategories: PortfolioCategory[]; whyChooseUs: WhyChooseSection | null; latestBlogs: BlogPost[]; caseStudies: CaseStudyItem[]; whyChooseFeatures: WhyChooseFeatureSection | null; heroData: HeroSection | null; brandLogos: BrandLogo[]; pricingConfig: PricingConfigSectionData | null;
+export default function HomeClient({ services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures, heroData, brandLogos, pricingConfig, homepageCTA, faqs }: {
+  services: Service[]; testimonials: Testimonial[]; technologies: Technology[]; portfolios: PortfolioItem[]; portfolioCategories: PortfolioCategory[]; whyChooseUs: WhyChooseSection | null; latestBlogs: BlogPost[]; caseStudies: CaseStudyItem[]; whyChooseFeatures: WhyChooseFeatureSection | null; heroData: HeroSection | null; brandLogos: BrandLogo[]; pricingConfig: PricingConfigSectionData | null; homepageCTA?: HomepageCTADataType | null; faqs?: FAQ[];
 }) {
 
   return (
@@ -60,13 +61,13 @@ export default function HomeClient({ services, testimonials, technologies, portf
 
       <StackedServices services={services} />
 
-      <Reveal variant="fadeUp"><PricingConfigurator pricingData={pricingConfig} /></Reveal>
+      <Reveal variant="fadeUp"><PricingConfigurator pricingData={pricingConfig} services={services} /></Reveal>
 
       <HomeWhyChooseUsNew data={whyChooseFeatures} />
 
       <QualityAssurance />
 
-      <section className={`${styles.processSection} ${styles.section}`}>
+      <section className={styles.processSection}>
         <div className="container">
           <Reveal variant="fadeUp" once={false}>
             <SectionHeading
@@ -79,7 +80,7 @@ export default function HomeClient({ services, testimonials, technologies, portf
             {processSteps.map((p, i) => {
               const Icon = p.icon;
               return (
-                <Reveal key={i} variant="fadeUp" delay={i * 100}>
+                <Reveal key={i} variant="fadeUp" delay={i * 100} className={styles.processReveal}>
                   <div className={styles.processCard}>
                     <div className={styles.processConnector}>
                       {i < processSteps.length - 1 && <div className={styles.processLine} />}
@@ -118,22 +119,7 @@ export default function HomeClient({ services, testimonials, technologies, portf
 
       <ContactSection />
 
-      <FAQSection />
-
-      <section className={`${styles.section} ${styles.sectionCTA} ${styles.freeTrialSection}`}>
-        <div className="container">
-          <Reveal variant="fadeUp" once={false}>
-            <SectionHeading
-              text="Free Trial Available"
-              subtitle="Get your quote within 45 minutes. Upload your images via Wetransfer or Dropbox. Your first (3-5) images are free. No credit card required."
-            />
-            <div className={styles.ctaGroup}>
-              <Link href="/free-trial" className="btn btn-primary btn-lg">Start Free Trial →</Link>
-              <Link href="/contact" className="btn btn-secondary btn-lg">Contact Us</Link>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <FAQSection faqs={faqs} />
       
     </>
   );

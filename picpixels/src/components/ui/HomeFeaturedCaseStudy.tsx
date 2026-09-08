@@ -7,40 +7,22 @@ import { mediaUrl } from '@/services/public-api';
 import type { CaseStudyItem } from '@/services/public-api';
 import styles from './HomeFeaturedCaseStudy.module.css';
 
-interface FeaturedCaseStudyData {
-  slug: string;
-  title: string;
-  description: string;
-  image: string | null;
-  imageAlt: string;
-  buttonText: string;
-  buttonLink: string;
-}
-
-function buildFeaturedData(item: CaseStudyItem): FeaturedCaseStudyData {
-  const paragraphs: string[] = [];
-  if (item.challenges) paragraphs.push(item.challenges);
-  if (item.solution) paragraphs.push(item.solution);
-  if (item.results) paragraphs.push(item.results);
-  if (paragraphs.length === 0 && item.excerpt) paragraphs.push(item.excerpt);
-  if (paragraphs.length === 0 && item.short_description) paragraphs.push(item.short_description);
-
-  return {
-    slug: item.slug,
-    title: item.title,
-    description: paragraphs.join('\n\n'),
-    image: item.featured_image_url || mediaUrl(item.featured_image) || null,
-    imageAlt: item.featured_image_alt || item.title,
-    buttonText: 'Read The Full Case Study',
-    buttonLink: `/case-studies/${item.slug}`,
-  };
-}
-
 export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | null }) {
   if (!item) return null;
 
-  const data = buildFeaturedData(item);
-  const detailHref = `/case-studies/${data.slug}`;
+  const detailHref = `/case-studies/${item.slug}`;
+  const imageSrc = item.featured_image_url || (item.featured_image ? mediaUrl(item.featured_image) : null);
+  const imageAlt = item.featured_image_alt || item.title;
+
+  // Dynamic statistics from admin panel
+  const statisticsList = Array.isArray(item.statistics)
+    ? item.statistics.filter((s) => s && typeof s === 'object' && s.value)
+    : [];
+
+  // Dynamic text directly from admin panel fields
+  const mainTitle = item.title;
+  const descriptionText = item.excerpt || item.short_description || item.introduction || item.challenges || '';
+  const categoryName = item.category_name || 'Case Study';
 
   return (
     <section className={styles.section} aria-labelledby="featured-case-study-heading">
@@ -54,52 +36,76 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
           </div>
         </Reveal>
 
-        <div className={styles.grid}>
-          <Reveal variant="fadeUp" delay={150} duration={700}>
-            <div className={styles.content}>
-              <h3 className={styles.title}>{data.title}</h3>
-              <div className={styles.description}>
-                {data.description.split('\n\n').filter(Boolean).map((para, i) => (
-                  <p key={i}>{para}</p>
-                ))}
-              </div>
-              <Link
-                href={detailHref}
-                className={styles.cta}
-                aria-label={`Read the full case study: ${data.title}`}
-              >
-                {data.buttonText}
-                <ArrowRight className={styles.ctaArrow} size={18} />
-              </Link>
-            </div>
-          </Reveal>
-
-          <Reveal variant="fadeIn" delay={300} duration={800}>
-            <div className={styles.visual}>
-              <Link
-                href={detailHref}
-                className={styles.imageLink}
-                aria-label={`View case study: ${data.title}`}
-                tabIndex={-1}
-              >
-                {data.image ? (
-                  <Image
-                    src={data.image}
-                    alt={data.imageAlt}
-                    width={640}
-                    height={480}
-                    className={styles.image}
-                    loading="lazy"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                ) : (
-                  <div className={styles.imagePlaceholder}>No image available</div>
+        <Reveal variant="fadeUp" delay={150} duration={700}>
+          <div className={styles.cardWrapper}>
+            <div className={styles.grid}>
+              <div className={styles.content}>
+                {categoryName && (
+                  <div className={styles.tag}>
+                    <span className={styles.tagLine} />
+                    <span>{categoryName}</span>
+                  </div>
                 )}
-              </Link>
+
+                {statisticsList.length > 0 && (
+                  <div className={styles.statsContainer}>
+                    {statisticsList.slice(0, 2).map((stat, idx) => (
+                      <div key={idx} className={styles.statBox}>
+                        <div className={styles.statNumber}>
+                          {stat.value}{stat.suffix || ''}
+                        </div>
+                        {stat.label && (
+                          <div className={styles.statLabel}>{stat.label}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <h3 className={styles.title}>{mainTitle}</h3>
+
+                {descriptionText && (
+                  <p className={styles.description}>{descriptionText}</p>
+                )}
+
+                <Link
+                  href={detailHref}
+                  className={styles.ctaButton}
+                  aria-label={`Read the full case study: ${item.title}`}
+                >
+                  <span>Read The Full Case Study</span>
+                  <ArrowRight size={18} className={styles.ctaArrow} />
+                </Link>
+              </div>
+
+              <div className={styles.visual}>
+                <Link
+                  href={detailHref}
+                  className={styles.imageFrame}
+                  aria-label={`View case study: ${item.title}`}
+                >
+                  {imageSrc ? (
+                    <Image
+                      src={imageSrc}
+                      alt={imageAlt}
+                      width={680}
+                      height={500}
+                      className={styles.image}
+                      loading="lazy"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                  ) : (
+                    <div className={styles.imagePlaceholder}>
+                      <span>{item.title}</span>
+                    </div>
+                  )}
+                </Link>
+              </div>
             </div>
-          </Reveal>
-        </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
 }
+

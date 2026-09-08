@@ -6,8 +6,9 @@ import Link from 'next/link';
 import HomeLink from '@/components/layout/HomeLink';
 import { useSiteSettings } from '@/store/SiteSettingsContext';
 import styles from './styles.module.css';
-import { fetchFooterServices, mediaUrl, type Service, type SiteSetting } from '@/services/public-api';
+import { fetchFooterServices, mediaUrl, type Service, type SiteSetting, type HomepageCTASection as HomepageCTAData } from '@/services/public-api';
 import OptimizedImage from '@/components/media/OptimizedImage';
+import HomeCTASection from '@/components/ui/HomeCTASection';
 
 const FALLBACK_SERVICES: Service[] = [
   { id: 1, title: 'Clipping Path', slug: 'clipping-path-service' } as Service,
@@ -59,7 +60,17 @@ function SocialIcon({ platform }: { platform: string }) {
   }
 }
 
-export default function Footer({ siteSettings: serverSettings, footerServices: serverFooterServices }: { siteSettings?: SiteSetting | null; footerServices?: Service[] }) {
+export default function Footer({
+  siteSettings: serverSettings,
+  footerServices: serverFooterServices,
+  homepageCTA,
+  hideCTA = false,
+}: {
+  siteSettings?: SiteSetting | null;
+  footerServices?: Service[];
+  homepageCTA?: HomepageCTAData | null;
+  hideCTA?: boolean;
+}) {
   const ctx = useSiteSettings();
   const siteSettings = serverSettings || ctx.siteSettings;
   const [footerServices, setFooterServices] = useState<Service[]>(serverFooterServices ?? [...FALLBACK_SERVICES]);
@@ -71,7 +82,9 @@ export default function Footer({ siteSettings: serverSettings, footerServices: s
   }, [serverFooterServices]);
 
   return (
-    <footer className={styles.footer}>
+    <>
+      {!hideCTA && <HomeCTASection data={homepageCTA} />}
+      <footer className={styles.footer}>
       <div className={`${styles.container} container`}>
         <div className={styles.grid}>
           <div className={styles.brandCol}>
@@ -143,5 +156,7 @@ export default function Footer({ siteSettings: serverSettings, footerServices: s
         </div>
       </div>
     </footer>
+    </>
   );
 }
+

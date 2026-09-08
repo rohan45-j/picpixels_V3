@@ -31,6 +31,7 @@ from .models import (
     FreeTrial, FreeTrialAttachment,
     ServiceUnitRange, ServicePricingCard, ServicePricingCardPrice,
     WhyChooseSection, WhyChooseItem, WhyChooseFeatureSection, WhyChooseFeatureItem,
+    HomepageCTASection,
     ServiceEEAT, ServiceBrandLogo,
     ServiceWhyNeedFeature, ServiceProcessStep,
     ServiceWhyChooseCard, ServiceTool,
@@ -1292,18 +1293,23 @@ class FAQCategoryAdmin(ModelAdmin):
 @admin.register(FAQ)
 class FAQAdmin(ModelAdmin):
     list_select_related = ('category', 'service')
-    list_display = ('question', 'category', 'linked_service', 'is_contact_faq', 'order', 'is_active')
-    list_filter = ('category', 'is_active', 'is_contact_faq', 'service')
+    list_display = ('question', 'category', 'is_portfolio_faq', 'is_homepage_faq', 'is_contact_faq', 'order', 'is_active')
+    list_editable = ('is_portfolio_faq', 'is_homepage_faq', 'is_active')
+    list_filter = ('category', 'is_portfolio_faq', 'is_homepage_faq', 'is_contact_faq', 'is_active', 'service')
     list_filter_submit = True
     ordering = ('order',)
-    search_fields = ('question',)
+    search_fields = ('question', 'answer')
     list_fullwidth = True
     formfield_overrides = {
         models.BooleanField: {'widget': CustomToggleSwitch},
     }
     fieldsets = (
-        (None, {
-            'fields': ('question', 'answer', 'category', 'service', 'is_contact_faq', 'order', 'is_active'),
+        ('FAQ Details', {
+            'fields': ('question', 'answer', 'category', 'service', 'order', 'is_active'),
+        }),
+        ('Page Placements', {
+            'fields': ('is_portfolio_faq', 'is_homepage_faq', 'is_contact_faq'),
+            'description': 'Toggle which pages this FAQ should appear on (Portfolio Page, Homepage, Contact Page).',
         }),
     )
 
@@ -1991,5 +1997,29 @@ class WhyChooseItemAdmin(ModelAdmin):
         ('Feature Flags', {
             'fields': ('speed', 'flexibility', 'quality', 'scalability', 'cost_effectiveness'),
             'classes': ('collapse',),
+        }),
+    )
+
+
+@admin.register(HomepageCTASection)
+class HomepageCTASectionAdmin(ModelAdmin):
+    list_display = ('title', 'badge_text', 'primary_button_text', 'primary_button_is_active', 'secondary_button_text', 'secondary_button_is_active', 'is_active', 'updated_at')
+    list_editable = ('is_active', 'primary_button_is_active', 'secondary_button_is_active')
+    list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        ('Section Overview', {
+            'fields': ('is_active', 'badge_text', 'title', 'title_color', 'subtitle'),
+            'description': 'Configure the main headline and subtitle for the homepage Free Trial / CTA banner.',
+        }),
+        ('Primary Button (Button 1)', {
+            'fields': ('primary_button_is_active', 'primary_button_text', 'primary_button_link'),
+            'description': 'Main call-to-action button (e.g. "Start Free Trial →").',
+        }),
+        ('Secondary Button (Button 2 - Optional)', {
+            'fields': ('secondary_button_is_active', 'secondary_button_text', 'secondary_button_link'),
+            'description': 'Optional secondary button (e.g. "Contact Us"). Turn off the toggle switch if you only want 1 button.',
         }),
     )

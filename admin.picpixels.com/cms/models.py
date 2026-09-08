@@ -546,6 +546,8 @@ class FAQ(models.Model):
         null=True, blank=True, related_name='faqs',
     )
     is_contact_faq = models.BooleanField(default=False)
+    is_portfolio_faq = models.BooleanField(default=False, help_text='Show this FAQ on the Portfolio page')
+    is_homepage_faq = models.BooleanField(default=True, help_text='Show this FAQ on the Homepage')
     order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True, db_index=True)
 
@@ -1164,3 +1166,35 @@ class ServiceClientFeedback(models.Model):
 
     def __str__(self):
         return f'{self.client_name} - {self.service.title}'
+
+
+# ═══════════════════════════════════════════════════════════
+# HOMEPAGE CTA / FREE TRIAL SECTION
+# ═══════════════════════════════════════════════════════════
+
+class HomepageCTASection(models.Model):
+    is_active = models.BooleanField(default=True, help_text='Show this CTA section on the homepage')
+    badge_text = models.CharField(max_length=100, blank=True, default='Free Trial Available', help_text='Small badge/tag above the title (optional)')
+    title = models.CharField(max_length=255, default='Experience Our World-Class Photo Editing', help_text='Main CTA heading')
+    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for heading (e.g. #0F172A or #FF8A50). Leave blank for default.')
+    subtitle = models.TextField(blank=True, default='Get your quote within 45 minutes. Upload your images via Wetransfer or Dropbox. Your first (3-5) images are free. No credit card required.', help_text='Supporting subtitle or description text')
+    
+    # Primary Button (Button 1)
+    primary_button_is_active = models.BooleanField(default=True, help_text='Enable / show Primary Button')
+    primary_button_text = models.CharField(max_length=100, default='Start Free Trial →', help_text='Text for primary button')
+    primary_button_link = models.CharField(max_length=255, default='/free-trial', help_text='Link URL for primary button')
+    
+    # Secondary Button (Button 2)
+    secondary_button_is_active = models.BooleanField(default=True, help_text='Enable / show Secondary Button (Turn off if you want only 1 button)')
+    secondary_button_text = models.CharField(max_length=100, blank=True, default='Contact Us', help_text='Text for secondary button')
+    secondary_button_link = models.CharField(max_length=255, blank=True, default='/contact', help_text='Link URL for secondary button')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Homepage CTA Section'
+        verbose_name_plural = 'Homepage CTA Section'
+
+    def __str__(self):
+        return self.title

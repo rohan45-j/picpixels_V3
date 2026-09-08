@@ -1,0 +1,240 @@
+.ctaSection {
+  position: relative;
+  padding: 3.5rem 1.5rem;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 245, 240, 0.6) 100%);
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.card {
+  position: relative;
+  background: linear-gradient(135deg, #FFF6F2 0%, #FFEBE1 40%, #FFF2EB 100%);
+  border: 1.5px solid rgba(255, 107, 53, 0.22);
+  border-radius: 28px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 
+    0 20px 50px -10px rgba(255, 107, 53, 0.12),
+    0 8px 24px -6px rgba(15, 23, 42, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+  border-color: rgba(255, 107, 53, 0.38);
+  box-shadow: 
+    0 24px 60px -10px rgba(255, 107, 53, 0.18),
+    0 12px 30px -6px rgba(15, 23, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+/* Ambient glow blobs behind the card content */
+.glowTopRight {
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 107, 53, 0.18) 0%, rgba(255, 138, 80, 0) 70%);
+  pointer-events: none;
+  filter: blur(20px);
+}
+
+.glowBottomLeft {
+  position: absolute;
+  bottom: -90px;
+  left: -90px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 87, 34, 0.14) 0%, rgba(255, 138, 80, 0) 70%);
+  pointer-events: none;
+  filter: blur(25px);
+}
+
+.innerContent {
+  position: relative;
+  z-index: 3;
+  max-width: 780px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Badge Pill */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1.15rem;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+  border-radius: 9999px;
+  color: #E64A19;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 14px rgba(255, 107, 53, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.badgeDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #FF5722;
+  box-shadow: 0 0 8px #FF5722;
+  animation: pulseDot 2s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.6;
+  }
+}
+
+/* Heading */
+.title {
+  font-size: clamp(2rem, 3.8vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0F172A;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.025em;
+}
+
+/* Subtitle */
+.subtitle {
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  line-height: 1.65;
+  color: #475569;
+  max-width: 680px;
+  margin: 0 auto 1.75rem;
+  font-weight: 450;
+}
+
+/* Button Group */
+.ctaGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.15rem;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+/* Primary Button */
+.primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 2.25rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #FF7A3D 0%, #FF5722 100%);
+  border-radius: 9999px;
+  border: none;
+  text-decoration: none;
+  box-shadow: 0 10px 24px -4px rgba(255, 87, 34, 0.45);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.primaryBtn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #FF8A50 0%, #F4511E 100%);
+  box-shadow: 0 14px 30px -4px rgba(255, 87, 34, 0.6);
+  color: #FFFFFF !important;
+}
+
+.primaryBtn:hover .arrowIcon {
+  transform: translateX(4px);
+}
+
+.arrowIcon {
+  transition: transform 0.25s ease;
+}
+
+/* Secondary Button */
+.secondaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.95rem 2.25rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  color: #1E293B !important;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(15, 23, 42, 0.14);
+  border-radius: 9999px;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.secondaryBtn:hover {
+  transform: translateY(-2px);
+  background: #F8FAFC;
+  border-color: rgba(15, 23, 42, 0.3);
+  color: #0F172A !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Guarantee / Trust micro-tag */
+.trustNote {
+  margin-top: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.trustNote svg {
+  color: #10B981;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ctaSection {
+    padding: 2.25rem 1rem;
+  }
+
+  .card {
+    padding: 2.25rem 1.25rem;
+    border-radius: 20px;
+  }
+
+  .ctaGroup {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.85rem;
+  }
+
+  .primaryBtn, .secondaryBtn {
+    width: 100%;
+    max-width: 320px;
+  }
+}

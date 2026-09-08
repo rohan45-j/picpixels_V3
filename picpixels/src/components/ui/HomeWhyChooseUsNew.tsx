@@ -10,7 +10,8 @@ export default function HomeWhyChooseUsNew({ data }: { data: WhyChooseFeatureSec
 
   const activeItems = data.items
     .filter((item) => item.is_active)
-    .sort((a, b) => a.display_order - b.display_order);
+    .sort((a, b) => a.display_order - b.display_order)
+    .slice(0, 5);
 
   if (activeItems.length === 0) return null;
 
@@ -57,7 +58,7 @@ export default function HomeWhyChooseUsNew({ data }: { data: WhyChooseFeatureSec
             ))}
           </div>
 
-          <Reveal variant="fadeRight" delay={200}>
+          <Reveal variant="fadeRight" delay={200} className={styles.imageReveal}>
             <div className={styles.imageCol}>
               <div className={styles.imageWrap}>
                 {featuredImage ? (

@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import type { PortfolioItem, PortfolioCategory } from '@/services/public-api';
+import type { PortfolioItem, PortfolioCategory, HomepageCTASection as HomepageCTAType, FAQ } from '@/services/public-api';
 import PortfolioListClient from './PortfolioListClient';
+import FAQSection from '@/components/ui/FAQSection';
+import HomeCTASection from '@/components/ui/HomeCTASection';
 
 export const metadata: Metadata = {
   title: 'Portfolio',
@@ -29,21 +31,30 @@ async function fetchJson<T>(url: string): Promise<T | null> {
 }
 
 export default async function PortfolioPage() {
-  const [portfoliosRes, categories] = await Promise.all([
+  const [portfoliosRes, categories, faqsRes, ctaRes] = await Promise.all([
     fetchJson<{ results: PortfolioItem[] }>(`${API_BASE}/api/v1/portfolio/api/items/`),
     fetchJson<PortfolioCategory[]>(`${API_BASE}/api/v1/portfolio/api/categories/`),
+    fetchJson<{ results: FAQ[] }>(`${API_BASE}/api/v1/cms/faqs/?is_portfolio_faq=true`),
+    fetchJson<{ results: HomepageCTAType[] }>(`${API_BASE}/api/v1/cms/homepage-cta/`),
   ]);
 
   const initialPortfolios = portfoliosRes?.results ?? [];
+  const faqs = faqsRes?.results ?? [];
+  const homepageCTA = ctaRes?.results?.[0] ?? null;
 
   return (
     <>
       <Header />
-      <PortfolioListClient
-        initialPortfolios={initialPortfolios}
-        categories={categories ?? []}
-      />
-      <Footer />
+      <main id="main-content">
+        <PortfolioListClient
+          initialPortfolios={initialPortfolios}
+          categories={categories ?? []}
+        />
+        <FAQSection faqs={faqs} />
+      </main>
+      <Footer homepageCTA={homepageCTA} />
     </>
   );
 }
+
+

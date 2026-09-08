@@ -55,16 +55,6 @@ export default function ServicesClient({ services }: { services: Service[] }) {
           </div>
         </section>
       </Reveal>
-
-      <Reveal variant="fadeUp">
-        <section className={styles.ctaSection}>
-          <div className="container" style={{ textAlign: 'center' }}>
-            <h2>Need a Custom Solution?</h2>
-            <p>Contact us for bulk discounts and custom project requirements.</p>
-            <Link href="/contact" className="btn btn-primary btn-lg">Contact Us</Link>
-          </div>
-        </section>
-      </Reveal>
     </main>
   );
 }

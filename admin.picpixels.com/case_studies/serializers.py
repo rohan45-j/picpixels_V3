@@ -61,6 +61,7 @@ class CaseStudyListSerializer(serializers.ModelSerializer):
     featured_image_url = serializers.SerializerMethodField()
     hero_banner_url = serializers.SerializerMethodField()
     tags = CaseStudyTagSerializer(many=True, read_only=True)
+    statistics = serializers.JSONField(read_only=True)
 
     class Meta:
         model = CaseStudy
@@ -68,7 +69,9 @@ class CaseStudyListSerializer(serializers.ModelSerializer):
             'id', 'title', 'slug', 'category', 'category_name', 'category_slug',
             'tags', 'featured_image', 'featured_image_alt', 'featured_image_url',
             'hero_banner', 'hero_banner_alt', 'hero_banner_url',
-            'excerpt', 'client_name', 'client_logo', 'industry', 'country',
+            'excerpt', 'short_description', 'introduction', 'statistics',
+            'challenges', 'solution', 'results',
+            'client_name', 'client_logo', 'industry', 'country',
             'publish_date', 'reading_time', 'featured',
             'created_at', 'updated_at',
         ]

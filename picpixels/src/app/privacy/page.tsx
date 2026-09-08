@@ -244,23 +244,6 @@ export default function PrivacyPage() {
           </div>
         </section>
         </Reveal>
-
-        {/* CTA */}
-        <Reveal variant="fadeUp">
-          <section className={styles.ctaSection}>
-            <div className={styles.ctaInner}>
-              <div className={styles.ctaCard}>
-                <HelpCircle size={28} style={{ color: 'var(--primary)', marginBottom: '0.75rem' }} />
-                <h2>Questions About Your Data?</h2>
-                <p>If you have any questions or wish to exercise your data rights, our team is here to help.</p>
-                <div className={styles.ctaGroup}>
-                  <Link href="/support" className="btn btn-primary">Contact Support</Link>
-                  <Link href="/" className="btn btn-secondary">Back to Home</Link>
-                </div>
-              </div>
-            </div>
-          </section>
-        </Reveal>
       </main>
       <Footer />
     </>

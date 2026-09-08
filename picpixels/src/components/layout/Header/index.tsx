@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Menu, X, Phone } from 'lucide-react';
+import { ChevronDown, Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import HomeLink from '@/components/layout/HomeLink';
 import { useSiteSettings } from '@/store/SiteSettingsContext';
@@ -9,8 +9,11 @@ import { useSharedData } from '@/store/SharedDataContext';
 import { usePrefetchRoutes } from '@/hooks/usePrefetchRoutes';
 import styles from './styles.module.css';
 import { mediaUrl } from '@/services/public-api';
+import dynamic from 'next/dynamic';
 
-import MegaMenu from './MegaMenu';
+const MegaMenu = dynamic(() => import('./MegaMenu'), {
+  ssr: false,
+});
 
 export default function Header() {
   const pathname = usePathname();
@@ -231,9 +234,8 @@ export default function Header() {
         </nav>
 
         <div className={styles.desktopActions}>
-          <a href="/book-demo" className={styles.demoCta}>
-            <Phone />
-            Book a Free Demo
+          <a href="/free-trial" className={styles.demoCta}>
+            Free Trial
           </a>
         </div>
 
@@ -257,9 +259,8 @@ export default function Header() {
           <div className={styles.mobileDivider} />
         </div>
         <div className={styles.mobileActions}>
-          <a href="/book-demo" className={`${styles.mobileActionBtn} ${styles.mobileActionBtnPrimary}`}>
-            <Phone />
-            Book a Free Demo
+          <a href="/free-trial" className={`${styles.mobileActionBtn} ${styles.mobileActionBtnPrimary}`}>
+            Free Trial
           </a>
         </div>
       </div>

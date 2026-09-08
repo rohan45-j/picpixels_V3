@@ -282,23 +282,6 @@ export default function TermsPage() {
             ))}
           </div>
         </section>
-
-        {/* CTA */}
-        <Reveal variant="fadeUp">
-          <section className={styles.ctaSection}>
-            <div className={styles.ctaInner}>
-              <div className={styles.ctaCard}>
-                <HelpCircle size={28} style={{ color: 'var(--primary)', marginBottom: '0.75rem' }} />
-                <h2>Questions About Our Terms?</h2>
-                <p>Our legal and support teams are available to help clarify anything you need.</p>
-                <div className={styles.ctaGroup}>
-                  <Link href="/support" className="btn btn-primary">Contact Support</Link>
-                  <Link href="/" className="btn btn-secondary">Back to Home</Link>
-                </div>
-              </div>
-            </div>
-          </section>
-        </Reveal>
       </main>
       <Footer />
     </>

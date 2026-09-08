@@ -206,23 +206,6 @@ export default function ContactClient({ faqs }: { faqs: FAQ[] }) {
           </div>
         </section>
       )}
-
-      <Reveal variant="fadeUp">
-        <section className={styles.ctaSection}>
-          <div className="container">
-            <div className={styles.ctaBanner}>
-              <div className={styles.ctaBannerContent}>
-                <h2 className={styles.ctaBannerTitle}>Need a Custom Solution?</h2>
-                <p className={styles.ctaBannerDesc}>Contact us for bulk discounts and custom project requirements.</p>
-                <div className={styles.ctaBannerGroup}>
-                  <Link href="/free-trial" className="btn btn-primary">Try Free Trial</Link>
-                  <Link href="/pricing" className="btn btn-secondary">View Pricing</Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </Reveal>
     </main>
   );
 }

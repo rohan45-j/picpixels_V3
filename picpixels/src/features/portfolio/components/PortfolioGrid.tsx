@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { mediaUrl, type PortfolioItem, type PortfolioCategory } from '@/services/public-api';
 import SectionHeading from '@/components/ui/SectionHeading';
 import Reveal from '@/components/animations/Reveal';
+import GalleryLightbox from '@/components/media/GalleryLightbox';
 import styles from '@/styles/modules/portfolio-grid.module.css';
 
 export default function PortfolioGrid({
@@ -14,6 +15,7 @@ export default function PortfolioGrid({
   categories: PortfolioCategory[];
 }) {
   const [activeCategory, setActiveCategory] = useState('');
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
   const items = useMemo(
@@ -23,6 +25,16 @@ export default function PortfolioGrid({
         : portfolios.filter((item) => item.category_slug === activeCategory),
     [activeCategory, portfolios]
   );
+
+  const lightboxImages = useMemo(() => {
+    return items.map((item) => ({
+      src: mediaUrl(item.featured_image_url || item.featured_image) || '',
+      alt: item.featured_image_alt || item.title,
+      title: item.title,
+      category: item.category_name,
+      slug: item.slug,
+    }));
+  }, [items]);
 
   useEffect(() => {
     const el = gridRef.current;
@@ -55,7 +67,6 @@ export default function PortfolioGrid({
       <div className={styles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={styles.header}>
-            {/* <div className={styles.tag}>Project Portfolio</div> */}
             <SectionHeading text="Our Latest Work" className={styles.title} />
             <div className={styles.divider} />
             <p className={styles.subtitle}>
@@ -86,8 +97,21 @@ export default function PortfolioGrid({
 
         <div ref={gridRef} className={styles.grid}>
           {items.length > 0 ? (
-            items.map((item) => (
-              <Link key={item.id} href={`/portfolio/${item.slug}`} className={styles.card}>
+            items.map((item, index) => (
+              <div
+                key={item.id}
+                className={styles.card}
+                onClick={() => setLightboxIndex(index)}
+                role="button"
+                tabIndex={0}
+                style={{ cursor: 'pointer' }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setLightboxIndex(index);
+                  }
+                }}
+              >
                 <div className={styles.visual}>
                   {item.featured_image_url || item.featured_image ? (
                     <img
@@ -100,15 +124,21 @@ export default function PortfolioGrid({
                   ) : (
                     <div className={styles.placeholder} />
                   )}
+                  {item.category_name && (
+                    <span className={styles.badgeCat}>{item.category_name}</span>
+                  )}
                   <div className={styles.overlay}>
-                    <span className={styles.cta}>View Project</span>
-                  </div>
-                  <div className={styles.titleOverlay}>
-                    <h3 className={styles.cardTitle}>{item.title}</h3>
-                    <span className={styles.cat}>{item.category_name}</span>
+                    <span className={styles.cta}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.3-4.3"/>
+                        <path d="M11 8v6M8 11h6"/>
+                      </svg>
+                      View Full Screen
+                    </span>
                   </div>
                 </div>
-              </Link>
+              </div>
             ))
           ) : (
             <div className={styles.empty}>
@@ -129,6 +159,25 @@ export default function PortfolioGrid({
           </div>
         )}
       </div>
+
+      {lightboxIndex !== null && (
+        <GalleryLightbox
+          images={lightboxImages}
+          currentIndex={lightboxIndex}
+          isOpen={lightboxIndex !== null}
+          onClose={() => setLightboxIndex(null)}
+          onPrev={() =>
+            setLightboxIndex((prev) =>
+              prev !== null && prev > 0 ? prev - 1 : lightboxImages.length - 1
+            )
+          }
+          onNext={() =>
+            setLightboxIndex((prev) =>
+              prev !== null && prev < lightboxImages.length - 1 ? prev + 1 : 0
+            )
+          }
+        />
+      )}
     </section>
   );
 }

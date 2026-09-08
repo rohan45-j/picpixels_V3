@@ -147,7 +147,7 @@ export default function AboutClient({ testimonials, brandLogos }: { testimonials
             {processSteps.map((p, i) => {
               const Icon = p.icon;
               return (
-                <Reveal key={i} variant="fadeUp" delay={i * 100}>
+                <Reveal key={i} variant="fadeUp" delay={i * 100} className={styles.processReveal}>
                   <div className={styles.processCard}>
                     <div className={styles.processConnector}>
                       {i < processSteps.length - 1 && <div className={styles.processLine} />}
@@ -173,19 +173,6 @@ export default function AboutClient({ testimonials, brandLogos }: { testimonials
           </Reveal>
           <Reveal variant="fadeIn" delay={200}>
             {testimonials.length > 0 && <TestimonialCarousel testimonials={testimonials} />}
-          </Reveal>
-        </div>
-      </section>
-
-      <section className={styles.ctaSection}>
-        <div className={styles.ctaInner}>
-          <Reveal variant="fadeUp">
-            <h2>Ready to Get Started?</h2>
-            <p>Try our service with 3-5 free images. No credit card required. No commitment.</p>
-            <div className={styles.ctaGroup}>
-              <Link href="/free-trial" className="btn btn-primary">Start Free Trial</Link>
-              <Link href="/pricing" className="btn btn-secondary">View Pricing</Link>
-            </div>
           </Reveal>
         </div>
       </section>

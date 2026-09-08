@@ -18,7 +18,7 @@ export default function LatestBlogs({ posts }: { posts: BlogPost[] }) {
   if (!posts || posts.length === 0) return null;
 
   return (
-    <section className={styles.sectionAlt}>
+    <section className={`${styles.section} ${styles.sectionAlt}`}>
       <div className="container max-w-7xl mx-auto px-6">
         <Reveal variant="fadeUp" once={false}>
           <SectionHeading text="Latest Blogs" />

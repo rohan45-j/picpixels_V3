@@ -53,7 +53,7 @@ export default function QualityAssurance() {
           {items.map((item, index) => {
             const Icon = item.icon;
             return (
-              <Reveal key={index} variant="fadeUp" delay={index * 100}>
+              <Reveal key={index} variant="fadeUp" delay={index * 100} className={styles.revealItem}>
                 <article className={styles.card}>
                   <div className={styles.iconWrap}>
                     <Icon size={22} />

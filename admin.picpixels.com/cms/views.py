@@ -18,6 +18,7 @@ from .models import (
     ServiceUnitRange, ServicePricingCard, ServicePricingCardPrice,
     FreeTrial, FreeTrialAttachment,
     WhyChooseSection, WhyChooseFeatureSection,
+    HomepageCTASection,
 )
 from .serializers import (
     PageSerializer, SectionSerializer, BannerSerializer,
@@ -33,6 +34,7 @@ from .serializers import (
     FreeTrialSerializer,
     WhyChooseSectionSerializer,
     WhyChooseFeatureSectionSerializer,
+    HomepageCTASectionSerializer,
 )
 
 
@@ -243,12 +245,29 @@ class FAQViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
     serializer_class = FAQSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     ordering = ['order']
-    filterset_fields = ['category', 'service', 'is_contact_faq']
+    filterset_fields = ['category', 'service', 'is_contact_faq', 'is_portfolio_faq', 'is_homepage_faq']
 
     def get_queryset(self):
         qs = FAQ.objects.all()
         if self.request.query_params.get('all') != '1':
             qs = qs.filter(is_active=True)
+
+        is_portfolio = self.request.query_params.get('is_portfolio_faq')
+        if is_portfolio is not None:
+            if is_portfolio.lower() in ('true', '1'):
+                portfolio_qs = qs.filter(is_portfolio_faq=True)
+                if portfolio_qs.exists():
+                    return portfolio_qs.order_by('order')
+            elif is_portfolio.lower() in ('false', '0'):
+                qs = qs.filter(is_portfolio_faq=False)
+
+        is_homepage = self.request.query_params.get('is_homepage_faq')
+        if is_homepage is not None:
+            if is_homepage.lower() in ('true', '1'):
+                qs = qs.filter(is_homepage_faq=True)
+            elif is_homepage.lower() in ('false', '0'):
+                qs = qs.filter(is_homepage_faq=False)
+
         return qs.order_by('order')
 
 
@@ -380,4 +399,10 @@ class WhyChooseSectionViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet
 class WhyChooseFeatureSectionViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
     queryset = WhyChooseFeatureSection.objects.prefetch_related('items').filter(is_active=True)
     serializer_class = WhyChooseFeatureSectionSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class HomepageCTASectionViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = HomepageCTASection.objects.filter(is_active=True)
+    serializer_class = HomepageCTASectionSerializer
     permission_classes = [permissions.AllowAny]

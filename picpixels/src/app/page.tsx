@@ -6,6 +6,7 @@ import { Suspense } from 'react';
 import type {
   Service, Testimonial, Technology, PortfolioItem, PortfolioCategory, BlogPost, CaseStudyItem,
   WhyChooseSection, WhyChooseFeatureSection, HeroSection, BrandLogo, PricingConfigSectionData, SiteSetting,
+  HomepageCTASection, FAQ,
 } from '@/services/public-api';
 import { fetchHomepageData, fetchSiteSettings } from '@/services/public-api';
 import { fetchCriticalJSON, fetchBackgroundJSON } from '@/lib/fetch';
@@ -63,6 +64,7 @@ async function getHomepageData() {
       latestBlogs: homepageData.latestBlogs ?? [],
       caseStudies: homepageData.caseStudies ?? [],
       brandLogos: homepageData.brandLogos ?? [],
+      homepageCTA: (homepageData as any).homepageCTA ?? null,
     };
   }
 
@@ -86,6 +88,8 @@ async function getHomepageData() {
     heroRes,
     brandsRes,
     pricingRes,
+    homepageCTARes,
+    faqsRes,
     settingsRes,
   ] = await Promise.allSettled([
     fetchBackgroundJSON<Service[]>(`${BASE_URL}/api/v1/cms/services/homepage/`, fetchOpts),
@@ -100,6 +104,8 @@ async function getHomepageData() {
     fetchBackgroundJSON<{ results: HeroSection[] }>(`${BASE_URL}/api/v1/cms/hero/`, fetchOpts),
     fetchBackgroundJSON<{ results: BrandLogo[] }>(`${BASE_URL}/api/v1/cms/brands/`, fetchOpts),
     fetchBackgroundJSON<{ results: PricingConfigSectionData[] }>(`${BASE_URL}/api/v1/cms/pricing-config/`, fetchOpts),
+    fetchBackgroundJSON<{ results: HomepageCTASection[] }>(`${BASE_URL}/api/v1/cms/homepage-cta/`, fetchOpts),
+    fetchBackgroundJSON<{ results: FAQ[] }>(`${BASE_URL}/api/v1/cms/faqs/`, fetchOpts),
     fetchBackgroundJSON<{ results: SiteSetting[] }>(`${BASE_URL}/api/v1/settings/site/?_=${Date.now()}`, fetchOpts),
   ]);
 
@@ -116,7 +122,7 @@ async function getHomepageData() {
     return [];
   };
 
-  // Some endpoints (hero, why-choose-us, pricing-config, settings) return paginated {results:[...]}
+  // Some endpoints (hero, why-choose-us, pricing-config, settings, homepage-cta) return paginated {results:[...]}
   // even though they are singletons. Extract the first item.
   const extractFirst = <T,>(result: PromiseSettledResult<{ results: T[] } | null>): T | null => {
     if (result.status === 'fulfilled') return result.value?.results?.[0] ?? null;
@@ -137,12 +143,14 @@ async function getHomepageData() {
     heroData: extractFirst(heroRes),
     brandLogos: extractArray(brandsRes),
     pricingConfig: extractFirst(pricingRes),
+    homepageCTA: extractFirst(homepageCTARes),
+    faqs: extractArray(faqsRes),
     siteSettings: extractFirst(settingsRes),
   };
 }
 
 async function HomeContent() {
-  const { services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures, heroData, brandLogos, pricingConfig, siteSettings } = await getHomepageData();
+  const { services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures, heroData, brandLogos, pricingConfig, homepageCTA, faqs, siteSettings } = await getHomepageData();
 
   return (
     <>
@@ -165,10 +173,12 @@ async function HomeContent() {
             heroData={heroData}
             brandLogos={brandLogos}
             pricingConfig={pricingConfig}
+            homepageCTA={homepageCTA}
+            faqs={faqs}
           />
         </Suspense>
       </main>
-      <Footer siteSettings={siteSettings} />
+      <Footer siteSettings={siteSettings} homepageCTA={homepageCTA} />
     </>
   );
 }

@@ -1,3 +1,9 @@
+.section {
+  padding: 3.5rem 0;
+  position: relative;
+  background: #ffffff;
+}
+
 .container {
   max-width: 1280px;
   margin: 0 auto;
@@ -8,7 +14,7 @@
 .header {
   text-align: center;
   max-width: 640px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 1.5rem;
 }
 
 .tag {
@@ -33,7 +39,7 @@
   height: 3px;
   background: linear-gradient(90deg, #FF8A50, #FF6B35);
   border-radius: 9999px;
-  margin: 1.25rem auto 1rem;
+  margin: 0.75rem auto 0.75rem;
   opacity: 0.8;
 }
 
@@ -65,7 +71,7 @@
 
 .viewAllWrap {
   text-align: center;
-  margin-top: 3rem;
+  margin-top: 1.75rem;
 }
 
 .viewAllBtn svg {
@@ -336,10 +342,10 @@
 .searchInput::placeholder { color: #9CA3AF; }
 
 .filterBar {
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
   display: flex;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .filterContainer {

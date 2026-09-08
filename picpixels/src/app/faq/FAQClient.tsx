@@ -167,22 +167,6 @@ export default function FAQClient({ initialFAQs, initialCategories }: { initialF
           </Reveal>
         </div>
       </section>
-
-      <Reveal variant="fadeUp">
-        <section className={styles.ctaSection}>
-          <div className={styles.ctaInner}>
-            <div className={styles.ctaCard}>
-              <MessageCircle size={28} style={{ color: 'var(--primary)', marginBottom: '0.75rem' }} />
-              <h2>Still Have Questions?</h2>
-              <p>Our support team is ready to help you with anything you need.</p>
-              <div className={styles.ctaGroup}>
-                <Link href="/support" className="btn btn-primary">Contact Support</Link>
-                <Link href="/" className="btn btn-secondary">Back to Home</Link>
-              </div>
-            </div>
-          </div>
-        </section>
-      </Reveal>
     </>
   );
 }

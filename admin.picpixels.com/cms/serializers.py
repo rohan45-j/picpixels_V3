@@ -10,6 +10,7 @@ from .models import (
     FreeTrial, FreeTrialAttachment,
     WhyChooseSection, WhyChooseItem,
     WhyChooseFeatureSection, WhyChooseFeatureItem,
+    HomepageCTASection,
     ServiceEEAT, ServiceBrandLogo,
     ServiceWhyNeedFeature,
     ServiceProcessStep,
@@ -317,7 +318,7 @@ class FAQCategorySerializer(serializers.ModelSerializer):
 class FAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
-        fields = ['id', 'question', 'answer', 'category', 'service', 'is_contact_faq', 'order', 'is_active']
+        fields = ['id', 'question', 'answer', 'category', 'service', 'is_portfolio_faq', 'is_homepage_faq', 'is_contact_faq', 'order', 'is_active']
 
 
 class ContactInquirySerializer(serializers.ModelSerializer):
@@ -511,3 +512,14 @@ class WhyChooseFeatureSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = WhyChooseFeatureSection
         fields = ['id', 'title', 'subtitle', 'featured_image', 'featured_image_alt', 'is_active', 'items', 'created_at', 'updated_at']
+
+
+class HomepageCTASectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HomepageCTASection
+        fields = [
+            'id', 'is_active', 'badge_text', 'title', 'title_color', 'subtitle',
+            'primary_button_is_active', 'primary_button_text', 'primary_button_link',
+            'secondary_button_is_active', 'secondary_button_text', 'secondary_button_link',
+            'created_at', 'updated_at',
+        ]

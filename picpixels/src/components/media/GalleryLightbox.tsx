@@ -3,10 +3,13 @@
 import { useEffect, useCallback, useRef } from 'react';
 import styles from '@/styles/modules/gallery-lightbox.module.css';
 
-interface LightboxImage {
+export interface LightboxImage {
   src: string;
   alt: string;
   label?: string;
+  category?: string;
+  title?: string;
+  slug?: string;
 }
 
 interface GalleryLightboxProps {
@@ -157,15 +160,30 @@ export default function GalleryLightbox({
       <div className={styles.footer}>
         {total > 0 && (
           <>
-            <span className={styles.counter}>
-              {currentIndex + 1} / {total}
-            </span>
-            {current?.label && (
-              <span className={styles.imageLabel}>{current.label}</span>
-            )}
-            {current?.alt && !current?.label && (
-              <span className={styles.imageAlt}>{current.alt}</span>
-            )}
+            <div className={styles.footerTop}>
+              {current?.category && (
+                <span className={styles.categoryBadge}>{current.category}</span>
+              )}
+              {current?.title && (
+                <h4 className={styles.imageTitle}>{current.title}</h4>
+              )}
+              {current?.slug && (
+                <a href={`/portfolio/${current.slug}`} className={styles.detailLink}>
+                  View Details →
+                </a>
+              )}
+            </div>
+            <div className={styles.footerBottom}>
+              <span className={styles.counter}>
+                {currentIndex + 1} / {total}
+              </span>
+              {current?.label && !current?.category && (
+                <span className={styles.imageLabel}>{current.label}</span>
+              )}
+              {current?.alt && !current?.title && (
+                <span className={styles.imageAlt}>{current.alt}</span>
+              )}
+            </div>
           </>
         )}
       </div>

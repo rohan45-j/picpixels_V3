@@ -100,7 +100,68 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.6rem;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.footerTop {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.categoryBadge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #FF8A50;
+  border-radius: 6px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(255, 138, 80, 0.4);
+}
+
+.imageTitle {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+}
+
+.detailLink {
+  display: inline-flex;
+  align-items: center;
   gap: 0.4rem;
+  padding: 0.3rem 0.85rem;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 9999px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.detailLink:hover {
+  background: #FF8A50;
+  border-color: #FF8A50;
+  transform: translateY(-1px);
+}
+
+.footerBottom {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .counter {

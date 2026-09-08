@@ -11,7 +11,6 @@ import styles from '@/styles/modules/contact-section.module.css';
 interface FormErrors {
   name?: string;
   email?: string;
-  subject?: string;
   message?: string;
 }
 
@@ -21,7 +20,7 @@ export default function ContactSection({ siteSettings: serverSettings }: { siteS
   const ctx = useSiteSettings();
   const siteSettings = serverSettings || ctx.siteSettings;
 
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<SubmitStatus>('idle');
 
@@ -42,7 +41,6 @@ export default function ContactSection({ siteSettings: serverSettings }: { siteS
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
-    if (!form.subject.trim()) newErrors.subject = 'Please enter a subject';
     if (!form.message.trim()) {
       newErrors.message = 'Please enter your message';
     } else if (form.message.trim().length < 10) {
@@ -59,10 +57,15 @@ export default function ContactSection({ siteSettings: serverSettings }: { siteS
 
     setStatus('loading');
     try {
-      const ok = await submitContactInquiry(form);
+      const ok = await submitContactInquiry({
+        name: form.name,
+        email: form.email,
+        subject: 'General Inquiry',
+        message: form.message,
+      });
       if (ok) {
         setStatus('success');
-        setForm({ name: '', email: '', subject: '', message: '' });
+        setForm({ name: '', email: '', message: '' });
       } else {
         setStatus('error');
       }
@@ -176,20 +179,6 @@ export default function ContactSection({ siteSettings: serverSettings }: { siteS
                     />
                     {errors.email && <p className={styles.errorText}>{errors.email}</p>}
                   </div>
-                </div>
-
-                <div className={styles.fieldGroup}>
-                  <label className={`${styles.label} ${styles.labelRequired}`} htmlFor="contact-subject">Subject</label>
-                  <input
-                    id="contact-subject"
-                    className={`${styles.input} ${errors.subject ? styles.inputError : ''}`}
-                    type="text"
-                    name="subject"
-                    value={form.subject}
-                    onChange={handleChange}
-                    placeholder="How can we help you?"
-                  />
-                  {errors.subject && <p className={styles.errorText}>{errors.subject}</p>}
                 </div>
 
                 <div className={styles.fieldGroup}>

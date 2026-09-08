@@ -103,8 +103,8 @@ export default function MegaMenu({ services }: MegaMenuProps) {
               <p className={styles.promoSubtext}>
                 Expert photo editing services tailored to your brand.
               </p>
-              <Link href="/book-demo" className={styles.promoBtn}>
-                Book a Free Demo
+              <Link href="/free-trial" className={styles.promoBtn}>
+                Free Trial
                 <ArrowRight />
               </Link>
             </motion.div>

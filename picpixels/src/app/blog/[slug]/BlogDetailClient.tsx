@@ -464,21 +464,6 @@ export default function BlogDetailClient({ post, allPosts }: { post: BlogPost; a
           </section>
         </Reveal>
       )}
-
-      <Reveal variant="fadeUp">
-        <section className={styles.ctaSection}>
-          <div className={styles.ctaInner}>
-            <div className={styles.ctaCard}>
-              <h2>Ready to Transform Your Images?</h2>
-              <p>Get 3-5 images edited for free. No credit card required.</p>
-              <div className={styles.ctaGroup}>
-                <Link href="/free-trial" className={styles.ctaBtn}>Start Free Trial <ArrowRight size={16} /></Link>
-                <Link href="/pricing" className={styles.ctaBtnOutline}>View Pricing</Link>
-              </div>
-            </div>
-          </div>
-        </section>
-      </Reveal>
     </main>
   );
 }

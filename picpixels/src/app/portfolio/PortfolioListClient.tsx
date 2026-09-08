@@ -1,7 +1,8 @@
 'use client';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { mediaUrl, type PortfolioItem, type PortfolioCategory } from '@/services/public-api';
+import GalleryLightbox from '@/components/media/GalleryLightbox';
 import styles from '@/styles/modules/portfolio-grid.module.css';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
@@ -30,12 +31,23 @@ export default function PortfolioListClient({
   const [activeCategory, setActiveCategory] = useState(initialCategory ?? '');
   const [searchQuery, setSearchQuery] = useState('');
   const [items, setItems] = useState(initialPortfolios);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [page, setPage] = useState(1);
   const [hasNext, setHasNext] = useState(false);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(initialPortfolios.length === 0);
   const [totalCount, setTotalCount] = useState(initialPortfolios.length);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const lightboxImages = useMemo(() => {
+    return items.map((item) => ({
+      src: mediaUrl(item.featured_image_url || item.featured_image) || '',
+      alt: item.featured_image_alt || item.title,
+      title: item.title,
+      category: item.category_name,
+      slug: item.slug,
+    }));
+  }, [items]);
 
   useEffect(() => {
     if (initialPortfolios.length > 0) {
@@ -147,9 +159,22 @@ export default function PortfolioListClient({
             <Skeleton />
           ) : (
             <div className={styles.grid}>
-                  {items.length > 0 ? (
+              {items.length > 0 ? (
                 items.map((item, index) => (
-                  <Link key={item.id} href={`/portfolio/${item.slug}`} className={styles.card} style={{ animationDelay: `${index * 0.06}s` }}>
+                  <div
+                    key={item.id}
+                    className={styles.card}
+                    style={{ animationDelay: `${index * 0.06}s`, cursor: 'pointer' }}
+                    onClick={() => setLightboxIndex(index)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setLightboxIndex(index);
+                      }
+                    }}
+                  >
                     <div className={styles.visual}>
                       {item.featured_image_url || item.featured_image ? (
                         <img
@@ -162,13 +187,21 @@ export default function PortfolioListClient({
                       ) : (
                         <div className={styles.placeholder} />
                       )}
-                      <span className={styles.badgeCat}>{item.category_name}</span>
+                      {item.category_name && (
+                        <span className={styles.badgeCat}>{item.category_name}</span>
+                      )}
                       <div className={styles.overlay}>
-                        <span className={styles.overlayTitle}>{item.title}</span>
-                        <span className={styles.cta}>View Project</span>
+                        <span className={styles.cta}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.3-4.3"/>
+                            <path d="M11 8v6M8 11h6"/>
+                          </svg>
+                          View Full Screen
+                        </span>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 ))
               ) : (
                 <div className={styles.empty}>
@@ -196,6 +229,25 @@ export default function PortfolioListClient({
           )}
         </div>
       </section>
+
+      {lightboxIndex !== null && (
+        <GalleryLightbox
+          images={lightboxImages}
+          currentIndex={lightboxIndex}
+          isOpen={lightboxIndex !== null}
+          onClose={() => setLightboxIndex(null)}
+          onPrev={() =>
+            setLightboxIndex((prev) =>
+              prev !== null && prev > 0 ? prev - 1 : lightboxImages.length - 1
+            )
+          }
+          onNext={() =>
+            setLightboxIndex((prev) =>
+              prev !== null && prev < lightboxImages.length - 1 ? prev + 1 : 0
+            )
+          }
+        />
+      )}
     </>
   );
 }

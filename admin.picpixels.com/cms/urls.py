@@ -11,6 +11,7 @@ from .views import (
     PricingPlanViewSet, TechnologyViewSet, MediaUploadView,
     PricingConfigSectionViewSet, PricingPromotionViewSet, FreeTrialViewSet,
     WhyChooseSectionViewSet, WhyChooseFeatureSectionViewSet,
+    HomepageCTASectionViewSet,
 )
 
 router = DefaultRouter()
@@ -37,6 +38,7 @@ router.register(r'pricing-promotions', PricingPromotionViewSet)
 router.register(r'free-trials', FreeTrialViewSet)
 router.register(r'why-choose-us', WhyChooseSectionViewSet)
 router.register(r'why-choose-features', WhyChooseFeatureSectionViewSet)
+router.register(r'homepage-cta', HomepageCTASectionViewSet)
 
 urlpatterns = [
     path('media/upload/', MediaUploadView.as_view(), name='media_upload'),

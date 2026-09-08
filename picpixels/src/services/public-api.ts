@@ -1548,3 +1548,32 @@ export async function submitFreeTrial(data: {
   }
 }
 
+export interface HomepageCTASection {
+  id?: number;
+  is_active?: boolean;
+  badge_text?: string;
+  title?: string;
+  title_color?: string;
+  subtitle?: string;
+  primary_button_is_active?: boolean;
+  primary_button_text?: string;
+  primary_button_link?: string;
+  secondary_button_is_active?: boolean;
+  secondary_button_text?: string;
+  secondary_button_link?: string;
+}
+
+export async function fetchHomepageCTASection(): Promise<HomepageCTASection | null> {
+  try {
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/homepage-cta/`);
+    if (!resp.ok) return null;
+    const data = await resp.json();
+    const results = data.results || data;
+    return Array.isArray(results) ? (results[0] || null) : results;
+  } catch (e) {
+    console.error('Failed to fetch Homepage CTA section', e);
+    return null;
+  }
+}
+
+

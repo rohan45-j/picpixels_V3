@@ -349,24 +349,6 @@ export default function PricingClient({
             </div>
           </section>
         )}
-
-        <Reveal variant="fadeUp">
-          <section className={styles.ctaSection} aria-label="Get started">
-            <div className="container">
-              <div className={styles.ctaBanner}>
-                <div className={styles.ctaBannerContent}>
-                  <HelpCircle size={28} style={{ color: 'var(--primary)', marginBottom: '0.75rem' }} />
-                  <h2 className={styles.ctaBannerTitle}>Not Sure Which Plan Fits?</h2>
-                  <p className={styles.ctaBannerDesc}>Try our free trial with 3–5 images. No credit card required.</p>
-                  <div className={styles.ctaBannerGroup}>
-                    <Link href="/free-trial" className="btn btn-primary">Start Free Trial <ArrowRight size={16} /></Link>
-                    <Link href="/contact" className="btn btn-secondary">Talk to Sales</Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </Reveal>
       </main>
     </>
   );

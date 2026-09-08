@@ -10,7 +10,7 @@
 
 .section {
   position: relative;
-  padding: 6rem 1.5rem;
+  padding: 3rem 1.5rem;
   background: linear-gradient(135deg, var(--color-bg, #f8f9fa) 0%, #ffffff 50%, var(--color-bg, #f8f9fa) 100%);
   overflow: hidden;
 }
@@ -35,7 +35,7 @@
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 40px;
-  padding: 4.5rem 3rem 4rem;
+  padding: 2.75rem 2rem 2.25rem;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05), 0 1px 4px rgba(0, 0, 0, 0.02);
   text-align: center;
   transition: box-shadow 0.4s ease;
@@ -75,13 +75,13 @@
   font-size: 1.05rem;
   line-height: 1.6;
   max-width: 600px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 1.75rem;
 }
 
 .slider {
   overflow: hidden;
   position: relative;
-  padding: 30px 0;
+  padding: 16px 0;
   mask-image: linear-gradient(to right, transparent 0%, #000 4%, #000 96%, transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 4%, #000 96%, transparent 100%);
 }
@@ -161,21 +161,21 @@
 }
 
 @media (max-width: 768px) {
-  .section { padding: 4.5rem 1rem; }
-  .container { border-radius: 28px; padding: 2.5rem 1.5rem 2rem; }
-  .desc { margin-bottom: 2.5rem; font-size: 0.88rem; }
-  .track { gap: 24px; animation-duration: 22s; }
-  .circle { width: 80px; height: 80px; min-width: 80px; }
-  .logo { max-width: 48px; max-height: 48px; }
+  .section { padding: 2.25rem 1rem; }
+  .container { border-radius: 28px; padding: 2rem 1.25rem 1.5rem; }
+  .desc { margin-bottom: 1.5rem; font-size: 0.88rem; }
+  .track { gap: 20px; animation-duration: 22s; }
+  .circle { width: 72px; height: 72px; min-width: 72px; }
+  .logo { max-width: 44px; max-height: 44px; }
 }
 
 @media (max-width: 480px) {
-  .section { padding: 3.5rem 0.75rem; }
-  .container { border-radius: 20px; padding: 2rem 1rem 1.5rem; }
+  .section { padding: 1.75rem 0.75rem; }
+  .container { border-radius: 20px; padding: 1.5rem 1rem 1.25rem; }
   .tag { font-size: 0.72rem; padding: 0.35rem 0.9rem; }
   .heading { font-size: clamp(1.5rem, 5vw, 2rem); }
-  .desc { font-size: 0.82rem; margin-bottom: 2rem; }
-  .track { gap: 16px; animation-duration: 18s; }
-  .circle { width: 64px; height: 64px; min-width: 64px; }
-  .logo { max-width: 38px; max-height: 38px; }
+  .desc { font-size: 0.82rem; margin-bottom: 1.25rem; }
+  .track { gap: 14px; animation-duration: 18s; }
+  .circle { width: 60px; height: 60px; min-width: 60px; }
+  .logo { max-width: 36px; max-height: 36px; }
 }
