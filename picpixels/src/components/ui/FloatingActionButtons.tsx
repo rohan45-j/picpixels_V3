@@ -60,7 +60,7 @@ export default function FloatingActionButtons() {
     if (!el) return;
     const observer = new IntersectionObserver(
       ([entry]) => setFooterVisible(entry.isIntersecting),
-      { threshold: 0.15 }
+      { threshold: 0, rootMargin: '0px 0px 50px 0px' }
     );
     observer.observe(el);
     return () => observer.disconnect();
