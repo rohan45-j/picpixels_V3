@@ -175,3 +175,33 @@ class PortfolioComparisonAdmin(ModelAdmin):
             'fields': ('portfolio', 'before_image', 'before_image_alt', 'after_image', 'after_image_alt', 'label', 'sort_order'),
         }),
     )
+
+
+from .models import PortfolioFAQ
+
+
+@admin.register(PortfolioFAQ)
+class PortfolioFAQAdmin(ModelAdmin):
+    list_display = ('question', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('question', 'answer')
+    ordering = ('order',)
+    list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        ('Portfolio FAQ Details', {
+            'fields': ('question', 'answer', 'order', 'is_active'),
+            'description': 'These FAQs appear on the Portfolio page.',
+        }),
+    )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).filter(is_portfolio_faq=True)
+
+    def save_model(self, request, obj, form, change):
+        obj.is_portfolio_faq = True
+        super().save_model(request, obj, form, change)
+

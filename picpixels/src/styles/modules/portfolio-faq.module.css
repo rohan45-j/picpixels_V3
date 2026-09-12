@@ -1,0 +1,187 @@
+/* ─── Portfolio FAQ Section (2-Column Split Layout) ─── */
+.section {
+  padding: 6.5rem 0;
+  background: #ffffff;
+  position: relative;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) 1.8fr;
+  gap: 5rem;
+  align-items: flex-start;
+}
+
+/* ─── Left Column ─── */
+.leftCol {
+  position: sticky;
+  top: 130px;
+}
+
+.title {
+  font-family: inherit;
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: #0f172a;
+  margin: 0;
+}
+
+.titleBrand {
+  display: block;
+  color: #0f172a;
+}
+
+.subtitle {
+  margin-top: 1.25rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: #64748b;
+  font-weight: 400;
+}
+
+/* ─── Right Column (Accordion List) ─── */
+.accordionList {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  border-bottom: 1px solid #e2e8f0;
+  transition: border-color 0.2s ease;
+}
+
+.item:first-child {
+  border-top: 1px solid #e2e8f0;
+}
+
+.trigger {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  padding: 1.5rem 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  gap: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.number {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #8fa0b5;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  min-width: 1.75rem;
+}
+
+.question {
+  flex: 1;
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.45;
+  color: #0f172a;
+  transition: color 0.2s ease;
+}
+
+.trigger:hover .question {
+  color: #FF8A50;
+}
+
+.iconWrap {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s ease;
+  margin-top: 0.1rem;
+}
+
+.iconWrapOpen {
+  transform: rotate(180deg);
+  color: #FF8A50;
+}
+
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.panelOpen {
+  grid-template-rows: 1fr;
+}
+
+.panelInner {
+  overflow: hidden;
+}
+
+.answer {
+  padding: 0 0 1.5rem calc(1.75rem + 1.25rem);
+  font-size: 0.96rem;
+  line-height: 1.7;
+  color: #475569;
+  margin: 0;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .leftCol {
+    position: static;
+  }
+
+  .title {
+    font-size: 2.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 4.5rem 0;
+  }
+
+  .container {
+    padding: 0 1.25rem;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .trigger {
+    padding: 1.25rem 0;
+    gap: 1rem;
+  }
+
+  .number {
+    font-size: 0.9rem;
+    min-width: 1.5rem;
+  }
+
+  .question {
+    font-size: 1rem;
+  }
+
+  .answer {
+    padding: 0 0 1.25rem calc(1.5rem + 1rem);
+    font-size: 0.92rem;
+  }
+}

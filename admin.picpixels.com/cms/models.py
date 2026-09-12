@@ -6,15 +6,62 @@ from ckeditor.fields import RichTextField
 from .image_guidelines import IMG
 
 
+class PageCategory(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(unique=True, max_length=120)
+    description = models.TextField(blank=True)
+    order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+        verbose_name = 'Page Category'
+        verbose_name_plural = 'Page Categories'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+PAGE_SCHEMA_TYPES = [
+    ('none', 'None (No Schema)'),
+    ('WebPage', 'WebPage (Standard Page)'),
+    ('AboutPage', 'AboutPage'),
+    ('ContactPage', 'ContactPage'),
+    ('FAQPage', 'FAQPage'),
+    ('Service', 'Service'),
+    ('CollectionPage', 'CollectionPage'),
+    ('custom', 'Custom JSON-LD'),
+]
+
+
 class Page(models.Model):
     title = models.CharField(max_length=200)
     title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for the page title (e.g. #FF8A50). Default is black.')
     slug = models.SlugField(unique=True, max_length=200)
+    category = models.ForeignKey(
+        PageCategory, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='pages',
+        help_text='Organize pages by category (e.g. Marketing, Legal, Company, Support)'
+    )
     meta_title = models.CharField(max_length=200, blank=True)
     seo_title = models.CharField(max_length=200, blank=True)
     seo_description = models.TextField(blank=True)
     meta_description = models.TextField(blank=True)
+    schema_type = models.CharField(
+        max_length=50, choices=PAGE_SCHEMA_TYPES, default='WebPage',
+        help_text='Schema.org structured data type for this page'
+    )
+    custom_schema = models.TextField(
+        blank=True, default='',
+        help_text='Custom JSON-LD structured data (paste valid JSON object, without <script> tags)'
+    )
     content = JSONField(default=dict, help_text="Structure describing sections and components")
+    is_active = models.BooleanField(default=True, help_text='Show page on the website')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -473,6 +520,22 @@ class BlogPost(models.Model):
     content_blocks = models.JSONField(default=list, blank=True, null=True, help_text='Modular content blocks array. Supported types: heading, text, image, image_with_text, gallery, code, callout, faq, list, table, step, divider, stats, quote, cta, full_width_image')
 
     # Structured Data
+    schema_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('Article', 'Article (Standard)'),
+            ('BlogPosting', 'BlogPosting'),
+            ('TechArticle', 'TechArticle (Tutorial / Guide)'),
+            ('NewsArticle', 'NewsArticle'),
+            ('custom', 'Custom JSON-LD'),
+        ],
+        default='BlogPosting',
+        help_text='Schema.org type for this blog post'
+    )
+    custom_schema = models.TextField(
+        blank=True, default='',
+        help_text='Custom JSON-LD schema (leave blank for automatic Article / BlogPosting schema)'
+    )
     faq_schema = models.JSONField(default=list, blank=True, null=True, help_text='FAQPage structured data items: [{"question":"...","answer":"..."}]')
 
     # Internal Linking
@@ -909,24 +972,60 @@ class FreeTrial(models.Model):
         ('other', 'Other'),
     ]
 
+    REQUEST_TYPES = [
+        ('free_trial', 'Free Trial Request'),
+        ('order_request', 'Order Request'),
+    ]
+
+    request_type = models.CharField(
+        max_length=30,
+        choices=REQUEST_TYPES,
+        default='free_trial',
+        help_text='Whether this submission is a Free Trial or an Order Request'
+    )
     full_name = models.CharField(max_length=200)
     company_name = models.CharField(max_length=200, blank=True, null=True)
     email = models.EmailField()
     phone_number = models.CharField(max_length=50, blank=True, null=True)
-    product_name = models.CharField(max_length=300)
-    product_category = models.CharField(max_length=50, choices=PRODUCT_CATEGORIES)
+    country = models.CharField(max_length=100, blank=True, default='', help_text='Client country')
+    product_name = models.CharField(max_length=300, help_text='Product name or selected Service/Package title')
+    package_price = models.CharField(max_length=100, blank=True, default='', help_text='Package or plan price')
+    product_category = models.CharField(max_length=50, choices=PRODUCT_CATEGORIES, blank=True, default='other')
     drive_link = models.URLField(max_length=1000, blank=True, null=True)
     project_requirements = models.TextField()
     is_read = models.BooleanField(default=False, help_text='Mark as read when reviewed')
+
+    # Client SMS & Communication Tracking
+    sms_status = models.CharField(
+        max_length=20,
+        choices=[
+            ('pending', 'Pending (Not Sent)'),
+            ('sent', 'SMS Sent'),
+            ('contacted', 'Contacted via WhatsApp/Call'),
+            ('not_required', 'Not Required'),
+        ],
+        default='pending',
+        help_text='Client SMS/notification status'
+    )
+    sms_notes = models.TextField(
+        blank=True, default='',
+        help_text='Internal communication notes / SMS message content sent to client'
+    )
+    last_sms_sent_at = models.DateTimeField(
+        null=True, blank=True,
+        help_text='Timestamp when client was last notified'
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Trial Request'
-        verbose_name_plural = 'Trial Requests'
+        verbose_name = 'Trial & Order Request'
+        verbose_name_plural = 'Trial & Order Requests'
         ordering = ('-created_at',)
 
     def __str__(self):
-        return f'{self.full_name} — {self.product_name} ({self.created_at.strftime("%Y-%m-%d")})'
+        badge = "[Order Request]" if self.request_type == 'order_request' else "[Free Trial]"
+        return f'{badge} {self.full_name} — {self.product_name} ({self.created_at.strftime("%Y-%m-%d")})'
 
 
 class FreeTrialAttachment(models.Model):

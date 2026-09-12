@@ -43,7 +43,17 @@ export default function FAQSection({ faqs, title = 'Frequently Asked Questions',
     setOpenId((prev) => (prev === id ? null : id));
   }, []);
 
-  const displayFaqs = faqs && faqs.length > 0 ? faqs : defaultFaqs;
+  const activeFaqs = Array.isArray(faqs)
+    ? faqs.filter((f) => f.is_active !== false && f.is_homepage_faq !== false)
+    : [];
+
+  const displayFaqs = activeFaqs.length > 0
+    ? activeFaqs
+    : (faqs === undefined || faqs === null ? defaultFaqs : []);
+
+  if (displayFaqs.length === 0) {
+    return null;
+  }
 
   return (
     <section className={`${styles.section} ${styles.sectionAlt}`}>

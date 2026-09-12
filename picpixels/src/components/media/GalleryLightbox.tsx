@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import styles from '@/styles/modules/gallery-lightbox.module.css';
 
 export interface LightboxImage {
@@ -31,10 +32,16 @@ export default function GalleryLightbox({
   onPrev,
   onNext,
 }: GalleryLightboxProps) {
+  const [mounted, setMounted] = useState(false);
   const current = images[currentIndex];
   const total = images.length;
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
 
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
   const linksRef = useRef<HTMLLinkElement[]>([]);
@@ -89,11 +96,14 @@ export default function GalleryLightbox({
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      document.body.classList.add('lightbox-open');
     } else {
       document.body.style.overflow = '';
+      document.body.classList.remove('lightbox-open');
     }
     return () => {
       document.body.style.overflow = '';
+      document.body.classList.remove('lightbox-open');
     };
   }, [isOpen]);
 
@@ -114,19 +124,29 @@ export default function GalleryLightbox({
     }
   }, [onNext, onPrev]);
 
-  return (
+  if (!mounted || !isOpen) return null;
+
+  return createPortal(
     <div
-      className={`${styles.overlay} ${!isOpen ? styles.hidden : ''}`}
+      className={styles.overlay}
       onClick={onClose}
       role="dialog"
-      aria-label="Image gallery lightbox"
+      aria-modal="true"
+      aria-label="Image gallery fullscreen view"
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
       <div className={styles.backdrop} />
 
-      <button className={styles.closeBtn} onClick={onClose} aria-label="Close lightbox">
+      <button
+        className={styles.closeBtn}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        aria-label="Close fullscreen view"
+      >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
         </svg>
@@ -134,12 +154,26 @@ export default function GalleryLightbox({
 
       {total > 1 && (
         <>
-          <button className={`${styles.navBtn} ${styles.navPrev}`} onClick={(e) => { e.stopPropagation(); onPrev(); }} aria-label="Previous image">
+          <button
+            className={`${styles.navBtn} ${styles.navPrev}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onPrev();
+            }}
+            aria-label="Previous image"
+          >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="m15 18-6-6 6-6"/>
             </svg>
           </button>
-          <button className={`${styles.navBtn} ${styles.navNext}`} onClick={(e) => { e.stopPropagation(); onNext(); }} aria-label="Next image">
+          <button
+            className={`${styles.navBtn} ${styles.navNext}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onNext();
+            }}
+            aria-label="Next image"
+          >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="m9 18 6-6-6-6"/>
             </svg>
@@ -147,17 +181,20 @@ export default function GalleryLightbox({
         </>
       )}
 
-      <div className={styles.content} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.content} onClick={onClose}>
         {current && (
           <img
+            key={current.src}
             src={current.src}
-            alt={current.alt}
+            alt={current.alt || 'Portfolio image'}
             className={styles.image}
+            draggable={false}
+            onClick={(e) => e.stopPropagation()}
           />
         )}
       </div>
 
-      <div className={styles.footer}>
+      <div className={styles.footer} onClick={(e) => e.stopPropagation()}>
         {total > 0 && (
           <>
             <div className={styles.footerTop}>
@@ -187,6 +224,7 @@ export default function GalleryLightbox({
           </>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

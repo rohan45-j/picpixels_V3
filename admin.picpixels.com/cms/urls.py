@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    PageViewSet, SectionViewSet, BannerViewSet,
+    PageCategoryViewSet, PageViewSet, SectionViewSet, BannerViewSet,
     ServiceViewSet, HeroSectionViewSet, TestimonialViewSet,
     AuthorViewSet,
     BlogCategoryViewSet, BlogTagViewSet,
@@ -15,6 +15,7 @@ from .views import (
 )
 
 router = DefaultRouter()
+router.register(r'page-categories', PageCategoryViewSet)
 router.register(r'pages', PageViewSet)
 router.register(r'sections', SectionViewSet)
 router.register(r'banners', BannerViewSet)

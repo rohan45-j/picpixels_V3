@@ -127,3 +127,25 @@ class PortfolioComparison(models.Model):
 
     def __str__(self):
         return f'{self.portfolio.title} - Pair {self.sort_order}'
+
+
+from cms.models import FAQ
+
+
+class PortfolioFAQManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_portfolio_faq=True)
+
+
+class PortfolioFAQ(FAQ):
+    objects = PortfolioFAQManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'Portfolio FAQ'
+        verbose_name_plural = 'Portfolio FAQs'
+
+    def save(self, *args, **kwargs):
+        self.is_portfolio_faq = True
+        super().save(*args, **kwargs)
+

@@ -17,8 +17,42 @@ class SiteSettingAdmin(ModelAdmin):
         ('Contact Information', {
             'fields': ('support_email', 'support_phone', 'address'),
         }),
+        ('📍 Footer: Location Based Services', {
+            'fields': ('footer_location_title', 'footer_locations'),
+            'description': 'Configure the Location Based Services dropdown widget in the footer. Enter one location per line (e.g. Texas, California, Florida, New York).',
+        }),
+        ('🏢 Footer: Office Addresses (USA & Bangladesh)', {
+            'fields': (
+                ('usa_office_title', 'usa_office_phone'),
+                ('usa_office_email', 'usa_office_address'),
+                ('bd_office_title', 'bd_office_phone'),
+                ('bd_office_email', 'bd_office_address'),
+            ),
+            'description': 'Configure the Corporate Office (USA) and Production House (Bangladesh) contact and address details displayed in the website footer.',
+        }),
         ('Social & Legal', {
             'fields': ('social_links', 'copyright_text'),
+        }),
+        ('📊 Third-Party Tracking & Analytics (GTM, GA4, GSC, Meta)', {
+            'fields': (
+                'google_tag_manager_id',
+                'google_analytics_id',
+                'google_search_console_code',
+                'facebook_pixel_id',
+            ),
+            'description': 'Configure tracking codes. Enter IDs only (e.g. GTM-XXXXXXX, G-XXXXXXXXXX). The website will automatically inject the official scripts.',
+        }),
+        ('⚡ Custom Script Injection (<head> & <body>)', {
+            'fields': (
+                'custom_head_scripts',
+                'custom_body_start_scripts',
+                'custom_body_end_scripts',
+            ),
+            'description': 'Inject raw scripts or tags (HTML/JavaScript). Head scripts load before </head>, body start loads right after <body>, body end loads before </body>.',
+        }),
+        ('🏷️ Global Schema Markup (JSON-LD)', {
+            'fields': ('organization_schema',),
+            'description': 'Custom Organization or LocalBusiness JSON-LD markup. Leave empty for automatic Organization schema.',
         }),
     )
 

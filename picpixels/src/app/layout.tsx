@@ -27,6 +27,18 @@ export const metadata: Metadata = {
   }
 };
 
+import {
+  GTMHead,
+  GTMBody,
+  GA4Head,
+  GSCMeta,
+  FacebookPixelHead,
+  OrganizationSchema,
+  CustomBodyStartScripts,
+  CustomBodyEndScripts,
+} from "@/components/seo/TrackingScripts";
+import { CustomHeadInjector } from "@/components/seo/CustomHeadInjector";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -53,6 +65,12 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://images.unsplash.com" />
         <link rel="preconnect" href="https://admin.picpixels.com" />
+        <GSCMeta settings={siteSettings} />
+        <GTMHead settings={siteSettings} />
+        <GA4Head settings={siteSettings} />
+        <FacebookPixelHead settings={siteSettings} />
+        <OrganizationSchema settings={siteSettings} />
+        <CustomHeadInjector scripts={siteSettings?.custom_head_scripts} />
         {siteSettings?.favicon && (
           <>
             <link rel="icon" href={`${siteSettings.favicon}?v=${siteSettings.updated_at || ''}`} />
@@ -92,6 +110,8 @@ export default async function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
+        <GTMBody settings={siteSettings} />
+        <CustomBodyStartScripts settings={siteSettings} />
         <SiteSettingsProvider initialSettings={siteSettings}>
           <SharedDataProvider initialNavItems={navItems} initialServices={services}>
             <DynamicFavicon />
@@ -99,6 +119,7 @@ export default async function RootLayout({
             <FloatingActionButtons />
           </SharedDataProvider>
         </SiteSettingsProvider>
+        <CustomBodyEndScripts settings={siteSettings} />
       </body>
     </html>
   );

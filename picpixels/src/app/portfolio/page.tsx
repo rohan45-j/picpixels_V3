@@ -3,7 +3,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import type { PortfolioItem, PortfolioCategory, HomepageCTASection as HomepageCTAType, FAQ } from '@/services/public-api';
 import PortfolioListClient from './PortfolioListClient';
-import FAQSection from '@/components/ui/FAQSection';
+import PortfolioFAQSection from '@/components/ui/PortfolioFAQSection';
 import HomeCTASection from '@/components/ui/HomeCTASection';
 
 export const metadata: Metadata = {
@@ -50,7 +50,7 @@ export default async function PortfolioPage() {
           initialPortfolios={initialPortfolios}
           categories={categories ?? []}
         />
-        <FAQSection faqs={faqs} />
+        <PortfolioFAQSection faqs={faqs} />
       </main>
       <Footer homepageCTA={homepageCTA} />
     </>

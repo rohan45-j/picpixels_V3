@@ -306,4 +306,19 @@ textarea {
   margin-bottom: 0.75rem;
 }
 
+/* ─── Lightbox / Fullscreen Active State ─── */
+body.lightbox-open {
+  overflow: hidden !important;
+}
+
+body.lightbox-open header,
+body.lightbox-open [class*="Header_header"],
+body.lightbox-open [class*="FloatingActionButtons_container"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+
 

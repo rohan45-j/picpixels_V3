@@ -105,7 +105,7 @@ async function getHomepageData() {
     fetchBackgroundJSON<{ results: BrandLogo[] }>(`${BASE_URL}/api/v1/cms/brands/`, fetchOpts),
     fetchBackgroundJSON<{ results: PricingConfigSectionData[] }>(`${BASE_URL}/api/v1/cms/pricing-config/`, fetchOpts),
     fetchBackgroundJSON<{ results: HomepageCTASection[] }>(`${BASE_URL}/api/v1/cms/homepage-cta/`, fetchOpts),
-    fetchBackgroundJSON<{ results: FAQ[] }>(`${BASE_URL}/api/v1/cms/faqs/`, fetchOpts),
+    fetchBackgroundJSON<{ results: FAQ[] }>(`${BASE_URL}/api/v1/cms/faqs/?is_homepage_faq=true&_=${Date.now()}`, fetchOpts),
     fetchBackgroundJSON<{ results: SiteSetting[] }>(`${BASE_URL}/api/v1/settings/site/?_=${Date.now()}`, fetchOpts),
   ]);
 
@@ -144,7 +144,7 @@ async function getHomepageData() {
     brandLogos: extractArray(brandsRes),
     pricingConfig: extractFirst(pricingRes),
     homepageCTA: extractFirst(homepageCTARes),
-    faqs: extractArray(faqsRes),
+    faqs: extractArray(faqsRes).filter((f) => f.is_active !== false && f.is_homepage_faq !== false),
     siteSettings: extractFirst(settingsRes),
   };
 }

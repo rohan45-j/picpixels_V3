@@ -89,12 +89,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   })();
 
   const allKeywords = [...(post.tag_names || []), ...(post.secondary_keywords || []), post.focus_keyword].filter(Boolean).join(', ');
+  const schemaType = post.schema_type || 'Article';
 
-  const jsonLd = {
+  const defaultJsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': 'Article',
+        '@type': schemaType,
         '@id': `${url}#article`,
         headline: post.meta_title || post.title,
         description: post.meta_description || post.short_description || post.excerpt,
@@ -122,9 +123,22 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     ].filter(Boolean),
   };
 
+  let customJsonLdString: string | null = null;
+  if (post.custom_schema && post.custom_schema.trim()) {
+    try {
+      const parsed = JSON.parse(post.custom_schema.trim());
+      customJsonLdString = JSON.stringify(parsed);
+    } catch {
+      customJsonLdString = post.custom_schema.trim();
+    }
+  }
+
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(defaultJsonLd) }} />
+      {customJsonLdString && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: customJsonLdString }} />
+      )}
       <Header />
       <BlogDetailClient post={post} allPosts={allPosts} />
       <Footer />

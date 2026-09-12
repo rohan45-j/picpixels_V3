@@ -483,6 +483,7 @@ UNFOLD = {
                     {"title": "Services",         "icon": "handyman",      "link": "/admin/portfolio/service/"},
                     {"title": "Gallery Images",   "icon": "photo_library", "link": "/admin/portfolio/portfoliogallery/"},
                     {"title": "Before / After",   "icon": "compare",       "link": "/admin/portfolio/portfoliocomparison/"},
+                    {"title": "Portfolio FAQs",   "icon": "quiz",          "link": "/admin/portfolio/portfoliofaq/"},
                 ],
             },
             {
@@ -524,8 +525,20 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Contact Inquiries",   "icon": "mail",          "link": "/admin/cms/contactinquiry/"},
-                    {"title": "Free Trial Requests", "icon": "rocket_launch", "link": "/admin/cms/freetrial/"},
+                    {"title": "Contact Inquiries",      "icon": "mail",          "link": "/admin/cms/contactinquiry/"},
+                    {"title": "Trial & Order Requests", "icon": "rocket_launch", "link": "/admin/cms/freetrial/"},
+                ],
+            },
+            {
+                "title": "Email & Notifications",
+                "icon": "mark_email_unread",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "All Notifications",     "icon": "notifications",   "link": "/admin/notifications/notification/"},
+                    {"title": "Email & SMTP Settings", "icon": "outgoing_mail",   "link": "/admin/notifications/emailconfiguration/"},
+                    {"title": "Admin Recipient Emails", "icon": "group_add",      "link": "/admin/notifications/adminnotificationemail/"},
+                    {"title": "Email Templates",       "icon": "mark_email_read", "link": "/admin/notifications/emailtemplate/"},
                 ],
             },
             {
@@ -537,7 +550,7 @@ UNFOLD = {
                     {"title": "Site Settings",     "icon": "settings",       "link": "/admin/site_settings/sitesetting/"},
                     {"title": "SEO Settings",      "icon": "travel_explore", "link": "/admin/site_settings/seosetting/"},
                     {"title": "Navigation Menus",  "icon": "menu",           "link": "/admin/navigation/navigationitem/"},
-                    {"title": "Notifications",     "icon": "notifications",  "link": "/admin/notifications/notification/"},
+                    {"title": "Page Categories",   "icon": "category",       "link": "/admin/cms/pagecategory/"},
                     {"title": "Pages",             "icon": "description",    "link": "/admin/cms/page/"},
                     {"title": "Banners",           "icon": "view_carousel",  "link": "/admin/cms/banner/"},
                     {"title": "Sections",          "icon": "layers",         "link": "/admin/cms/section/"},

@@ -7,7 +7,8 @@ import FAQAccordion from '@/components/ui/FAQAccordion';
 import SectionHeading from '@/components/ui/SectionHeading';
 import styles from '@/styles/modules/contact.module.css';
 import faqStyles from '@/styles/modules/faq-accordion.module.css';
-import type { FAQ } from '@/services/public-api';
+import type { FAQ, SiteSetting } from '@/services/public-api';
+import { useSiteSettings } from '@/store/SiteSettingsContext';
 
 interface FormData {
   name: string;
@@ -23,12 +24,36 @@ interface FormErrors {
   message?: string;
 }
 
-export default function ContactClient({ faqs }: { faqs: FAQ[] }) {
+export default function ContactClient({
+  faqs,
+  initialSiteSettings,
+}: {
+  faqs: FAQ[];
+  initialSiteSettings?: SiteSetting | null;
+}) {
   const [formData, setFormData] = useState<FormData>({ name: '', email: '', phone: '', service: '', message: '' });
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const ctx = useSiteSettings();
+  const siteSettings = initialSiteSettings || ctx.siteSettings;
+
+  // USA Office (Dynamic from Admin)
+  const usaAddress = siteSettings?.usa_office_address?.trim() || '';
+  const usaTitle = siteSettings?.usa_office_title?.trim() || (usaAddress ? 'Corporate Office – USA' : '');
+  const usaPhone = siteSettings?.usa_office_phone?.trim() || '';
+  const usaEmail = siteSettings?.usa_office_email?.trim() || '';
+  const hasUsa = Boolean(usaAddress || usaPhone || usaEmail);
+
+  // BD Office (Dynamic from Admin)
+  const bdAddress = siteSettings?.bd_office_address?.trim() || siteSettings?.address?.trim() || '';
+  const bdTitle = siteSettings?.bd_office_title?.trim() || (bdAddress ? 'Production House – Bangladesh' : '');
+  const bdPhone = siteSettings?.bd_office_phone?.trim() || siteSettings?.support_phone?.trim() || '';
+  const bdEmail = siteSettings?.bd_office_email?.trim() || siteSettings?.support_email?.trim() || '';
+  const hasBd = Boolean(bdAddress || bdPhone || bdEmail);
+
+  const hasAnyStudio = hasUsa || hasBd;
 
   const validate = (): boolean => {
     const errs: FormErrors = {};
@@ -183,17 +208,60 @@ export default function ContactClient({ faqs }: { faqs: FAQ[] }) {
         </div>
       </section>
 
-      <section className={styles.mapSection}>
-        <div className="container">
-          <SectionHeading
-            text="Visit Our Studio"
-          />
-          <div className={styles.mapPlaceholder}>
-            <span className={styles.mapIcon}>🗺️</span>
-            <p className={styles.mapAddress}>71&45, House, Road-28<br />Dhaka 1230, Bangladesh</p>
+      {hasAnyStudio && (
+        <section className={styles.mapSection}>
+          <div className="container">
+            <SectionHeading
+              text="Visit Our Studio"
+            />
+            <div className={styles.studiosGrid}>
+              {hasUsa && (
+                <div className={styles.studioCard}>
+                  <span className={styles.studioFlag}>🇺🇸</span>
+                  {usaTitle && <h3 className={styles.studioTitle}>{usaTitle}</h3>}
+                  {usaAddress && <p className={styles.studioAddress}>{usaAddress}</p>}
+                  {(usaPhone || usaEmail) && (
+                    <div className={styles.studioContact}>
+                      {usaPhone && (
+                        <a href={`tel:${usaPhone.replace(/\s+/g, '')}`}>
+                          <span>📞</span> {usaPhone}
+                        </a>
+                      )}
+                      {usaEmail && (
+                        <a href={`mailto:${usaEmail}`}>
+                          <span>✉️</span> {usaEmail}
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {hasBd && (
+                <div className={styles.studioCard}>
+                  <span className={styles.studioFlag}>🇧🇩</span>
+                  {bdTitle && <h3 className={styles.studioTitle}>{bdTitle}</h3>}
+                  {bdAddress && <p className={styles.studioAddress}>{bdAddress}</p>}
+                  {(bdPhone || bdEmail) && (
+                    <div className={styles.studioContact}>
+                      {bdPhone && (
+                        <a href={`tel:${bdPhone.replace(/\s+/g, '')}`}>
+                          <span>📞</span> {bdPhone}
+                        </a>
+                      )}
+                      {bdEmail && (
+                        <a href={`mailto:${bdEmail}`}>
+                          <span>✉️</span> {bdEmail}
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {faqs.length > 0 && (
         <section className={faqStyles.faqSection}>

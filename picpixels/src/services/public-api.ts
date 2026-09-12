@@ -66,11 +66,19 @@ export function mediaUrl(path: string | null | undefined): string | undefined {
 }
 
 export interface CMSPage {
+  id?: number;
   title: string;
   slug: string;
+  category?: number | null;
+  category_name?: string;
+  schema_type?: string;
+  custom_schema?: string;
+  is_active?: boolean;
   meta_title?: string;
   meta_description?: string;
   content: Section[]; // Array of sections defined in the CMS
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Section {
@@ -92,6 +100,14 @@ export interface SiteSetting {
   copyright_text?: string;
   whatsapp_phone?: string;
   whatsapp_message?: string;
+  google_tag_manager_id?: string;
+  google_analytics_id?: string;
+  google_search_console_code?: string;
+  facebook_pixel_id?: string;
+  custom_head_scripts?: string;
+  custom_body_start_scripts?: string;
+  custom_body_end_scripts?: string;
+  organization_schema?: string;
 }
 
 export interface SEOSetting {
@@ -345,6 +361,8 @@ export interface FAQ {
   category?: number;
   service?: number;
   is_contact_faq?: boolean;
+  is_portfolio_faq?: boolean;
+  is_homepage_faq?: boolean;
   order: number;
   is_active: boolean;
 }
@@ -496,6 +514,8 @@ export interface BlogPost {
   related_post_slugs?: string[];
   content_sections?: BlogContentSection[];
   document_blocks?: BlogDocumentBlock[];
+  schema_type?: string;
+  custom_schema?: string;
   created_at: string;
   updated_at?: string;
 }
@@ -992,7 +1012,7 @@ export async function fetchCMSPage(slug: string): Promise<CMSPage | null> {
 
 export async function fetchSiteSettings(): Promise<SiteSetting | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/settings/site/?_=${Date.now()}`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/settings/site/?_=${Date.now()}`, { cache: 'no-store', revalidate: 0 });
     if (!resp.ok) return null;
     const data = await resp.json();
     return data.results?.[0] ?? null;
@@ -1544,6 +1564,42 @@ export async function submitFreeTrial(data: {
     return resp.ok;
   } catch (e) {
     console.error('Failed to submit free trial', e);
+    return false;
+  }
+}
+
+export async function submitOrderRequest(data: {
+  full_name: string;
+  company_name?: string;
+  email: string;
+  phone_number?: string;
+  country?: string;
+  product_name: string;
+  package_price?: string;
+  drive_link?: string;
+  project_requirements: string;
+}, files?: File[]): Promise<boolean> {
+  try {
+    const form = new FormData();
+    form.append('request_type', 'order_request');
+    form.append('product_category', 'other');
+    for (const [key, value] of Object.entries(data)) {
+      if (value !== undefined && value !== '') {
+        form.append(key, value);
+      }
+    }
+    if (files) {
+      for (const f of files) {
+        form.append('files', f);
+      }
+    }
+    const resp = await fetch(`${BASE_URL}/api/v1/cms/free-trials/`, {
+      method: 'POST',
+      body: form,
+    });
+    return resp.ok;
+  } catch (e) {
+    console.error('Failed to submit order request', e);
     return false;
   }
 }

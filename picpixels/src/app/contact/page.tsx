@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ContactClient from './ContactClient';
-import type { FAQ } from '@/services/public-api';
+import { fetchSiteSettings, type FAQ, type SiteSetting } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Contact Us | PicPicxels',
@@ -15,18 +15,27 @@ export const metadata: Metadata = {
 
 export default async function Contact() {
   let faqs: FAQ[] = [];
+  let siteSettings: SiteSetting | null = null;
+
   try {
-    const resp = await fetch(`${BASE_URL}/api/v1/cms/faqs/contact/`, { next: { revalidate: 60 } });
-    if (resp.ok) { const d = await resp.json(); faqs = d.results || d; }
+    const [faqResp, settings] = await Promise.all([
+      fetch(`${BASE_URL}/api/v1/cms/faqs/contact/`, { next: { revalidate: 60 } }).catch(() => null),
+      fetchSiteSettings().catch(() => null),
+    ]);
+    if (faqResp && faqResp.ok) {
+      const d = await faqResp.json();
+      faqs = d.results || d;
+    }
+    siteSettings = settings;
   } catch {}
 
   return (
     <>
       <Header />
       <main id="main-content">
-        <ContactClient faqs={faqs} />
+        <ContactClient faqs={faqs} initialSiteSettings={siteSettings} />
       </main>
-      <Footer />
+      <Footer siteSettings={siteSettings} />
     </>
   );
 }

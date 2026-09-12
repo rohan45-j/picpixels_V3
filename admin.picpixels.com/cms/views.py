@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 
 from .models import (
-    Page, Section, Banner, Service, Testimonial,
+    PageCategory, Page, Section, Banner, Service, Testimonial,
     BlogCategory, BlogTag, BlogPost, BlogContentSection,
     FAQCategory, FAQ, ContactInquiry, TeamMember, BrandLogo,
     HeroSection, PricingPlan, Technology, Author, PricingPromotionSection,
@@ -21,7 +21,7 @@ from .models import (
     HomepageCTASection,
 )
 from .serializers import (
-    PageSerializer, SectionSerializer, BannerSerializer,
+    PageCategorySerializer, PageSerializer, SectionSerializer, BannerSerializer,
     ServiceSerializer, ServiceListSerializer, TestimonialSerializer,
     BlogCategorySerializer, BlogTagSerializer,
     BlogPostSerializer, BlogPostListSerializer, BlogContentSectionSerializer,
@@ -55,12 +55,20 @@ class NoCacheOnWriteMixin:
         return response
 
 
+class PageCategoryViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
+    queryset = PageCategory.objects.all()
+    serializer_class = PageCategorySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'slug'
+    ordering = ['order', 'name']
+
+
 class PageViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
-    queryset = Page.objects.all().defer('content').only('title', 'slug', 'meta_title', 'meta_description')
+    queryset = Page.objects.all()
     serializer_class = PageSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'slug'
-    filterset_fields = ['slug']
+    filterset_fields = ['slug', 'category__slug', 'category', 'is_active']
 
 
 class SectionViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
@@ -255,9 +263,7 @@ class FAQViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
         is_portfolio = self.request.query_params.get('is_portfolio_faq')
         if is_portfolio is not None:
             if is_portfolio.lower() in ('true', '1'):
-                portfolio_qs = qs.filter(is_portfolio_faq=True)
-                if portfolio_qs.exists():
-                    return portfolio_qs.order_by('order')
+                qs = qs.filter(is_portfolio_faq=True)
             elif is_portfolio.lower() in ('false', '0'):
                 qs = qs.filter(is_portfolio_faq=False)
 
@@ -267,6 +273,13 @@ class FAQViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
                 qs = qs.filter(is_homepage_faq=True)
             elif is_homepage.lower() in ('false', '0'):
                 qs = qs.filter(is_homepage_faq=False)
+
+        is_contact = self.request.query_params.get('is_contact_faq')
+        if is_contact is not None:
+            if is_contact.lower() in ('true', '1'):
+                qs = qs.filter(is_contact_faq=True)
+            elif is_contact.lower() in ('false', '0'):
+                qs = qs.filter(is_contact_faq=False)
 
         return qs.order_by('order')
 

@@ -37,52 +37,76 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/support`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
   ];
 
-  const [blogPosts, caseStudies, portfolioItems, guides] = await Promise.all([
+  const [blogPosts, caseStudies, portfolioItems, guides, services, cmsPages] = await Promise.all([
     fetchAllPages('/api/v1/cms/blog/posts/'),
     fetchAllPages('/api/v1/case-studies/api/items/'),
     fetchAllPages('/api/v1/portfolio/api/items/'),
     fetchAllPages('/api/v1/guides/api/items/'),
+    fetchAllPages('/api/v1/cms/services/'),
+    fetchAllPages('/api/v1/cms/pages/'),
   ]);
 
   const blogEntries: MetadataRoute.Sitemap = blogPosts
-    .filter((p: any) => p.is_published !== false)
+    .filter((p: any) => p.is_published !== false && p.slug)
     .map((post: any) => ({
       url: `${SITE_URL}/blog/${post.slug}`,
-      lastModified: new Date(post.updated_at || post.published_at),
+      lastModified: new Date(post.updated_at || post.published_at || new Date()),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }));
+
+  const serviceEntries: MetadataRoute.Sitemap = services
+    .filter((s: any) => s.is_active !== false && s.slug)
+    .map((s: any) => ({
+      url: `${SITE_URL}/services/${s.slug}`,
+      lastModified: new Date(s.updated_at || new Date()),
+      changeFrequency: 'weekly' as const,
+      priority: 0.85,
+    }));
+
+  // Filter out any pages that match existing static page routes to avoid duplicate URLs
+  const staticPaths = new Set(staticPages.map(p => p.url.replace(SITE_URL, '').replace(/^\//, '')));
+  const pageEntries: MetadataRoute.Sitemap = cmsPages
+    .filter((p: any) => p.is_active !== false && p.slug && !staticPaths.has(p.slug))
+    .map((p: any) => ({
+      url: `${SITE_URL}/${p.slug}`,
+      lastModified: new Date(p.updated_at || p.created_at || new Date()),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     }));
 
   const caseStudyEntries: MetadataRoute.Sitemap = caseStudies
-    .filter((cs: any) => cs.is_published !== false)
+    .filter((cs: any) => cs.is_published !== false && cs.slug)
     .map((cs: any) => ({
       url: `${SITE_URL}/case-studies/${cs.slug}`,
-      lastModified: new Date(cs.updated_at || cs.publish_date),
+      lastModified: new Date(cs.updated_at || cs.publish_date || new Date()),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     }));
 
   const portfolioEntries: MetadataRoute.Sitemap = portfolioItems
-    .filter((p: any) => p.is_published !== false)
+    .filter((p: any) => p.is_published !== false && p.slug)
     .map((item: any) => ({
       url: `${SITE_URL}/portfolio/${item.slug}`,
-      lastModified: new Date(item.updated_at || item.created_at),
+      lastModified: new Date(item.updated_at || item.created_at || new Date()),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     }));
 
   const guideEntries: MetadataRoute.Sitemap = guides
-    .filter((g: any) => g.is_published !== false)
+    .filter((g: any) => g.is_published !== false && g.slug)
     .map((guide: any) => ({
       url: `${SITE_URL}/guid/${guide.slug}`,
-      lastModified: new Date(guide.updated_at || guide.publish_date || guide.created_at),
+      lastModified: new Date(guide.updated_at || guide.publish_date || guide.created_at || new Date()),
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     }));
 
   return [
     ...staticPages,
+    ...serviceEntries,
     ...blogEntries,
+    ...pageEntries,
     ...caseStudyEntries,
     ...portfolioEntries,
     ...guideEntries,

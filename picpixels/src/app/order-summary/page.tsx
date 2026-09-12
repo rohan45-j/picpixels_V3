@@ -28,7 +28,7 @@ import {
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { mediaUrl, getOrderSummary, type OrderSummaryData } from '@/services/public-api';
+import { mediaUrl, getOrderSummary, submitOrderRequest, type OrderSummaryData } from '@/services/public-api';
 import styles from '@/styles/modules/order-summary.module.css';
 
 /* ══════════════════════════════════════
@@ -424,14 +424,47 @@ export default function OrderSummaryPage() {
   const hasClientInfo = clientInfo.fullName && clientInfo.email && clientInfo.whatsapp && clientInfo.country;
   const canSubmit = data && hasFiles && hasClientInfo && !submitting;
 
-  const handleSubmit = () => {
-    if (!canSubmit) return;
+  const handleSubmit = async () => {
+    if (!canSubmit || !data) return;
     setSubmitting(true);
-    setTimeout(() => {
+
+    try {
+      const uploadFiles: File[] = [];
+      files.forEach((f) => {
+        if (f.file) uploadFiles.push(f.file);
+      });
+      if (zipFile) {
+        uploadFiles.push(zipFile);
+      }
+
+      const pkgTitle = data.unitRange ? `${data.title} (${data.unitRange})` : data.title;
+
+      const ok = await submitOrderRequest(
+        {
+          full_name: clientInfo.fullName,
+          company_name: clientInfo.company || undefined,
+          email: clientInfo.email,
+          phone_number: clientInfo.whatsapp,
+          country: clientInfo.country,
+          product_name: pkgTitle,
+          package_price: data.price,
+          drive_link: driveLink || undefined,
+          project_requirements: instructions.trim() || 'No additional instructions provided.',
+        },
+        uploadFiles.length > 0 ? uploadFiles : undefined
+      );
+
       setSubmitting(false);
-      setSubmitted(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, 1500);
+      if (ok) {
+        setSubmitted(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        alert('There was an issue submitting your order request. Please check your connection and try again.');
+      }
+    } catch (err) {
+      setSubmitting(false);
+      alert('An unexpected error occurred. Please try again.');
+    }
   };
 
   if (loading) return <SummarySkeleton />;

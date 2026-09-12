@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import (
-    Page, Section, Banner, Service, ServiceGalleryImage, ServiceContentSection, ServiceHeroImage,
+    PageCategory, Page, Section, Banner, Service, ServiceGalleryImage, ServiceContentSection, ServiceHeroImage,
     HeroSection, HeroSlide, HeroStat, Testimonial,
     Author, BlogCategory, BlogTag, BlogPost, BlogContentSection, BlogDocumentBlock,
     FAQCategory, FAQ, ContactInquiry, TeamMember, BrandLogo,
@@ -21,10 +21,25 @@ from .models import (
 )
 
 
+class PageCategorySerializer(serializers.ModelSerializer):
+    page_count = serializers.IntegerField(source='pages.count', read_only=True)
+
+    class Meta:
+        model = PageCategory
+        fields = ['id', 'name', 'slug', 'description', 'order', 'is_active', 'page_count']
+
+
 class PageSerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.name', read_only=True)
+    category_slug = serializers.CharField(source='category.slug', read_only=True)
+
     class Meta:
         model = Page
-        fields = ['id', 'title', 'title_color', 'slug', 'meta_title', 'meta_description', 'content', 'created_at', 'updated_at']
+        fields = [
+            'id', 'title', 'title_color', 'slug', 'category', 'category_name', 'category_slug',
+            'meta_title', 'meta_description', 'seo_title', 'seo_description',
+            'schema_type', 'custom_schema', 'content', 'is_active', 'created_at', 'updated_at'
+        ]
 
 
 class SectionSerializer(serializers.ModelSerializer):
@@ -252,6 +267,7 @@ class BlogPostSerializer(serializers.ModelSerializer):
                   'og_title', 'og_description', 'og_image', 'og_image_alt',
                   'twitter_title', 'twitter_description', 'twitter_image', 'twitter_image_alt',
                   'focus_keyword', 'secondary_keywords',
+                  'schema_type', 'custom_schema',
                   'key_takeaways', 'content_blocks', 'faq_schema',
                   'related_services', 'related_posts', 'related_post_slugs',
                   'content_sections', 'document_blocks', 'created_at', 'updated_at']
@@ -479,8 +495,8 @@ class FreeTrialSerializer(serializers.ModelSerializer):
     class Meta:
         model = FreeTrial
         fields = [
-            'id', 'full_name', 'company_name', 'email', 'phone_number',
-            'product_name', 'product_category', 'drive_link',
+            'id', 'request_type', 'full_name', 'company_name', 'email', 'phone_number',
+            'country', 'product_name', 'package_price', 'product_category', 'drive_link',
             'project_requirements', 'attachments', 'created_at',
         ]
         read_only_fields = ['id', 'created_at']

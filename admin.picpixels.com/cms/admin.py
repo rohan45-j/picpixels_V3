@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.db import models
 from django.utils import timezone
 from django.utils.html import format_html
@@ -22,7 +22,7 @@ def _img_preview_html(url, size='max-height:48px;border-radius:4px'):
 
 import json
 from .models import (
-    Page, Section, Banner, Service, ServiceGalleryImage, ServiceContentSection, ServiceHeroImage,
+    PageCategory, Page, Section, Banner, Service, ServiceGalleryImage, ServiceContentSection, ServiceHeroImage,
     HeroSection, HeroSlide, HeroStat, Testimonial,
     Author, BlogCategory, BlogTag, BlogPost, BlogContentSection, BlogDocumentBlock,
     FAQCategory, FAQ, ContactInquiry, TeamMember, BrandLogo,
@@ -39,19 +39,46 @@ from .models import (
 )
 
 
+@admin.register(PageCategory)
+class PageCategoryAdmin(ModelAdmin):
+    list_display = ('name', 'slug', 'page_count', 'order', 'is_active')
+    list_editable = ('order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('name', 'description')
+    prepopulated_fields = {'slug': ('name',)}
+    ordering = ('order', 'name')
+    list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+
+    def page_count(self, obj):
+        return obj.pages.count()
+    page_count.short_description = 'Pages'
+
+
 @admin.register(Page)
 class PageAdmin(ModelAdmin):
-    list_display = ('title', 'slug', 'created_at', 'updated_at')
+    list_display = ('title', 'category', 'slug', 'schema_type', 'is_active', 'updated_at')
+    list_editable = ('is_active',)
+    list_filter = ('category', 'schema_type', 'is_active')
     search_fields = ('title', 'slug')
     prepopulated_fields = {'slug': ('title',)}
     list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
     fieldsets = (
-        (None, {
-            'fields': ('title', 'title_color', 'slug', 'content'),
+        ('Page Content & Details', {
+            'fields': ('title', 'title_color', 'category', 'slug', 'is_active', 'content'),
         }),
-        ('SEO & Meta', {
+        ('SEO & Meta Tags', {
             'classes': ('collapse',),
             'fields': ('meta_title', 'meta_description', 'seo_title', 'seo_description'),
+        }),
+        ('🏷️ Schema Markup (Structured Data)', {
+            'fields': ('schema_type', 'custom_schema'),
+            'description': 'Select the Schema.org type for this page or provide custom JSON-LD (without <script> tags).',
         }),
     )
 
@@ -692,22 +719,24 @@ class ServiceAdmin(ModelAdmin):
         a failure during bulk processing never leaves orphan records.
         """
         from django.db import transaction
-        from urllib.parse import urlparse
+        from urllib.parse import urlparse, unquote
         from django.core.files.base import ContentFile
         from django.core.files.storage import default_storage
 
         def _resolve_path(url):
+            url = unquote(url)
             if url.startswith('/media/'):
                 return url[len('/media/'):]
-            elif url.startswith('http'):
+            elif url.startswith('http://') or url.startswith('https://'):
                 parsed = urlparse(url)
-                p = parsed.path.lstrip('/')
+                p = unquote(parsed.path).lstrip('/')
                 return p[len('media/'):] if p.startswith('media/') else p
-            return url
+            return url.lstrip('/')
 
         def _read_file(url):
-            rel_path = _resolve_path(url)
-            return default_storage.open(rel_path).read(), rel_path.split('/')[-1]
+            rel_path = _resolve_path(url).replace('\\', '/').lstrip('/')
+            file_name = rel_path.split('/')[-1]
+            return default_storage.open(rel_path).read(), file_name
 
         # Process bulk upload data from the hidden JSON field
         raw = request.POST.get('bulk_uploads_json', '')
@@ -825,8 +854,10 @@ class ServiceAdmin(ModelAdmin):
                                 request,
                                 'Bulk before/after pair #{} failed: {}'.format(idx + 1, e),
                             )
-        except Exception:
+        except Exception as err:
             # Fallback: save service without bulk images if atomic block fails
+            import logging
+            logging.getLogger(__name__).warning('Bulk uploads failed during service save: %s', err, exc_info=True)
             super().save_model(request, obj, form, change)
             messages.error(
                 request,
@@ -1209,9 +1240,13 @@ class BlogPostAdmin(ModelAdmin):
         'classes': ('collapse',),
         'fields': ('meta_title', 'meta_description', 'canonical_url', 'og_title', 'og_description', 'og_image', 'og_image_alt', 'twitter_title', 'twitter_description', 'twitter_image', 'twitter_image_alt'),
     }),
+        ('🏷️ Schema Markup (Structured Data)', {
+            'fields': ('schema_type', 'custom_schema', 'faq_schema'),
+            'description': 'Configure Schema.org type for this blog post. You can also paste custom JSON-LD (without <script> tags).',
+        }),
         ('Advanced SEO', {
             'classes': ('collapse',),
-            'fields': ('focus_keyword', 'secondary_keywords', 'faq_schema', 'key_takeaways', 'related_services', 'related_posts'),
+            'fields': ('focus_keyword', 'secondary_keywords', 'key_takeaways', 'related_services', 'related_posts'),
         }),
     )
     inlines = [BlogDocumentBlockInline]
@@ -1830,15 +1865,23 @@ class FreeTrialAttachmentInline(TabularInline):
 
 @admin.register(FreeTrial)
 class FreeTrialAdmin(ModelAdmin):
-    list_display = ('full_name', 'email', 'product_name', 'product_category', 'created_at', 'is_read')
-    list_editable = ('is_read',)
-    list_filter = ('product_category', 'is_read', 'created_at')
-    search_fields = ('full_name', 'email', 'product_name', 'company_name')
+    list_display = ('type_badge', 'full_name', 'phone_actions', 'email', 'product_name', 'country', 'sms_status', 'is_read', 'created_at')
+    list_editable = ('sms_status', 'is_read')
+    list_filter = ('request_type', 'sms_status', 'is_read', 'product_category', 'created_at')
+    search_fields = ('full_name', 'email', 'phone_number', 'product_name', 'company_name', 'country')
     ordering = ('-created_at',)
-    readonly_fields = ('created_at',)
+    readonly_fields = ('created_at', 'phone_actions_detail')
+    actions = ['mark_sms_sent', 'mark_contacted_whatsapp']
     fieldsets = (
+        ('Submission Type & Plan', {
+            'fields': ('request_type', 'package_price'),
+        }),
         ('Contact Information', {
-            'fields': ('full_name', 'company_name', 'email', 'phone_number'),
+            'fields': ('full_name', 'company_name', 'country', 'email', 'phone_number', 'phone_actions_detail'),
+        }),
+        ('📱 Client SMS & Communication Tracking', {
+            'fields': ('sms_status', 'last_sms_sent_at', 'sms_notes'),
+            'description': 'Track SMS messages, confirmation status, or communication notes for this client.',
         }),
         ('Project Details', {
             'fields': ('product_name', 'product_category', 'drive_link', 'project_requirements'),
@@ -1848,6 +1891,63 @@ class FreeTrialAdmin(ModelAdmin):
         }),
     )
     inlines = [FreeTrialAttachmentInline]
+
+    @display(description='Type')
+    def type_badge(self, obj):
+        if obj.request_type == 'order_request':
+            return format_html(
+                '<span style="background:#10b98118;color:#059669;border:1px solid #10b98138;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:700;white-space:nowrap;">'
+                '🛒 Order Request</span>'
+            )
+        return format_html(
+            '<span style="background:#6366f118;color:#6366f1;border:1px solid #6366f138;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:700;white-space:nowrap;">'
+            '🚀 Free Trial</span>'
+        )
+
+    @display(description='Phone / Quick SMS')
+    def phone_actions(self, obj):
+        if not obj.phone_number:
+            return mark_safe('<span style="color:#94a3b8;font-size:0.8rem;">No Phone</span>')
+        clean_num = ''.join(c for c in obj.phone_number if c.isdigit() or c == '+')
+        msg = f"Hello {obj.full_name}, thank you for requesting a free trial with PicPixels for '{obj.product_name}'. We are reviewing your images."
+        import urllib.parse
+        encoded_msg = urllib.parse.quote(msg)
+        wa_link = f"https://wa.me/{clean_num.replace('+', '')}?text={encoded_msg}"
+        sms_link = f"sms:{clean_num}?body={encoded_msg}"
+        return format_html(
+            '<div style="display:flex;align-items:center;gap:6px;">'
+            '<span>{}</span>'
+            '<a href="{}" target="_blank" title="Chat on WhatsApp" style="padding:2px 6px;background:#25D366;color:#fff;border-radius:4px;font-size:0.75rem;text-decoration:none;font-weight:600;">WA</a>'
+            '<a href="{}" title="Send SMS" style="padding:2px 6px;background:#0284c7;color:#fff;border-radius:4px;font-size:0.75rem;text-decoration:none;font-weight:600;">SMS</a>'
+            '</div>',
+            obj.phone_number, wa_link, sms_link
+        )
+
+    @display(description='Direct Client Communication')
+    def phone_actions_detail(self, obj):
+        if not obj.phone_number:
+            return 'No phone number provided by client.'
+        clean_num = ''.join(c for c in obj.phone_number if c.isdigit() or c == '+')
+        msg = f"Hello {obj.full_name}, thank you for requesting a free trial with PicPixels for '{obj.product_name}'. We have received your project requirements and our retouching team is working on your trial images."
+        import urllib.parse
+        encoded_msg = urllib.parse.quote(msg)
+        wa_link = f"https://wa.me/{clean_num.replace('+', '')}?text={encoded_msg}"
+        sms_link = f"sms:{clean_num}?body={encoded_msg}"
+        return format_html(
+            '<div style="display:flex;gap:10px;margin-top:4px;">'
+            '<a href="{}" target="_blank" class="button" style="background:#25D366;color:#fff;padding:6px 14px;border-radius:6px;text-decoration:none;font-weight:600;">💬 Open WhatsApp Chat with Client</a>'
+            '<a href="{}" class="button" style="background:#0284c7;color:#fff;padding:6px 14px;border-radius:6px;text-decoration:none;font-weight:600;">✉️ Send Native SMS to Client</a>'
+            '</div>',
+            wa_link, sms_link
+        )
+
+    @admin.action(description='Mark selected as SMS Sent')
+    def mark_sms_sent(self, request, queryset):
+        queryset.update(sms_status='sent', last_sms_sent_at=timezone.now())
+
+    @admin.action(description='Mark selected as Contacted via WhatsApp/Call')
+    def mark_contacted_whatsapp(self, request, queryset):
+        queryset.update(sms_status='contacted', last_sms_sent_at=timezone.now())
 
 
 # ─── Dynamic Pricing Admin ───

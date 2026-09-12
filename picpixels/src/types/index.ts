@@ -1,11 +1,19 @@
 // ============ CMS / Public Types ============
 
 export interface CMSPage {
+  id?: number;
   title: string;
   slug: string;
+  category?: number | null;
+  category_name?: string;
+  schema_type?: string;
+  custom_schema?: string;
+  is_active?: boolean;
   meta_title?: string;
   meta_description?: string;
   content: Section[];
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Section {
@@ -24,6 +32,24 @@ export interface SiteSetting {
   address?: string;
   social_links?: Record<string, string>;
   copyright_text?: string;
+  google_tag_manager_id?: string;
+  google_analytics_id?: string;
+  google_search_console_code?: string;
+  facebook_pixel_id?: string;
+  custom_head_scripts?: string;
+  custom_body_start_scripts?: string;
+  custom_body_end_scripts?: string;
+  organization_schema?: string;
+  footer_location_title?: string;
+  footer_locations?: string;
+  usa_office_title?: string;
+  usa_office_phone?: string;
+  usa_office_email?: string;
+  usa_office_address?: string;
+  bd_office_title?: string;
+  bd_office_phone?: string;
+  bd_office_email?: string;
+  bd_office_address?: string;
 }
 
 export interface SEOSetting {
@@ -167,6 +193,10 @@ export interface FAQ {
   question: string;
   answer: string;
   category?: number;
+  service?: number;
+  is_portfolio_faq?: boolean;
+  is_homepage_faq?: boolean;
+  is_contact_faq?: boolean;
   order: number;
   is_active: boolean;
 }
