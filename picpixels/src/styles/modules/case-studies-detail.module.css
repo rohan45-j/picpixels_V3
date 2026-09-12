@@ -62,7 +62,7 @@
 .breadcrumb {
   position: relative;
   z-index: 10;
-  padding: 1rem 0;
+  padding: calc(20px + 96px + 1.25rem) 0 1.25rem;
   background: var(--color-bg-card);
   border-bottom: 1px solid var(--color-border);
 }
@@ -1214,5 +1214,17 @@
 
   .finalCta {
     padding: 4rem 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .breadcrumb {
+    padding-top: calc(12px + 72px + 1rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .breadcrumb {
+    padding-top: calc(8px + 62px + 0.75rem);
   }
 }

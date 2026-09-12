@@ -133,11 +133,11 @@ export default function CaseStudiesDetailClient({
           <div className={detailStyles.breadcrumbInner}>
             <Link href="/">Home</Link>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m9 18 6-6-6-6"/>
+              <path d="m9 18 6-6-6-6" />
             </svg>
             <Link href="/case-studies">Case Studies</Link>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m9 18 6-6-6-6"/>
+              <path d="m9 18 6-6-6-6" />
             </svg>
             <span>{item.title}</span>
           </div>
@@ -165,7 +165,7 @@ export default function CaseStudiesDetailClient({
                   {item.client_name && (
                     <span className={detailStyles.heroMetaItem}>
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
                       </svg>
                       {item.client_name}
                     </span>
@@ -173,7 +173,7 @@ export default function CaseStudiesDetailClient({
                   {item.industry && (
                     <span className={detailStyles.heroMetaItem}>
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                       </svg>
                       {item.industry}
                     </span>
@@ -181,7 +181,7 @@ export default function CaseStudiesDetailClient({
                   {item.publish_date && (
                     <span className={detailStyles.heroMetaItem}>
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><path d="M16 2v4" /><path d="M8 2v4" /><path d="M3 10h18" />
                       </svg>
                       {formatDate(item.publish_date)}
                     </span>
@@ -189,7 +189,7 @@ export default function CaseStudiesDetailClient({
                   {item.reading_time > 0 && (
                     <span className={detailStyles.heroMetaItem}>
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                        <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
                       </svg>
                       {item.reading_time} min read
                     </span>
@@ -211,7 +211,7 @@ export default function CaseStudiesDetailClient({
           </div>
           <div className={detailStyles.heroScrollHint}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 5v14"/><path d="m19 12-7 7-7-7"/>
+              <path d="M12 5v14" /><path d="m19 12-7 7-7-7" />
             </svg>
             Scroll
           </div>
@@ -542,7 +542,7 @@ export default function CaseStudiesDetailClient({
                         <div className={detailStyles.testimonialStars}>
                           {Array.from({ length: 5 }).map((_, i) => (
                             <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={i < t.rating ? 'var(--color-primary)' : 'none'} stroke="var(--color-primary)" strokeWidth="2">
-                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                             </svg>
                           ))}
                         </div>
@@ -621,7 +621,7 @@ export default function CaseStudiesDetailClient({
                 >
                   <div className={detailStyles.navArrow}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m15 18-6-6 6-6"/>
+                      <path d="m15 18-6-6 6-6" />
                     </svg>
                   </div>
                   <div className={detailStyles.navInfo}>
@@ -643,7 +643,7 @@ export default function CaseStudiesDetailClient({
                   </div>
                   <div className={detailStyles.navArrow}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m9 18 6-6-6-6"/>
+                      <path d="m9 18 6-6-6-6" />
                     </svg>
                   </div>
                 </Link>
@@ -656,7 +656,7 @@ export default function CaseStudiesDetailClient({
       )}
 
       {/* ═══ SECTION 11: Final CTA ═══ */}
-      <section className={detailStyles.finalCta}>
+      {/* <section className={detailStyles.finalCta}>
         <div className={detailStyles.finalCtaBg} />
         <div className={detailStyles.finalCtaInner}>
           <h2 className={detailStyles.finalCtaTitle}>Ready to Start Your Project?</h2>
@@ -673,7 +673,7 @@ export default function CaseStudiesDetailClient({
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ═══ Lightbox ═══ */}
       {lightboxOpen && lightboxImages.length > 0 && (

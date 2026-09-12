@@ -231,3 +231,76 @@ class ColorPickerWidget(forms.TextInput):
         </div>
         '''
         return mark_safe(html)
+
+
+class LocationPickerWidget(forms.Widget):
+    """
+    Renders a dynamic location picker for services:
+    - Pre-populates chips from SiteSetting.footer_locations
+    - Allows toggle selection of preset chips
+    - Allows adding custom locations
+    - Automatically handles "All Locations (Global)" when empty
+    """
+    template_name = 'admin/widgets/location_picker.html'
+
+    def render(self, name, value, attrs=None, renderer=None):
+        from django.template.loader import render_to_string
+        context = self.get_context(name, value, attrs)
+        html = render_to_string(self.template_name, context)
+        return mark_safe(html)
+
+    def get_preset_locations(self):
+        try:
+            from site_settings.models import SiteSetting
+            s = SiteSetting.objects.first()
+            if s and s.footer_locations:
+                return [line.split('|')[0].strip() for line in s.footer_locations.splitlines() if line.strip()]
+        except Exception:
+            pass
+        return ['Texas', 'California', 'Florida', 'New York']
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        import json as _json
+        items = []
+        if value:
+            if isinstance(value, str):
+                try:
+                    items = _json.loads(value)
+                except _json.JSONDecodeError:
+                    items = [x.strip() for x in value.split(',') if x.strip()]
+            elif isinstance(value, list):
+                items = value
+
+        presets = self.get_preset_locations()
+        all_chips = list(presets)
+        for it in items:
+            if it not in all_chips:
+                all_chips.append(it)
+
+        context.update({
+            'widget_name': name,
+            'items': items,
+            'items_json': _json.dumps(items),
+            'preset_locations': presets,
+            'all_chips': all_chips,
+        })
+        return context
+
+    def value_from_datadict(self, data, files, name):
+        import json as _json
+        raw = data.get(name)
+        if raw is None:
+            return []
+        if isinstance(raw, list):
+            return raw
+        if isinstance(raw, str):
+            raw = raw.strip()
+            if not raw or raw == '[]':
+                return []
+            try:
+                parsed = _json.loads(raw)
+                return parsed if isinstance(parsed, list) else []
+            except _json.JSONDecodeError:
+                return [x.strip() for x in raw.split(',') if x.strip()]
+        return []

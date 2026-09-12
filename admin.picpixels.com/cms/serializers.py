@@ -18,6 +18,17 @@ from .models import (
     ServiceTool,
     ServicePricingTierCard,
     ServiceClientFeedback,
+    AboutMissionVision,
+    AboutCoreValue,
+    AboutProcessStep,
+    AboutPageSetting,
+    AboutStorySection,
+    PrivacyPolicyPage,
+    PrivacyPolicyStat,
+    PrivacyPolicySection,
+    TermsConditionPage,
+    TermsHighlight,
+    TermsClause,
 )
 
 
@@ -153,7 +164,7 @@ class ServiceSerializer(serializers.ModelSerializer):
                   'hero_title', 'hero_subtitle', 'hero_background', 'hero_image_alt', 'hero_cta_text', 'hero_cta_link',
                   'price', 'order', 'seo_title', 'seo_description',
                   'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'show_in_related',
-                  'is_active', 'is_featured', 'content_blocks', 'created_at', 'updated_at',
+                  'is_active', 'is_featured', 'available_locations', 'content_blocks', 'created_at', 'updated_at',
                   'gallery_images', 'content_sections', 'hero_images', 'faqs',
                'eeat', 'brand_section_title', 'why_need_section_title', 'why_need_title_color', 'why_need_section_description',
                    'process_section_title', 'process_title_color', 'why_choose_title', 'why_choose_title_color', 'overview_title', 'overview_title_color', 'faq_title', 'faq_title_color', 'review_title', 'review_title_color', 'tools_section_title',
@@ -178,7 +189,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 class ServiceListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
-        fields = ['id', 'title', 'title_color', 'slug', 'short_description', 'description', 'features', 'icon', 'image', 'image_alt', 'price', 'order', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'show_in_related', 'is_active']
+        fields = ['id', 'title', 'title_color', 'slug', 'short_description', 'description', 'features', 'icon', 'image', 'image_alt', 'price', 'order', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'show_in_related', 'is_active', 'available_locations']
 
 
 class HeroSlideSerializer(serializers.ModelSerializer):
@@ -539,3 +550,112 @@ class HomepageCTASectionSerializer(serializers.ModelSerializer):
             'secondary_button_is_active', 'secondary_button_text', 'secondary_button_link',
             'created_at', 'updated_at',
         ]
+
+
+# ═══════════════════════════════════════════════════════════
+# ABOUT PAGE SERIALIZERS
+# ═══════════════════════════════════════════════════════════
+
+class AboutMissionVisionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutMissionVision
+        fields = ['id', 'title', 'description', 'icon_name', 'icon_image', 'display_order', 'is_active', 'created_at', 'updated_at']
+
+
+class AboutCoreValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutCoreValue
+        fields = ['id', 'title', 'description', 'icon_name', 'icon_image', 'display_order', 'is_active', 'created_at', 'updated_at']
+
+
+class AboutProcessStepSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutProcessStep
+        fields = ['id', 'step_number', 'title', 'description', 'icon_name', 'icon_image', 'display_order', 'is_active', 'created_at', 'updated_at']
+
+
+class AboutPageSettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutPageSetting
+        fields = [
+            'id',
+            'mission_section_title', 'mission_section_subtitle',
+            'values_section_title', 'values_section_subtitle',
+            'process_section_title', 'process_section_subtitle',
+            'updated_at',
+        ]
+
+
+class AboutStorySectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AboutStorySection
+        fields = [
+            'id', 'title', 'subtitle',
+            'paragraph_1', 'paragraph_2', 'paragraph_3',
+            'featured_image', 'featured_image_alt', 'icon_name',
+            'is_active', 'updated_at',
+        ]
+
+
+# ═══════════════════════════════════════════════════════════
+# LEGAL & POLICY PAGES SERIALIZERS
+# ═══════════════════════════════════════════════════════════
+
+class PrivacyPolicyStatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrivacyPolicyStat
+        fields = ['id', 'value', 'label', 'display_order']
+
+
+class PrivacyPolicySectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PrivacyPolicySection
+        fields = ['id', 'title', 'icon_name', 'content', 'display_order', 'is_active', 'updated_at']
+
+
+class PrivacyPolicyPageSerializer(serializers.ModelSerializer):
+    stats = PrivacyPolicyStatSerializer(many=True, read_only=True)
+    sections = serializers.SerializerMethodField()
+
+    class Meta:
+        model = PrivacyPolicyPage
+        fields = [
+            'id', 'hero_title', 'hero_subtitle', 'last_updated',
+            'intro_text', 'dpo_name', 'dpo_email', 'dpo_response_time',
+            'is_active', 'stats', 'sections', 'updated_at',
+        ]
+
+    def get_sections(self, obj):
+        active_sections = obj.sections.filter(is_active=True).order_by('display_order', 'id')
+        return PrivacyPolicySectionSerializer(active_sections, many=True).data
+
+
+class TermsHighlightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TermsHighlight
+        fields = ['id', 'number', 'title', 'description', 'display_order']
+
+
+class TermsClauseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TermsClause
+        fields = ['id', 'title', 'anchor_id', 'content', 'display_order', 'is_active', 'updated_at']
+
+
+class TermsConditionPageSerializer(serializers.ModelSerializer):
+    highlights = TermsHighlightSerializer(many=True, read_only=True)
+    clauses = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TermsConditionPage
+        fields = [
+            'id', 'hero_title', 'hero_subtitle', 'last_updated',
+            'is_active', 'highlights', 'clauses', 'updated_at',
+        ]
+
+    def get_clauses(self, obj):
+        active_clauses = obj.clauses.filter(is_active=True).order_by('display_order', 'id')
+        return TermsClauseSerializer(active_clauses, many=True).data
+
+
+

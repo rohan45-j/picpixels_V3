@@ -130,6 +130,7 @@ class Service(models.Model):
     show_in_related = models.BooleanField(default=True, help_text='Show in related services section')
     is_active = models.BooleanField(default=True, db_index=True, help_text='Show on website')
     is_featured = models.BooleanField(default=False, db_index=True, help_text='Featured service (highlighted on homepage)')
+    available_locations = models.JSONField(default=list, blank=True, help_text='Locations where this service is available (e.g. Texas, California). Leave empty to make available in all locations.')
     content_blocks = models.JSONField(default=list, blank=True, null=True, help_text='Modular content blocks array. Supported types: heading, text, image, image_with_text, gallery, code, callout, faq, list, table, step, divider')
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
@@ -1297,3 +1298,284 @@ class HomepageCTASection(models.Model):
 
     def __str__(self):
         return self.title
+
+
+# ═══════════════════════════════════════════════════════════
+# ABOUT PAGE DYNAMIC SECTIONS
+# ═══════════════════════════════════════════════════════════
+
+class AboutMissionVision(models.Model):
+    title = models.CharField(max_length=200, help_text='Card Title (e.g. "Our Mission", "Our Vision")')
+    description = models.TextField(help_text='Description text')
+    icon_name = models.CharField(
+        max_length=100,
+        blank=True,
+        default='Target',
+        help_text='Lucide icon name (e.g. Target, Eye, Compass, Flag, Shield, Award, Sparkles, Heart)'
+    )
+    icon_image = models.ImageField(upload_to='about/mission_vision/', blank=True, null=True, help_text='Optional custom icon or image file')
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['display_order', 'id']
+        verbose_name = 'Mission & Vision'
+        verbose_name_plural = 'Mission & Vision'
+
+    def __str__(self):
+        return self.title
+
+
+class AboutCoreValue(models.Model):
+    title = models.CharField(max_length=200, help_text='Value Title (e.g. "Quality First", "Speed", "Pixel-Perfect")')
+    description = models.TextField(help_text='Description of this value')
+    icon_name = models.CharField(
+        max_length=100,
+        blank=True,
+        default='Star',
+        help_text='Lucide icon name (e.g. Star, Zap, Sparkles, Shield, Globe, DollarSign, Award, CheckCircle, Heart, Users)'
+    )
+    icon_image = models.ImageField(upload_to='about/values/', blank=True, null=True, help_text='Optional custom icon or image file')
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['display_order', 'id']
+        verbose_name = 'Core Value'
+        verbose_name_plural = 'Our Core Values'
+
+    def __str__(self):
+        return self.title
+
+
+class AboutProcessStep(models.Model):
+    step_number = models.CharField(max_length=20, default='01', help_text='Step number badge (e.g. 01, 02, 03)')
+    title = models.CharField(max_length=200, help_text='Step title (e.g. "Request a Quote", "Get Your Quote")')
+    description = models.TextField(help_text='Description of this step')
+    icon_name = models.CharField(
+        max_length=100,
+        blank=True,
+        default='FileText',
+        help_text='Lucide icon name (e.g. FileText, Mail, ClipboardCheck, Image, CheckCircle, TrendingUp, Sparkles, Send)'
+    )
+    icon_image = models.ImageField(upload_to='about/process/', blank=True, null=True, help_text='Optional custom icon or image file')
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['display_order', 'id']
+        verbose_name = 'Process Step'
+        verbose_name_plural = 'Our Simple 6-Step Process'
+
+    def __str__(self):
+        return f'{self.step_number} - {self.title}'
+
+
+class AboutPageSetting(models.Model):
+    # Mission & Vision section
+    mission_section_title = models.CharField(max_length=200, default='Mission & Vision', help_text='Title for Mission & Vision section')
+    mission_section_subtitle = models.TextField(blank=True, default='', help_text='Optional subtitle for Mission & Vision')
+
+    # Core Values section
+    values_section_title = models.CharField(max_length=200, default='Our Core Values', help_text='Title for Core Values section')
+    values_section_subtitle = models.TextField(blank=True, default='', help_text='Optional subtitle for Core Values')
+
+    # Process section
+    process_section_title = models.CharField(max_length=200, default='Our Simple 6-Step Process', help_text='Title for Process section')
+    process_section_subtitle = models.TextField(blank=True, default='', help_text='Optional subtitle for Process section')
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'About Page Setting'
+        verbose_name_plural = 'About Page Settings'
+
+    def __str__(self):
+        return 'About Page Settings'
+
+
+class AboutStorySection(models.Model):
+    title = models.CharField(
+        max_length=255,
+        default='More Than a Photo Editing Company',
+        help_text='Main heading (e.g. More Than a Photo Editing Company)'
+    )
+    subtitle = models.TextField(
+        blank=True,
+        default='We are a team of passionate photo editors, retouchers, and creative professionals dedicated to helping businesses present their products in the best possible light.',
+        help_text='Subtitle or tagline below the main heading'
+    )
+    paragraph_1 = models.TextField(
+        blank=True,
+        default='Founded with a vision to democratize professional photo editing, PicPicxels has grown from a small team of skilled retouchers into a global studio serving hundreds of clients across multiple industries.',
+        help_text='First story paragraph'
+    )
+    paragraph_2 = models.TextField(
+        blank=True,
+        default='Our team combines technical expertise with artistic sensibility. Every image that passes through our hands receives the same meticulous attention — whether it is a simple background removal or a complex ghost mannequin composite.',
+        help_text='Second story paragraph'
+    )
+    paragraph_3 = models.TextField(
+        blank=True,
+        default='We believe that great imagery is not a luxury — it is a necessity for brands that want to stand out. That is why we have built our entire workflow around quality, speed, and reliability.',
+        help_text='Third story paragraph'
+    )
+    featured_image = models.ImageField(
+        upload_to='about/story/',
+        blank=True,
+        null=True,
+        help_text='Optional image for right side (replaces default icon)'
+    )
+    featured_image_alt = models.CharField(
+        max_length=200,
+        blank=True,
+        default='About PicPicxels',
+        help_text='Alt text for featured image'
+    )
+    icon_name = models.CharField(
+        max_length=100,
+        blank=True,
+        default='Target',
+        help_text='Lucide icon name when no image is uploaded (e.g. Target, Compass, Award, Shield, Sparkles)'
+    )
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Company Story (Who We Are)'
+        verbose_name_plural = 'Company Story (Who We Are)'
+
+    def __str__(self):
+        return self.title
+
+
+# ═══════════════════════════════════════════════════════════
+# LEGAL & POLICY PAGES (PRIVACY POLICY & TERMS OF SERVICE)
+# ═══════════════════════════════════════════════════════════
+
+class PrivacyPolicyPage(models.Model):
+    hero_title = models.CharField(max_length=200, default='Privacy Policy', help_text='Hero title')
+    hero_subtitle = models.TextField(
+        default='Your privacy matters to us. This policy explains how PicPicxels collects, uses, and protects your personal information when you use our platform and services.',
+        help_text='Hero description'
+    )
+    last_updated = models.CharField(max_length=100, default='August 2026', help_text='e.g. August 2026')
+    intro_text = models.TextField(
+        default='This Privacy Policy describes how PicPicxels Inc. collects, uses, and shares your personal information. By using our platform, you consent to the practices described in this policy.',
+        help_text='Introductory paragraph before the policy sections'
+    )
+    dpo_name = models.CharField(max_length=200, default='PicPicxels Privacy Team', help_text='Data Protection Officer / Team name')
+    dpo_email = models.CharField(max_length=200, default='info@picpicxels.com', help_text='Contact email for privacy')
+    dpo_response_time = models.CharField(max_length=200, default='We respond to all privacy inquiries within 30 days', help_text='Expected response time')
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Privacy Policy Page'
+        verbose_name_plural = 'Privacy Policy Page'
+
+    def __str__(self):
+        return self.hero_title
+
+
+class PrivacyPolicyStat(models.Model):
+    page = models.ForeignKey(PrivacyPolicyPage, on_delete=models.CASCADE, related_name='stats')
+    value = models.CharField(max_length=100, help_text='Stat value (e.g. AES-256, SOC 2, GDPR, 0)')
+    label = models.CharField(max_length=200, help_text='Stat label (e.g. Encryption Standard, Type II Compliant)')
+    display_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['display_order', 'id']
+        verbose_name = 'Privacy Stat Card'
+        verbose_name_plural = 'Privacy Stat Cards'
+
+    def __str__(self):
+        return f'{self.value} - {self.label}'
+
+
+class PrivacyPolicySection(models.Model):
+    page = models.ForeignKey(PrivacyPolicyPage, on_delete=models.CASCADE, related_name='sections', null=True, blank=True)
+    title = models.CharField(max_length=255, help_text='Section title (e.g. Information We Collect)')
+    icon_name = models.CharField(
+        max_length=100,
+        blank=True,
+        default='Shield',
+        help_text='Lucide icon name (e.g. Eye, Lock, Shield, UserCheck, Cookie, Mail, FileText)'
+    )
+    content = models.TextField(help_text='Section content in HTML or plain text (supports <p>, <ul>, <li>, <strong>, etc.)')
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['display_order', 'id']
+        verbose_name = 'Privacy Policy Section'
+        verbose_name_plural = 'Privacy Policy Sections'
+
+    def __str__(self):
+        return self.title
+
+
+class TermsConditionPage(models.Model):
+    hero_title = models.CharField(max_length=200, default='Terms & Conditions', help_text='Hero title')
+    hero_subtitle = models.TextField(
+        default='Please read these terms carefully before using our platform. They govern your relationship with PicPicxels and outline both your rights and responsibilities.',
+        help_text='Hero description'
+    )
+    last_updated = models.CharField(max_length=100, default='August 2026', help_text='e.g. August 2026')
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = 'Terms & Conditions Page'
+        verbose_name_plural = 'Terms & Conditions Page'
+
+    def __str__(self):
+        return self.hero_title
+
+
+class TermsHighlight(models.Model):
+    page = models.ForeignKey(TermsConditionPage, on_delete=models.CASCADE, related_name='highlights')
+    number = models.CharField(max_length=20, default='01', help_text='Badge number (e.g. 01, 02)')
+    title = models.CharField(max_length=200, help_text='Highlight title (e.g. Fair Usage)')
+    description = models.TextField(help_text='Short description')
+    display_order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['display_order', 'id']
+        verbose_name = 'Terms Highlight Card'
+        verbose_name_plural = 'Terms Highlight Cards'
+
+    def __str__(self):
+        return f'{self.number} - {self.title}'
+
+
+class TermsClause(models.Model):
+    page = models.ForeignKey(TermsConditionPage, on_delete=models.CASCADE, related_name='clauses', null=True, blank=True)
+    title = models.CharField(max_length=255, help_text='Clause title (e.g. Acceptance of Terms)')
+    anchor_id = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text='URL anchor identifier (e.g. acceptance, use-of-service, etc.)'
+    )
+    content = models.TextField(help_text='Clause content in HTML or plain text (supports <p>, <ul>, <li>, <strong>, etc.)')
+    display_order = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['display_order', 'id']
+        verbose_name = 'Terms Clause'
+        verbose_name_plural = 'Terms Clauses'
+
+    def __str__(self):
+        return self.title
+
+
+

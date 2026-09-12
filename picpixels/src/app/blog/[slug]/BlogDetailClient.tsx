@@ -67,8 +67,16 @@ function extractHeadings(blocks: ContentBlock[]) {
 }
 
 function SocialShare({ url, title }: { url: string; title: string }) {
-  const encodedUrl = encodeURIComponent(url);
-  const encodedTitle = encodeURIComponent(title);
+  const [shareUrl, setShareUrl] = useState(url);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.href) {
+      setShareUrl(window.location.href);
+    }
+  }, []);
+
+  const encodedUrl = encodeURIComponent(shareUrl || url);
+  const encodedTitle = encodeURIComponent(title || '');
 
   const shareLinks = [
     { name: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`, icon: 'f' },
@@ -266,8 +274,8 @@ export default function BlogDetailClient({ post, allPosts }: { post: BlogPost; a
       .slice(0, 3);
   }, [post, allPosts]);
 
-  const origin = typeof window !== 'undefined' ? window.location.origin : '';
-  const currentUrl = post.canonical_url || (typeof window !== 'undefined' ? window.location.href : '');
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.picpicxels.com';
+  const currentUrl = post.canonical_url || `${siteUrl}/blog/${post.slug}`;
 
   return (
     <main>

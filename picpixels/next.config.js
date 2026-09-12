@@ -45,6 +45,10 @@ const nextConfig = {
         protocol: "http",
         hostname: "localhost",
       },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+      },
     ],
   },
 
@@ -73,7 +77,7 @@ const nextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "public, max-age=0, s-maxage=0",
+            value: "public, max-age=60, stale-while-revalidate=300",
           },
         ],
       },
@@ -107,15 +111,20 @@ const nextConfig = {
     ];
   },
 
-  // Optimize bundle splitting
-  // Resource-saving options for cPanel builds (reduces CPU/RAM usage):
-  //   cpus: 1               → single build worker count
-  //   workerThreads: false  → use child processes instead of worker threads
-  //   webpackBuildWorker: false → run webpack in-process instead of a separate worker
+  async rewrites() {
+    return [
+      {
+        source: '/guides',
+        destination: '/guid',
+      },
+      {
+        source: '/guides/:slug*',
+        destination: '/guid/:slug*',
+      },
+    ];
+  },
+
   experimental: {
-    cpus: 1,
-    workerThreads: false,
-    webpackBuildWorker: false,
     optimizePackageImports: ['lucide-react', 'framer-motion', 'gsap'],
   },
 

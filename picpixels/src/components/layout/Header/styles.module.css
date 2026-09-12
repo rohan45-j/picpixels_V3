@@ -353,7 +353,7 @@
 }
 
 .mobileSubItemsOpen {
-  max-height: 600px;
+  max-height: 900px;
   padding: 0.25rem 0 0.25rem 0.5rem;
 }
 
@@ -452,21 +452,64 @@
 
   .mobileDrawer {
     top: calc(12px + 72px + 8px);
+    left: 16px;
+    right: 16px;
+    max-height: calc(100vh - 104px);
   }
 }
 
-.megaMenuSkeleton {
-  width: 100%;
-  max-width: 1320px;
-  padding: 2rem;
-  background: var(--bg-light-card);
-  border-radius: var(--radius-lg);
-  animation: shimmer 1.5s ease-in-out infinite;
-}
+@media (max-width: 480px) {
+  .header {
+    height: 62px;
+    padding: 0 12px;
+    top: 8px;
+    width: calc(100% - 16px);
+  }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  .logoImage {
+    height: 28px;
+    max-width: 140px;
+  }
+
+  .logoText {
+    font-size: 1.05rem;
+  }
+
+  .mobileTrigger {
+    width: 38px;
+    height: 38px;
+  }
+
+  .mobileDrawer {
+    top: calc(8px + 62px + 6px);
+    left: 8px;
+    right: 8px;
+    border-radius: var(--radius-md);
+    max-height: calc(100vh - 86px);
+  }
+
+  .mobileNavList {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .mobileNavBtn {
+    font-size: 0.9rem;
+    padding: 0.7rem 0.75rem;
+  }
+
+  .mobileSubItem {
+    font-size: 0.85rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .mobileActions {
+    padding: 0 0.75rem 0.75rem;
+  }
+
+  .mobileActionBtn {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
 }
 
 .megaMenuSkeleton {

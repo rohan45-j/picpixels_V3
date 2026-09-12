@@ -65,6 +65,7 @@ async function getHomepageData() {
       caseStudies: homepageData.caseStudies ?? [],
       brandLogos: homepageData.brandLogos ?? [],
       homepageCTA: (homepageData as any).homepageCTA ?? null,
+      faqs: homepageData.faqs ?? [],
     };
   }
 
@@ -105,8 +106,8 @@ async function getHomepageData() {
     fetchBackgroundJSON<{ results: BrandLogo[] }>(`${BASE_URL}/api/v1/cms/brands/`, fetchOpts),
     fetchBackgroundJSON<{ results: PricingConfigSectionData[] }>(`${BASE_URL}/api/v1/cms/pricing-config/`, fetchOpts),
     fetchBackgroundJSON<{ results: HomepageCTASection[] }>(`${BASE_URL}/api/v1/cms/homepage-cta/`, fetchOpts),
-    fetchBackgroundJSON<{ results: FAQ[] }>(`${BASE_URL}/api/v1/cms/faqs/?is_homepage_faq=true&_=${Date.now()}`, fetchOpts),
-    fetchBackgroundJSON<{ results: SiteSetting[] }>(`${BASE_URL}/api/v1/settings/site/?_=${Date.now()}`, fetchOpts),
+    fetchBackgroundJSON<{ results: FAQ[] }>(`${BASE_URL}/api/v1/cms/faqs/?is_homepage_faq=true`, fetchOpts),
+    fetchBackgroundJSON<{ results: SiteSetting[] }>(`${BASE_URL}/api/v1/settings/site/`, fetchOpts),
   ]);
 
   // Extract values from Promise.allSettled results

@@ -21,7 +21,24 @@ export default function OptimizedImage({
   priority = false,
   sizes,
 }: OptimizedImageProps) {
-  const isExternal = src.startsWith('http') || src.startsWith('//');
+  const isOptimizable = (() => {
+    if (!src) return false;
+    if (src.startsWith('/') && !src.startsWith('//')) return true;
+    try {
+      const url = new URL(src, 'http://localhost');
+      const host = url.hostname.toLowerCase();
+      return (
+        host === 'localhost' ||
+        host === '127.0.0.1' ||
+        host.includes('picpixels.com') ||
+        host.includes('picpicxels.com') ||
+        host.includes('unsplash.com')
+      );
+    } catch {
+      return false;
+    }
+  })();
+
   return (
     <Image
       src={src}
@@ -32,7 +49,7 @@ export default function OptimizedImage({
       priority={priority}
       loading={priority ? undefined : loading}
       sizes={sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'}
-      unoptimized={isExternal}
+      unoptimized={!isOptimizable}
     />
   );
 }

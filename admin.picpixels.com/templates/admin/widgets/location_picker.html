@@ -1,0 +1,207 @@
+<div class="location-picker-container" id="{{ widget_name }}_wrap" style="max-width: 780px; font-family: inherit;">
+  <input type="hidden" name="{{ widget_name }}" id="id_{{ widget_name }}" value="{{ items_json|escape }}">
+
+  <!-- Status Bar -->
+  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+    <div id="{{ widget_name }}_status_wrap">
+      {% if not items %}
+        <span id="{{ widget_name }}_status_badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
+          🌐 Available in All Locations (Global Default)
+        </span>
+      {% else %}
+        <span id="{{ widget_name }}_status_badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
+          📍 Available only in {{ items|length }} selected location{{ items|length|pluralize }}
+        </span>
+      {% endif %}
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="display: flex; gap: 8px;">
+      <button type="button" id="{{ widget_name }}_btn_all" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">
+        🌐 Reset to All Locations
+      </button>
+      <button type="button" id="{{ widget_name }}_btn_select_all" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">
+        ✓ Select All Presets
+      </button>
+    </div>
+  </div>
+
+  <!-- Instructions -->
+  <p style="font-size: 12px; color: #64748b; margin: 0 0 10px 0;">
+    Click any location to toggle availability. When none are selected, this service is visible across <strong>all locations globally</strong>.
+  </p>
+
+  <!-- Location Chips Grid -->
+  <div id="{{ widget_name }}_chips" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; min-height: 38px; align-items: center;">
+    {% for loc in all_chips %}
+      <button type="button"
+              class="loc-chip-btn"
+              data-loc="{{ loc }}"
+              style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s ease; {% if loc in items %}background: #FF8A50; color: #ffffff; border: 1.5px solid #ea580c; box-shadow: 0 2px 6px rgba(255, 138, 80, 0.35);{% else %}background: #f1f5f9; color: #334155; border: 1.5px solid #cbd5e1;{% endif %}">
+        <span class="chip-icon">{% if loc in items %}✓{% else %}+{% endif %}</span>
+        <span>{{ loc }}</span>
+      </button>
+    {% endfor %}
+  </div>
+
+  <!-- Add Custom Location Input -->
+  <div style="display: flex; align-items: center; gap: 8px; max-width: 420px; background: #ffffff; padding: 4px 6px; border: 1px solid #cbd5e1; border-radius: 8px;">
+    <input type="text"
+           id="{{ widget_name }}_custom_input"
+           placeholder="Add another location (e.g. Miami, Seattle)..."
+           style="flex: 1; border: none; outline: none; font-size: 12px; padding: 4px 8px; background: transparent; color: #0f172a;">
+    <button type="button"
+            id="{{ widget_name }}_btn_add_custom"
+            style="background: #0f172a; color: #ffffff; border: none; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+      + Add
+    </button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const widgetName = "{{ widget_name }}";
+  const hiddenInput = document.getElementById('id_' + widgetName);
+  const chipsContainer = document.getElementById(widgetName + '_chips');
+  const statusBadge = document.getElementById(widgetName + '_status_badge');
+  const btnAll = document.getElementById(widgetName + '_btn_all');
+  const btnSelectAll = document.getElementById(widgetName + '_btn_select_all');
+  const customInput = document.getElementById(widgetName + '_custom_input');
+  const btnAddCustom = document.getElementById(widgetName + '_btn_add_custom');
+
+  if (!hiddenInput || !chipsContainer) return;
+
+  let selectedItems = [];
+  try {
+    selectedItems = JSON.parse(hiddenInput.value || '[]');
+  } catch(e) {
+    selectedItems = [];
+  }
+
+  function syncState() {
+    hiddenInput.value = JSON.stringify(selectedItems);
+
+    // Update chips appearance
+    const buttons = chipsContainer.querySelectorAll('.loc-chip-btn');
+    buttons.forEach(btn => {
+      const loc = btn.getAttribute('data-loc');
+      const isSelected = selectedItems.includes(loc);
+      const icon = btn.querySelector('.chip-icon');
+
+      if (isSelected) {
+        btn.style.background = '#FF8A50';
+        btn.style.color = '#ffffff';
+        btn.style.borderColor = '#ea580c';
+        btn.style.boxShadow = '0 2px 6px rgba(255, 138, 80, 0.35)';
+        if (icon) icon.textContent = '✓';
+      } else {
+        btn.style.background = '#f1f5f9';
+        btn.style.color = '#334155';
+        btn.style.borderColor = '#cbd5e1';
+        btn.style.boxShadow = 'none';
+        if (icon) icon.textContent = '+';
+      }
+    });
+
+    // Update status badge
+    if (statusBadge) {
+      if (selectedItems.length === 0) {
+        statusBadge.style.background = '#ecfdf5';
+        statusBadge.style.color = '#047857';
+        statusBadge.style.borderColor = '#a7f3d0';
+        statusBadge.textContent = '🌐 Available in All Locations (Global Default)';
+      } else {
+        statusBadge.style.background = '#eff6ff';
+        statusBadge.style.color = '#1d4ed8';
+        statusBadge.style.borderColor = '#bfdbfe';
+        statusBadge.textContent = '📍 Available only in ' + selectedItems.length + ' selected location' + (selectedItems.length > 1 ? 's' : '');
+      }
+    }
+
+    // Update tab badge in Service Editor header
+    const tabBadge = document.getElementById('badge-location');
+    if (tabBadge) {
+      if (selectedItems.length > 0) {
+        tabBadge.textContent = selectedItems.length;
+        tabBadge.style.display = '';
+      } else {
+        tabBadge.style.display = 'none';
+      }
+    }
+  }
+
+  // Click on chip
+  chipsContainer.addEventListener('click', function(e) {
+    const btn = e.target.closest('.loc-chip-btn');
+    if (!btn) return;
+    const loc = btn.getAttribute('data-loc');
+    if (!loc) return;
+
+    const idx = selectedItems.indexOf(loc);
+    if (idx > -1) {
+      selectedItems.splice(idx, 1);
+    } else {
+      selectedItems.push(loc);
+    }
+    syncState();
+  });
+
+  // Reset to All (Clear)
+  if (btnAll) {
+    btnAll.addEventListener('click', function() {
+      selectedItems = [];
+      syncState();
+    });
+  }
+
+  // Select all presets
+  if (btnSelectAll) {
+    btnSelectAll.addEventListener('click', function() {
+      const buttons = chipsContainer.querySelectorAll('.loc-chip-btn');
+      buttons.forEach(btn => {
+        const loc = btn.getAttribute('data-loc');
+        if (loc && !selectedItems.includes(loc)) {
+          selectedItems.push(loc);
+        }
+      });
+      syncState();
+    });
+  }
+
+  // Add custom location
+  function addCustom() {
+    if (!customInput) return;
+    const val = customInput.value.trim();
+    if (!val) return;
+
+    let existingBtn = chipsContainer.querySelector('.loc-chip-btn[data-loc="' + val + '"]');
+    if (!existingBtn) {
+      const newBtn = document.createElement('button');
+      newBtn.type = 'button';
+      newBtn.className = 'loc-chip-btn';
+      newBtn.setAttribute('data-loc', val);
+      newBtn.style.cssText = 'display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s ease;';
+      newBtn.innerHTML = '<span class="chip-icon">+</span><span>' + val + '</span>';
+      chipsContainer.appendChild(newBtn);
+    }
+
+    if (!selectedItems.includes(val)) {
+      selectedItems.push(val);
+    }
+    customInput.value = '';
+    syncState();
+  }
+
+  if (btnAddCustom) {
+    btnAddCustom.addEventListener('click', addCustom);
+  }
+  if (customInput) {
+    customInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addCustom();
+      }
+    });
+  }
+})();
+</script>

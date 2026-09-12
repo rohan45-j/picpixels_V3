@@ -23,7 +23,7 @@ export default function Footer({
 }) {
   const ctx = useSiteSettings();
   const siteSettings = serverSettings || ctx.siteSettings;
-  const [isLocationOpen, setIsLocationOpen] = useState(true);
+  const [isLocationOpen, setIsLocationOpen] = useState(false);
 
   const currentYear = new Date().getFullYear();
   const siteName = siteSettings?.site_name || 'PicPixels';
@@ -104,10 +104,10 @@ export default function Footer({
             <div className={styles.linksCol}>
               <h4 className={styles.colTitle}>Resources</h4>
               <ul className={styles.list}>
-                <li><Link href="/blog">Guides</Link></li>
+                <li><Link href="/guid">Guides</Link></li>
                 <li><Link href="/blog">Blog</Link></li>
                 <li><Link href="/faq">FAQ</Link></li>
-                <li><Link href="/portfolio">Case Studies</Link></li>
+                <li><Link href="/case-studies">Case Studies</Link></li>
               </ul>
             </div>
 
@@ -118,7 +118,6 @@ export default function Footer({
                 <li><Link href="/about">About</Link></li>
                 <li><Link href="/contact">Contact</Link></li>
                 <li><Link href="/pricing">Price</Link></li>
-                <li><Link href="/contact">Career</Link></li>
               </ul>
             </div>
 

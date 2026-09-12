@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import HomeLink from '@/components/layout/HomeLink';
 import { useSiteSettings } from '@/store/SiteSettingsContext';
 import { useSharedData } from '@/store/SharedDataContext';
@@ -83,9 +84,9 @@ export default function Header() {
       );
     }
     return (
-      <a key={item.id} href={item.url} className={styles.navLink} onMouseEnter={() => prefetchOnHover(item.url)} onFocus={() => prefetchOnHover(item.url)}>
+      <Link key={item.id} href={item.url} className={styles.navLink} onMouseEnter={() => prefetchOnHover(item.url)} onFocus={() => prefetchOnHover(item.url)}>
         {item.label}
-      </a>
+      </Link>
     );
   };
 
@@ -124,9 +125,9 @@ export default function Header() {
                   );
                 }
                 return (
-                  <a key={child.id} href={child.url} className={styles.simpleDropdownItem} onMouseEnter={() => prefetchOnHover(child.url)}>
+                  <Link key={child.id} href={child.url} className={styles.simpleDropdownItem} onMouseEnter={() => prefetchOnHover(child.url)}>
                     {child.label}
-                  </a>
+                  </Link>
                 );
               })}
             </div>
@@ -145,9 +146,9 @@ export default function Header() {
       );
     }
     return (
-      <a key={item.id} href={item.url} className={styles.mobileNavBtn} onClick={() => setMobileOpen(false)}>
+      <Link key={item.id} href={item.url} className={styles.mobileNavBtn} onClick={() => setMobileOpen(false)}>
         {item.label}
-      </a>
+      </Link>
     );
   };
 
@@ -171,23 +172,23 @@ export default function Header() {
           {isMegaMenu(item) ? (
             <>
               {services.map((svc) => (
-                <a
+                <Link
                   key={svc.id}
                   href={`/services/${svc.slug}`}
                   className={styles.mobileSubItem}
                   onClick={() => setMobileOpen(false)}
                 >
                   {svc.title}
-                </a>
+                </Link>
               ))}
-              <a
+              <Link
                 href="/services"
                 className={styles.mobileSubItem}
                 style={{ fontWeight: 600, color: 'var(--color-primary)' }}
                 onClick={() => setMobileOpen(false)}
               >
                 View All Services →
-              </a>
+              </Link>
             </>
           ) : (
             children.map((child: any) => {
@@ -199,9 +200,9 @@ export default function Header() {
                 );
               }
               return (
-                <a key={child.id} href={child.url} className={styles.mobileSubItem} onClick={() => setMobileOpen(false)}>
+                <Link key={child.id} href={child.url} className={styles.mobileSubItem} onClick={() => setMobileOpen(false)}>
                   {child.label}
-                </a>
+                </Link>
               );
             })
           )}
@@ -234,9 +235,9 @@ export default function Header() {
         </nav>
 
         <div className={styles.desktopActions}>
-          <a href="/free-trial" className={styles.demoCta}>
+          <Link href="/free-trial" className={styles.demoCta}>
             Free Trial
-          </a>
+          </Link>
         </div>
 
         <button
@@ -259,9 +260,9 @@ export default function Header() {
           <div className={styles.mobileDivider} />
         </div>
         <div className={styles.mobileActions}>
-          <a href="/free-trial" className={`${styles.mobileActionBtn} ${styles.mobileActionBtnPrimary}`}>
+          <Link href="/free-trial" className={`${styles.mobileActionBtn} ${styles.mobileActionBtnPrimary}`} onClick={() => setMobileOpen(false)}>
             Free Trial
-          </a>
+          </Link>
         </div>
       </div>
     </>

@@ -23,7 +23,7 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
             <OptimizedImage src={post.featured_image} alt={post.title} className={styles.cardImg} width={400} height={260} />
           ) : (
             <div className={styles.cardImgPlaceholder}>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><path d="m21 15-5-5L5 21" /></svg>
             </div>
           )}
           {post.is_featured && <span className={styles.featuredBadge}><Star size={10} /> Featured</span>}
@@ -170,7 +170,7 @@ export default function BlogClient({
                   </div>
                 </Reveal>
               )}
-              <Reveal variant="fadeUp" delay={100}>
+              {/* <Reveal variant="fadeUp" delay={100}>
                 <div className={styles.newsletterSection}>
                   <div className={styles.newsletterCard}>
                     <Mail size={28} />
@@ -182,7 +182,7 @@ export default function BlogClient({
                     </form>
                   </div>
                 </div>
-              </Reveal>
+              </Reveal> */}
             </>
           )}
         </div>

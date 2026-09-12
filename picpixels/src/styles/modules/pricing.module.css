@@ -785,7 +785,7 @@
 
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
-  .headerSection { padding: 6rem 1.5rem 4rem; }
+  .headerSection { padding: 7rem 1.25rem 3.5rem; }
   .pricingSection { padding: 1rem 1rem 4rem; }
   .section, .sectionAlt, .faqSection, .ctaSection, .compareSection { padding: 4rem 1rem; }
   .card { padding: 1.75rem 1.25rem; min-height: 500px; }

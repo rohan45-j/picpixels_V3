@@ -120,7 +120,7 @@ export default function GuideDetailClient({
           }
         }
       },
-      { rootMargin: '-80px 0px -60% 0px', threshold: 0 },
+      { rootMargin: '-136px 0px -60% 0px', threshold: 0 },
     );
     for (const id of ids) {
       const el = document.getElementById(id);
@@ -164,7 +164,7 @@ export default function GuideDetailClient({
               {item.author && (
                 <span className={styles.heroMetaItem}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
                   </svg>
                   {item.author}
                 </span>
@@ -172,21 +172,21 @@ export default function GuideDetailClient({
               {item.publish_date && (
                 <span className={styles.heroMetaItem}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><path d="M16 2v4" /><path d="M8 2v4" /><path d="M3 10h18" />
                   </svg>
                   {formatDateShort(item.publish_date)}
                 </span>
               )}
               <span className={styles.heroMetaItem}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                  <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
                 </svg>
                 {readTime} min read
               </span>
               {item.updated_at && (
                 <span className={styles.heroMetaItem}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v6h-6"/>
+                    <path d="M21 12a9 9 0 1 1-9-9" /><path d="M21 3v6h-6" />
                   </svg>
                   Updated {formatDateShort(item.updated_at)}
                 </span>
@@ -239,14 +239,14 @@ export default function GuideDetailClient({
                   {copied ? (
                     <>
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12"/>
+                        <polyline points="20 6 9 17 4 12" />
                       </svg>
                       Copied!
                     </>
                   ) : (
                     <>
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51l6.83 3.98"/><path d="M15.41 6.51l-6.82 3.98"/>
+                        <circle cx="18" cy="5" r="3" /><circle cx="6" cy="12" r="3" /><circle cx="18" cy="19" r="3" /><path d="M8.59 13.51l6.83 3.98" /><path d="M15.41 6.51l-6.82 3.98" />
                       </svg>
                       Share
                     </>
@@ -270,7 +270,7 @@ export default function GuideDetailClient({
                 >
                   <span className={styles.navArrow}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m15 18-6-6 6-6"/>
+                      <path d="m15 18-6-6 6-6" />
                     </svg>
                   </span>
                   <div className={styles.navInfo}>
@@ -292,7 +292,7 @@ export default function GuideDetailClient({
                   </div>
                   <span className={styles.navArrow}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="m9 18 6-6-6-6"/>
+                      <path d="m9 18 6-6-6-6" />
                     </svg>
                   </span>
                 </Link>
@@ -339,7 +339,7 @@ export default function GuideDetailClient({
       )}
 
       {/* CTA */}
-      <section className={styles.cta}>
+      {/* <section className={styles.cta}>
         <div className={styles.ctaInner}>
           <h2 className={styles.ctaTitle}>Need more help?</h2>
           <p className={styles.ctaDesc}>
@@ -352,7 +352,7 @@ export default function GuideDetailClient({
             </svg>
           </Link>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }

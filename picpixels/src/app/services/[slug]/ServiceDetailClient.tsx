@@ -8,10 +8,9 @@ import SectionHeading from '@/components/ui/SectionHeading';
 import { renderHighlightedText } from '@/utils/textHighlight';
 import '@/components/media/gallery.css';
 import styles from '@/styles/modules/services.module.css';
-import faqStyles from '@/styles/modules/faq-accordion.module.css';
 import type { BrandLogo } from '@/services/public-api';
 import ServiceGallery from '@/components/media/ServiceGallery';
-import FAQAccordion from '@/components/ui/FAQAccordion';
+import FAQSection from '@/components/ui/FAQSection';
 import HighEndQualitySection from '@/components/ui/HighEndQualitySection';
 import ServiceEEATSection from '@/features/services/components/ServiceEEATSection';
 import TrustBar from '@/components/ui/TrustBar';
@@ -343,16 +342,14 @@ export default function ServiceDetailClient({
         ))
       )}
       {service.faqs && service.faqs.length > 0 && (
-        <section className={faqStyles.faqSection}>
-          <div className={faqStyles.faqInner}>
-            <SectionHeading
-              text={service.faq_title || `${service.title} - FAQs`}
-              color={service.faq_title_color}
-              subtitle={`Frequently asked questions about our ${service.title.toLowerCase()} service.`}
-            />
-            <FAQAccordion faqs={service.faqs} />
-          </div>
-        </section>
+        <FAQSection
+          faqs={service.faqs}
+          titlePrefix="Queries about"
+          brandOrSubject={service.title}
+          titleColor={service.faq_title_color}
+          subtitle={`Frequently asked questions about our ${service.title.toLowerCase()} service.`}
+          idPrefix={`service-faq-${service.slug || service.id}`}
+        />
       )}
       {related.length > 0 && (
         <section className={styles.relatedSection}>

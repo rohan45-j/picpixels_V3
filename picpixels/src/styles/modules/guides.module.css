@@ -146,7 +146,7 @@
 
 .heroContent {
   width: 100%;
-  padding: 7rem 0 3rem;
+  padding: 9.5rem 0 3.5rem;
 }
 
 .heroInner {
@@ -231,11 +231,33 @@
 .toc {
   flex-shrink: 0;
   width: 240px;
+  position: sticky;
+  top: 136px;
+  align-self: flex-start;
+  max-height: calc(100vh - 156px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.toc::-webkit-scrollbar {
+  width: 4px;
+}
+
+.toc::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 8px;
+}
+
+.toc::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary-dark);
+}
+
+.toc::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .tocInner {
-  position: sticky;
-  top: calc(96px + 1.5rem);
+  width: 100%;
 }
 
 .tocLabel {
@@ -306,7 +328,7 @@
   margin-top: 2.5rem;
   margin-bottom: 0.75rem;
   line-height: 1.3;
-  scroll-margin-top: 110px;
+  scroll-margin-top: 140px;
 }
 
 .fullContent h1 { font-size: 1.8rem; font-weight: 900; }
@@ -677,6 +699,10 @@
 }
 
 @media (max-width: 900px) {
+  .heroContent {
+    padding: 7.5rem 0 2.5rem;
+  }
+
   .articleContainer {
     flex-direction: column;
     gap: 0;
@@ -685,11 +711,14 @@
   .toc {
     width: 100%;
     margin-bottom: 2rem;
-    position: relative;
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+    align-self: auto;
   }
 
   .tocInner {
-    position: relative;
+    position: static;
     top: auto;
   }
 

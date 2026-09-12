@@ -33,32 +33,138 @@
   }
 }
 
-@media (max-width: 860px) {
-  .grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+@media (max-width: 768px) {
+  .footer {
+    padding: 3rem 0 1.5rem;
   }
 
-  .brandCol {
-    grid-column: 1 / -1;
-  }
-
-  .addressCol {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 540px) {
   .grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 2.25rem;
+    text-align: center;
   }
 
   .brandCol,
   .linksCol,
   .locationCol,
   .addressCol {
-    grid-column: auto;
+    grid-column: 1 / -1;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .logo {
+    justify-content: center;
+  }
+
+  .pitch {
+    text-align: center;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+
+  .colTitle {
+    text-align: center;
+  }
+
+  .list {
+    align-items: center;
+  }
+
+  .list li {
+    text-align: center;
+    width: 100%;
+  }
+
+  .list li a {
+    text-align: center;
+  }
+
+  .list li a:hover {
+    transform: none;
+  }
+
+  .locationCol {
+    align-items: center;
+  }
+
+  .locationCard {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .locationHeader {
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .locationList {
+    text-align: center;
+  }
+
+  .locationList li a {
+    text-align: center;
+  }
+
+  .locationList li a:hover {
+    padding-left: 0;
+  }
+
+  .addressCol {
+    align-items: center;
+    text-align: center;
+  }
+
+  .addressTitle {
+    text-align: center;
+  }
+
+  .officeBlock {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .officeHeading {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .addressItem {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+  }
+
+  .copy {
+    text-align: center;
+    width: 100%;
+  }
+
+  .legalLinks {
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .socials {
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .developedBy {
+    text-align: center;
+    width: 100%;
   }
 }
 
@@ -259,21 +365,6 @@ a.addressItem:hover {
   gap: 1.25rem;
 }
 
-@media (max-width: 860px) {
-  .bottom {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-  }
-
-  .legalLinks {
-    justify-content: center;
-  }
-
-  .socials {
-    justify-content: center;
-  }
-}
 
 .copy {
   font-size: 0.85rem;

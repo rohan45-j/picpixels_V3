@@ -6,6 +6,8 @@ import ServiceDetailClient from './ServiceDetailClient';
 import { fetchBrandLogos, fetchSiteSettings } from '@/services/public-api';
 import type { Service, Technology, Testimonial, BrandLogo, SiteSetting } from '@/services/public-api';
 
+import { cache } from 'react';
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
 async function fetchJson<T>(url: string): Promise<T | null> {
@@ -16,26 +18,29 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   return null;
 }
 
-async function fetchService(slug: string): Promise<Service | null> {
+const fetchService = cache(async (slug: string): Promise<Service | null> => {
   return fetchJson<Service>(`${API_BASE}/api/v1/cms/services/${slug}/`);
-}
+});
 
-async function fetchCoreServices(): Promise<Service[]> {
+const fetchCoreServices = cache(async (): Promise<Service[]> => {
   const data = await fetchJson<{ results: Service[] }>(`${API_BASE}/api/v1/cms/services/`);
   return data?.results || [];
-}
+});
 
-async function fetchTechnologies(): Promise<Technology[]> {
+const fetchTechnologies = cache(async (): Promise<Technology[]> => {
   const data = await fetchJson<{ results: Technology[] }>(`${API_BASE}/api/v1/cms/technologies/`);
   return data?.results || [];
-}
+});
 
-async function fetchTestimonials(): Promise<Testimonial[]> {
+const fetchTestimonials = cache(async (): Promise<Testimonial[]> => {
   const data = await fetchJson<{ results: Testimonial[] }>(`${API_BASE}/api/v1/cms/testimonials/`);
   return data?.results || [];
-}
+});
 
 export async function generateStaticParams() {
+  if (process.env.NODE_ENV === 'development') {
+    return [];
+  }
   const services = await fetchCoreServices();
   return services.filter((s) => s.slug).map((s) => ({ slug: s.slug }));
 }

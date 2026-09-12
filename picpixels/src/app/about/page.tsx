@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AboutClient from './AboutClient';
-import type { Testimonial, BrandLogo, SiteSetting } from '@/services/public-api';
-import { fetchBrandLogos, fetchSiteSettings } from '@/services/public-api';
+import type { Testimonial, BrandLogo, SiteSetting, AboutPageData } from '@/services/public-api';
+import { fetchBrandLogos, fetchSiteSettings, fetchAboutPageData } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
@@ -23,23 +23,31 @@ export default async function About() {
   let testimonials: Testimonial[] = [];
   let brandLogos: BrandLogo[] = [];
   let siteSettings: SiteSetting | null = null;
+  let aboutData: AboutPageData | null = null;
+
   try {
-    const resp = await fetch(`${BASE_URL}/api/v1/cms/testimonials/`, { next: { revalidate: 60 } });
-    if (resp.ok) {
-      const data = await resp.json();
-      testimonials = data.results || [];
-    }
-    brandLogos = await fetchBrandLogos();
-    siteSettings = await fetchSiteSettings();
+    const [testiResp, brands, settings, about] = await Promise.all([
+      fetch(`${BASE_URL}/api/v1/cms/testimonials/`, { next: { revalidate: 60 } })
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
+      fetchBrandLogos(),
+      fetchSiteSettings(),
+      fetchAboutPageData(),
+    ]);
+    testimonials = testiResp?.results || [];
+    brandLogos = brands;
+    siteSettings = settings;
+    aboutData = about;
   } catch {}
 
   return (
     <>
       <Header />
       <main id="main-content">
-        <AboutClient testimonials={testimonials} brandLogos={brandLogos} />
+        <AboutClient testimonials={testimonials} brandLogos={brandLogos} aboutData={aboutData} />
       </main>
       <Footer siteSettings={siteSettings} />
     </>
   );
 }
+

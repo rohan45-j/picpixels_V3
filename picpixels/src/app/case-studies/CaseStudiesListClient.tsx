@@ -195,7 +195,7 @@ export default function CaseStudiesListClient({
               <Link href="/contact" className={styles.heroCta}>
                 Start Your Project
                 <svg className={styles.heroCtaArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                  <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
                 </svg>
               </Link>
               <Link href="/services" className={styles.heroCtaSecondary}>
@@ -212,7 +212,7 @@ export default function CaseStudiesListClient({
           <div className={styles.controlsInner}>
             <div className={styles.searchWrap}>
               <svg className={styles.searchIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
               </svg>
               <input
                 type="text"
@@ -242,7 +242,7 @@ export default function CaseStudiesListClient({
             <div className={styles.controlsRight}>
               <div className={styles.sortWrap}>
                 <svg className={styles.sortIcon} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M11 5h10"/><path d="M11 9h7"/><path d="M11 13h4"/><path d="m3 17 3 3 3-3"/><path d="M6 20V4"/>
+                  <path d="M11 5h10" /><path d="M11 9h7" /><path d="M11 13h4" /><path d="m3 17 3 3 3-3" /><path d="M6 20V4" />
                 </svg>
                 <select
                   className={styles.sortSelect}
@@ -257,7 +257,7 @@ export default function CaseStudiesListClient({
               {hasActiveFilters && (
                 <button className={styles.resetBtn} onClick={handleReset}>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                    <path d="M18 6 6 18" /><path d="m6 6 12 12" />
                   </svg>
                   Reset
                 </button>
@@ -298,7 +298,7 @@ export default function CaseStudiesListClient({
                   {featured.client_name && (
                     <span className={styles.featuredMetaItem}>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
                       </svg>
                       {featured.client_name}
                     </span>
@@ -306,7 +306,7 @@ export default function CaseStudiesListClient({
                   {featured.publish_date && (
                     <span className={styles.featuredMetaItem}>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><path d="M16 2v4" /><path d="M8 2v4" /><path d="M3 10h18" />
                       </svg>
                       {formatDate(featured.publish_date)}
                     </span>
@@ -315,7 +315,7 @@ export default function CaseStudiesListClient({
                 <span className={styles.featuredCta}>
                   View Case Study
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                    <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
                   </svg>
                 </span>
               </div>
@@ -350,7 +350,7 @@ export default function CaseStudiesListClient({
           ) : error ? (
             <div className={styles.errorState}>
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-muted)' }}>
-                <circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/>
+                <circle cx="12" cy="12" r="10" /><path d="M12 8v4" /><path d="M12 16h.01" />
               </svg>
               <h3>Failed to load case studies</h3>
               <p>Something went wrong. Please try again later.</p>
@@ -398,7 +398,7 @@ export default function CaseStudiesListClient({
                         {item.client_name && (
                           <span className={styles.cardMetaItem}>
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
                             </svg>
                             {item.client_name}
                           </span>
@@ -406,7 +406,7 @@ export default function CaseStudiesListClient({
                         {item.publish_date && (
                           <span className={styles.cardMetaItem}>
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>
+                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><path d="M16 2v4" /><path d="M8 2v4" /><path d="M3 10h18" />
                             </svg>
                             {formatDate(item.publish_date)}
                           </span>
@@ -414,7 +414,7 @@ export default function CaseStudiesListClient({
                         {item.reading_time > 0 && (
                           <span className={styles.cardMetaItem}>
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                              <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
                             </svg>
                             {item.reading_time} min
                           </span>
@@ -423,7 +423,7 @@ export default function CaseStudiesListClient({
                       <span className={styles.cardCta}>
                         Read More
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+                          <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
                         </svg>
                       </span>
                     </div>
@@ -432,7 +432,7 @@ export default function CaseStudiesListClient({
               ) : (
                 <div className={styles.empty}>
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--color-muted)' }}>
-                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><path d="M8 21h8"/><path d="M12 17v4"/>
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2" /><path d="M8 21h8" /><path d="M12 17v4" />
                   </svg>
                   <h3>No case studies found</h3>
                   <p>Try a different search or category.</p>
@@ -451,7 +451,7 @@ export default function CaseStudiesListClient({
       )}
 
       {/* Bottom CTA */}
-      <section className={styles.bottomCta}>
+      {/* <section className={styles.bottomCta}>
         <div className={styles.bottomCtaBg} />
         <div className={styles.bottomCtaInner}>
           <h2 className={styles.bottomCtaTitle}>Ready to Start Your Project?</h2>
@@ -470,7 +470,7 @@ export default function CaseStudiesListClient({
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }

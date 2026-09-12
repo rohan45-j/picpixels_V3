@@ -421,3 +421,53 @@
   .statsRow { grid-template-columns: 1fr; }
   .iconSection { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
 }
+
+/* ─── Rich HTML Content (from CMS) ─── */
+.richContent {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--color-muted);
+}
+.richContent p {
+  margin-bottom: 1rem;
+}
+.richContent ul, .richContent ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.richContent ul {
+  list-style: none;
+}
+.richContent ul li {
+  margin-bottom: 0.4rem;
+  position: relative;
+  padding-left: 0.25rem;
+}
+.richContent ul li::before {
+  content: '';
+  position: absolute;
+  left: -1rem;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  opacity: 0.5;
+}
+.richContent ol li {
+  margin-bottom: 0.5rem;
+}
+.richContent strong {
+  color: var(--color-text);
+}
+.richContent .highlight-box {
+  background: rgba(255,138,80,0.05);
+  border-left: 4px solid var(--primary);
+  border-radius: 0 10px 10px 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+.richContent .highlight-box p {
+  margin: 0;
+}
+

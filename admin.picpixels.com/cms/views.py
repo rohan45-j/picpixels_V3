@@ -19,6 +19,10 @@ from .models import (
     FreeTrial, FreeTrialAttachment,
     WhyChooseSection, WhyChooseFeatureSection,
     HomepageCTASection,
+    AboutMissionVision, AboutCoreValue, AboutProcessStep, AboutPageSetting,
+    AboutStorySection,
+    PrivacyPolicyPage, PrivacyPolicySection,
+    TermsConditionPage, TermsClause,
 )
 from .serializers import (
     PageCategorySerializer, PageSerializer, SectionSerializer, BannerSerializer,
@@ -35,6 +39,15 @@ from .serializers import (
     WhyChooseSectionSerializer,
     WhyChooseFeatureSectionSerializer,
     HomepageCTASectionSerializer,
+    AboutMissionVisionSerializer,
+    AboutCoreValueSerializer,
+    AboutProcessStepSerializer,
+    AboutPageSettingSerializer,
+    AboutStorySectionSerializer,
+    PrivacyPolicyPageSerializer,
+    PrivacyPolicySectionSerializer,
+    TermsConditionPageSerializer,
+    TermsClauseSerializer,
 )
 
 
@@ -115,9 +128,19 @@ class ServiceViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
                        'pricing_starting_price', 'pricing_unit', 'pricing_notes', 'pricing_features',
                        'pricing_cta_text', 'pricing_cta_link', 'pricing_cta2_text', 'pricing_cta2_link',
                       'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'show_in_related',
-                      'is_active', 'is_featured', 'created_at', 'updated_at')
+                      'is_active', 'is_featured', 'available_locations', 'created_at', 'updated_at')
         if self.request.query_params.get('all') != '1':
             qs = qs.filter(is_active=True)
+
+        location_param = self.request.query_params.get('location')
+        if location_param:
+            loc_clean = location_param.strip().lower().replace('-', ' ')
+            qs = qs.filter(
+                models.Q(available_locations=[]) |
+                models.Q(available_locations__isnull=True) |
+                models.Q(available_locations__icontains=loc_clean)
+            )
+
         return qs.order_by('order')
 
     def get_serializer_class(self):
@@ -419,3 +442,215 @@ class HomepageCTASectionViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewS
     queryset = HomepageCTASection.objects.filter(is_active=True)
     serializer_class = HomepageCTASectionSerializer
     permission_classes = [permissions.AllowAny]
+
+
+# ═══════════════════════════════════════════════════════════
+# ABOUT PAGE VIEWSETS
+# ═══════════════════════════════════════════════════════════
+
+class AboutMissionVisionViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = AboutMissionVision.objects.filter(is_active=True).order_by('display_order', 'id')
+    serializer_class = AboutMissionVisionSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class AboutCoreValueViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = AboutCoreValue.objects.filter(is_active=True).order_by('display_order', 'id')
+    serializer_class = AboutCoreValueSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class AboutProcessStepViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = AboutProcessStep.objects.filter(is_active=True).order_by('display_order', 'id')
+    serializer_class = AboutProcessStepSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class AboutPageSettingViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = AboutPageSetting.objects.all()
+    serializer_class = AboutPageSettingSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class AboutStorySectionViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = AboutStorySection.objects.filter(is_active=True)
+    serializer_class = AboutStorySectionSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class AboutPageDataView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        settings_obj = AboutPageSetting.objects.first()
+        settings_data = AboutPageSettingSerializer(settings_obj).data if settings_obj else None
+        story_obj = AboutStorySection.objects.filter(is_active=True).first()
+        story_data = AboutStorySectionSerializer(story_obj, context={'request': request}).data if story_obj else None
+        mission_vision = AboutMissionVision.objects.filter(is_active=True).order_by('display_order', 'id')
+        core_values = AboutCoreValue.objects.filter(is_active=True).order_by('display_order', 'id')
+        process_steps = AboutProcessStep.objects.filter(is_active=True).order_by('display_order', 'id')
+
+        return Response({
+            'settings': settings_data,
+            'story': story_data,
+            'mission_vision': AboutMissionVisionSerializer(mission_vision, many=True, context={'request': request}).data,
+            'core_values': AboutCoreValueSerializer(core_values, many=True, context={'request': request}).data,
+            'process_steps': AboutProcessStepSerializer(process_steps, many=True, context={'request': request}).data,
+        })
+
+
+# ═══════════════════════════════════════════════════════════
+# LEGAL & POLICY VIEWS
+# ═══════════════════════════════════════════════════════════
+
+class PrivacyPolicyView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        page = PrivacyPolicyPage.objects.filter(is_active=True).first()
+        if not page:
+            return Response(None, status=status.HTTP_404_NOT_FOUND)
+        serializer = PrivacyPolicyPageSerializer(page, context={'request': request})
+        return Response(serializer.data)
+
+
+class PrivacyPolicySectionViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = PrivacyPolicySection.objects.filter(is_active=True).order_by('display_order', 'id')
+    serializer_class = PrivacyPolicySectionSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class TermsConditionView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        page = TermsConditionPage.objects.filter(is_active=True).first()
+        if not page:
+            return Response(None, status=status.HTTP_404_NOT_FOUND)
+        serializer = TermsConditionPageSerializer(page, context={'request': request})
+        return Response(serializer.data)
+
+
+class TermsClauseViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = TermsClause.objects.filter(is_active=True).order_by('display_order', 'id')
+    serializer_class = TermsClauseSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class HomepageDataView(APIView):
+    """Consolidated homepage endpoint aggregating all sections into 1 response."""
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        from django.core.cache import cache
+        cache_key = 'consolidated_homepage_data_v1'
+        cached = cache.get(cache_key)
+        if cached:
+            resp = Response(cached)
+            resp['Cache-Control'] = 'public, max-age=60, s-maxage=120'
+            return resp
+
+        # 1. Services
+        services_qs = Service.objects.filter(is_active=True, show_on_homepage=True, is_featured=True).order_by('order')
+        services_data = ServiceListSerializer(services_qs, many=True, context={'request': request}).data
+
+        # 2. Testimonials
+        testimonials_qs = Testimonial.objects.filter(is_active=True).order_by('order')
+        testimonials_data = TestimonialSerializer(testimonials_qs, many=True, context={'request': request}).data
+
+        # 3. Technologies
+        technologies_qs = Technology.objects.filter(is_active=True).order_by('display_order')
+        technologies_data = TechnologySerializer(technologies_qs, many=True, context={'request': request}).data
+
+        # 4. Portfolios & Categories
+        try:
+            from portfolio.models import Portfolio, Category
+            from portfolio.serializers import PortfolioSerializer, CategorySerializer
+            portfolios_qs = Portfolio.objects.filter(is_published=True, featured=True).select_related('category', 'service')[:8]
+            if not portfolios_qs:
+                portfolios_qs = Portfolio.objects.filter(is_published=True).select_related('category', 'service')[:8]
+            portfolios_data = PortfolioSerializer(portfolios_qs, many=True, context={'request': request}).data
+            portfolio_cats_qs = Category.objects.filter(is_active=True).order_by('name')
+            portfolio_cats_data = CategorySerializer(portfolio_cats_qs, many=True, context={'request': request}).data
+        except Exception:
+            portfolios_data = []
+            portfolio_cats_data = []
+
+        # 5. Why Choose Us
+        why_choose_section = WhyChooseSection.objects.filter(is_active=True).prefetch_related('items').first()
+        why_choose_data = WhyChooseSectionSerializer(why_choose_section, context={'request': request}).data if why_choose_section else None
+
+        # 6. Latest Blogs
+        blogs_qs = BlogPost.objects.filter(status='published').select_related('category', 'author_profile').order_by('-published_at')[:4]
+        blogs_data = BlogPostListSerializer(blogs_qs, many=True, context={'request': request}).data
+
+        # 7. Case Studies
+        try:
+            from case_studies.models import CaseStudy
+            from case_studies.serializers import CaseStudyListSerializer
+            case_studies_qs = CaseStudy.objects.filter(status='published', featured=True).select_related('category')[:6]
+            if not case_studies_qs:
+                case_studies_qs = CaseStudy.objects.filter(status='published').select_related('category')[:6]
+            case_studies_data = CaseStudyListSerializer(case_studies_qs, many=True, context={'request': request}).data
+        except Exception:
+            case_studies_data = []
+
+        # 8. Why Choose Features
+        features_section = WhyChooseFeatureSection.objects.filter(is_active=True).prefetch_related('items').first()
+        features_data = WhyChooseFeatureSectionSerializer(features_section, context={'request': request}).data if features_section else None
+
+        # 9. Hero Data
+        hero = HeroSection.objects.filter(is_active=True).prefetch_related('slides', 'stats').first()
+        hero_data = HeroSectionSerializer(hero, context={'request': request}).data if hero else None
+
+        # 10. Brand Logos
+        brands_qs = BrandLogo.objects.filter(is_active=True).order_by('order')
+        brands_data = BrandLogoSerializer(brands_qs, many=True, context={'request': request}).data
+
+        # 11. Pricing Config
+        pricing_config = PricingConfigSection.objects.filter(is_active=True).prefetch_related('dropdown_options', 'cards', 'card_prices').first()
+        pricing_data = PricingConfigSectionSerializer(pricing_config, context={'request': request}).data if pricing_config else None
+
+        # 12. Site Settings
+        try:
+            from site_settings.models import SiteSetting
+            from site_settings.serializers import SiteSettingSerializer
+            site_setting = SiteSetting.objects.first()
+            site_settings_data = SiteSettingSerializer(site_setting, context={'request': request}).data if site_setting else None
+        except Exception:
+            site_settings_data = None
+
+        # 13. Homepage CTA
+        cta_section = HomepageCTASection.objects.filter(is_active=True).first()
+        cta_data = HomepageCTASectionSerializer(cta_section, context={'request': request}).data if cta_section else None
+
+        # 14. FAQs
+        faqs_qs = FAQ.objects.filter(is_active=True).order_by('order')[:10]
+        faqs_data = FAQSerializer(faqs_qs, many=True, context={'request': request}).data
+
+        payload = {
+            'services': services_data,
+            'testimonials': testimonials_data,
+            'technologies': technologies_data,
+            'portfolios': portfolios_data,
+            'portfolioCategories': portfolio_cats_data,
+            'whyChooseUs': why_choose_data,
+            'latestBlogs': blogs_data,
+            'caseStudies': case_studies_data,
+            'whyChooseFeatures': features_data,
+            'heroData': hero_data,
+            'brandLogos': brands_data,
+            'pricingConfig': pricing_data,
+            'siteSettings': site_settings_data,
+            'homepageCTA': cta_data,
+            'faqs': faqs_data,
+        }
+
+        cache.set(cache_key, payload, timeout=120)
+        resp = Response(payload)
+        resp['Cache-Control'] = 'public, max-age=60, s-maxage=120'
+        return resp
+
+
+
+

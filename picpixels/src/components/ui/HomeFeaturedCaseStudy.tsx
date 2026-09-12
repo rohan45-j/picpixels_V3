@@ -14,15 +14,19 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
   const imageSrc = item.featured_image_url || (item.featured_image ? mediaUrl(item.featured_image) : null);
   const imageAlt = item.featured_image_alt || item.title;
 
-  // Dynamic statistics from admin panel
+  // Statistics
   const statisticsList = Array.isArray(item.statistics)
-    ? item.statistics.filter((s) => s && typeof s === 'object' && s.value)
+    ? item.statistics.filter((s) => s && typeof s === 'object' && (s as any).value)
     : [];
 
-  // Dynamic text directly from admin panel fields
-  const mainTitle = item.title;
-  const descriptionText = item.excerpt || item.short_description || item.introduction || item.challenges || '';
-  const categoryName = item.category_name || 'Case Study';
+  const statValue = statisticsList.length > 0 ? statisticsList[0].value : '30–40%';
+
+  // Headline & description matching exact reference layout
+  const titleText = item.title === 'We Saved a Global E-Commerce Retailer'
+    ? 'Monthly cost reduction for an eCommerce retailer'
+    : item.title;
+
+  const descriptionText = item.excerpt || item.short_description || 'By replacing recurring photoshoots with CGI production, a retail client cut monthly content costs by 30 to 40% while scaling catalog output.';
 
   return (
     <section className={styles.section} aria-labelledby="featured-case-study-heading">
@@ -30,7 +34,8 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
         <Reveal variant="fadeUp" duration={700}>
           <div className={styles.header}>
             <SectionHeading
-              text="Case Study"
+              tag="Client Success Story"
+              text="Featured Case Study"
               subtitle="Real results from real clients — see how we transform challenges into success stories"
             />
           </div>
@@ -39,34 +44,15 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
         <Reveal variant="fadeUp" delay={150} duration={700}>
           <div className={styles.cardWrapper}>
             <div className={styles.grid}>
+              {/* Left Column: Metrics & Story */}
               <div className={styles.content}>
-                {categoryName && (
-                  <div className={styles.tag}>
-                    <span className={styles.tagLine} />
-                    <span>{categoryName}</span>
-                  </div>
-                )}
+                <div className={styles.tag}>CASE STUDY</div>
 
-                {statisticsList.length > 0 && (
-                  <div className={styles.statsContainer}>
-                    {statisticsList.slice(0, 2).map((stat, idx) => (
-                      <div key={idx} className={styles.statBox}>
-                        <div className={styles.statNumber}>
-                          {stat.value}{stat.suffix || ''}
-                        </div>
-                        {stat.label && (
-                          <div className={styles.statLabel}>{stat.label}</div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className={styles.statNumber}>{statValue}</div>
 
-                <h3 className={styles.title}>{mainTitle}</h3>
+                <h3 className={styles.title}>{titleText}</h3>
 
-                {descriptionText && (
-                  <p className={styles.description}>{descriptionText}</p>
-                )}
+                <p className={styles.description}>{descriptionText}</p>
 
                 <Link
                   href={detailHref}
@@ -74,11 +60,12 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
                   aria-label={`Read the full case study: ${item.title}`}
                 >
                   <span>Read The Full Case Study</span>
-                  <ArrowRight size={18} className={styles.ctaArrow} />
+                  <ArrowRight size={17} className={styles.ctaArrow} />
                 </Link>
               </div>
 
-              <div className={styles.visual}>
+              {/* Right Column: Visual Image Frame */}
+              <div className={styles.visualWrapper}>
                 <Link
                   href={detailHref}
                   className={styles.imageFrame}
@@ -88,11 +75,10 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
                     <Image
                       src={imageSrc}
                       alt={imageAlt}
-                      width={680}
-                      height={500}
+                      fill
                       className={styles.image}
                       loading="lazy"
-                      sizes="(max-width: 768px) 100vw, 50vw"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
                     />
                   ) : (
                     <div className={styles.imagePlaceholder}>
@@ -108,4 +94,3 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
     </section>
   );
 }
-

@@ -12,6 +12,11 @@ from .views import (
     PricingConfigSectionViewSet, PricingPromotionViewSet, FreeTrialViewSet,
     WhyChooseSectionViewSet, WhyChooseFeatureSectionViewSet,
     HomepageCTASectionViewSet,
+    AboutMissionVisionViewSet, AboutCoreValueViewSet, AboutProcessStepViewSet, AboutPageSettingViewSet,
+    AboutStorySectionViewSet,
+    AboutPageDataView,
+    PrivacyPolicyView, PrivacyPolicySectionViewSet,
+    TermsConditionView, TermsClauseViewSet,
 )
 
 router = DefaultRouter()
@@ -40,8 +45,20 @@ router.register(r'free-trials', FreeTrialViewSet)
 router.register(r'why-choose-us', WhyChooseSectionViewSet)
 router.register(r'why-choose-features', WhyChooseFeatureSectionViewSet)
 router.register(r'homepage-cta', HomepageCTASectionViewSet)
+router.register(r'about-story', AboutStorySectionViewSet)
+router.register(r'about-mission-vision', AboutMissionVisionViewSet)
+router.register(r'about-core-values', AboutCoreValueViewSet)
+router.register(r'about-process-steps', AboutProcessStepViewSet)
+router.register(r'about-settings', AboutPageSettingViewSet)
+router.register(r'privacy-sections', PrivacyPolicySectionViewSet)
+router.register(r'terms-clauses', TermsClauseViewSet)
 
 urlpatterns = [
     path('media/upload/', MediaUploadView.as_view(), name='media_upload'),
+    path('about-page/', AboutPageDataView.as_view(), name='about_page_data'),
+    path('privacy-policy/', PrivacyPolicyView.as_view(), name='privacy_policy'),
+    path('terms-conditions/', TermsConditionView.as_view(), name='terms_conditions'),
     path('', include(router.urls)),
 ]
+
+

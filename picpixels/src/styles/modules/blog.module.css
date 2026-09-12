@@ -294,9 +294,9 @@
   flex-shrink: 0;
   padding-right: 4px;
   position: sticky;
-  top: 100px;
+  top: 136px;
   align-self: flex-start;
-  max-height: calc(100vh - 120px);
+  max-height: calc(100vh - 156px);
   overflow-y: auto;
   scrollbar-width: thin;
   scroll-behavior: smooth;
@@ -680,6 +680,9 @@
   line-height: 1.8;
   color: var(--color-text);
 }
+.contentArea [id] {
+  scroll-margin-top: 140px;
+}
 .contentArea h2,
 .contentP h2,
 .contentH2 {
@@ -687,7 +690,7 @@
   font-weight: 700;
   margin: 2.5rem 0 1rem;
   line-height: 1.3;
-  scroll-margin-top: 90px;
+  scroll-margin-top: 140px;
 }
 .contentArea h3,
 .contentP h3,
@@ -696,7 +699,7 @@
   font-weight: 600;
   margin: 1.8rem 0 0.75rem;
   line-height: 1.35;
-  scroll-margin-top: 90px;
+  scroll-margin-top: 140px;
 }
 .contentArea h4,
 .contentP h4,
@@ -705,7 +708,7 @@
   font-weight: 600;
   margin: 1.5rem 0 0.5rem;
   line-height: 1.35;
-  scroll-margin-top: 90px;
+  scroll-margin-top: 140px;
   color: var(--color-text);
 }
 .contentArea h5,
@@ -715,7 +718,7 @@
   font-weight: 600;
   margin: 1.25rem 0 0.5rem;
   line-height: 1.35;
-  scroll-margin-top: 90px;
+  scroll-margin-top: 140px;
   color: var(--color-muted);
 }
 .contentArea h6,
@@ -725,7 +728,7 @@
   font-weight: 600;
   margin: 1rem 0 0.5rem;
   line-height: 1.35;
-  scroll-margin-top: 90px;
+  scroll-margin-top: 140px;
   color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: 0.03em;
@@ -1034,7 +1037,7 @@
   .heroTitle { font-size: 2.2rem; }
   .grid { grid-template-columns: 1fr; }
   .breadcrumbInner { padding: 0 1rem; }
-  .detailLayout { padding: 1.5rem 1rem 2rem; }
+  .detailLayout { padding: 6.5rem 1rem 2rem; }
   .detailSidebar { padding: 0; }
   .toc { max-width: 100%; margin: 0.75rem auto 0; }
   .tocList { padding: 0.25rem 0.5rem 0.75rem; }

@@ -164,6 +164,19 @@ else:
         }
     }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'picpixels-cache',
+        'TIMEOUT': 300,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000,
+        }
+    }
+}
+
+PUBLIC_CACHE_TTL = 300
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -430,6 +443,31 @@ UNFOLD = {
                     {"title": "Team Members",        "icon": "group",          "link": "/admin/cms/teammember/"},
                     {"title": "FAQ Categories",      "icon": "bookmark",       "link": "/admin/cms/faqcategory/"},
                     {"title": "FAQs",                "icon": "quiz",           "link": "/admin/cms/faq/"},
+                ],
+            },
+            {
+                "title": "About Page",
+                "icon": "info",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Company Story (Who We Are)","icon": "auto_stories",         "link": "/admin/cms/aboutstorysection/"},
+                    {"title": "Mission & Vision",          "icon": "visibility",           "link": "/admin/cms/aboutmissionvision/"},
+                    {"title": "Our Core Values",           "icon": "stars",                "link": "/admin/cms/aboutcorevalue/"},
+                    {"title": "Our Simple 6-Step Process", "icon": "format_list_numbered", "link": "/admin/cms/aboutprocessstep/"},
+                    {"title": "Section Headings",          "icon": "tune",                 "link": "/admin/cms/aboutpagesetting/"},
+                ],
+            },
+            {
+                "title": "Legal & Policies",
+                "icon": "policy",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Privacy Policy",         "icon": "shield",       "link": "/admin/cms/privacypolicypage/"},
+                    {"title": "Privacy Sections",       "icon": "description",  "link": "/admin/cms/privacypolicysection/"},
+                    {"title": "Terms & Conditions",     "icon": "gavel",        "link": "/admin/cms/termsconditionpage/"},
+                    {"title": "Terms Clauses",          "icon": "article",      "link": "/admin/cms/termsclause/"},
                 ],
             },
             {

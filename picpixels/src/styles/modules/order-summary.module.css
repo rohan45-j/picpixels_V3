@@ -147,7 +147,7 @@
 /* ═══════════════════════════════════════════════
    SIDEBAR
    ═══════════════════════════════════════════════ */
-.sidebar { position: sticky; top: 6rem; }
+.sidebar { position: sticky; top: 130px; }
 .sidebarCard { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 16px; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
 .sidebarTitle { font-family: Arial, Helvetica, sans-serif; font-size: 1.05rem; font-weight: 800; color: var(--color-text, #111827); margin: 0 0 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(0,0,0,0.04); }
 .sidebarBody { margin-bottom: 1rem; }

@@ -6,6 +6,8 @@ import Link from 'next/link';
 import styles from './MegaMenu.module.css';
 import type { Service } from '@/services/public-api';
 
+const MotionLink = motion(Link);
+
 interface MegaMenuProps {
   services: Service[];
 }
@@ -31,7 +33,7 @@ export default function MegaMenu({ services }: MegaMenuProps) {
           <div className={styles.servicesGrid}>
             <div className={styles.servicesColumn}>
               {leftCol.map((svc, i) => (
-                <motion.a
+                <MotionLink
                   key={svc.id}
                   href={`/services/${svc.slug}`}
                   initial={{ opacity: 0, x: -10 }}
@@ -51,12 +53,12 @@ export default function MegaMenu({ services }: MegaMenuProps) {
                     )}
                   </div>
                   <span className={styles.menuLabel}>{svc.title}</span>
-                </motion.a>
+                </MotionLink>
               ))}
             </div>
             <div className={styles.servicesColumn}>
               {rightCol.map((svc, i) => (
-                <motion.a
+                <MotionLink
                   key={svc.id}
                   href={`/services/${svc.slug}`}
                   initial={{ opacity: 0, x: -10 }}
@@ -76,7 +78,7 @@ export default function MegaMenu({ services }: MegaMenuProps) {
                     )}
                   </div>
                   <span className={styles.menuLabel}>{svc.title}</span>
-                </motion.a>
+                </MotionLink>
               ))}
             </div>
           </div>

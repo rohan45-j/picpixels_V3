@@ -70,6 +70,11 @@
         <span class="svc-tab-icon">⚙️</span>
         <span class="svc-tab-label">SEO & Settings</span>
       </button>
+      <button type="button" class="svc-tab-btn" data-tab="location" role="tab" aria-selected="false">
+        <span class="svc-tab-icon">📍</span>
+        <span class="svc-tab-label">Location & Availability</span>
+        <span class="svc-tab-badge" id="badge-location" style="display:none">0</span>
+      </button>
       <button type="button" class="svc-tab-btn svc-tab-all" data-tab="all" role="tab" aria-selected="false">
         <span class="svc-tab-icon">👁️</span>
         <span class="svc-tab-label">View All</span>
@@ -168,6 +173,10 @@
       },
       'seo': {
         fieldsets: ['SEO & Display'],
+        inlines: []
+      },
+      'location': {
+        fieldsets: ['Location & Availability'],
         inlines: []
       }
     };
@@ -271,6 +280,23 @@
         var contentRows = contentGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form)');
         var contentBadge = document.getElementById('badge-content-sections');
         if (contentBadge) contentBadge.textContent = contentRows.length;
+      }
+
+      // Location count
+      var locInput = document.getElementById('id_available_locations');
+      var locBadge = document.getElementById('badge-location');
+      if (locInput && locBadge) {
+        try {
+          var locs = JSON.parse(locInput.value || '[]');
+          if (Array.isArray(locs) && locs.length > 0) {
+            locBadge.textContent = locs.length;
+            locBadge.style.display = '';
+          } else {
+            locBadge.style.display = 'none';
+          }
+        } catch(e) {
+          locBadge.style.display = 'none';
+        }
       }
     }
 

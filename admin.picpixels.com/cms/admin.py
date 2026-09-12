@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 from unfold.admin import ModelAdmin, TabularInline, StackedInline
 from unfold.decorators import display
 from core.widgets import CustomToggleSwitch, ModernDateTimeWidget, ModernDateWidget
-from .widgets import ContentBlockPreviewWidget, TagInputWidget, ColorPickerWidget
+from .widgets import ContentBlockPreviewWidget, TagInputWidget, ColorPickerWidget, LocationPickerWidget
 from .image_guidelines import IMG as IMG_GUIDELINES
 
 def _size_guide(key):
@@ -36,6 +36,10 @@ from .models import (
     ServiceWhyNeedFeature, ServiceProcessStep,
     ServiceWhyChooseCard, ServiceTool,
     ServicePricingTierCard, ServiceClientFeedback,
+    AboutMissionVision, AboutCoreValue, AboutProcessStep, AboutPageSetting,
+    AboutStorySection,
+    PrivacyPolicyPage, PrivacyPolicyStat, PrivacyPolicySection,
+    TermsConditionPage, TermsHighlight, TermsClause,
 )
 
 
@@ -499,6 +503,7 @@ class ServiceAdminForm(forms.ModelForm):
             'pricing_heading_color': ColorPickerWidget(),
             'features': TagInputWidget(),
             'pricing_features': TagInputWidget(),
+            'available_locations': LocationPickerWidget(),
             'is_active': CustomToggleSwitch,
             'is_featured': CustomToggleSwitch,
             'show_in_mega_menu': CustomToggleSwitch,
@@ -512,6 +517,7 @@ class ServiceAdminForm(forms.ModelForm):
             'slug': 'Auto-generated from title. Used in the page URL.',
             'short_description': 'Brief one-liner shown on service cards across the site.',
             'description': 'Full description displayed on the service detail page.',
+            'available_locations': 'Select or add locations where this service is available. Leave empty to make it available in all locations.',
             'icon': 'Material icon name or emoji, e.g. "brush", "✨".',
             'image': 'Recommended: 800 × 600 px (4:3). Thumbnail shown on service cards and listings.',
             'image_alt': 'Describes the thumbnail for screen readers and SEO. Auto-fills with filename by default.',
@@ -562,11 +568,20 @@ class ServiceAdminForm(forms.ModelForm):
                 return []
         return data if isinstance(data, list) else []
 
+    def clean_available_locations(self):
+        data = self.cleaned_data.get('available_locations')
+        if isinstance(data, str):
+            try:
+                return json.loads(data)
+            except json.JSONDecodeError:
+                return [x.strip() for x in data.split(',') if x.strip()]
+        return data if isinstance(data, list) else []
+
 
 @admin.register(Service)
 class ServiceAdmin(ModelAdmin):
     form = ServiceAdminForm
-    list_display = ('title', 'slug', 'price_display', 'order', 'is_active', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'icon_display', 'image_preview')
+    list_display = ('title', 'slug', 'locations_badge', 'price_display', 'order', 'is_active', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'icon_display', 'image_preview')
     list_filter = ('is_active', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer')
     list_filter_submit = True
     list_editable = ('order', 'is_active', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer')
@@ -633,6 +648,10 @@ class ServiceAdmin(ModelAdmin):
                 'pricing_cta2_text', 'pricing_cta2_link',
             ),
         }),
+        ('Location & Availability', {
+            'fields': ('available_locations',),
+            'description': 'Specify which geographic locations this service is available in. Click on any location chip to add or remove it. If none are selected, this service is available across all locations globally.',
+        }),
         ('SEO & Display', {
             'classes': ('collapse',),
             'fields': (
@@ -659,6 +678,17 @@ class ServiceAdmin(ModelAdmin):
             'admin/js/service_bulk_upload.js',
             'admin/js/service_admin_image_enhancer.js',
         )
+
+    @display(description='Locations')
+    def locations_badge(self, obj):
+        locs = obj.available_locations
+        if not locs or len(locs) == 0:
+            return format_html('<span style="background:#ecfdf5;color:#047857;border:1px solid #a7f3d0;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:4px;">🌐 All Locations</span>')
+        count = len(locs)
+        preview = ", ".join(locs[:2])
+        if count > 2:
+            preview += f" (+{count - 2})"
+        return format_html('<span style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:4px;">📍 {}</span>', preview)
 
     @display(description='Price')
     def price_display(self, obj):
@@ -2123,3 +2153,253 @@ class HomepageCTASectionAdmin(ModelAdmin):
             'description': 'Optional secondary button (e.g. "Contact Us"). Turn off the toggle switch if you only want 1 button.',
         }),
     )
+
+
+# ═══════════════════════════════════════════════════════════
+# ABOUT PAGE ADMIN
+# ═══════════════════════════════════════════════════════════
+
+@admin.register(AboutMissionVision)
+class AboutMissionVisionAdmin(ModelAdmin):
+    list_display = ('title', 'icon_name', 'icon_preview', 'display_order', 'is_active', 'updated_at')
+    list_editable = ('display_order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'description')
+    ordering = ('display_order', 'id')
+    list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        ('Card Content', {
+            'fields': ('title', 'description', 'display_order', 'is_active'),
+        }),
+        ('Icon & Visuals', {
+            'fields': ('icon_name', 'icon_image'),
+            'description': 'Enter a Lucide icon name (e.g. Target, Eye, Compass, Flag, Shield, Award, Sparkles, Heart) or upload a custom icon/image.',
+        }),
+    )
+
+    def icon_preview(self, obj):
+        if obj.icon_image:
+            return format_html('<img src="{}" style="max-height:30px; border-radius:4px;" />', obj.icon_image.url)
+        return obj.icon_name or '-'
+    icon_preview.short_description = 'Icon'
+
+
+@admin.register(AboutCoreValue)
+class AboutCoreValueAdmin(ModelAdmin):
+    list_display = ('title', 'icon_name', 'icon_preview', 'display_order', 'is_active', 'updated_at')
+    list_editable = ('display_order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'description')
+    ordering = ('display_order', 'id')
+    list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        ('Value Content', {
+            'fields': ('title', 'description', 'display_order', 'is_active'),
+        }),
+        ('Icon & Visuals', {
+            'fields': ('icon_name', 'icon_image'),
+            'description': 'Enter a Lucide icon name (e.g. Star, Zap, Sparkles, Shield, Globe, DollarSign, Award, CheckCircle, Heart, Users) or upload a custom icon/image.',
+        }),
+    )
+
+    def icon_preview(self, obj):
+        if obj.icon_image:
+            return format_html('<img src="{}" style="max-height:30px; border-radius:4px;" />', obj.icon_image.url)
+        return obj.icon_name or '-'
+    icon_preview.short_description = 'Icon'
+
+
+@admin.register(AboutProcessStep)
+class AboutProcessStepAdmin(ModelAdmin):
+    list_display = ('step_number', 'title', 'icon_name', 'icon_preview', 'display_order', 'is_active', 'updated_at')
+    list_editable = ('display_order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('step_number', 'title', 'description')
+    ordering = ('display_order', 'id')
+    list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        ('Step Information', {
+            'fields': ('step_number', 'title', 'description', 'display_order', 'is_active'),
+        }),
+        ('Icon & Visuals', {
+            'fields': ('icon_name', 'icon_image'),
+            'description': 'Enter a Lucide icon name (e.g. FileText, Mail, ClipboardCheck, Image, CheckCircle, TrendingUp, Sparkles, Send) or upload a custom icon/image.',
+        }),
+    )
+
+    def icon_preview(self, obj):
+        if obj.icon_image:
+            return format_html('<img src="{}" style="max-height:30px; border-radius:4px;" />', obj.icon_image.url)
+        return obj.icon_name or '-'
+    icon_preview.short_description = 'Icon'
+
+
+@admin.register(AboutPageSetting)
+class AboutPageSettingAdmin(ModelAdmin):
+    list_display = ('__str__', 'mission_section_title', 'values_section_title', 'process_section_title', 'updated_at')
+    list_fullwidth = True
+    fieldsets = (
+        ('Mission & Vision Section Header', {
+            'fields': ('mission_section_title', 'mission_section_subtitle'),
+        }),
+        ('Our Core Values Section Header', {
+            'fields': ('values_section_title', 'values_section_subtitle'),
+        }),
+        ('Our Simple 6-Step Process Section Header', {
+            'fields': ('process_section_title', 'process_section_subtitle'),
+        }),
+    )
+
+
+@admin.register(AboutStorySection)
+class AboutStorySectionAdmin(ModelAdmin):
+    list_display = ('title', 'icon_name', 'featured_image_preview', 'is_active', 'updated_at')
+    list_editable = ('is_active',)
+    list_filter = ('is_active',)
+    search_fields = ('title', 'subtitle', 'paragraph_1', 'paragraph_2', 'paragraph_3')
+    list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        ('Heading & Subtitle', {
+            'fields': ('title', 'subtitle', 'is_active'),
+        }),
+        ('Story Content (Paragraphs)', {
+            'fields': ('paragraph_1', 'paragraph_2', 'paragraph_3'),
+            'description': 'Text paragraphs displayed in the left column.',
+        }),
+        ('Right Column Media (Image or Icon)', {
+            'fields': ('featured_image', 'featured_image_alt', 'icon_name'),
+            'description': 'Upload a custom image for the right side or specify a Lucide icon name (default: Target) if no image is uploaded.',
+        }),
+    )
+
+    def featured_image_preview(self, obj):
+        if obj.featured_image:
+            return format_html('<img src="{}" style="max-height:30px; border-radius:4px;" />', obj.featured_image.url)
+        return obj.icon_name or 'Default Icon'
+    featured_image_preview.short_description = 'Media Preview'
+
+
+# ═══════════════════════════════════════════════════════════
+# LEGAL & POLICY PAGES ADMIN
+# ═══════════════════════════════════════════════════════════
+
+class PrivacyPolicyStatInline(TabularInline):
+    model = PrivacyPolicyStat
+    extra = 0
+    fields = ('value', 'label', 'display_order')
+
+
+class PrivacyPolicySectionInline(StackedInline):
+    model = PrivacyPolicySection
+    extra = 0
+    fields = ('title', 'icon_name', 'content', 'display_order', 'is_active')
+
+
+@admin.register(PrivacyPolicyPage)
+class PrivacyPolicyPageAdmin(ModelAdmin):
+    list_display = ('hero_title', 'last_updated', 'dpo_name', 'dpo_email', 'is_active', 'updated_at')
+    list_editable = ('is_active',)
+    list_fullwidth = True
+    inlines = [PrivacyPolicyStatInline, PrivacyPolicySectionInline]
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        ('Hero & Banner', {
+            'fields': ('hero_title', 'hero_subtitle', 'last_updated', 'is_active'),
+        }),
+        ('Introduction', {
+            'fields': ('intro_text',),
+        }),
+        ('Data Protection Officer / Contact Box', {
+            'fields': ('dpo_name', 'dpo_email', 'dpo_response_time'),
+            'description': 'Contact box displayed at the bottom of the privacy policy.',
+        }),
+    )
+
+
+@admin.register(PrivacyPolicySection)
+class PrivacyPolicySectionAdmin(ModelAdmin):
+    list_display = ('title', 'icon_name', 'display_order', 'is_active', 'updated_at')
+    list_editable = ('display_order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'content')
+    ordering = ('display_order', 'id')
+    list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        (None, {
+            'fields': ('page', 'title', 'icon_name', 'display_order', 'is_active'),
+        }),
+        ('Section Content', {
+            'fields': ('content',),
+            'description': 'HTML or text content (supports <p>, <ul>, <li>, <strong>, etc.)',
+        }),
+    )
+
+
+class TermsHighlightInline(TabularInline):
+    model = TermsHighlight
+    extra = 0
+    fields = ('number', 'title', 'description', 'display_order')
+
+
+class TermsClauseInline(StackedInline):
+    model = TermsClause
+    extra = 0
+    fields = ('title', 'anchor_id', 'content', 'display_order', 'is_active')
+
+
+@admin.register(TermsConditionPage)
+class TermsConditionPageAdmin(ModelAdmin):
+    list_display = ('hero_title', 'last_updated', 'is_active', 'updated_at')
+    list_editable = ('is_active',)
+    list_fullwidth = True
+    inlines = [TermsHighlightInline, TermsClauseInline]
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        ('Hero & Banner', {
+            'fields': ('hero_title', 'hero_subtitle', 'last_updated', 'is_active'),
+        }),
+    )
+
+
+@admin.register(TermsClause)
+class TermsClauseAdmin(ModelAdmin):
+    list_display = ('title', 'anchor_id', 'display_order', 'is_active', 'updated_at')
+    list_editable = ('display_order', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('title', 'content', 'anchor_id')
+    ordering = ('display_order', 'id')
+    list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        (None, {
+            'fields': ('page', 'title', 'anchor_id', 'display_order', 'is_active'),
+        }),
+        ('Clause Content', {
+            'fields': ('content',),
+            'description': 'HTML or text content (supports <p>, <ul>, <li>, <strong>, etc.)',
+        }),
+    )
+
+
+

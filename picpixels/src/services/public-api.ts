@@ -4,20 +4,11 @@ const DEFAULT_TIMEOUT = 10000;
 const DEFAULT_REVALIDATE = 60;
 
 function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCache } = {}): Promise<Response> {
-  const { revalidate = DEFAULT_REVALIDATE, cache = 'force-cache' } = options;
-  console.log('[API] Fetching:', url);
-  return fetch(url, {
-    cache,
-    next: { revalidate },
-    // Add timeout via AbortController
-    signal: AbortSignal.timeout(DEFAULT_TIMEOUT),
-  })
-    .then((resp) => {
-      console.log('[API] Response status:', resp.status, 'for', url);
-      return resp;
-    })
+  const { revalidate = DEFAULT_REVALIDATE, cache } = options;
+  const init: RequestInit = cache ? { cache } : { next: { revalidate } };
+  return fetch(url, init)
     .catch((err) => {
-      console.error(`[API] Network error fetching ${url}:`, err);
+      console.error(`[API] Network error fetching ${url}:`, err?.message || err);
       return new Response(null, { status: 503, statusText: 'Service Unavailable' });
     });
 }
@@ -41,6 +32,7 @@ export interface HomepageData {
   brandLogos: BrandLogo[];
   pricingConfig: PricingConfigSectionData | null;
   siteSettings: SiteSetting | null;
+  faqs?: FAQ[];
 }
 
 export async function fetchHomepageData(): Promise<HomepageData | null> {
@@ -290,6 +282,7 @@ export interface Service {
   show_in_related: boolean;
   is_active: boolean;
   is_featured: boolean;
+  available_locations?: string[];
   content_blocks?: ContentBlock[];
   created_at: string;
   updated_at: string;
@@ -1012,10 +1005,10 @@ export async function fetchCMSPage(slug: string): Promise<CMSPage | null> {
 
 export async function fetchSiteSettings(): Promise<SiteSetting | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/settings/site/?_=${Date.now()}`, { cache: 'no-store', revalidate: 0 });
+    const resp = await apiFetch(`${BASE_URL}/api/v1/settings/site/`, { revalidate: 300 });
     if (!resp.ok) return null;
     const data = await resp.json();
-    return data.results?.[0] ?? null;
+    return data.results?.[0] ?? data ?? null;
   } catch (e) {
     console.error('Failed to fetch Site Settings', e);
     return null;
@@ -1071,9 +1064,12 @@ export async function fetchHeroData(): Promise<HeroSection | null> {
   }
 }
 
-export async function fetchCoreServices(): Promise<Service[]> {
+export async function fetchCoreServices(location?: string): Promise<Service[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/?brief=1`);
+    const url = location
+      ? `${BASE_URL}/api/v1/cms/services/?brief=1&location=${encodeURIComponent(location)}`
+      : `${BASE_URL}/api/v1/cms/services/?brief=1`;
+    const resp = await apiFetch(url);
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1631,5 +1627,159 @@ export async function fetchHomepageCTASection(): Promise<HomepageCTASection | nu
     return null;
   }
 }
+
+export interface AboutMissionVisionItem {
+  id: number;
+  title: string;
+  description: string;
+  icon_name?: string;
+  icon_image?: string | null;
+  display_order: number;
+  is_active: boolean;
+}
+
+export interface AboutCoreValueItem {
+  id: number;
+  title: string;
+  description: string;
+  icon_name?: string;
+  icon_image?: string | null;
+  display_order: number;
+  is_active: boolean;
+}
+
+export interface AboutProcessStepItem {
+  id: number;
+  step_number: string;
+  title: string;
+  description: string;
+  icon_name?: string;
+  icon_image?: string | null;
+  display_order: number;
+  is_active: boolean;
+}
+
+export interface AboutPageSettingsData {
+  id?: number;
+  mission_section_title?: string;
+  mission_section_subtitle?: string;
+  values_section_title?: string;
+  values_section_subtitle?: string;
+  process_section_title?: string;
+  process_section_subtitle?: string;
+}
+
+export interface AboutStorySectionData {
+  id?: number;
+  title: string;
+  subtitle: string;
+  paragraph_1: string;
+  paragraph_2: string;
+  paragraph_3?: string;
+  featured_image?: string | null;
+  featured_image_alt?: string;
+  icon_name?: string;
+  is_active?: boolean;
+}
+
+export interface AboutPageData {
+  settings?: AboutPageSettingsData | null;
+  story?: AboutStorySectionData | null;
+  mission_vision: AboutMissionVisionItem[];
+  core_values: AboutCoreValueItem[];
+  process_steps: AboutProcessStepItem[];
+}
+
+export async function fetchAboutPageData(): Promise<AboutPageData | null> {
+  try {
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/about-page/`, { revalidate: 60 });
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch (e) {
+    console.error('Failed to fetch About Page data', e);
+    return null;
+  }
+}
+
+export interface PrivacyPolicyStatItem {
+  id: number;
+  value: string;
+  label: string;
+  display_order: number;
+}
+
+export interface PrivacyPolicySectionItem {
+  id: number;
+  title: string;
+  icon_name?: string;
+  content: string;
+  display_order: number;
+  is_active: boolean;
+}
+
+export interface PrivacyPolicyData {
+  id: number;
+  hero_title: string;
+  hero_subtitle: string;
+  last_updated: string;
+  intro_text: string;
+  dpo_name: string;
+  dpo_email: string;
+  dpo_response_time: string;
+  is_active: boolean;
+  stats: PrivacyPolicyStatItem[];
+  sections: PrivacyPolicySectionItem[];
+}
+
+export interface TermsHighlightItem {
+  id: number;
+  number: string;
+  title: string;
+  description: string;
+  display_order: number;
+}
+
+export interface TermsClauseItem {
+  id: number;
+  title: string;
+  anchor_id: string;
+  content: string;
+  display_order: number;
+  is_active: boolean;
+}
+
+export interface TermsConditionsData {
+  id: number;
+  hero_title: string;
+  hero_subtitle: string;
+  last_updated: string;
+  is_active: boolean;
+  highlights: TermsHighlightItem[];
+  clauses: TermsClauseItem[];
+}
+
+export async function fetchPrivacyPolicy(): Promise<PrivacyPolicyData | null> {
+  try {
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/privacy-policy/`, { revalidate: 60 });
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch (e) {
+    console.error('Failed to fetch Privacy Policy data', e);
+    return null;
+  }
+}
+
+export async function fetchTermsConditions(): Promise<TermsConditionsData | null> {
+  try {
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/terms-conditions/`, { revalidate: 60 });
+    if (!resp.ok) return null;
+    return await resp.json();
+  } catch (e) {
+    console.error('Failed to fetch Terms & Conditions data', e);
+    return null;
+  }
+}
+
+
 
 

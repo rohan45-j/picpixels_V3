@@ -18,10 +18,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function Services() {
+export default async function Services({
+  searchParams,
+}: {
+  searchParams?: Promise<{ location?: string }>;
+}) {
+  const resolvedParams = searchParams ? await searchParams : {};
+  const activeLocation = resolvedParams.location ? String(resolvedParams.location).trim() : '';
+
   let services: Service[] = [];
   try {
-    const resp = await fetch(`${BASE_URL}/api/v1/cms/services/?brief=1`, { next: { revalidate: 60 } });
+    const url = activeLocation
+      ? `${BASE_URL}/api/v1/cms/services/?brief=1&location=${encodeURIComponent(activeLocation)}`
+      : `${BASE_URL}/api/v1/cms/services/?brief=1`;
+    const resp = await fetch(url, { next: { revalidate: 60 } });
     if (resp.ok) {
       const data = await resp.json();
       services = data.results || data;
@@ -32,7 +42,7 @@ export default async function Services() {
     <>
       <Header />
       <main id="main-content">
-        <ServicesClient services={services} />
+        <ServicesClient services={services} initialLocation={activeLocation} />
       </main>
       <Footer />
     </>
