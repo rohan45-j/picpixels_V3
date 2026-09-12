@@ -1,0 +1,164 @@
+{% extends "admin/change_form.html" %}
+{% load i18n static admin_modify %}
+
+{% block extrahead %}
+  {{ block.super }}
+  <style>
+    .hero-admin-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      position: sticky;
+      top: 16px;
+      z-index: 35;
+      backdrop-filter: blur(8px);
+    }
+    .dark .hero-admin-topbar {
+      background: #1e293b;
+      border-color: #334155;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+    .hero-admin-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .hero-admin-topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 9999px;
+    }
+    .badge-active {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+    .badge-inactive {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .hero-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+    }
+    .dark .hero-mode-badge {
+      background: #334155;
+      color: #f8fafc;
+      border-color: #475569;
+    }
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease-in-out;
+      border: none;
+      line-height: 1.4;
+    }
+    .hero-btn-primary {
+      background: #FF6B35;
+      color: #ffffff !important;
+      box-shadow: 0 2px 6px rgba(255, 107, 53, 0.35);
+    }
+    .hero-btn-primary:hover {
+      background: #e05520;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(255, 107, 53, 0.45);
+    }
+    .hero-btn-secondary {
+      background: #ffffff;
+      color: #0f172a !important;
+      border: 1px solid #cbd5e1;
+    }
+    .dark .hero-btn-secondary {
+      background: #0f172a;
+      color: #f8fafc !important;
+      border-color: #475569;
+    }
+    .hero-btn-secondary:hover {
+      background: #f8fafc;
+      border-color: #94a3b8;
+    }
+    .dark .hero-btn-secondary:hover {
+      background: #1e293b;
+    }
+    .hero-preview-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #0284c7 !important;
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      transition: all 0.15s ease;
+    }
+    .hero-preview-link:hover {
+      background: #e0f2fe;
+    }
+    .dark .hero-preview-link {
+      background: rgba(2, 132, 199, 0.15);
+      border-color: rgba(2, 132, 199, 0.3);
+      color: #38bdf8 !important;
+    }
+  </style>
+{% endblock %}
+
+{% block form_top %}
+  <div class="hero-admin-topbar">
+    <div class="hero-admin-topbar-left">
+      <span class="hero-badge {% if original.is_active %}badge-active{% else %}badge-inactive{% endif %}">
+        {% if original.is_active %}● Active{% else %}○ Inactive{% endif %}
+      </span>
+      <span class="hero-mode-badge">
+        Current View: {% if original.visual_type == '3d' %}🧊 3D Model Viewer{% else %}🖼️ Image Slider{% endif %}
+      </span>
+    </div>
+    <div class="hero-admin-topbar-right">
+      <a href="http://localhost:3000/" target="_blank" class="hero-preview-link">
+        👁️ View Live Site
+      </a>
+      <button type="submit" name="_continue" value="Save and continue editing" class="hero-btn hero-btn-secondary">
+        Save & Continue Editing
+      </button>
+      <button type="submit" name="_save" value="Save" class="hero-btn hero-btn-primary">
+        💾 Save Changes
+      </button>
+    </div>
+  </div>
+{% endblock %}

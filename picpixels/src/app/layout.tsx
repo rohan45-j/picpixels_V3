@@ -71,8 +71,6 @@ export default async function RootLayout({
         <GTMHead settings={siteSettings} />
         <GA4Head settings={siteSettings} />
         <FacebookPixelHead settings={siteSettings} />
-        <OrganizationSchema settings={siteSettings} />
-        <CustomHeadInjector scripts={siteSettings?.custom_head_scripts} />
         {siteSettings?.favicon && (
           <>
             <link rel="icon" href={`${siteSettings.favicon}?v=${siteSettings.updated_at || ''}`} />
@@ -115,6 +113,8 @@ export default async function RootLayout({
         <Suspense fallback={null}>
           <NavigationProgressBar />
         </Suspense>
+        <OrganizationSchema settings={siteSettings} />
+        <CustomHeadInjector scripts={siteSettings?.custom_head_scripts} />
         <GTMBody settings={siteSettings} />
         <CustomBodyStartScripts settings={siteSettings} />
         <SiteSettingsProvider initialSettings={siteSettings}>

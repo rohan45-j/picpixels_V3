@@ -991,7 +991,9 @@ class ServiceHeroImageAdmin(ModelAdmin):
 
 class HeroSlideInline(TabularInline):
     model = HeroSlide
-    extra = 1
+    extra = 0
+    min_num = 0
+    can_delete_extra = True
     fields = ('image', 'alt_text', 'order', 'image_preview')
     readonly_fields = ('image_preview',)
     ordering = ('order',)
@@ -1005,7 +1007,9 @@ class HeroSlideInline(TabularInline):
 
 class HeroStatInline(TabularInline):
     model = HeroStat
-    extra = 1
+    extra = 0
+    min_num = 0
+    can_delete_extra = True
     fields = ('value', 'label', 'order')
     ordering = ('order',)
 
@@ -1016,7 +1020,10 @@ class HeroSectionAdmin(ModelAdmin):
     list_editable = ('visual_type', 'is_active')
     list_filter = ('visual_type', 'is_active')
     list_fullwidth = True
-    inlines = [HeroSlideInline, HeroStatInline]
+    save_on_top = True
+    change_form_template = 'admin/cms/herosection/change_form.html'
+
+
     formfield_overrides = {
         models.BooleanField: {'widget': CustomToggleSwitch},
     }

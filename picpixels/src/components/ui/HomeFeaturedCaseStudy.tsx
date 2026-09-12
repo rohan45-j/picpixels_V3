@@ -14,19 +14,21 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
   const imageSrc = item.featured_image_url || (item.featured_image ? mediaUrl(item.featured_image) : null);
   const imageAlt = item.featured_image_alt || item.title;
 
-  // Statistics
-  const statisticsList = Array.isArray(item.statistics)
-    ? item.statistics.filter((s) => s && typeof s === 'object' && (s as any).value)
-    : [];
+  // Statistics from Admin Panel
+  let statValue = '';
+  if (Array.isArray(item.statistics) && item.statistics.length > 0) {
+    const firstStat = item.statistics[0];
+    if (typeof firstStat === 'object' && firstStat !== null && 'value' in firstStat) {
+      statValue = String((firstStat as any).value || '');
+    } else if (typeof firstStat === 'string') {
+      statValue = firstStat;
+    }
+  }
 
-  const statValue = statisticsList.length > 0 ? statisticsList[0].value : '30–40%';
-
-  // Headline & description matching exact reference layout
-  const titleText = item.title === 'We Saved a Global E-Commerce Retailer'
-    ? 'Monthly cost reduction for an eCommerce retailer'
-    : item.title;
-
-  const descriptionText = item.excerpt || item.short_description || 'By replacing recurring photoshoots with CGI production, a retail client cut monthly content costs by 30 to 40% while scaling catalog output.';
+  // Dynamic Content from Admin Panel
+  const titleText = item.title;
+  const descriptionText = item.excerpt || item.short_description || '';
+  const categoryTag = item.category_name || 'CASE STUDY';
 
   return (
     <section className={styles.section} aria-labelledby="featured-case-study-heading">
@@ -46,9 +48,9 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
             <div className={styles.grid}>
               {/* Left Column: Metrics & Story */}
               <div className={styles.content}>
-                <div className={styles.tag}>CASE STUDY</div>
+                <div className={styles.tag}>{categoryTag}</div>
 
-                <div className={styles.statNumber}>{statValue}</div>
+                {statValue && <div className={styles.statNumber}>{statValue}</div>}
 
                 <h3 className={styles.title}>{titleText}</h3>
 

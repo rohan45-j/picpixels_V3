@@ -321,7 +321,7 @@ class HeroSlide(models.Model):
         HeroSection, on_delete=models.CASCADE,
         related_name='slides',
     )
-    image = models.ImageField(upload_to='hero/slides/', help_text=IMG['hero_slide'])
+    image = models.ImageField(upload_to='hero/slides/', blank=True, null=True, help_text=IMG['hero_slide'])
     alt_text = models.CharField(max_length=200, blank=True)
     order = models.PositiveIntegerField(default=0)
 
