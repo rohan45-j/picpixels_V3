@@ -37,7 +37,8 @@ export interface HomepageData {
 
 export async function fetchHomepageData(): Promise<HomepageData | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/homepage/`, { revalidate: 300 });
+    const revalidate = process.env.NODE_ENV === 'development' ? 5 : 60;
+    const resp = await apiFetch(`${BASE_URL}/api/v1/homepage/`, { revalidate });
     if (!resp.ok) return null;
     return await resp.json();
   } catch (e) {
@@ -530,6 +531,7 @@ export interface HeroStat {
 export interface HeroSection {
   id: number;
   is_active: boolean;
+  visual_type?: 'slider' | '3d';
   tagline: string;
   title: string;
   title_color?: string;
@@ -540,6 +542,9 @@ export interface HeroSection {
   cta_primary_link: string;
   cta_secondary_text: string;
   cta_secondary_link: string;
+  model_3d_embed_url?: string;
+  model_3d_file?: string | null;
+  model_3d_title?: string;
   slides: HeroSlide[];
   stats: HeroStat[];
   created_at: string;

@@ -25,12 +25,13 @@ export default async function Pricing() {
 
   try {
     const [faqsResp, promoResp] = await Promise.all([
-      fetch(`${BASE_URL}/api/v1/cms/faqs/`, { next: { revalidate: 60 } }),
+      fetch(`${BASE_URL}/api/v1/cms/faqs/?is_pricing_faq=true`, { next: { revalidate: 60 } }),
       fetch(`${BASE_URL}/api/v1/cms/pricing-promotions/`, { next: { revalidate: 60 } }),
     ]);
     if (faqsResp.ok) {
       const data = await faqsResp.json();
-      faqs = data.results || data;
+      const list = data.results || data || [];
+      faqs = Array.isArray(list) ? list.filter((f: FAQ) => f.is_active !== false) : [];
     }
     if (promoResp.ok) {
       const data = await promoResp.json();

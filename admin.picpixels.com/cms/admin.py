@@ -1012,8 +1012,9 @@ class HeroStatInline(TabularInline):
 
 @admin.register(HeroSection)
 class HeroSectionAdmin(ModelAdmin):
-    list_display = ('title_preview', 'is_active', 'updated_at')
-    list_editable = ('is_active',)
+    list_display = ('title_preview', 'visual_type', 'is_active', 'updated_at')
+    list_editable = ('visual_type', 'is_active')
+    list_filter = ('visual_type', 'is_active')
     list_fullwidth = True
     inlines = [HeroSlideInline, HeroStatInline]
     formfield_overrides = {
@@ -1021,10 +1022,15 @@ class HeroSectionAdmin(ModelAdmin):
     }
     fieldsets = (
         (None, {
-            'fields': ('is_active',),
+            'fields': ('is_active', 'visual_type'),
+            'description': 'Select whether to display the standard Image Slider or an interactive 3D Model Viewer.',
         }),
         ('Hero Content', {
             'fields': ('tagline', 'title', 'title_color', 'description', 'background_image', 'background_image_alt'),
+        }),
+        ('3D Model Viewer Settings', {
+            'fields': ('model_3d_embed_url', 'model_3d_file', 'model_3d_title'),
+            'description': 'Configure 3D display when Visual Type is set to "3D Model Viewer". Paste a Sketchfab, Spline, or 3D iframe embed URL / code, or upload a .glb/.gltf 3D file.',
         }),
         ('Primary CTA', {
             'fields': ('cta_primary_text', 'cta_primary_link'),
@@ -1358,9 +1364,9 @@ class FAQCategoryAdmin(ModelAdmin):
 @admin.register(FAQ)
 class FAQAdmin(ModelAdmin):
     list_select_related = ('category', 'service')
-    list_display = ('question', 'category', 'is_portfolio_faq', 'is_homepage_faq', 'is_contact_faq', 'order', 'is_active')
-    list_editable = ('is_portfolio_faq', 'is_homepage_faq', 'is_active')
-    list_filter = ('category', 'is_portfolio_faq', 'is_homepage_faq', 'is_contact_faq', 'is_active', 'service')
+    list_display = ('question', 'category', 'is_pricing_faq', 'is_homepage_faq', 'is_portfolio_faq', 'is_contact_faq', 'order', 'is_active')
+    list_editable = ('is_pricing_faq', 'is_homepage_faq', 'is_portfolio_faq', 'is_active')
+    list_filter = ('category', 'is_pricing_faq', 'is_homepage_faq', 'is_portfolio_faq', 'is_contact_faq', 'is_active', 'service')
     list_filter_submit = True
     ordering = ('order',)
     search_fields = ('question', 'answer')
@@ -1373,8 +1379,8 @@ class FAQAdmin(ModelAdmin):
             'fields': ('question', 'answer', 'category', 'service', 'order', 'is_active'),
         }),
         ('Page Placements', {
-            'fields': ('is_portfolio_faq', 'is_homepage_faq', 'is_contact_faq'),
-            'description': 'Toggle which pages this FAQ should appear on (Portfolio Page, Homepage, Contact Page).',
+            'fields': ('is_pricing_faq', 'is_homepage_faq', 'is_portfolio_faq', 'is_contact_faq'),
+            'description': 'Toggle which pages this FAQ should appear on (Pricing Page, Homepage, Portfolio Page, Contact Page).',
         }),
     )
 

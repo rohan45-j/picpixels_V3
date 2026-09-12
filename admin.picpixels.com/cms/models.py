@@ -282,6 +282,29 @@ class HeroSection(models.Model):
     cta_primary_link = models.CharField(max_length=255, blank=True, default='/free-trial')
     cta_secondary_text = models.CharField(max_length=100, blank=True, default='See Pricing')
     cta_secondary_link = models.CharField(max_length=255, blank=True, default='/pricing')
+    visual_type = models.CharField(
+        max_length=20,
+        choices=(('slider', 'Image Slider'), ('3d', '3D Model Viewer')),
+        default='slider',
+        help_text='Choose between standard Image Slider or interactive 3D Model Viewer'
+    )
+    model_3d_embed_url = models.TextField(
+        blank=True,
+        default='',
+        help_text='Paste Sketchfab / Spline / 3D iframe embed URL or full <iframe> code'
+    )
+    model_3d_file = models.FileField(
+        upload_to='hero/3d/',
+        blank=True,
+        null=True,
+        help_text='Or upload a 3D model file (.glb, .gltf)'
+    )
+    model_3d_title = models.CharField(
+        max_length=200,
+        blank=True,
+        default='',
+        help_text='Optional title for the 3D model (e.g. "01. Modern Chair")'
+    )
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
 
@@ -612,6 +635,7 @@ class FAQ(models.Model):
     is_contact_faq = models.BooleanField(default=False)
     is_portfolio_faq = models.BooleanField(default=False, help_text='Show this FAQ on the Portfolio page')
     is_homepage_faq = models.BooleanField(default=True, help_text='Show this FAQ on the Homepage')
+    is_pricing_faq = models.BooleanField(default=False, help_text='Show this FAQ on the Pricing page')
     order = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True, db_index=True)
 

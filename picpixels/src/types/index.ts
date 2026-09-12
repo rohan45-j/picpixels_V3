@@ -194,6 +194,7 @@ export interface FAQ {
   answer: string;
   category?: number;
   service?: number;
+  is_pricing_faq?: boolean;
   is_portfolio_faq?: boolean;
   is_homepage_faq?: boolean;
   is_contact_faq?: boolean;

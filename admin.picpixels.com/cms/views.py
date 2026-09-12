@@ -276,12 +276,19 @@ class FAQViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
     serializer_class = FAQSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     ordering = ['order']
-    filterset_fields = ['category', 'service', 'is_contact_faq', 'is_portfolio_faq', 'is_homepage_faq']
+    filterset_fields = ['category', 'service', 'is_pricing_faq', 'is_contact_faq', 'is_portfolio_faq', 'is_homepage_faq']
 
     def get_queryset(self):
         qs = FAQ.objects.all()
         if self.request.query_params.get('all') != '1':
             qs = qs.filter(is_active=True)
+
+        is_pricing = self.request.query_params.get('is_pricing_faq')
+        if is_pricing is not None:
+            if is_pricing.lower() in ('true', '1'):
+                qs = qs.filter(is_pricing_faq=True)
+            elif is_pricing.lower() in ('false', '0'):
+                qs = qs.filter(is_pricing_faq=False)
 
         is_portfolio = self.request.query_params.get('is_portfolio_faq')
         if is_portfolio is not None:
@@ -545,7 +552,7 @@ class HomepageDataView(APIView):
         from django.core.cache import cache
         cache_key = 'consolidated_homepage_data_v1'
         cached = cache.get(cache_key)
-        if cached:
+        if cached and not DEBUG:
             resp = Response(cached)
             resp['Cache-Control'] = 'public, max-age=60, s-maxage=120'
             return resp
@@ -646,7 +653,8 @@ class HomepageDataView(APIView):
             'faqs': faqs_data,
         }
 
-        cache.set(cache_key, payload, timeout=120)
+        if not DEBUG:
+            cache.set(cache_key, payload, timeout=120)
         resp = Response(payload)
         resp['Cache-Control'] = 'public, max-age=60, s-maxage=120'
         return resp

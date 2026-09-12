@@ -9,6 +9,7 @@ import Reveal from '@/components/animations/Reveal';
 import { mediaUrl, storeOrderSummary, type PricingService } from '@/services/public-api';
 import PricingBanner from '@/components/ui/PricingBanner';
 import PromotionSection from '@/components/ui/PromotionSection';
+import FAQSection from '@/components/ui/FAQSection';
 import styles from '@/styles/modules/pricing.module.css';
 import type { FAQ, PricingPromotion } from '@/services/public-api';
 
@@ -107,7 +108,6 @@ export default function PricingClient({
   const [selectedUnitRangeId, setSelectedUnitRangeId] = useState<number | null>(null);
   const [serviceDropdownOpen, setServiceDropdownOpen] = useState(false);
   const [unitRangeDropdownOpen, setUnitRangeDropdownOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   useEffect(() => {
     if (serverServices.length > 0) {
@@ -325,30 +325,7 @@ export default function PricingClient({
           </div>
         </section>
 
-        {faqs.length > 0 && (
-          <section className={styles.faqSection} aria-labelledby="faq-title">
-            <div className={styles.faqInner}>
-              <Reveal variant="fadeUp">
-                <SectionHeading
-                  text="Frequently Asked Questions"
-                />
-              </Reveal>
-              <div className={styles.faqList}>
-                {faqs.map((faqItem, i) => (
-                  <Reveal variant="fadeUp" delay={i * 60} key={i}>
-                    <div className={styles.faqItem}>
-                      <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className={styles.faqQuestion} aria-expanded={openFaq === i}>
-                        {faqItem.question}
-                        <span className={`${styles.faqIcon} ${openFaq === i ? styles.faqIconOpen : ''}`}>▼</span>
-                      </button>
-                      {openFaq === i && <div className={styles.faqAnswer}>{faqItem.answer}</div>}
-                    </div>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+        <FAQSection faqs={faqs} />
       </main>
     </>
   );

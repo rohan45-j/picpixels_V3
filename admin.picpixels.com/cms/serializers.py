@@ -207,12 +207,23 @@ class HeroStatSerializer(serializers.ModelSerializer):
 class HeroSectionSerializer(serializers.ModelSerializer):
     slides = HeroSlideSerializer(many=True, read_only=True)
     stats = HeroStatSerializer(many=True, read_only=True)
+    model_3d_file = serializers.SerializerMethodField()
 
     class Meta:
         model = HeroSection
-        fields = ['id', 'is_active', 'tagline', 'title', 'title_color', 'description', 'background_image', 'background_image_alt',
+        fields = ['id', 'is_active', 'visual_type', 'tagline', 'title', 'title_color', 'description',
+                  'background_image', 'background_image_alt',
                   'cta_primary_text', 'cta_primary_link', 'cta_secondary_text', 'cta_secondary_link',
+                  'model_3d_embed_url', 'model_3d_file', 'model_3d_title',
                   'slides', 'stats', 'created_at', 'updated_at']
+
+    def get_model_3d_file(self, obj):
+        if obj.model_3d_file:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.model_3d_file.url)
+            return obj.model_3d_file.url
+        return None
 
 
 class TestimonialSerializer(serializers.ModelSerializer):
@@ -345,7 +356,7 @@ class FAQCategorySerializer(serializers.ModelSerializer):
 class FAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
-        fields = ['id', 'question', 'answer', 'category', 'service', 'is_portfolio_faq', 'is_homepage_faq', 'is_contact_faq', 'order', 'is_active']
+        fields = ['id', 'question', 'answer', 'category', 'service', 'is_pricing_faq', 'is_portfolio_faq', 'is_homepage_faq', 'is_contact_faq', 'order', 'is_active']
 
 
 class ContactInquirySerializer(serializers.ModelSerializer):
