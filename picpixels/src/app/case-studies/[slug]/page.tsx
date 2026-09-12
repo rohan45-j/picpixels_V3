@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { cache } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import type { CaseStudyItem } from '@/services/public-api';
@@ -7,19 +8,22 @@ import CaseStudiesDetailClient from './CaseStudiesDetailClient';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
-async function fetchCaseStudy(slug: string): Promise<CaseStudyItem | null> {
+const fetchCaseStudy = cache(async (slug: string): Promise<CaseStudyItem | null> => {
   try {
-    const resp = await fetch(`${API_BASE}/api/v1/case-studies/api/items/${slug}/`);
+    const resp = await fetch(`${API_BASE}/api/v1/case-studies/api/items/${slug}/`, { next: { revalidate: 300 } });
     if (!resp.ok) return null;
     return await resp.json();
   } catch {
     return null;
   }
-}
+});
 
 export async function generateStaticParams() {
+  if (process.env.NODE_ENV === 'development') {
+    return [];
+  }
   try {
-    const resp = await fetch(`${API_BASE}/api/v1/case-studies/api/items/`);
+    const resp = await fetch(`${API_BASE}/api/v1/case-studies/api/items/`, { next: { revalidate: 300 } });
     if (!resp.ok) return [];
     const data = await resp.json();
     return (data.results || data).map((item: { slug: string }) => ({ slug: item.slug }));

@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import { cache } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import BlogDetailClient from './BlogDetailClient';
@@ -7,15 +8,15 @@ import type { BlogPost } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
-async function fetchBlogPost(slug: string): Promise<BlogPost | null> {
+const fetchBlogPost = cache(async (slug: string): Promise<BlogPost | null> => {
   try {
     const resp = await fetch(`${BASE_URL}/api/v1/cms/blog/posts/${slug}/`, { next: { revalidate: 300 } });
     if (resp.ok) return await resp.json();
   } catch {}
   return null;
-}
+});
 
-async function fetchBlogPosts(): Promise<BlogPost[]> {
+const fetchBlogPosts = cache(async (): Promise<BlogPost[]> => {
   try {
     const resp = await fetch(`${BASE_URL}/api/v1/cms/blog/posts/`, { next: { revalidate: 300 } });
     if (resp.ok) {
@@ -24,11 +25,14 @@ async function fetchBlogPosts(): Promise<BlogPost[]> {
     }
   } catch {}
   return [];
-}
+});
 
 export async function generateStaticParams() {
+  if (process.env.NODE_ENV === 'development') {
+    return [];
+  }
   try {
-    const resp = await fetch(`${BASE_URL}/api/v1/cms/blog/posts/`);
+    const resp = await fetch(`${BASE_URL}/api/v1/cms/blog/posts/`, { next: { revalidate: 300 } });
     if (!resp.ok) return [];
     const data = await resp.json();
     const posts = data.results || data || [];

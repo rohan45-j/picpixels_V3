@@ -84,7 +84,7 @@ export default function Header() {
       );
     }
     return (
-      <Link key={item.id} href={item.url} className={styles.navLink} onMouseEnter={() => prefetchOnHover(item.url)} onFocus={() => prefetchOnHover(item.url)}>
+      <Link key={item.id} href={item.url} prefetch={true} className={styles.navLink} onMouseEnter={() => prefetchOnHover(item.url)} onFocus={() => prefetchOnHover(item.url)}>
         {item.label}
       </Link>
     );
@@ -125,7 +125,7 @@ export default function Header() {
                   );
                 }
                 return (
-                  <Link key={child.id} href={child.url} className={styles.simpleDropdownItem} onMouseEnter={() => prefetchOnHover(child.url)}>
+                  <Link key={child.id} href={child.url} prefetch={true} className={styles.simpleDropdownItem} onMouseEnter={() => prefetchOnHover(child.url)}>
                     {child.label}
                   </Link>
                 );
@@ -146,7 +146,7 @@ export default function Header() {
       );
     }
     return (
-      <Link key={item.id} href={item.url} className={styles.mobileNavBtn} onClick={() => setMobileOpen(false)}>
+      <Link key={item.id} href={item.url} prefetch={true} className={styles.mobileNavBtn} onClick={() => setMobileOpen(false)}>
         {item.label}
       </Link>
     );
@@ -235,7 +235,7 @@ export default function Header() {
         </nav>
 
         <div className={styles.desktopActions}>
-          <Link href="/free-trial" className={styles.demoCta}>
+          <Link href="/free-trial" prefetch={true} className={styles.demoCta} onMouseEnter={() => prefetchOnHover('/free-trial')}>
             Free Trial
           </Link>
         </div>
@@ -260,7 +260,7 @@ export default function Header() {
           <div className={styles.mobileDivider} />
         </div>
         <div className={styles.mobileActions}>
-          <Link href="/free-trial" className={`${styles.mobileActionBtn} ${styles.mobileActionBtnPrimary}`} onClick={() => setMobileOpen(false)}>
+          <Link href="/free-trial" prefetch={true} className={`${styles.mobileActionBtn} ${styles.mobileActionBtnPrimary}`} onClick={() => setMobileOpen(false)}>
             Free Trial
           </Link>
         </div>
