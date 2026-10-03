@@ -6,6 +6,7 @@ from cms.models import (
     Page, Section, Banner, Service, Testimonial,
     BlogCategory, BlogTag,
     BlogPost, BlogContentSection, FAQCategory, FAQ, TeamMember, BrandLogo,
+    Author,
     PricingPlan,
 )
 from site_settings.models import SiteSetting, SEOSetting
@@ -275,11 +276,12 @@ class Command(BaseCommand):
             BlogTag.objects.create(name="E-commerce")
 
             post = BlogPost.objects.create(
+                slug="why-professional-photo-editing-matters", 
                 title="Why Professional Photo Editing Matters for Your E-commerce Business",
                 excerpt="Learn how professional image editing can boost your sales and brand perception.",
                 content="<p>In the competitive world of e-commerce, product images are the first thing customers notice. Professional photo editing can significantly impact your conversion rates and brand perception.</p>",
                 category=cat_industry,
-                author="PicPicxels Team",
+                author_profile=Author.objects.get(slug="picpicxels-team"),
                 is_featured=True,
                 is_published=True,
             )
@@ -355,8 +357,7 @@ class Command(BaseCommand):
 <p>Professional product photo editing is an investment that pays for itself through increased sales, reduced returns, and stronger brand perception. By following the techniques and workflow outlined in this guide, you can transform your e-commerce product images and give your business the competitive edge it deserves.</p>
 <p>Ready to get started? Contact PicPicxels today for a free trial and experience the difference professional photo editing can make for your e-commerce business.</p>""",
                 "category": BlogCategory.objects.first(),
-                "author": "PicPicxels Team",
-                "author_bio": "Your trusted partner for professional e-commerce photo editing.",
+                "author_profile": Author.objects.get(slug="picpicxels-team"),
                 "is_featured": True,
                 "is_published": True,
                 "is_trending": True,
