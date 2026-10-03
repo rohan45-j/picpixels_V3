@@ -1,322 +1,341 @@
-# PicPixels — cPanel Deployment Guide
+# PicPixels — Contabo VPS Deployment & Git Workflow Guide
 
-## Architecture Overview
-
-| Domain | Stack | cPanel Feature |
-|---|---|---|
-| `picpixels.com` | Next.js 15 (Node.js) | **Node.js Selector** or reverse proxy |
-| `admin.picpixels.com` | Django 5.2 (Python 3.12) | **Setup Python App** + Passenger WSGI |
+এই গাইডে PicPixels প্রজেক্টের **Frontend (Next.js 15)** এবং **Backend (Django 5.2 / DRF)** Contabo VPS (Ubuntu 22.04 / 24.04 LTS)-এ প্রথমবার সেটআপ এবং পরবর্তীতে **GitHub (Pull/Push)** দিয়ে এক ক্লিকে আপডেট করার সম্পূর্ণ গাইডলাইন দেওয়া হলো।
 
 ---
 
-## Prerequisites
+## ১. আর্কিটেকচার ওভারভিউ
 
-- cPanel login credentials
-- Git repository: `https://github.com/rohan45-j/picpixels_V3.git`
-- SSH access (or Git clone via cPanel's "Git Version Control")
-- **Node.js** enabled via cPanel's **Setup Node.js App** (for frontend)
-- **Python** enabled via cPanel's **Setup Python App** (for backend)
-- PostgreSQL database created via cPanel **PostgreSQL Database Wizard**
-- SMTP credentials (if email is needed)
-
----
-
-## Step 1: Backup Existing Data (Safety First)
-
-Before deleting anything, take a backup of important files:
-
-1. **Database** — Export via phpMyAdmin or PostgreSQL pgAdmin:
-   - Backend: `admin.picpixels.com/db.sqlite3` (dev) or your PostgreSQL database (prod)
-   - Run: `pg_dump -U username db_name > backup_$(date +%F).sql`
-
-2. **Uploaded Media** — Download `admin.picpixels.com/media/` via FTP
-
-3. **Environment Files** — Save `.env` files for both frontend and backend
-
-4. **Current Deployment** — Use cPanel **Backup** → **Download a Full Backup**
+| কম্পোনেন্ট | স্ট্যাক / পোর্ট | প্রসেস ম্যানেজার | ডোমেইন / রাউটিং |
+|---|---|---|---|
+| **Frontend** | Next.js 15 (Node.js 20 LTS) : `3000` | `PM2` | `picpixels.com`, `www.picpixels.com` |
+| **Backend & API** | Django 5.2 (Python 3.12) : `8000` | `Gunicorn` + `systemd` | `admin.picpixels.com` |
+| **Database** | PostgreSQL 16+ : `5432` | `systemd` | Localhost (Internal secure) |
+| **Web Server** | Nginx | Reverse Proxy & SSL | Let's Encrypt Certbot |
+| **Bot Protection**| Cloudflare Turnstile | - | Enabled |
 
 ---
 
-## Step 2: Remove Existing Files
+## ২. প্রথমবার Contabo VPS প্রস্তুত করা (Initial Server Setup)
 
-### Option A: Via cPanel File Manager
-1. Navigate to **File Manager** → `public_html` (or domain document root)
-2. Select all files/folders (Ctrl+A)
-3. Click **Delete** — *except* `.htaccess` if you want to keep server config
-
-### Option B: Via SSH (recommended)
+SSH দিয়ে সার্ভারে লগইন করুন:
 ```bash
-# Navigate to your domain's document root
-cd ~/public_html          # for primary domain
-cd ~/picpixels.com        # for addon domain
-cd ~/admin.picpixels.com  # for backend subdomain
-
-# Remove everything except .htaccess and .env files if you want to keep them
-find . -not -name '.htaccess' -not -name '.env' -delete
-
-# Or more targeted removal (safer):
-rm -rf picpixels admin.picpixels.com node_modules .next staticfiles media venv
+ssh root@YOUR_SERVER_IP
 ```
 
-> **Important**: Do **not** remove `.htaccess` (contains Passenger config for Django). Keep your `.env` files or save them before deleting.
-
----
-
-## Step 3: Clone the Repository
-
-### Via cPanel Git Version Control (easier)
-1. Go to **cPanel** → **Git Version Control**
-2. Click **Create**
-3. Clone URL: `https://github.com/rohan45-j/picpixels_V3.git`
-4. Repository Path: `/home1/picpixels/repositories/picpixels_V3` (or wherever you prefer)
-5. Deployment Directory: `/home1/picpixels/` (your document root)
-6. Set up auto-deploy if desired
-
-### Via SSH (more control)
+### ২.১ প্রয়োজনীয় প্যাকেজ ইন্সটল
 ```bash
-cd ~
-# Remove old clone if exists
-rm -rf picpixels_V3
+sudo apt update && sudo apt upgrade -y
 
-# Fresh clone
-git clone https://github.com/rohan45-j/picpixels_V3.git temp
+# Python 3, PostgreSQL, Nginx, Git, Certbot
+sudo apt install -y python3 python3-pip python3-venv libpq-dev postgresql postgresql-contrib nginx git certbot python3-certbot-nginx curl ufw
 
-# Move contents to document root
-cp -r temp/* .
-cp -r temp/.* .
-rm -rf temp
+# Node.js 20 LTS (NodeSource)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# PM2 গ্লোবালি ইন্সটল (Next.js প্রসেস অটো-রানের জন্য)
+sudo npm install -g pm2
+```
+
+### ২.২ ফায়ারওয়াল (UFW) সক্রিয় করা
+```bash
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+sudo ufw allow 22/tcp    # SSH
+sudo ufw allow 80/tcp    # HTTP
+sudo ufw allow 443/tcp   # HTTPS
+sudo ufw enable
+```
+
+### ২.৩ PostgreSQL ডাটাবেজ তৈরি
+```bash
+sudo -u postgres psql
+```
+PostgreSQL প্রম্পটে রান করুন:
+```sql
+CREATE DATABASE picpixels_db;
+CREATE USER picpixels_user WITH PASSWORD 'একটি_নিরাপদ_কঠিন_পাসওয়ার্ড_দিন';
+ALTER ROLE picpixels_user SET client_encoding TO 'utf8';
+ALTER ROLE picpixels_user SET default_transaction_isolation TO 'read committed';
+ALTER ROLE picpixels_user SET timezone TO 'UTC';
+GRANT ALL PRIVILEGES ON DATABASE picpixels_db TO picpixels_user;
+\q
 ```
 
 ---
 
-## Step 4: Configure the Django Backend (`admin.picpixels.com`)
+## ৩. প্রজেক্ট ডিরেক্টরি ও কোড ক্লোন (Git Clone)
 
-### 4.1 — Set up Python application in cPanel
-1. Go to **cPanel** → **Setup Python App**
-2. Click **Create Application**
-3. Settings:
-   - **Python version**: 3.12 (match `runtime.txt`)
-   - **Application root**: `/home1/picpixels/admin.picpixels.com`
-   - **Application URL**: `admin.picpixels.com`
-   - **Application startup file**: `passenger_wsgi.py`
-   - **Application entry point**: `application`
-4. Click **Create**
-
-### 4.2 — Create & activate virtual environment (if not auto-created)
+সার্ভারের `/var/www/` তে কোড ক্লোন করুন:
 ```bash
-cd ~/admin.picpixels.com
-python3.12 -m venv venv
+sudo mkdir -p /var/www/picpixels_root
+sudo chown -R $USER:$USER /var/www/picpixels_root
+cd /var/www/picpixels_root
+
+# গিট রিপোজিটরি ক্লোন করুন
+git clone https://github.com/rohan45-j/picpixels_V3.git .
+```
+
+এখন আপনার কাছে থাকবে:
+- `/var/www/picpixels_root/picpixels/` (Next.js Frontend)
+- `/var/www/picpixels_root/admin.picpixels.com/` (Django Backend)
+
+---
+
+## ৪. Django Backend কনফিগারেশন (`admin.picpixels.com`)
+
+### ৪.১ ভার্চুয়াল এনভায়রনমেন্ট ও লাইব্রেরি
+```bash
+cd /var/www/picpixels_root/admin.picpixels.com
+python3 -m venv venv
 source venv/bin/activate
-```
-
-### 4.3 — Install Python dependencies
-```bash
-cd ~/admin.picpixels.com
-source venv/bin/activate  # or the virtual env path from Step 4.1
 pip install --upgrade pip
 pip install -r requirements.txt
+pip install gunicorn psycopg2-binary
 ```
 
-### 4.4 — Configure `.env` for production
-Create or edit `~/admin.picpixels.com/.env`:
-
+### ৪.২ প্রোডাকশন `.env` তৈরি
 ```bash
-cd ~/admin.picpixels.com
+cp .env.example .env
 nano .env
 ```
-
-Paste this (adjust values):
-
+ভেতরের মানগুলো প্রোডাকশনের জন্য ঠিক করুন:
 ```env
 DEBUG=False
-SECRET_KEY=your-generated-secure-key
-ALLOWED_HOSTS=admin.picpixels.com,www.admin.picpixels.com,picpixels.com,www.picpixels.com
-FRONTEND_URL=https://picpixels.com
-DB_HOST=localhost
-DB_NAME=your_cpanel_db_name
-DB_USER=your_cpanel_db_user
-DB_PASSWORD=your_cpanel_db_password
-DB_PORT=5432
-CORS_ALLOWED_ORIGINS=https://picpixels.com,https://www.picpixels.com,https://admin.picpixels.com
-REDIS_URL=  # leave blank if no Redis
+SECRET_KEY=একটি_লম্বা_সিক্রেট_কী_দিন_এখানে
+ALLOWED_HOSTS=admin.picpixels.com,YOUR_SERVER_IP,127.0.0.1
+DATABASE_URL=postgresql://picpixels_user:আপনার_পাসওয়ার্ড@localhost:5432/picpixels_db
+CLOUDFLARE_TURNSTILE_SECRET_KEY=your_actual_turnstile_secret_key
+CLOUDFLARE_TURNSTILE_SITE_KEY=your_actual_turnstile_site_key
+BOT_PROTECTION_ENABLED=True
+CORS_ALLOWED_ORIGINS=https://picpixels.com,https://www.picpixels.com
+CSRF_TRUSTED_ORIGINS=https://admin.picpixels.com,https://picpixels.com
 ```
 
-Generate a secret key:
+### ৪.৩ ডাটাবেজ মাইগ্রেশন ও স্ট্যাটিক ফাইলস
 ```bash
-python3.12 -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
-```
-
-### 4.5 — Update `.htaccess` (already in repo — verify paths)
-Your existing `.htaccess` should have correct paths. Verify in `~/admin.picpixels.com/.htaccess`:
-
-```apache
-PassengerAppRoot "/home1/picpixels/admin.picpixels.com"
-PassengerBaseURI "/"
-PassengerPython "/home1/picpixels/virtualenv/admin.picpixels.com/3.12/bin/python"
-```
-
-> **Note**: Match the Python version path. Change `3.11` to `3.12` if you created a Python 3.12 app.
-
-### 4.6 — Run Django management commands
-```bash
-cd ~/admin.picpixels.com
-source venv/bin/activate
-
-# Run migrations
 python manage.py migrate
-
-# Collect static files
 python manage.py collectstatic --noinput
-
-# Create superuser (first deployment only)
-python manage.py createsuperuser
-
-# Seed initial data if needed
-python manage.py seed_data  # if this command exists
+python manage.py createsuperuser  # এডমিন লগইনের জন্য ইউজার বানান
 ```
 
-### 4.7 — Set correct permissions
+### ৪.৪ Gunicorn Systemd Service কনফিগার করা
 ```bash
-# Make sure Passenger WSGI can read all files
-find ~/admin.picpixels.com -type d -exec chmod 755 {} \;
-find ~/admin.picpixels.com -type f -exec chmod 644 {} \;
+sudo nano /etc/systemd/system/picpixels-backend.service
+```
+নিচের কনফিগটি পেস্ট করুন:
+```ini
+[Unit]
+Description=PicPixels Django Backend (Gunicorn)
+After=network.target
 
-# Media directory needs write access
-chmod -R 775 ~/admin.picpixels.com/media
-chmod -R 775 ~/admin.picpixels.com/staticfiles
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/picpixels_root/admin.picpixels.com
+EnvironmentFile=/var/www/picpixels_root/admin.picpixels.com/.env
+ExecStart=/var/www/picpixels_root/admin.picpixels.com/venv/bin/gunicorn \
+    --workers 3 \
+    --bind 127.0.0.1:8000 \
+    --timeout 120 \
+    core.wsgi:application
+Restart=always
 
-# Make sure passenger_wsgi.py is executable
-chmod 755 ~/admin.picpixels.com/passenger_wsgi.py
+[Install]
+WantedBy=multi-user.target
 ```
 
-### 4.8 — Restart the Python app
-In cPanel **Setup Python App**, click the **Restart** button, or via SSH:
+পারমিশন ঠিক করে সার্ভিস চালু করুন:
 ```bash
-touch ~/admin.picpixels.com/tmp/restart.txt
+sudo chown -R www-data:www-data /var/www/picpixels_root/admin.picpixels.com
+sudo systemctl daemon-reload
+sudo systemctl enable picpixels-backend
+sudo systemctl start picpixels-backend
+sudo systemctl status picpixels-backend
 ```
 
 ---
 
-## Step 5: Configure the Next.js Frontend (`picpixels`)
+## ৫. Next.js Frontend কনফিগারেশন (`picpixels.com`)
 
-### 5.1 — Set up Node.js app in cPanel
-1. Go to **cPanel** → **Setup Node.js App**
-2. Click **Create Application**
-3. Settings:
-   - **Node.js version**: 20.x or 22.x (LTS)
-   - **Application mode**: Production
-   - **Application root**: `/home1/picpixels/picpixels`
-   - **Application URL**: `picpixels.com`
-   - **Application startup file**: `server.js`
-   - **Environment variables**: Add `NODE_ENV=production` and `PORT=3000` (or whatever cPanel assigns)
-4. Click **Create**
-
-### 5.2 — Create production `.env` or `.env.local`
+### ৫.১ প্রোডাকশন `.env.local` তৈরি
 ```bash
-cd ~/picpixels
+cd /var/www/picpixels_root/picpixels
+cp .env.example .env.local
 nano .env.local
 ```
-
 ```env
 NEXT_PUBLIC_API_URL=https://admin.picpixels.com
+NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY=your_turnstile_public_site_key
+PORT=3000
 ```
 
-### 5.3 — Install npm dependencies and build
+### ৫.২ ডিপেনডেন্সি ইন্সটল ও প্রোডাকশন বিল্ড
 ```bash
-cd ~/picpixels
-npm ci --production=false
+npm install
 npm run build
 ```
 
-> **Note**: If memory is limited on shared hosting, build locally and upload the `.next` folder. Or temporarily increase PHP memory (not applicable here). If build fails due to memory, try:
-> ```bash
-> NODE_OPTIONS="--max-old-space-size=512" npm run build
-> ```
-
-### 5.4 — Update `next.config.js` for production
-Your `next.config.js` already has `output: 'standalone'` and correct remote patterns. No changes needed unless the domain changes.
-
-### 5.5 — Restart the Node.js app
-In cPanel **Setup Node.js App**, click the **Restart** button, or stop/start the app.
+### ৫.৩ PM2 দিয়ে ব্যাকগ্রাউন্ডে রান করা
+```bash
+pm2 start npm --name "picpixels-frontend" -- start
+pm2 save
+pm2 startup
+```
+*(PM2 স্ক্রিনে যে কমান্ডটি দেখাবে সেটি কপি করে টার্মিনালে এক্সিকিউট করুন)*
 
 ---
 
-## Step 6: Verify Everything
+## ৬. Nginx রিভার্স প্রক্সি কনফিগারেশন
 
-### Backend Check
-- Visit `https://admin.picpixels.com/admin/` — should see Django Unfold admin login
-- Visit `https://admin.picpixels.com/api/v1/` — should see DRF API root (if public)
-- Click **Restart** in cPanel **Setup Python App** if 500 error appears
-
-### Frontend Check
-- Visit `https://picpixels.com` — home page should load
-- Check browser console for API connection errors
-- Test a page that calls the API (e.g., `/services`, `/pricing`)
-
-### Debugging 500 Errors
-Check error logs:
 ```bash
-cat ~/admin.picpixels.com/logs/error.log  # if available
-cat ~/admin.picpixels.com/runserver_err.log
+sudo nano /etc/nginx/sites-available/picpixels
 ```
 
-Or in cPanel: **Metrics** → **Errors**
+নিচের কনফিগারেশনটি বসিয়ে দিন:
+
+```nginx
+# ---------------------------------------------
+# 1. Frontend (Next.js) - picpixels.com
+# ---------------------------------------------
+server {
+    server_name picpixels.com www.picpixels.com;
+
+    client_max_body_size 100M;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Next.js Static Cache
+    location /_next/static/ {
+        proxy_pass http://127.0.0.1:3000;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+}
+
+# ---------------------------------------------
+# 2. Backend API & Admin - admin.picpixels.com
+# ---------------------------------------------
+server {
+    server_name admin.picpixels.com;
+
+    client_max_body_size 100M;
+
+    location /static/ {
+        alias /var/www/picpixels_root/admin.picpixels.com/staticfiles/;
+        expires 30d;
+        access_log off;
+    }
+
+    location /media/ {
+        alias /var/www/picpixels_root/admin.picpixels.com/media/;
+        expires 30d;
+        access_log off;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+        proxy_connect_timeout 120s;
+    }
+}
+```
+
+সাইট সক্রিয় করুন ও Nginx টেস্ট করে রিলোড দিন:
+```bash
+sudo ln -s /etc/nginx/sites-available/picpixels /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/default  # ডিফল্ট সাইট বন্ধ করা
+sudo nginx -t
+sudo systemctl reload nginx
+```
 
 ---
 
-## Common Issues & Solutions
+## ৭. SSL সার্টিফিকেট (Let's Encrypt HTTPS)
 
-| Problem | Likely Cause | Fix |
-|---|---|---|
-| Django 500 error | Missing `.env` or bad DB config | Verify `SECRET_KEY`, `DB_*` in `.env`. Run `python manage.py check --deploy` |
-| `PassengerAppRoot` error | Wrong path in `.htaccess` | Update to match `pwd` output from SSH |
-| Static files 404 | `collectstatic` not run | Run `python manage.py collectstatic --noinput` |
-| Next.js blank page | API URL wrong | Check `NEXT_PUBLIC_API_URL` in `.env.local` |
-| Node build OOM | Low memory | Use `NODE_OPTIONS="--max-old-space-size=512"` |
-| CORS error in browser | `CORS_ALLOWED_ORIGINS` mismatch | Add the exact frontend URL (with `https://`) |
-| Media uploads fail | Permissions on `media/` dir | `chmod -R 775 media` |
-| `daphne`/channels error | Redis not available | Set `REDIS_URL=` blank in `.env` to fall back to InMemoryChannelLayer |
+ডোমেইন DNS-এ `A Record` পয়েন্ট হওয়ার পর:
+```bash
+sudo certbot --nginx -d picpixels.com -d www.picpixels.com -d admin.picpixels.com
+```
+Certbot অটোমেটিকভাবে সার্টিফিকেট ইনস্টল করে Nginx কনফিগ আপডেট করে দেবে এবং অটো-রিনিউয়াল সেট করবে।
 
 ---
 
-## Step 7: Final Go-Live Checklist
+## ৮. দৈনিক কাজ: Git Push & Git Pull ডিপ্লয়মেন্ট ফ্লো
 
-- [ ] Backend `.env` has `DEBUG=False`
-- [ ] Frontend `.env.local` has production `NEXT_PUBLIC_API_URL`
-- [ ] PostgreSQL database is created and credentials in `.env` are correct
-- [ ] Migrations ran: `python manage.py migrate`
-- [ ] Static files collected: `python manage.py collectstatic --noinput`
-- [ ] Superuser created for admin access
-- [ ] Both Python and Node.js apps are **restarted** in cPanel
-- [ ] Domain DNS points to the correct server (A record or CNAME)
-- [ ] SSL/HTTPS enabled via cPanel **SSL/TLS** or AutoSSL
-- [ ] Smoke test all critical pages:
-  - [ ] Home page (`/`)
-  - [ ] Services (`/services`)
-  - [ ] Pricing (`/pricing`)
-  - [ ] Portfolio (`/portfolio`)
-  - [ ] Blog (`/blog`)
-  - [ ] Login (`/login`)
-  - [ ] Admin (`/admin/`)
-  - [ ] API docs (`/api/docs/`)
-- [ ] Remove any `console.log` statements if present (optional cleanup)
+আপনার লোকাল মেশিনে যখনই কোনো কাজ শেষ করবেন:
+
+### লোকাল পিসিতে (Development Machine):
+```bash
+git add .
+git commit -m "আপনার আপডেটের মেসেজ"
+git push origin main
+```
+
+### VPS সার্ভারে গিয়ে এক ক্লিকে আপডেট (Production Update):
+
+**যদি Frontend আপডেট হয়:**
+```bash
+cd /var/www/picpixels_root/picpixels
+git pull origin main
+npm install
+npm run build
+pm2 reload picpixels-frontend
+```
+
+**যদি Backend আপডেট হয়:**
+```bash
+cd /var/www/picpixels_root/admin.picpixels.com
+git pull origin main
+source venv/bin/activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py collectstatic --noinput
+sudo systemctl restart picpixels-backend
+```
+
+**অথবা এক কমান্ডে দুটোই আপডেট করতে (Full Site Update):**
+```bash
+cd /var/www/picpixels_root && git pull origin main && \
+(cd picpixels && npm install && npm run build && pm2 reload picpixels-frontend) && \
+(cd admin.picpixels.com && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && sudo systemctl restart picpixels-backend)
+```
 
 ---
 
-## Additional Recommendations
+## ৯. ট্রাবলশুটিং ও দরকারী কমান্ডস
 
-1. **Use a subdomain for the backend**: You already have `admin.picpixels.com` — keep it.
-
-2. **Git hooks for auto-deployment**: In cPanel **Git Version Control**, enable **Deploy on Push** to auto-pull from the repo.
-
-3. **Cron job for SSL renewal**: cPanel AutoSSL handles this automatically.
-
-4. **Regular backups**: Set up cPanel **Backup** → **Backup Configuration** for weekly/daily automated backups.
-
-5. **Monitor disk usage**: `du -sh ~/admin.picpixels.com/media` — uploaded media grows over time.
-
-6. **Security**: Never commit `.env` files. The `.gitignore` already excludes `.env` and `.env.local`.
-
-7. **Local builds**: If cPanel build times are slow, build the Next.js app locally and upload only `.next/standalone/` + `public/` + `server.js`.
-
-8. **Blue-green deployment**: Keep a copy of the previous deployment (`~/prev_version/`) as a quick rollback option.
+- **Frontend Logs দেখা:**
+  ```bash
+  pm2 logs picpixels-frontend
+  ```
+- **Backend Logs দেখা:**
+  ```bash
+  sudo journalctl -u picpixels-backend -f
+  ```
+- **Nginx Error Logs দেখা:**
+  ```bash
+  sudo tail -f /var/log/nginx/error.log
+  ```
+- **Backend Service রিস্টার্ট:**
+  ```bash
+  sudo systemctl restart picpixels-backend
+  ```
+- **Frontend App রিস্টার্ট:**
+  ```bash
+  pm2 restart picpixels-frontend
+  ```
