@@ -1,39 +1,46 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 
 export default function NavigationProgressBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const startTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const finishTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const prefetchedUrls = useRef<Set<string>>(new Set());
 
   const start = () => {
     if (finishTimeoutRef.current) clearTimeout(finishTimeoutRef.current);
     if (timerRef.current) clearInterval(timerRef.current);
+    if (startTimeoutRef.current) clearTimeout(startTimeoutRef.current);
 
-    setVisible(true);
-    setLoading(true);
-    setProgress(15);
+    // Only show bar if navigation takes longer than 120ms
+    startTimeoutRef.current = setTimeout(() => {
+      setVisible(true);
+      setLoading(true);
+      setProgress(20);
 
-    timerRef.current = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 85) {
-          if (timerRef.current) clearInterval(timerRef.current);
-          return 85;
-        }
-        // Increment faster initially, slower as it approaches 85%
-        const diff = 85 - prev;
-        return prev + Math.max(diff * 0.15, 2);
-      });
-    }, 150);
+      timerRef.current = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 85) {
+            if (timerRef.current) clearInterval(timerRef.current);
+            return 85;
+          }
+          const diff = 85 - prev;
+          return prev + Math.max(diff * 0.2, 3);
+        });
+      }, 100);
+    }, 120);
   };
 
   const finish = () => {
+    if (startTimeoutRef.current) clearTimeout(startTimeoutRef.current);
     if (timerRef.current) clearInterval(timerRef.current);
     setProgress(100);
 
@@ -41,54 +48,77 @@ export default function NavigationProgressBar() {
       setVisible(false);
       setLoading(false);
       setProgress(0);
-    }, 280);
+    }, 200);
   };
 
   // Listen for route changes to complete loading
   useEffect(() => {
-    if (loading) {
-      finish();
-    }
+    finish();
   }, [pathname, searchParams]);
 
-  // Intercept all link clicks for instant visual feedback (<16ms)
+  // Global prefetch on hover & click handling
   useEffect(() => {
-    const handleGlobalClick = (e: MouseEvent) => {
-      const target = (e.target as HTMLElement)?.closest('a');
-      if (!target) return;
-
-      const href = target.getAttribute('href');
-      if (!href) return;
-
-      // Ignore external, target="_blank", or anchor-only links
+    const isInternalLink = (target: HTMLElement | null): HTMLAnchorElement | null => {
+      const anchor = target?.closest('a');
+      if (!anchor) return null;
+      const href = anchor.getAttribute('href');
+      if (!href) return null;
       if (
         href.startsWith('http://') ||
         href.startsWith('https://') ||
         href.startsWith('mailto:') ||
         href.startsWith('tel:') ||
         href.startsWith('#') ||
-        target.getAttribute('target') === '_blank'
+        anchor.getAttribute('target') === '_blank'
       ) {
-        return;
+        return null;
       }
+      return anchor;
+    };
 
-      // Ignore if clicking current route
+    // Instant prefetch as soon as cursor moves over or touches any internal link
+    const handleMouseOver = (e: MouseEvent) => {
+      const anchor = isInternalLink(e.target as HTMLElement);
+      if (!anchor) return;
+      const href = anchor.getAttribute('href');
+      if (!href) return;
+
+      const path = href.split('#')[0];
+      if (path && !prefetchedUrls.current.has(path)) {
+        prefetchedUrls.current.add(path);
+        try {
+          router.prefetch(path);
+        } catch {}
+      }
+    };
+
+    // Intercept clicks to trigger smooth progress bar if navigation takes >120ms
+    const handleGlobalClick = (e: MouseEvent) => {
+      const anchor = isInternalLink(e.target as HTMLElement);
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href');
+      if (!href) return;
+
       const currentFullUrl = window.location.pathname + window.location.search;
       if (href === currentFullUrl || href === window.location.pathname) {
         return;
       }
 
-      // Start progress bar immediately
       start();
     };
 
+    document.addEventListener('mouseover', handleMouseOver, { passive: true, capture: true });
     document.addEventListener('click', handleGlobalClick, { capture: true });
+
     return () => {
+      document.removeEventListener('mouseover', handleMouseOver, { capture: true });
       document.removeEventListener('click', handleGlobalClick, { capture: true });
       if (timerRef.current) clearInterval(timerRef.current);
+      if (startTimeoutRef.current) clearTimeout(startTimeoutRef.current);
       if (finishTimeoutRef.current) clearTimeout(finishTimeoutRef.current);
     };
-  }, []);
+  }, [router]);
 
   if (!visible) return null;
 

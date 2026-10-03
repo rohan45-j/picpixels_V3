@@ -1291,3 +1291,204 @@ label.required::after,
   margin-top: 12px !important;
 }
 
+/* ── Others Content (Stacked Inline) Card & Field Styling ── */
+#content_sections-group .form-group,
+#content_sections-group .inline-related {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 14px !important;
+  margin-bottom: 24px !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+#content_sections-group .form-group:hover,
+#content_sections-group .inline-related:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08) !important;
+}
+
+#content_sections-group .form-group > .form-row > h3,
+#content_sections-group .inline-related > h3 {
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  padding: 12px 20px !important;
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+#content_sections-group fieldset {
+  padding: 14px 20px !important;
+  border: none !important;
+}
+
+/* Heading & Content fields: Full vertical layout (Label on top, Input 100% wide) */
+#content_sections-group .field-heading,
+#content_sections-group .field-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 1 100% !important;
+  padding: 12px 16px !important;
+  box-sizing: border-box !important;
+}
+
+#content_sections-group .field-heading > div:first-child,
+#content_sections-group .field-content > div:first-child {
+  width: 100% !important;
+  min-width: 100% !important;
+  height: auto !important;
+  line-height: 1.4 !important;
+  margin-bottom: 8px !important;
+}
+
+#content_sections-group .field-heading > div.grow,
+#content_sections-group .field-content > div.grow {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Heading input styling */
+#content_sections-group .field-heading input {
+  width: 100% !important;
+  max-width: 100% !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  padding: 11px 16px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+#content_sections-group .field-heading input:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+  outline: none !important;
+}
+
+#content_sections-group .field-heading .title-word-highlighter-wrap {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 10px !important;
+}
+
+/* Content textarea styling */
+#content_sections-group .field-content textarea {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  min-height: 200px !important;
+  padding: 14px 16px !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
+  border-radius: 0 0 10px 10px !important;
+  border: 1px solid #cbd5e1 !important;
+  border-top: none !important;
+  box-sizing: border-box !important;
+  font-family: inherit !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  resize: vertical !important;
+}
+
+#content_sections-group .field-content textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+  outline: none !important;
+}
+
+/* Hyperlink & formatting toolbar */
+.svc-content-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  padding: 9px 14px !important;
+  background: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  border-bottom: none !important;
+  border-radius: 10px 10px 0 0 !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.dark #content_sections-group .form-group,
+.dark #content_sections-group .inline-related {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+}
+
+.dark #content_sections-group .form-group > .form-row > h3,
+.dark #content_sections-group .inline-related > h3 {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-bottom-color: #334155 !important;
+}
+
+.dark #content_sections-group .field-heading input,
+.dark #content_sections-group .field-content textarea {
+  background: #1e293b !important;
+  border-color: #475569 !important;
+  color: #f8fafc !important;
+}
+
+.dark .svc-content-toolbar {
+  background: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+.svc-fmt-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 4px 10px !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  line-height: 1.2 !important;
+}
+
+.dark .svc-fmt-btn {
+  background: #0f172a !important;
+  border-color: #475569 !important;
+  color: #cbd5e1 !important;
+}
+
+.svc-fmt-btn:hover {
+  background: #e2e8f0 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+.dark .svc-fmt-btn:hover {
+  background: #334155 !important;
+  color: #ffffff !important;
+}
+
+.svc-fmt-btn.btn-link {
+  background: #ff6b00 !important;
+  border-color: #e05e00 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.svc-fmt-btn.btn-link:hover {
+  background: #e05e00 !important;
+}
+

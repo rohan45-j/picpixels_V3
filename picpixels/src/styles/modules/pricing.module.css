@@ -213,6 +213,89 @@
   color: var(--color-primary);
 }
 
+/* ─── Native Select Support (Accessible & No-JS Ready) ─── */
+.dropdownSelectContainer {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.dropdownSelect {
+  width: 100%;
+  padding: 0.9rem 2.6rem 0.9rem 1.2rem;
+  background: var(--bg-light-card, #ffffff);
+  border: 2px solid var(--color-primary, #FF8A50);
+  border-radius: var(--radius-md, 12px);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-primary, #FF8A50);
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(255, 138, 80, 0.12);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  transition: all 0.25s ease;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdownSelect:hover {
+  border-color: var(--color-primary-dark, #e07a45);
+  box-shadow: 0 4px 16px rgba(255, 138, 80, 0.2);
+  transform: translateY(-1px);
+}
+
+.dropdownSelect:focus {
+  border-color: var(--color-primary, #FF8A50);
+  box-shadow: 0 0 0 3px rgba(255, 138, 80, 0.2);
+}
+
+.dropdownSelect option {
+  color: #212529;
+  background: #ffffff;
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.dropdownSelectChevron {
+  position: absolute;
+  right: 1.1rem;
+  pointer-events: none;
+  color: var(--color-primary, #FF8A50);
+}
+
+.noJsFilterBtn {
+  align-self: flex-end;
+  padding: 0.85rem 1.5rem;
+  background: var(--color-primary, #FF8A50);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255, 138, 80, 0.25);
+  margin-top: 1.35rem;
+}
+
+.noJsFilterBtn:hover {
+  background: var(--color-primary-dark, #e07a45);
+}
+
+[data-theme="dark"] .dropdownSelect {
+  background: var(--bg-dark-card, #1e293b);
+  border-color: rgba(255, 138, 80, 0.5);
+  color: #FF8A50;
+}
+
+[data-theme="dark"] .dropdownSelect option {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
 .dropdownMenu {
   position: absolute;
   top: calc(100% + 6px);

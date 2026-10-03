@@ -9,7 +9,7 @@ from .views import (
     FAQCategoryViewSet, FAQViewSet,
     ContactInquiryViewSet, TeamMemberViewSet, BrandLogoViewSet,
     PricingPlanViewSet, TechnologyViewSet, MediaUploadView,
-    PricingConfigSectionViewSet, PricingPromotionViewSet, FreeTrialViewSet,
+    PricingConfigSectionViewSet, PricingPromotionViewSet, FreeTrialViewSet, ProductCategoryViewSet,
     WhyChooseSectionViewSet, WhyChooseFeatureSectionViewSet,
     HomepageCTASectionViewSet,
     AboutMissionVisionViewSet, AboutCoreValueViewSet, AboutProcessStepViewSet, AboutPageSettingViewSet,
@@ -42,6 +42,7 @@ router.register(r'technologies', TechnologyViewSet)
 router.register(r'pricing-config', PricingConfigSectionViewSet)
 router.register(r'pricing-promotions', PricingPromotionViewSet)
 router.register(r'free-trials', FreeTrialViewSet)
+router.register(r'product-categories', ProductCategoryViewSet)
 router.register(r'why-choose-us', WhyChooseSectionViewSet)
 router.register(r'why-choose-features', WhyChooseFeatureSectionViewSet)
 router.register(r'homepage-cta', HomepageCTASectionViewSet)

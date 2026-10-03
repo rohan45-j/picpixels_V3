@@ -26,25 +26,10 @@ export default function ServicesClient({
   const activeLocation = initialLocation.trim();
   const formattedLocation = formatLocationName(activeLocation);
 
-  // Client-side filtering as safety & immediate interactivity
+  // Services are not filtered by location - all active services remain visible
   const filteredServices = useMemo(() => {
-    if (!activeLocation) {
-      return services.filter((s) => s.is_active !== false);
-    }
-    const target = activeLocation.toLowerCase().replace(/\s+/g, '-');
-    const targetRaw = activeLocation.toLowerCase();
-
-    return services.filter((s) => {
-      if (s.is_active === false) return false;
-      // If service has no specific locations defined, it is available everywhere
-      if (!s.available_locations || s.available_locations.length === 0) return true;
-
-      return s.available_locations.some((loc) => {
-        const l = loc.toLowerCase().trim();
-        return l === targetRaw || l.replace(/\s+/g, '-') === target;
-      });
-    });
-  }, [services, activeLocation]);
+    return services.filter((s) => s.is_active !== false);
+  }, [services]);
 
   return (
     <main>

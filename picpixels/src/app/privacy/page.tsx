@@ -7,18 +7,18 @@ import {
 } from 'lucide-react';
 import Reveal from '@/components/animations/Reveal';
 import { fetchPrivacyPolicy, fetchSiteSettings } from '@/services/public-api';
+import { buildPageMetadata, buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/seo';
+import JsonLd from '@/components/seo/JsonLd';
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: 'Privacy Policy',
-  description: 'PicPicxels Privacy Policy. Learn how we collect, use, and protect your personal data. GDPR and CCPA compliant.',
-  openGraph: {
-    title: 'Privacy Policy | PicPicxels',
-    description: 'Your privacy matters. Learn how PicPicxels protects your personal information.',
-    type: 'website',
-  },
-};
+  description: 'PicPicxels Privacy Policy. Learn how we collect, use, and protect your personal data. GDPR, CCPA, and SOC-2 compliant.',
+  path: '/privacy',
+  keywords: ['privacy policy', 'data security', 'gdpr compliance', 'picpixels privacy'],
+});
+
 
 const ICON_MAP: Record<string, LucideIcon> = {
   eye: Eye,
@@ -134,10 +134,24 @@ export default async function PrivacyPage() {
   const dpoEmail = privacyData?.dpo_email || 'info@picpicxels.com';
   const dpoResponseTime = privacyData?.dpo_response_time || 'We respond to all privacy inquiries within 30 days';
 
+  const breadcrumbs = [
+    { name: 'Home', path: '/' },
+    { name: 'Privacy Policy', path: '/privacy' },
+  ];
+
   return (
     <>
+      <JsonLd schema={buildBreadcrumbSchema(breadcrumbs)} />
+      <JsonLd
+        schema={buildWebPageSchema({
+          title: 'Privacy Policy - PicPicxels',
+          description: heroSub,
+          path: '/privacy',
+        })}
+      />
       <Header />
       <main>
+
         {/* Hero */}
         <Reveal variant="fadeDown">
           <section className={styles.hero}>

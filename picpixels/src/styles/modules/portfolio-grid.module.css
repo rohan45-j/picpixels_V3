@@ -381,6 +381,7 @@
   color: #333;
   cursor: pointer;
   user-select: none;
+  text-decoration: none;
   transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
   white-space: nowrap;
 }

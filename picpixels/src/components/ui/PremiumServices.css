@@ -79,6 +79,11 @@
               0 1px 3px rgba(0, 0, 0, 0.06);
   overflow: hidden;
   position: relative;
+  opacity: 1;
+  transform: none;
+}
+
+html.js .service-card:not(.visible) {
   transform: translateY(30px) scale(0.96);
   opacity: 0;
   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
@@ -86,7 +91,7 @@
               box-shadow 0.3s ease-out;
 }
 
-.service-card.visible {
+html.js .service-card.visible {
   opacity: 1;
   transform: translateY(0) scale(1);
 }

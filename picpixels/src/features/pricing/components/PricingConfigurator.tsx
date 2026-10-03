@@ -121,8 +121,15 @@ export default function PricingConfigurator({ pricingData: initialData, services
     [activeCards, selectedCardId]
   );
 
+  useEffect(() => {
+    router.prefetch('/order-summary');
+  }, [router]);
+
   const handleContinueToOrder = useCallback((e?: React.FormEvent) => {
-    if (e) e.preventDefault();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!selectedCard || !data) return;
     const unitRange = activeOptions.find((o) => o.id === selectedDropdown)?.label;
     let displayPrice = '';
@@ -142,7 +149,6 @@ export default function PricingConfigurator({ pricingData: initialData, services
       service: selectedService?.title || '',
     };
     storeOrderSummary(orderData);
-    fetch('/api/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) }).catch(() => { });
     router.push('/order-summary');
   }, [selectedCard, data, selectedDropdown, activeOptions, selectedService, router]);
 
@@ -166,7 +172,6 @@ export default function PricingConfigurator({ pricingData: initialData, services
       service: selectedService?.title || '',
     };
     storeOrderSummary(orderData);
-    fetch('/api/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderData) }).catch(() => { });
     router.push('/order-summary');
   }, [data, selectedDropdown, activeOptions, selectedService, router]);
 
@@ -190,70 +195,46 @@ export default function PricingConfigurator({ pricingData: initialData, services
               <p className={styles.description}>{data.description}</p>
             </div>
             <div className={styles.dropdownGroup}>
-              {/* Service Dropdown - ALWAYS VISIBLE */}
-              <div className={styles.dropdownWrap} ref={serviceDropdownRef}>
-                <span className={styles.dropdownLabel}>Services</span>
-                <button
-                  type="button"
-                  className={styles.dropdownTrigger}
-                  onClick={() => {
-                    setServiceDropdownOpen((prev) => !prev);
-                    setDropdownOpen(false);
-                  }}
-                >
-                  <span className={styles.dropdownText}>{selectedServiceTitle || 'Select Service'}</span>
-                  <ChevronDown size={18} className={`${styles.dropdownChevron} ${serviceDropdownOpen ? styles.dropdownChevronOpen : ''}`} />
-                </button>
-                {serviceDropdownOpen && (
-                  <div className={styles.dropdownMenu}>
+              {/* Service Dropdown */}
+              <div className={styles.dropdownWrap}>
+                <label htmlFor="config-service-select" className={styles.dropdownLabel}>Services</label>
+                <div className={styles.selectContainer}>
+                  <select
+                    id="config-service-select"
+                    className={styles.nativeSelect}
+                    value={selectedService?.id || ''}
+                    onChange={(e) => setSelectedServiceId(Number(e.target.value))}
+                    aria-label="Select Service"
+                  >
                     {activeServices.map((svc) => (
-                      <button
-                        key={svc.id}
-                        type="button"
-                        className={`${styles.dropdownItem} ${selectedService?.id === svc.id ? styles.dropdownItemActive : ''}`}
-                        onClick={() => {
-                          setSelectedServiceId(svc.id);
-                          setServiceDropdownOpen(false);
-                        }}
-                      >
+                      <option key={svc.id} value={svc.id}>
                         {svc.title}
-                      </button>
+                      </option>
                     ))}
-                  </div>
-                )}
+                  </select>
+                  <ChevronDown size={18} className={styles.selectChevron} />
+                </div>
               </div>
 
               {/* Unit Range Dropdown */}
-              <div className={styles.dropdownWrap} ref={unitRangeDropdownRef}>
-                <span className={styles.dropdownLabel}>Unit Range</span>
-                <button
-                  type="button"
-                  className={styles.dropdownTrigger}
-                  onClick={() => {
-                    setDropdownOpen((prev) => !prev);
-                    setServiceDropdownOpen(false);
-                  }}
-                >
-                  <span className={styles.dropdownText}>{selectedOptionLabel || 'Select volume'}</span>
-                  <ChevronDown size={18} className={`${styles.dropdownChevron} ${dropdownOpen ? styles.dropdownChevronOpen : ''}`} />
-                </button>
-                {dropdownOpen && (
-                  <div className={styles.dropdownMenu}>
+              <div className={styles.dropdownWrap}>
+                <label htmlFor="config-unit-range-select" className={styles.dropdownLabel}>Unit Range</label>
+                <div className={styles.selectContainer}>
+                  <select
+                    id="config-unit-range-select"
+                    className={styles.nativeSelect}
+                    value={selectedDropdown ?? ''}
+                    onChange={(e) => setSelectedDropdown(Number(e.target.value))}
+                    aria-label="Select Unit Range"
+                  >
                     {activeOptions.map((opt) => (
-                      <button
-                        key={opt.id}
-                        type="button"
-                        className={`${styles.dropdownItem} ${selectedDropdown === opt.id ? styles.dropdownItemActive : ''}`}
-                        onClick={() => {
-                          setSelectedDropdown(opt.id);
-                          setDropdownOpen(false);
-                        }}
-                      >
+                      <option key={opt.id} value={opt.id}>
                         {opt.label}
-                      </button>
+                      </option>
                     ))}
-                  </div>
-                )}
+                  </select>
+                  <ChevronDown size={18} className={styles.selectChevron} />
+                </div>
               </div>
             </div>
           </div>
@@ -265,51 +246,81 @@ export default function PricingConfigurator({ pricingData: initialData, services
             const { price, oldPrice } = selectedDropdown != null
               ? getPriceForUnitRange(card.prices, selectedDropdown)
               : { price: '', oldPrice: '' };
+
+            // Build URL params for no-JS fallback (the form POST path)
+            const servicePrefix = selectedService ? `${selectedService.title} - ` : '';
+            const unitRangeLabel = activeOptions.find((o) => o.id === selectedDropdown)?.label || '';
+            const formValues = {
+              source: 'configurator',
+              title: `${servicePrefix}${card.title}`,
+              description: card.description || '',
+              image: card.image || '',
+              price: price || '',
+              features: card.description ? JSON.stringify([card.description]) : '[]',
+              unitRange: unitRangeLabel,
+              service: selectedService?.title || '',
+            };
+
             return (
-              <button
+              <div
                 key={card.id}
-                type="button"
                 className={`${styles.card} ${isSelected ? styles.cardSelected : ''} ${card.show_banner && card.banner_type === 'popular' ? styles.cardPopular : ''}`}
-                onClick={() => setSelectedCardId(isSelected ? null : card.id)}
               >
                 <PricingBanner data={card} />
-                <div className={styles.cardHeader}>
-                  <h3 className={styles.cardTitle}>{card.title}</h3>
-                  <div className={styles.cardPriceRow}>
-                    <span key={`${selectedDropdown}-${card.id}-price`} className={styles.cardPrice}>{price}</span>
-                    {oldPrice && <span key={`${selectedDropdown}-${card.id}-old`} className={styles.cardOldPrice}>{oldPrice}</span>}
-                  </div>
-                </div>
-                <div className={styles.cardImageWrap}>
-                  {card.image ? (
-                    <img src={mediaUrl(card.image) || ''} alt={card.image_alt || card.title} className={styles.cardImage} loading="lazy" />
-                  ) : (
-                    <div className={styles.cardImageFallback}>
-                      <span className={styles.cardImagePlaceholder}>{card.title.charAt(0)}</span>
+                <button
+                  type="button"
+                  className={styles.cardSelectToggle}
+                  onClick={() => setSelectedCardId(isSelected ? null : card.id)}
+                  aria-pressed={isSelected}
+                >
+                  <div className={styles.cardHeader}>
+                    <h3 className={styles.cardTitle}>{card.title}</h3>
+                    <div className={styles.cardPriceRow}>
+                      <span key={`${selectedDropdown}-${card.id}-price`} className={styles.cardPrice}>{price}</span>
+                      {oldPrice && <span key={`${selectedDropdown}-${card.id}-old`} className={styles.cardOldPrice}>{oldPrice}</span>}
                     </div>
-                  )}
-                </div>
-                <div className={styles.cardBody}>
-                  {card.description && <p className={styles.cardDesc}>{card.description}</p>}
-                </div>
+                  </div>
+                  <div className={styles.cardImageWrap}>
+                    {card.image ? (
+                      <img src={mediaUrl(card.image) || ''} alt={card.image_alt || card.title} className={styles.cardImage} loading="lazy" />
+                    ) : (
+                      <div className={styles.cardImageFallback}>
+                        <span className={styles.cardImagePlaceholder}>{card.title.charAt(0)}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className={styles.cardBody}>
+                    {card.description && <p className={styles.cardDesc}>{card.description}</p>}
+                  </div>
+                </button>
                 <div className={styles.cardFooter}>
-                  <span
-                    className={styles.cardBtn}
-                    onClick={(e) => {
-                      e.stopPropagation();
+                  {/* Form for no-JS fallback: submits POST to /api/order which sets cookie and redirects */}
+                  <form
+                    method="POST"
+                    action="/api/order"
+                    onSubmit={(e) => {
+                      e.preventDefault();
                       handleSelectCard(card);
                     }}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelectCard(card); } }}
-                  >{card.button_text}</span>
+                    style={{ display: 'contents' }}
+                  >
+                    {Object.entries(formValues).map(([k, v]) => (
+                      <input key={k} type="hidden" name={k} value={v} />
+                    ))}
+                    <button
+                      type="submit"
+                      className={styles.cardBtn}
+                    >
+                      {card.button_text}
+                    </button>
+                  </form>
                   {isSelected && (
                     <span className={styles.cardCheck}>
                       <Check size={14} />
                     </span>
                   )}
                 </div>
-              </button>
+              </div>
             );
           })}
         </div>

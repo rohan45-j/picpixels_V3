@@ -144,6 +144,89 @@
   transform: rotate(180deg);
 }
 
+/* ─── Native Select Support (Accessible & No-JS Ready) ─── */
+.selectContainer {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.nativeSelect {
+  width: 100%;
+  padding: 0.85rem 2.6rem 0.85rem 1.15rem;
+  background: #fff;
+  border: 2px solid var(--color-primary, #FF8A50);
+  border-radius: var(--radius-md, 12px);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-primary, #FF8A50);
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(255, 138, 80, 0.12);
+  transition: all 0.25s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nativeSelect:hover {
+  border-color: var(--color-primary-dark, #e07a45);
+  box-shadow: 0 4px 16px rgba(255, 138, 80, 0.2);
+  transform: translateY(-1px);
+}
+
+.nativeSelect:focus {
+  border-color: var(--color-primary, #FF8A50);
+  box-shadow: 0 0 0 3px rgba(255, 138, 80, 0.2);
+}
+
+.nativeSelect option {
+  color: #212529;
+  background: #ffffff;
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.selectChevron {
+  position: absolute;
+  right: 1.1rem;
+  pointer-events: none;
+  color: var(--color-primary, #FF8A50);
+}
+
+.noJsFilterBtn {
+  align-self: flex-end;
+  padding: 0.85rem 1.5rem;
+  background: var(--color-primary, #FF8A50);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255, 138, 80, 0.25);
+  margin-top: 1.35rem;
+}
+
+.noJsFilterBtn:hover {
+  background: var(--color-primary-dark, #e07a45);
+}
+
+[data-theme="dark"] .nativeSelect {
+  background: var(--bg-dark-card, #1e293b);
+  border-color: rgba(255, 138, 80, 0.5);
+  color: #FF8A50;
+}
+
+[data-theme="dark"] .nativeSelect option {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
 .dropdownMenu {
   position: absolute;
   top: calc(100% + 6px);
@@ -304,8 +387,24 @@
   transition: transform 0.5s ease;
 }
 
-.card:hover .cardImage {
+.card:hover .cardImage,
+.cardSelectToggle:hover .cardImage {
   transform: scale(1.05);
+}
+
+/* Inner button used for card selection toggle — transparent, full-width */
+.cardSelectToggle {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  flex: 1;
+  min-height: 0;
 }
 
 .cardImageFallback {
@@ -532,3 +631,73 @@
     padding: 0.5rem 1.25rem;
   }
 }
+
+/* ─── Native Select Dropdown Styles (No-JS / Accessible) ─── */
+.selectContainer {
+  position: relative;
+  width: 100%;
+}
+
+.nativeSelect {
+  width: 100%;
+  padding: 0.85rem 2.5rem 0.85rem 1.15rem;
+  background: #ffffff;
+  border: 2px solid var(--color-primary, #FF6B00);
+  border-radius: var(--radius-md, 12px);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-primary, #FF6B00);
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 2px 8px rgba(255, 138, 80, 0.12);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nativeSelect:hover {
+  border-color: var(--color-primary-dark, #e05e00);
+  box-shadow: 0 4px 16px rgba(255, 138, 80, 0.2);
+  transform: translateY(-1px);
+}
+
+.nativeSelect:focus-visible {
+  outline: 2px solid var(--color-primary, #FF6B00);
+  outline-offset: 2px;
+}
+
+.nativeSelect option {
+  font-weight: 600;
+  color: #1f2937;
+  background: #ffffff;
+  padding: 8px 12px;
+}
+
+.selectChevron {
+  position: absolute;
+  right: 1.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-primary, #FF6B00);
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+
+:global([data-theme="dark"]) .nativeSelect,
+:global(.dark) .nativeSelect {
+  background: #1e1e24;
+  color: #ff8a50;
+  border-color: #ff8a50;
+}
+
+:global([data-theme="dark"]) .nativeSelect option,
+:global(.dark) .nativeSelect option {
+  background: #1e1e24;
+  color: #f3f4f6;
+}
+

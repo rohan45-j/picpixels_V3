@@ -23,6 +23,31 @@ function formatDate(dateStr: string | null | undefined): string {
   }
 }
 
+function formatRichText(raw: string | null | undefined): string {
+  if (!raw) return '';
+  let formatted = raw.replace(
+    /\[([^\]]+)\]\(((?:https?:\/\/|\/)[^\s\)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
+  if (!/<[a-z][\s\S]*>/i.test(formatted)) {
+    formatted = formatted
+      .split(/\n\n+/)
+      .map((p) => `<p>${p.replace(/\n/g, '<br />')}</p>`)
+      .join('');
+  } else {
+    formatted = formatted.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"([^>]*)>/gi, (match, href, rest) => {
+      if (!rest.includes('rel=')) {
+        rest += ' rel="noopener noreferrer"';
+      }
+      if (!rest.includes('target=')) {
+        rest += ' target="_blank"';
+      }
+      return `<a href="${href}"${rest}>`;
+    });
+  }
+  return formatted;
+}
+
 function splitIntoItems(text: string | undefined | null): string[] {
   if (!text) return [];
   return text
@@ -156,9 +181,10 @@ export default function CaseStudiesDetailClient({
                 <h1 className={detailStyles.heroTitle}>{item.title}</h1>
               </Reveal>
               <Reveal variant="fadeUp" delay={200}>
-                <p className={detailStyles.heroSummary}>
-                  {item.excerpt || item.short_description}
-                </p>
+                <div
+                  className={detailStyles.heroSummary}
+                  dangerouslySetInnerHTML={{ __html: formatRichText(item.excerpt || item.short_description) }}
+                />
               </Reveal>
               <Reveal variant="fadeUp" delay={300}>
                 <div className={detailStyles.heroMeta}>
@@ -241,12 +267,16 @@ export default function CaseStudiesDetailClient({
                     </div>
                   )}
                   {item.brand_values && (
-                    <p className={detailStyles.clientDesc}>{item.brand_values}</p>
+                    <div
+                      className={detailStyles.clientDesc}
+                      dangerouslySetInnerHTML={{ __html: formatRichText(item.brand_values) }}
+                    />
                   )}
                   {item.project_goals && (
-                    <p className={detailStyles.clientDesc}>
-                      <strong>Project Goals:</strong> {item.project_goals}
-                    </p>
+                    <div className={detailStyles.clientDesc}>
+                      <strong>Project Goals: </strong>
+                      <span dangerouslySetInnerHTML={{ __html: formatRichText(item.project_goals) }} />
+                    </div>
                   )}
                 </div>
                 <div className={detailStyles.clientInfoGrid}>
@@ -314,7 +344,10 @@ export default function CaseStudiesDetailClient({
                       <AlertTriangle size={20} />
                     </div>
                     <h3 className={detailStyles.challengeCardTitle}>Challenge {i + 1}</h3>
-                    <p className={detailStyles.challengeCardDesc}>{challenge}</p>
+                    <div
+                      className={detailStyles.challengeCardDesc}
+                      dangerouslySetInnerHTML={{ __html: formatRichText(challenge) }}
+                    />
                   </div>
                 </Reveal>
               ))}
@@ -357,7 +390,10 @@ export default function CaseStudiesDetailClient({
                         <span className={detailStyles.solutionStepNumber}>Step {i + 1}</span>
                         <h3 className={detailStyles.solutionBlockHeading}>{stepTitle}</h3>
                         {stepDesc && (
-                          <p className={detailStyles.solutionBlockDesc}>{stepDesc}</p>
+                          <div
+                            className={detailStyles.solutionBlockDesc}
+                            dangerouslySetInnerHTML={{ __html: formatRichText(stepDesc) }}
+                          />
                         )}
                       </div>
                     </div>
@@ -429,7 +465,10 @@ export default function CaseStudiesDetailClient({
                         )}
                         <div>
                           <h3 className={detailStyles.timelineTitle}>{stepTitle}</h3>
-                          <p className={detailStyles.timelineDesc}>{stepDesc}</p>
+                          <div
+                            className={detailStyles.timelineDesc}
+                            dangerouslySetInnerHTML={{ __html: formatRichText(stepDesc) }}
+                          />
                         </div>
                       </div>
                     </div>
@@ -505,7 +544,10 @@ export default function CaseStudiesDetailClient({
                 text="The Outcome"
                 subtitle="What we achieved together"
               />
-              <p className={detailStyles.resultsText}>{item.results}</p>
+              <div
+                className={detailStyles.resultsText}
+                dangerouslySetInnerHTML={{ __html: formatRichText(item.results) }}
+              />
             </Reveal>
           </div>
         </section>

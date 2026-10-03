@@ -34,6 +34,16 @@ class UserProfile(models.Model):
     def __str__(self):
         return f"{self.user.email} ({self.role})"
 
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=User)
+def create_or_save_user_profile(sender, instance, created, **kwargs):
+    if created:
+        role = 'admin' if instance.is_superuser else ('manager' if instance.is_staff else 'client')
+        UserProfile.objects.get_or_create(user=instance, defaults={'role': role})
+
 class Subscription(models.Model):
     STATUS_CHOICES = [
         ('active', 'Active'),

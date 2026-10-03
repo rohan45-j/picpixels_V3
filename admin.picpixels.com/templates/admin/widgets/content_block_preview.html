@@ -66,8 +66,16 @@
 {# Text #}
 <script type="text/html" id="cb-tpl-text">
 <div class="cb-field-group">
-  <label class="cb-label">Content</label>
-  <textarea data-field="content" class="cb-textarea cb-textarea-lg" placeholder="Write your content here (HTML supported)..."></textarea>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+    <label class="cb-label" style="margin-bottom:0">Content</label>
+    <div class="cb-toolbar" style="display:flex;gap:6px;">
+      <button type="button" class="cb-tool-btn cb-tool-link" title="Insert Hyperlink" style="padding:2px 8px;font-size:11px;font-weight:600;border-radius:4px;border:1px solid #cbd5e1;background:#f8fafc;cursor:pointer;color:#2563eb;">🔗 Add Link</button>
+      <button type="button" class="cb-tool-btn cb-tool-bold" title="Bold" style="padding:2px 8px;font-size:11px;font-weight:700;border-radius:4px;border:1px solid #cbd5e1;background:#f8fafc;cursor:pointer;">B</button>
+      <button type="button" class="cb-tool-btn cb-tool-italic" title="Italic" style="padding:2px 8px;font-size:11px;font-style:italic;border-radius:4px;border:1px solid #cbd5e1;background:#f8fafc;cursor:pointer;">I</button>
+      <button type="button" class="cb-tool-btn cb-tool-h3" title="Subheading H3" style="padding:2px 8px;font-size:11px;font-weight:600;border-radius:4px;border:1px solid #cbd5e1;background:#f8fafc;cursor:pointer;">H3</button>
+    </div>
+  </div>
+  <textarea data-field="content" class="cb-textarea cb-textarea-lg" placeholder="Write your content here (HTML & hyperlinks supported)..."></textarea>
 </div>
 </script>
 
@@ -106,8 +114,14 @@
   </div>
 </div>
 <div class="cb-field-group">
-  <label class="cb-label">Text Content</label>
-  <textarea data-field="text" class="cb-textarea" placeholder="Descriptive text beside the image (HTML supported)..."></textarea>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+    <label class="cb-label" style="margin-bottom:0">Text Content</label>
+    <div class="cb-toolbar" style="display:flex;gap:6px;">
+      <button type="button" class="cb-tool-btn cb-tool-link" title="Insert Hyperlink" style="padding:2px 8px;font-size:11px;font-weight:600;border-radius:4px;border:1px solid #cbd5e1;background:#f8fafc;cursor:pointer;color:#2563eb;">🔗 Add Link</button>
+      <button type="button" class="cb-tool-btn cb-tool-bold" title="Bold" style="padding:2px 8px;font-size:11px;font-weight:700;border-radius:4px;border:1px solid #cbd5e1;background:#f8fafc;cursor:pointer;">B</button>
+    </div>
+  </div>
+  <textarea data-field="text" class="cb-textarea" placeholder="Descriptive text beside the image (HTML & hyperlinks supported)..."></textarea>
 </div>
 <div class="cb-field-group">
   <label class="cb-label">Layout</label>

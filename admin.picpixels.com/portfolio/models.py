@@ -8,6 +8,8 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=120, unique=True, blank=True)
     is_active = models.BooleanField(default=True, help_text="Designates whether this category should be displayed on the frontend.")
+    show_on_homepage = models.BooleanField(default=True, db_index=True, help_text="Designates whether this category tab should be shown on the Home page portfolio section.")
+    homepage_sort_order = models.PositiveIntegerField(default=0, help_text="Tab order on the Home page (lowest number appears first).")
     sort_order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -66,11 +68,23 @@ class Portfolio(models.Model):
     project_url = models.URLField(blank=True)
     is_published = models.BooleanField(default=True, db_index=True)
     featured = models.BooleanField(default=False, db_index=True, help_text='Show on homepage')
+    show_on_homepage = models.BooleanField(default=False, db_index=True, help_text='Explicitly show this portfolio item on the Home page portfolio showcase')
+    homepage_sort_order = models.PositiveIntegerField(default=0, help_text='Display order on the Home page (lowest number first)')
     sort_order = models.PositiveIntegerField(default=0)
-    meta_title = models.CharField(max_length=200, blank=True)
-    meta_description = models.TextField(blank=True)
+    meta_title = models.CharField(max_length=200, blank=True, help_text="SEO Meta Title (50-60 chars)")
+    meta_description = models.TextField(blank=True, help_text="SEO Meta Description (150-160 chars)")
+    meta_keywords = models.CharField(max_length=300, blank=True, help_text="Comma-separated keywords for SEO")
+    canonical_url = models.URLField(blank=True, help_text="Custom canonical URL (leave empty to use default)")
+    schema_type = models.CharField(max_length=50, default='CreativeWork', choices=[
+        ('CreativeWork', 'Creative Work'),
+        ('VisualArtwork', 'Visual Artwork'),
+        ('ImageGallery', 'Image Gallery'),
+        ('Article', 'Article / Case Study'),
+    ], help_text="Schema.org structured data type")
+    og_image = models.ImageField(upload_to='portfolio/og/', blank=True, null=True, help_text="Custom OpenGraph image (1200x630)")
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+
 
     class Meta:
         verbose_name = 'Portfolio Item'
@@ -78,6 +92,11 @@ class Portfolio(models.Model):
         ordering = ['sort_order', '-created_at']
 
     def save(self, *args, **kwargs):
+        if self.show_on_homepage and not self.featured:
+            self.featured = True
+        elif self.featured and not self.show_on_homepage:
+            self.show_on_homepage = True
+
         if not self.slug:
             base = slugify(self.title)
             slug = base

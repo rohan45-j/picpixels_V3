@@ -36,25 +36,31 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = await fetchGuide(slug);
   if (item) {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.picpicxels.com';
+    const canonical = item.canonical_url || `${siteUrl}/guid/${slug}`;
+    const title = item.meta_title || `${item.title} | Guides & Tutorials | PicPicxels`;
+    const description = item.meta_description || item.short_description || item.excerpt || 'Read our detailed step-by-step editing guide.';
+
     return {
-      title: item.meta_title || item.title,
-      description: item.meta_description || item.short_description,
-      alternates: { canonical: item.canonical_url || undefined },
+      title,
+      description,
+      alternates: { canonical },
       openGraph: {
-        title: item.meta_title || item.title,
-        description: item.meta_description || item.short_description,
+        title,
+        description,
+        url: canonical,
         type: 'article',
         images: item.og_image_url || item.featured_image_url || item.featured_image || undefined,
       },
       twitter: {
         card: 'summary_large_image',
-        title: item.meta_title || item.title,
-        description: item.meta_description || item.short_description,
+        title,
+        description,
         images: item.og_image_url || item.featured_image_url || item.featured_image || undefined,
       },
     };
   }
-  return { title: 'Guide' };
+  return { title: 'Guide Not Found' };
 }
 
 export default async function GuideDetailPage({
@@ -66,11 +72,58 @@ export default async function GuideDetailPage({
   const item = await fetchGuide(slug);
   if (!item) notFound();
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.picpicxels.com';
+  const pageUrl = `${siteUrl}/guid/${slug}`;
+
+  const breadcrumbsJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
+      { '@type': 'ListItem', position: 2, name: 'Guides', item: `${siteUrl}/guid` },
+      { '@type': 'ListItem', position: 3, name: item.title, item: pageUrl },
+    ],
+  };
+
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: item.title,
+    description: item.short_description || item.excerpt,
+    url: pageUrl,
+    image: item.featured_image_url || item.featured_image || undefined,
+    author: {
+      '@type': 'Organization',
+      name: 'PicPicxels',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'PicPicxels',
+      logo: {
+        '@type': 'ImageObject',
+        url: `${siteUrl}/logo.png`,
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': pageUrl,
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbsJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <Header />
       <GuideDetailClient item={item} />
       <Footer />
     </>
   );
 }
+

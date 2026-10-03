@@ -9,6 +9,7 @@ import styles from '@/styles/modules/contact.module.css';
 import faqStyles from '@/styles/modules/faq-accordion.module.css';
 import type { FAQ, SiteSetting } from '@/services/public-api';
 import { useSiteSettings } from '@/store/SiteSettingsContext';
+import BotProtection from '@/components/ui/BotProtection';
 
 interface FormData {
   name: string;
@@ -32,6 +33,8 @@ export default function ContactClient({
   initialSiteSettings?: SiteSetting | null;
 }) {
   const [formData, setFormData] = useState<FormData>({ name: '', email: '', phone: '', service: '', message: '' });
+  const [honeypot, setHoneypot] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState('');
   const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -54,6 +57,11 @@ export default function ContactClient({
   const hasBd = Boolean(bdAddress || bdPhone || bdEmail);
 
   const hasAnyStudio = hasUsa || hasBd;
+
+  // General Contact & Business Hours (Dynamic from Admin Site Settings)
+  const businessHours = siteSettings?.business_hours?.trim() || 'Mon – Fri: 9:00 AM – 6:00 PM\nSat: 10:00 AM – 4:00 PM';
+  const generalEmail = siteSettings?.support_email?.trim() || siteSettings?.usa_office_email?.trim() || 'info@picpicxels.com';
+  const generalPhone = siteSettings?.support_phone?.trim() || siteSettings?.bd_office_phone?.trim() || '+880 1622915832';
 
   const validate = (): boolean => {
     const errs: FormErrors = {};
@@ -80,10 +88,22 @@ export default function ContactClient({
       const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com'}/api/v1/cms/contacts/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: formData.name, email: formData.email, subject: formData.service || 'General Inquiry', message: formData.message }),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.service || 'General Inquiry',
+          message: formData.message,
+          website_hp: honeypot,
+          cf_turnstile_response: recaptchaToken,
+          captcha_token: recaptchaToken,
+          recaptcha_token: recaptchaToken,
+        }),
       });
       if (resp.ok) setSubmitted(true);
-      else setErrorMessage('Failed to send. Please try again.');
+      else {
+        const errData = await resp.json().catch(() => null);
+        setErrorMessage(errData?.detail || 'Failed to send. Please try again.');
+      }
     } catch {
       setErrorMessage('Something went wrong. Please try again.');
     } finally {
@@ -157,6 +177,14 @@ export default function ContactClient({
                       <textarea id="message" name="message" value={formData.message} onChange={handleChange} className={`${styles.input} ${styles.textarea} ${errors.message ? styles.inputError : ''}`} placeholder="Tell us about your project, upload links, and any specific requirements..." />
                       {errors.message && <span className={styles.errorText}>{errors.message}</span>}
                     </div>
+                    <div style={{ marginBottom: '1.25rem' }}>
+                      <BotProtection
+                        siteKey={siteSettings?.recaptcha_site_key}
+                        onTokenChange={setRecaptchaToken}
+                        honeypotValue={honeypot}
+                        onHoneypotChange={setHoneypot}
+                      />
+                    </div>
                     <button type="submit" className={styles.submitBtn} disabled={loading}>{loading ? 'Sending...' : 'Send Message →'}</button>
                   </form>
                 </div>
@@ -168,22 +196,39 @@ export default function ContactClient({
                     <h3 className={styles.infoTitle}>Contact Information</h3>
                     <div className={styles.infoItem}>
                       <div className={styles.infoIcon}>✉️</div>
-                      <div><div className={styles.infoLabel}>Email</div><div className={styles.infoValue}>info@picpicxels.com</div></div>
+                      <div>
+                        <div className={styles.infoLabel}>Email</div>
+                        <div className={styles.infoValue}>
+                          <a href={`mailto:${generalEmail}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                            {generalEmail}
+                          </a>
+                        </div>
+                      </div>
                     </div>
                     <div className={styles.infoItem}>
                       <div className={styles.infoIcon}>📞</div>
-                      <div><div className={styles.infoLabel}>Call / WhatsApp</div><div className={styles.infoValue}>+880 1622915832</div></div>
+                      <div>
+                        <div className={styles.infoLabel}>Call / WhatsApp</div>
+                        <div className={styles.infoValue}>
+                          <a href={`tel:${generalPhone.replace(/\s+/g, '')}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                            {generalPhone}
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                    <div className={styles.infoItem}>
-                      <div className={styles.infoIcon}>💬</div>
-                      <div><div className={styles.infoLabel}>Skype</div><div className={styles.infoValue}>live:.cid.b9307f3eb1bb585d</div></div>
-                    </div>
-                    <div className={styles.infoItem}>
-                      <div className={styles.infoIcon}>🕐</div>
-                      <div><div className={styles.infoLabel}>Business Hours</div><div className={styles.infoValue}>Mon – Fri: 9:00 AM – 6:00 PM<br />Sat: 10:00 AM – 4:00 PM</div></div>
-                    </div>
+                    {businessHours && (
+                      <div className={styles.infoItem}>
+                        <div className={styles.infoIcon}>🕐</div>
+                        <div>
+                          <div className={styles.infoLabel}>Business Hours</div>
+                          <div className={styles.infoValue} style={{ whiteSpace: 'pre-line' }}>
+                            {businessHours}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <div className={styles.infoCard}>
+                  {/* <div className={styles.infoCard}>
                     <h3 className={styles.infoTitle}>Production House</h3>
                     <div className={styles.infoItem}>
                       <div className={styles.infoIcon}>📍</div>
@@ -193,7 +238,7 @@ export default function ContactClient({
                       <Link href="https://wa.me/+8801622915832" target="_blank" className="btn btn-secondary">WhatsApp</Link>
                       <Link href="tel:+8801622915832" className="btn btn-secondary">Call Now</Link>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </Reveal>
             </div>

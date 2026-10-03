@@ -88,18 +88,20 @@ export default function FileUploadZone({
 
   return (
     <div className={styles.wrapper}>
-      <div
+      <label
+        htmlFor="file-upload-input"
         className={`${styles.dropZone} ${isDragActive ? styles.dropZoneActive : ''}`}
         onDragEnter={handleDrag}
         onDragOver={handleDrag}
         onDragLeave={handleDrag}
         onDrop={handleDrop}
-        onClick={() => !isFull && inputRef.current?.click()}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') inputRef.current?.click(); }}
       >
         <input
+          id="file-upload-input"
+          name="uploaded_files"
           ref={inputRef}
           type="file"
           multiple
@@ -116,7 +118,7 @@ export default function FileUploadZone({
         <p className={styles.dropDesc}>
           or <span className={styles.browseText}>browse files</span> &mdash; {accept === '*/*' ? 'any format' : accept} up to {maxSizeMB}MB each (max {maxFiles})
         </p>
-      </div>
+      </label>
 
       {items.length > 0 && (
         <ul className={styles.fileList}>

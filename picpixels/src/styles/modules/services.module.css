@@ -365,7 +365,24 @@
   color: #000000;
   line-height: 1.8;
   font-size: 1rem;
-  white-space: pre-wrap;
+}
+
+.aboutContent a,
+.contentBody a {
+  color: #ff6b00;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  transition: all 0.2s ease;
+}
+
+.aboutContent a:hover,
+.contentBody a:hover {
+  color: #e05e00;
+  text-decoration-thickness: 2.5px;
+  background: rgba(255, 107, 0, 0.08);
+  border-radius: 3px;
 }
 
 .featuresColumn {

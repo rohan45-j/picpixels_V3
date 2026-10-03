@@ -1,0 +1,13 @@
+# Backend specific ignore
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+.env
+db.sqlite3
+media/
+!media/**/.gitkeep
+staticfiles/
+*.log

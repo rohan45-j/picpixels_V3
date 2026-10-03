@@ -2,140 +2,147 @@
 {% load i18n static admin_modify %}
 
 {% block extrahead %}
-  {{ block.super }}
-  <link rel="stylesheet" href="{% static 'admin/css/tag_input.css' %}?v=3">
-  <link rel="stylesheet" href="{% static 'admin/css/service_admin_image_enhancer.css' %}?v=3">
-  <link rel="stylesheet" href="{% static 'admin/css/title_word_highlighter.css' %}?v=1">
-  <script src="{% static 'admin/js/tag_input.js' %}?v=3"></script>
-  <script src="{% static 'admin/js/service_admin_image_enhancer.js' %}?v=3"></script>
-  <script src="{% static 'admin/js/title_word_highlighter.js' %}?v=1"></script>
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/tag_input.css' %}?v=3">
+<link rel="stylesheet" href="{% static 'admin/css/service_admin_image_enhancer.css' %}?v=3">
+<link rel="stylesheet" href="{% static 'admin/css/title_word_highlighter.css' %}?v=1">
+<script src="{% static 'admin/js/tag_input.js' %}?v=3"></script>
+<script src="{% static 'admin/js/service_admin_image_enhancer.js' %}?v=3"></script>
+<script src="{% static 'admin/js/title_word_highlighter.js' %}?v=1"></script>
+<script src="{% static 'admin/js/service_content_section.js' %}?v=4"></script>
 {% endblock %}
 
 {% block field_sets %}
-  {# ── Modern Segmented Tab Bar ── #}
-  <div class="svc-tab-nav-container" id="svc-tab-nav">
-    <div class="svc-tab-header">
-      <div class="svc-tab-title-wrap">
-        <span class="svc-service-chip">Service Editor</span>
-        <h2 class="svc-active-title">{% if original %}{{ original.title }}{% else %}New Service{% endif %}</h2>
-      </div>
-      <div class="svc-tab-quick-actions">
-        <a href="/admin/cms/service/" class="svc-back-btn">← Back to List</a>
-        {% if original.slug %}
-        <a href="http://localhost:3000/services/{{ original.slug }}" target="_blank" class="svc-preview-btn">
-          <span>View on Site</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        </a>
-        {% endif %}
-      </div>
+{# ── Modern Segmented Tab Bar ── #}
+<div class="svc-tab-nav-container" id="svc-tab-nav">
+  <div class="svc-tab-header">
+    <div class="svc-tab-title-wrap">
+      <span class="svc-service-chip">Service Editor</span>
+      <h2 class="svc-active-title">{% if original %}{{ original.title }}{% else %}New Service{% endif %}</h2>
     </div>
-    <div class="svc-tab-bar" role="tablist">
-      <button type="button" class="svc-tab-btn active" data-tab="general" role="tab" aria-selected="true">
-        <span class="svc-tab-icon">📄</span>
-        <span class="svc-tab-label">General & Media</span>
-      </button>
-      <button type="button" class="svc-tab-btn" data-tab="hero" role="tab" aria-selected="false">
-        <span class="svc-tab-icon">🖼️</span>
-        <span class="svc-tab-label">Hero & Slides</span>
-        <span class="svc-tab-badge" id="badge-hero">0</span>
-      </button>
-      <button type="button" class="svc-tab-btn" data-tab="gallery" role="tab" aria-selected="false">
-        <span class="svc-tab-icon">🎨</span>
-        <span class="svc-tab-label">Gallery & Showcase</span>
-        <span class="svc-tab-badge" id="badge-gallery">0</span>
-      </button>
-      <button type="button" class="svc-tab-btn" data-tab="features" role="tab" aria-selected="false">
-        <span class="svc-tab-icon">🛠️</span>
-        <span class="svc-tab-label">Features & Workflow</span>
-      </button>
-      <button type="button" class="svc-tab-btn" data-tab="headings" role="tab" aria-selected="false">
-        <span class="svc-tab-icon">🏷️</span>
-        <span class="svc-tab-label">Section Titles</span>
-      </button>
-      <button type="button" class="svc-tab-btn" data-tab="pricing" role="tab" aria-selected="false">
-        <span class="svc-tab-icon">💰</span>
-        <span class="svc-tab-label">Pricing & Plans</span>
-      </button>
-      <button type="button" class="svc-tab-btn" data-tab="others_content" role="tab" aria-selected="false">
-        <span class="svc-tab-icon">📑</span>
-        <span class="svc-tab-label">Others Content</span>
-        <span class="svc-tab-badge" id="badge-content-sections">0</span>
-      </button>
-      <button type="button" class="svc-tab-btn" data-tab="faqs" role="tab" aria-selected="false">
-        <span class="svc-tab-icon">❓</span>
-        <span class="svc-tab-label">FAQs</span>
-        <span class="svc-tab-badge" id="badge-faq">0</span>
-      </button>
-      <button type="button" class="svc-tab-btn" data-tab="seo" role="tab" aria-selected="false">
-        <span class="svc-tab-icon">⚙️</span>
-        <span class="svc-tab-label">SEO & Settings</span>
-      </button>
-      <button type="button" class="svc-tab-btn" data-tab="location" role="tab" aria-selected="false">
-        <span class="svc-tab-icon">📍</span>
-        <span class="svc-tab-label">Location & Availability</span>
-        <span class="svc-tab-badge" id="badge-location" style="display:none">0</span>
-      </button>
-      <button type="button" class="svc-tab-btn svc-tab-all" data-tab="all" role="tab" aria-selected="false">
-        <span class="svc-tab-icon">👁️</span>
-        <span class="svc-tab-label">View All</span>
-      </button>
+    <div class="svc-tab-quick-actions">
+      <a href="/admin/cms/service/" class="svc-back-btn">← Back to List</a>
+      {% if original.slug %}
+      <a href="http://localhost:3000/services/{{ original.slug }}" target="_blank" class="svc-preview-btn">
+        <span>View on Site</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+          <polyline points="15 3 21 3 21 9" />
+          <line x1="10" y1="14" x2="21" y2="3" />
+        </svg>
+      </a>
+      {% endif %}
     </div>
   </div>
+  <div class="svc-tab-bar" role="tablist">
+    <button type="button" class="svc-tab-btn active" data-tab="general" role="tab" aria-selected="true">
+      <span class="svc-tab-icon">📄</span>
+      <span class="svc-tab-label">General & Media</span>
+    </button>
+    <button type="button" class="svc-tab-btn" data-tab="hero" role="tab" aria-selected="false">
+      <span class="svc-tab-icon">🖼️</span>
+      <span class="svc-tab-label">Hero & Slides</span>
+      <span class="svc-tab-badge" id="badge-hero">0</span>
+    </button>
+    <button type="button" class="svc-tab-btn" data-tab="gallery" role="tab" aria-selected="false">
+      <span class="svc-tab-icon">🎨</span>
+      <span class="svc-tab-label">Gallery & Showcase</span>
+      <span class="svc-tab-badge" id="badge-gallery">0</span>
+    </button>
+    <button type="button" class="svc-tab-btn" data-tab="features" role="tab" aria-selected="false">
+      <span class="svc-tab-icon">🛠️</span>
+      <span class="svc-tab-label">Features & Workflow</span>
+    </button>
+    <button type="button" class="svc-tab-btn" data-tab="headings" role="tab" aria-selected="false">
+      <span class="svc-tab-icon">🏷️</span>
+      <span class="svc-tab-label">Section Titles</span>
+    </button>
+    <button type="button" class="svc-tab-btn" data-tab="pricing" role="tab" aria-selected="false">
+      <span class="svc-tab-icon">💰</span>
+      <span class="svc-tab-label">Pricing & Plans</span>
+    </button>
+    <button type="button" class="svc-tab-btn" data-tab="others_content" role="tab" aria-selected="false">
+      <span class="svc-tab-icon">📑</span>
+      <span class="svc-tab-label">Others Content</span>
+      <span class="svc-tab-badge" id="badge-content-sections">0</span>
+    </button>
+    <button type="button" class="svc-tab-btn" data-tab="faqs" role="tab" aria-selected="false">
+      <span class="svc-tab-icon">❓</span>
+      <span class="svc-tab-label">FAQs</span>
+      <span class="svc-tab-badge" id="badge-faq">0</span>
+    </button>
+    <button type="button" class="svc-tab-btn" data-tab="seo" role="tab" aria-selected="false">
+      <span class="svc-tab-icon">⚙️</span>
+      <span class="svc-tab-label">SEO & Settings</span>
+    </button>
+    <button type="button" class="svc-tab-btn" data-tab="location" role="tab" aria-selected="false">
+      <span class="svc-tab-icon">📍</span>
+      <span class="svc-tab-label">Location & Availability</span>
+      <span class="svc-tab-badge" id="badge-location">0</span>
+    </button>
+    <button type="button" class="svc-tab-btn svc-tab-all" data-tab="all" role="tab" aria-selected="false">
+      <span class="svc-tab-icon">👁️</span>
+      <span class="svc-tab-label">View All</span>
+    </button>
+  </div>
+</div>
 
-  {# ── Fieldsets wrapped in cards with data-tab tags ── #}
-  {% for fieldset in adminform %}
-    {% if fieldset.name %}
-    <div class="bpa-card" data-fieldset-name="{{ fieldset.name }}">
-      <div class="bpa-card-header">
-        <div class="bpa-card-header-left">
-          <span class="bpa-card-dot"></span>
-          <h3 class="bpa-card-title">{{ fieldset.name }}</h3>
-        </div>
-        {% if fieldset.is_collapsible %}
-        <button type="button" class="bpa-collapse-btn" data-collapse="{{ fieldset.name|slugify }}" aria-label="Toggle section">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </button>
-        {% endif %}
-      </div>
-      {% if fieldset.description %}
-      <div class="bpa-card-desc">{{ fieldset.description|safe }}</div>
-      {% endif %}
-      <div class="bpa-card-body">
-        {% include "admin/includes/fieldset.html" with fieldset=fieldset %}
-      </div>
+{# ── Fieldsets wrapped in cards with data-tab tags ── #}
+{% for fieldset in adminform %}
+{% if fieldset.name %}
+<div class="bpa-card" data-fieldset-name="{{ fieldset.name }}">
+  <div class="bpa-card-header">
+    <div class="bpa-card-header-left">
+      <span class="bpa-card-dot"></span>
+      <h3 class="bpa-card-title">{{ fieldset.name }}</h3>
     </div>
+    {% if fieldset.is_collapsible %}
+    <button type="button" class="bpa-collapse-btn" data-collapse="{{ fieldset.name|slugify }}"
+      aria-label="Toggle section">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    </button>
     {% endif %}
-  {% endfor %}
+  </div>
+  {% if fieldset.description %}
+  <div class="bpa-card-desc">{{ fieldset.description|safe }}</div>
+  {% endif %}
+  <div class="bpa-card-body">
+    {% include "admin/includes/fieldset.html" with fieldset=fieldset %}
+  </div>
+</div>
+{% endif %}
+{% endfor %}
 {% endblock %}
 
 {% block footer %}
-  {# ── Sticky Save & Status Footer ── #}
-  <div class="bpa-sticky-footer" id="bpa-sticky-footer">
-    <div class="bpa-footer-inner">
-      <div class="bpa-footer-status">
-        {% if original %}
-          <span class="bpa-status-badge bpa-status-active">
-            {% if original.is_active %}● Active{% else %}○ Draft{% endif %}
-          </span>
-          <span class="bpa-footer-id">{{ original.title }}</span>
-          {% if original.price %}
-            <span class="bpa-footer-price">${{ original.price }}</span>
-          {% endif %}
-        {% else %}
-          <span class="bpa-status-badge bpa-status-draft">New Service</span>
-        {% endif %}
-      </div>
-      <div class="bpa-footer-actions">
-        {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
-      </div>
+{# ── Sticky Save & Status Footer ── #}
+<div class="bpa-sticky-footer" id="bpa-sticky-footer">
+  <div class="bpa-footer-inner">
+    <div class="bpa-footer-status">
+      {% if original %}
+      <span class="bpa-status-badge bpa-status-active">
+        {% if original.is_active %}● Active{% else %}○ Draft{% endif %}
+      </span>
+      <span class="bpa-footer-id">{{ original.title }}</span>
+      {% if original.price %}
+      <span class="bpa-footer-price">${{ original.price }}</span>
+      {% endif %}
+      {% else %}
+      <span class="bpa-status-badge bpa-status-draft">New Service</span>
+      {% endif %}
+    </div>
+    <div class="bpa-footer-actions">
+      {% block submit_buttons_bottom %}{% submit_row %}{% endblock %}
     </div>
   </div>
+</div>
 
-  {# ── Service Admin Interactive Tab & Badge Controller ── #}
-  <script>
-  (function() {
+{# ── Service Admin Interactive Tab & Badge Controller ── #}
+<script>
+  (function () {
     'use strict';
 
     var TAB_MAPPINGS = {
@@ -145,31 +152,40 @@
       },
       'hero': {
         fieldsets: ['Hero Section'],
-        inlines: ['serviceheroimage-group']
+        inlines: ['hero_images-group', 'serviceheroimage-group']
       },
       'gallery': {
         fieldsets: [],
-        inlines: ['gallery_images-group']
+        inlines: ['gallery_images-group', 'servicegalleryimage-group']
+      },
+      'features': {
+        fieldsets: ['Section Titles & Headings'],
+        inlines: [
+          'why_need_features-group',
+          'process_steps-group',
+          'why_choose_cards-group',
+          'eeat-group',
+          'servicewhyneedfeature-group',
+          'serviceprocessstep-group',
+          'servicewhychoosecard-group',
+          'serviceeeat-group'
+        ]
       },
       'headings': {
         fieldsets: ['Section Titles & Headings'],
         inlines: []
       },
-      'features': {
-        fieldsets: ['Section Titles & Headings'],
-        inlines: ['why_need_features-group', 'process_steps-group', 'why_choose_cards-group', 'eeat-group']
-      },
       'pricing': {
         fieldsets: ['Pricing'],
-        inlines: ['pricing_tier_cards-group']
+        inlines: ['pricing_tier_cards-group', 'servicepricingtiercard-group']
       },
       'others_content': {
         fieldsets: [],
-        inlines: ['content_sections-group']
+        inlines: ['content_sections-group', 'servicecontentsection-group']
       },
       'faqs': {
         fieldsets: [],
-        inlines: ['faqs-group']
+        inlines: ['faqs-group', 'servicefaq-group']
       },
       'seo': {
         fieldsets: ['SEO & Display'],
@@ -183,27 +199,43 @@
 
     var currentTab = 'general';
 
+    function getAllCards() {
+      return Array.from(document.querySelectorAll('.bpa-card'));
+    }
+
+    function getAllInlines() {
+      // Find all inline containers in Django Unfold and standard Django admin
+      return Array.from(document.querySelectorAll('[data-inline-type], [id$="-group"], .inline-group'));
+    }
+
     function getElementsForTab(tabId) {
       if (tabId === 'all') {
         return {
-          fieldsets: document.querySelectorAll('.bpa-card'),
-          inlines: document.querySelectorAll('.inline-group')
+          fieldsets: getAllCards(),
+          inlines: getAllInlines()
         };
       }
       var config = TAB_MAPPINGS[tabId] || { fieldsets: [], inlines: [] };
       var fieldsets = [];
       var inlines = [];
 
-      document.querySelectorAll('.bpa-card').forEach(function(card) {
-        var name = card.getAttribute('data-fieldset-name');
-        if (config.fieldsets.indexOf(name) !== -1) {
+      var targetFieldsets = config.fieldsets.map(function (s) {
+        return s.replace(/&amp;/g, '&').trim().toLowerCase();
+      });
+
+      getAllCards().forEach(function (card) {
+        var rawName = card.getAttribute('data-fieldset-name') || '';
+        var name = rawName.replace(/&amp;/g, '&').trim().toLowerCase();
+        if (targetFieldsets.indexOf(name) !== -1) {
           fieldsets.push(card);
         }
       });
 
-      config.inlines.forEach(function(id) {
+      config.inlines.forEach(function (id) {
         var el = document.getElementById(id);
-        if (el) inlines.push(el);
+        if (el && inlines.indexOf(el) === -1) {
+          inlines.push(el);
+        }
       });
 
       return { fieldsets: fieldsets, inlines: inlines };
@@ -213,14 +245,17 @@
       currentTab = tabId;
 
       // Update button active states
-      document.querySelectorAll('.svc-tab-btn').forEach(function(btn) {
+      document.querySelectorAll('.svc-tab-btn').forEach(function (btn) {
         var active = btn.getAttribute('data-tab') === tabId;
         btn.classList.toggle('active', active);
         btn.setAttribute('aria-selected', active);
       });
 
       if (tabId === 'all') {
-        document.querySelectorAll('.bpa-card, .inline-group').forEach(function(el) {
+        getAllCards().forEach(function (el) {
+          el.style.display = '';
+        });
+        getAllInlines().forEach(function (el) {
           el.style.display = '';
         });
         return;
@@ -228,14 +263,16 @@
 
       var activeElements = getElementsForTab(tabId);
       var activeSet = new Set();
-      activeElements.fieldsets.forEach(function(el) { activeSet.add(el); });
-      activeElements.inlines.forEach(function(el) { activeSet.add(el); });
+      activeElements.fieldsets.forEach(function (el) { activeSet.add(el); });
+      activeElements.inlines.forEach(function (el) { activeSet.add(el); });
 
-      // Hide all fieldsets and inlines not in this tab
-      document.querySelectorAll('.bpa-card').forEach(function(card) {
+      // Hide all fieldsets not in this tab, show active ones
+      getAllCards().forEach(function (card) {
         card.style.display = activeSet.has(card) ? '' : 'none';
       });
-      document.querySelectorAll('.inline-group').forEach(function(grp) {
+
+      // Hide all inlines not in this tab, show active ones
+      getAllInlines().forEach(function (grp) {
         grp.style.display = activeSet.has(grp) ? '' : 'none';
       });
 
@@ -251,33 +288,33 @@
 
     function updateBadgeCounts() {
       // Hero slides count
-      var heroGroup = document.getElementById('serviceheroimage-group');
+      var heroGroup = document.getElementById('hero_images-group') || document.getElementById('serviceheroimage-group');
       if (heroGroup) {
-        var heroRows = heroGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form)');
+        var heroRows = heroGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form), .form-group.original, .inline-related.has_original');
         var heroBadge = document.getElementById('badge-hero');
         if (heroBadge) heroBadge.textContent = heroRows.length;
       }
 
       // Gallery count
-      var galleryGroup = document.getElementById('gallery_images-group');
+      var galleryGroup = document.getElementById('gallery_images-group') || document.getElementById('servicegalleryimage-group');
       if (galleryGroup) {
-        var galRows = galleryGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form)');
+        var galRows = galleryGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form), .form-group.original, .inline-related.has_original');
         var galBadge = document.getElementById('badge-gallery');
         if (galBadge) galBadge.textContent = galRows.length;
       }
 
       // FAQ count
-      var faqGroup = document.getElementById('faqs-group');
+      var faqGroup = document.getElementById('faqs-group') || document.getElementById('servicefaq-group');
       if (faqGroup) {
-        var faqRows = faqGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form)');
+        var faqRows = faqGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form), .form-group.original, .inline-related.has_original');
         var faqBadge = document.getElementById('badge-faq');
         if (faqBadge) faqBadge.textContent = faqRows.length;
       }
 
       // Others Content count
-      var contentGroup = document.getElementById('content_sections-group');
+      var contentGroup = document.getElementById('content_sections-group') || document.getElementById('servicecontentsection-group');
       if (contentGroup) {
-        var contentRows = contentGroup.querySelectorAll('.tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form)');
+        var contentRows = contentGroup.querySelectorAll('.form-group.original, .tabular.inline-related tr.has_original, .tabular tr.form-row:not(.empty-form), .inline-related.has_original');
         var contentBadge = document.getElementById('badge-content-sections');
         if (contentBadge) contentBadge.textContent = contentRows.length;
       }
@@ -285,24 +322,25 @@
       // Location count
       var locInput = document.getElementById('id_available_locations');
       var locBadge = document.getElementById('badge-location');
-      if (locInput && locBadge) {
-        try {
-          var locs = JSON.parse(locInput.value || '[]');
-          if (Array.isArray(locs) && locs.length > 0) {
-            locBadge.textContent = locs.length;
-            locBadge.style.display = '';
-          } else {
-            locBadge.style.display = 'none';
+      if (locBadge) {
+        var count = 0;
+        if (locInput && locInput.value) {
+          try {
+            var val = locInput.value.trim();
+            var parsed = val.startsWith('[') ? JSON.parse(val) : val.split(',').filter(Boolean);
+            if (Array.isArray(parsed)) count = parsed.length;
+          } catch (e) {
+            count = 0;
           }
-        } catch(e) {
-          locBadge.style.display = 'none';
         }
+        locBadge.textContent = count;
+        locBadge.style.display = '';
       }
     }
 
     function initTabs() {
-      document.querySelectorAll('.svc-tab-btn').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
+      document.querySelectorAll('.svc-tab-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
           e.preventDefault();
           var tab = btn.getAttribute('data-tab');
           if (tab) switchTab(tab);
@@ -315,8 +353,8 @@
 
     /* ── Collapsible Card Toggle ── */
     function initCollapse() {
-      document.querySelectorAll('.bpa-collapse-btn').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
+      document.querySelectorAll('.bpa-collapse-btn').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
           e.stopPropagation();
           var card = btn.closest('.bpa-card');
           if (!card) return;
@@ -324,29 +362,117 @@
         });
       });
 
-      document.querySelectorAll('.bpa-card-header').forEach(function(header) {
-        header.addEventListener('click', function() {
+      document.querySelectorAll('.bpa-card-header').forEach(function (header) {
+        header.addEventListener('click', function () {
           var btn = header.querySelector('.bpa-collapse-btn');
           if (btn) btn.click();
         });
       });
     }
 
+    /* ── Content Formatting & Hyperlink Toolbar ── */
+    function attachFormattingToolbar(textareaId, label) {
+      var textarea = document.getElementById(textareaId);
+      if (!textarea || textarea.dataset.hasToolbar) return;
+      textarea.dataset.hasToolbar = 'true';
+
+      var toolbar = document.createElement('div');
+      toolbar.className = 'flex items-center flex-wrap gap-1.5 p-2 bg-gray-100 dark:bg-gray-800 rounded-t-lg border border-gray-300 dark:border-gray-700 text-xs mb-0';
+      toolbar.innerHTML = `
+        <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 mr-1 flex items-center gap-1">
+          <span>✍️</span> ${label} Tools:
+        </span>
+        <button type="button" class="btn-fmt-link px-2.5 py-1 bg-white dark:bg-gray-700 hover:bg-primary-50 dark:hover:bg-primary-950/40 text-primary-600 dark:text-primary-400 font-semibold rounded border border-gray-300 dark:border-gray-600 flex items-center gap-1 shadow-2xs">
+          <span>🔗</span> Add Hyperlink
+        </button>
+        <button type="button" class="btn-fmt-bold px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-bold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+          B
+        </button>
+        <button type="button" class="btn-fmt-italic px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 italic font-serif rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+          I
+        </button>
+        <button type="button" class="btn-fmt-h3 px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+          H3
+        </button>
+        <button type="button" class="btn-fmt-ul px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+          • List
+        </button>
+      `;
+
+      textarea.classList.remove('rounded-lg');
+      textarea.classList.add('rounded-b-lg', 'border-t-0');
+      textarea.parentNode.insertBefore(toolbar, textarea);
+
+      toolbar.querySelector('.btn-fmt-link').addEventListener('click', function () {
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var selected = textarea.value.substring(start, end);
+        var url = prompt('Enter link URL (e.g. /portfolio or https://...):', 'https://');
+        if (!url) return;
+        var text = selected || prompt('Enter link text:', 'Learn More') || url;
+        var linkTag = '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + text + '</a>';
+        textarea.focus();
+        textarea.setRangeText(linkTag, start, end, 'end');
+      });
+
+      toolbar.querySelector('.btn-fmt-bold').addEventListener('click', function () {
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var selected = textarea.value.substring(start, end) || 'Bold text';
+        textarea.focus();
+        textarea.setRangeText('<strong>' + selected + '</strong>', start, end, 'end');
+      });
+
+      toolbar.querySelector('.btn-fmt-italic').addEventListener('click', function () {
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var selected = textarea.value.substring(start, end) || 'Italic text';
+        textarea.focus();
+        textarea.setRangeText('<em>' + selected + '</em>', start, end, 'end');
+      });
+
+      toolbar.querySelector('.btn-fmt-h3').addEventListener('click', function () {
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var selected = textarea.value.substring(start, end) || 'Section Heading';
+        textarea.focus();
+        textarea.setRangeText('<h3>' + selected + '</h3>\n', start, end, 'end');
+      });
+
+      toolbar.querySelector('.btn-fmt-ul').addEventListener('click', function () {
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var selected = textarea.value.substring(start, end) || 'Key feature or highlight';
+        textarea.focus();
+        textarea.setRangeText('<ul>\n  <li>' + selected + '</li>\n</ul>\n', start, end, 'end');
+      });
+    }
+
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function () {
         initTabs();
         initCollapse();
+        setTimeout(function () {
+          attachFormattingToolbar('id_description', 'Description');
+          attachFormattingToolbar('id_why_need_section_description', 'Why Need Description');
+          attachFormattingToolbar('id_pricing_description', 'Pricing Description');
+        }, 200);
       });
     } else {
       initTabs();
       initCollapse();
+      setTimeout(function () {
+        attachFormattingToolbar('id_description', 'Description');
+        attachFormattingToolbar('id_why_need_section_description', 'Why Need Description');
+        attachFormattingToolbar('id_pricing_description', 'Pricing Description');
+      }, 200);
     }
 
     if (typeof django !== 'undefined' && django.jQuery) {
-      django.jQuery(document).on('formset:added formset:removed', function() {
+      django.jQuery(document).on('formset:added formset:removed', function () {
         updateBadgeCounts();
       });
     }
   })();
-  </script>
+</script>
 {% endblock %}

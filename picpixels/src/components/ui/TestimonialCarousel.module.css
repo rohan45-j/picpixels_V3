@@ -14,15 +14,45 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 3.5rem;
+  opacity: 1;
+  transform: none;
+}
+
+:global(html.js) .wrapper:not(.visible) {
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
               transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.visible {
+:global(html.js) .visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (scripting: none) {
+  .wrapper {
+    opacity: 1 !important;
+    transform: none !important;
+    padding: 0 1rem !important;
+  }
+  .trackWrap {
+    overflow: visible !important;
+  }
+  .track {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 1.5rem !important;
+    transform: none !important;
+  }
+  .card {
+    opacity: 1 !important;
+    transform: none !important;
+    width: 100% !important;
+  }
+  .controls, .navBtn, .dots {
+    display: none !important;
+  }
 }
 
 .trackWrap { overflow: hidden; }

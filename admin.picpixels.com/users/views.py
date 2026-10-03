@@ -14,6 +14,8 @@ from .serializers import (
     SubscriptionSerializer, TransactionSerializer, CustomTokenObtainSerializer,
     PermissionSerializer, GroupSerializer, CurrentUserSerializer,
 )
+from core.captcha import verify_bot_protection
+from core.throttles import LoginRateThrottle, RegisterRateThrottle, PasswordResetRateThrottle
 
 CACHE_TTL = getattr(settings, 'PUBLIC_CACHE_TTL', 60)
 
@@ -30,8 +32,12 @@ class NoCacheOnWriteMixin:
 
 class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
+    throttle_classes = [RegisterRateThrottle]
 
     def post(self, request):
+        is_valid, err_msg = verify_bot_protection(request, request.data)
+        if not is_valid:
+            return Response({'detail': err_msg}, status=status.HTTP_400_BAD_REQUEST)
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             profile = serializer.save()
@@ -46,8 +52,12 @@ class RegisterView(APIView):
 class PasswordResetView(APIView):
     permission_classes = [permissions.AllowAny]
     serializer_class = PasswordResetSerializer
+    throttle_classes = [PasswordResetRateThrottle]
 
     def post(self, request):
+        is_valid, err_msg = verify_bot_protection(request, request.data)
+        if not is_valid:
+            return Response({'detail': err_msg}, status=status.HTTP_400_BAD_REQUEST)
         serializer = PasswordResetSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
@@ -157,3 +167,10 @@ class PermissionListView(NoCacheOnWriteMixin, generics.ListAPIView):
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainSerializer
     permission_classes = [permissions.AllowAny]
+    throttle_classes = [LoginRateThrottle]
+
+    def post(self, request, *args, **kwargs):
+        is_valid, err_msg = verify_bot_protection(request, request.data)
+        if not is_valid:
+            return Response({'detail': err_msg}, status=status.HTTP_400_BAD_REQUEST)
+        return super().post(request, *args, **kwargs)

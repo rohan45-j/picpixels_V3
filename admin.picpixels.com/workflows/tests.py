@@ -9,11 +9,11 @@ class WorkflowTests(TestCase):
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username='testuser', email='user@test.com', password='password123')
-        self.profile = UserProfile.objects.create(user=self.user, role='client')
+        self.profile, _ = UserProfile.objects.get_or_create(user=self.user, defaults={'role': 'client'})
 
         # Authenticate user
         login_url = reverse('token_obtain_pair')
-        resp = self.client.post(login_url, {'username': 'testuser', 'password': 'password123'})
+        resp = self.client.post(login_url, {'username': 'testuser', 'password': 'password123', 'cf_turnstile_response': 'valid-token'})
         self.token = resp.data['access']
         self.auth_headers = {'HTTP_AUTHORIZATION': f'Bearer {self.token}'}
 

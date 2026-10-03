@@ -47,47 +47,38 @@ function Dropdown({
   options,
   value,
   onChange,
-  open,
-  onToggle,
+  name,
 }: {
   label: string;
   placeholder: string;
   options: { id: number; label: string }[];
   value: number | null;
   onChange: (id: number) => void;
-  open: boolean;
-  onToggle: () => void;
+  name: string;
 }) {
-  const selected = options.find((o) => o.id === value);
   return (
     <div className={styles.dropdownWrap}>
-      <span className={styles.dropdownLabel}>{label}</span>
-      <button
-        type="button"
-        className={`${styles.dropdownTrigger} ${!selected ? styles.dropdownTriggerPlaceholder : ''}`}
-        onClick={onToggle}
-        onBlur={() => setTimeout(onToggle, 150)}
-      >
-        <span>{selected?.label || placeholder}</span>
-        <ChevronDown size={18} className={`${styles.dropdownChevron} ${open ? styles.dropdownChevronOpen : ''}`} />
-      </button>
-      {open && (
-        <div className={styles.dropdownMenu}>
+      <label htmlFor={`pricing-${name}`} className={styles.dropdownLabel}>
+        {label}
+      </label>
+      <div className={styles.dropdownSelectContainer}>
+        <select
+          id={`pricing-${name}`}
+          name={name}
+          className={styles.dropdownSelect}
+          value={value ?? ''}
+          onChange={(e) => onChange(Number(e.target.value))}
+          aria-label={label}
+        >
+          {placeholder && !value && <option value="" disabled>{placeholder}</option>}
           {options.map((opt) => (
-            <button
-              key={opt.id}
-              type="button"
-              className={`${styles.dropdownItem} ${value === opt.id ? styles.dropdownItemActive : ''}`}
-              onMouseDown={() => {
-                onChange(opt.id);
-                onToggle();
-              }}
-            >
+            <option key={opt.id} value={opt.id}>
               {opt.label}
-            </button>
+            </option>
           ))}
-        </div>
-      )}
+        </select>
+        <ChevronDown size={18} className={styles.dropdownSelectChevron} />
+      </div>
     </div>
   );
 }
@@ -96,30 +87,42 @@ export default function PricingClient({
   faqs,
   promotions,
   services: serverServices,
+  initialServiceId,
+  initialUnitRangeId,
 }: {
   faqs: FAQ[];
   promotions: PricingPromotion[];
   services: PricingService[];
+  initialServiceId?: number;
+  initialUnitRangeId?: number;
 }) {
   const router = useRouter();
   const [services, setServices] = useState<PricingService[]>(serverServices);
-  const [loadingServices, setLoadingServices] = useState(false);
-  const [selectedServiceId, setSelectedServiceId] = useState<number | null>(null);
-  const [selectedUnitRangeId, setSelectedUnitRangeId] = useState<number | null>(null);
-  const [serviceDropdownOpen, setServiceDropdownOpen] = useState(false);
-  const [unitRangeDropdownOpen, setUnitRangeDropdownOpen] = useState(false);
+  const activeServices = useMemo(() => services.filter((s) => s.is_active), [services]);
+
+  const defaultService =
+    (initialServiceId && activeServices.find((s) => s.id === initialServiceId)) ||
+    activeServices[0] ||
+    null;
+
+  const defaultUnitRanges = defaultService?.unit_ranges || [];
+  const defaultUnitRange =
+    (initialUnitRangeId && defaultUnitRanges.find((u) => u.id === initialUnitRangeId)) ||
+    defaultUnitRanges[0] ||
+    null;
+
+  const [selectedServiceId, setSelectedServiceId] = useState<number | null>(() => defaultService?.id ?? null);
+  const [selectedUnitRangeId, setSelectedUnitRangeId] = useState<number | null>(() => defaultUnitRange?.id ?? null);
 
   useEffect(() => {
-    if (serverServices.length > 0) {
+    if (serverServices.length > 0 && selectedServiceId === null) {
       setSelectedServiceId(serverServices[0].id);
       const firstSvc = serverServices[0];
       if (firstSvc.unit_ranges.length > 0) {
         setSelectedUnitRangeId(firstSvc.unit_ranges[0].id);
       }
     }
-  }, [serverServices]);
-
-  const activeServices = useMemo(() => services.filter((s) => s.is_active), [services]);
+  }, [serverServices, selectedServiceId]);
 
   const selectedService = useMemo(
     () => activeServices.find((s) => s.id === selectedServiceId) ?? null,
@@ -152,14 +155,21 @@ export default function PricingClient({
     }) || null;
   }, [promotions]);
 
+  useEffect(() => {
+    router.prefetch('/order-summary');
+  }, [router]);
+
   const handleContinueToOrder = useCallback(
     (card: typeof cards[number], e?: React.FormEvent) => {
-      if (e) e.preventDefault();
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
       const unitRange = unitRanges.find((u) => u.id === selectedUnitRangeId);
       const priceData = card.prices.find((p) => p.unit_range === selectedUnitRangeId);
       const data = {
         source: 'pricing' as const,
-        title: `${selectedService?.name} - ${card.name}`,
+        title: `${selectedService?.name || ''} - ${card.name}`,
         description: card.description || '',
         image: card.image || '',
         price: priceData ? `$${priceData.price}` : '',
@@ -167,27 +177,22 @@ export default function PricingClient({
         unitRange: unitRange?.label || '',
       };
       storeOrderSummary(data);
-      fetch('/api/order', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }).catch(() => {});
       router.push('/order-summary');
     },
     [selectedService, selectedUnitRangeId, unitRanges, router],
   );
 
-  if (loadingServices) {
-    return (
-      <main>
-        <div className={styles.headerSection}>
-          <div className={styles.headerContent}>
-            <h1 className={styles.title} style={{ color: '#000000' }}>Pricing Plans</h1>
-            <p className={styles.subtitle}>Pay only for what you need.</p>
-          </div>
-        </div>
-        <div className={styles.loadingWrap}>
-          <div className={styles.loadingSpinner} />
-        </div>
-      </main>
-    );
-  }
+
+
+  const handleServiceChange = (id: number) => {
+    setSelectedServiceId(id);
+    const svc = activeServices.find((s) => s.id === id);
+    if (svc && svc.unit_ranges.length > 0) {
+      setSelectedUnitRangeId(svc.unit_ranges[0].id);
+    } else {
+      setSelectedUnitRangeId(null);
+    }
+  };
 
   return (
     <>
@@ -209,32 +214,29 @@ export default function PricingClient({
         <section className={`${styles.pricingSection} ${styles.pricingSectionTop}`} aria-label="Pricing filters">
           <div className={styles.pricingInner}>
             {activeServices.length > 0 && (
-              <div className={`${styles.filterRow} ${serviceDropdownOpen || unitRangeDropdownOpen ? styles.filterRowOpen : ''}`}>
+              <form method="GET" action="/pricing" className={styles.filterRow}>
                 <Dropdown
                   label="Service"
+                  name="service"
                   placeholder="Select Service"
                   options={activeServices.map((s) => ({ id: s.id, label: s.name }))}
                   value={selectedServiceId}
-                  onChange={setSelectedServiceId}
-                  open={serviceDropdownOpen}
-                  onToggle={() => {
-                    setServiceDropdownOpen(!serviceDropdownOpen);
-                    setUnitRangeDropdownOpen(false);
-                  }}
+                  onChange={handleServiceChange}
                 />
                 <Dropdown
                   label="Unit Range"
+                  name="unit_range"
                   placeholder="Select Unit Range"
                   options={unitRanges.map((u) => ({ id: u.id, label: u.label }))}
                   value={selectedUnitRangeId}
                   onChange={setSelectedUnitRangeId}
-                  open={unitRangeDropdownOpen}
-                  onToggle={() => {
-                    setUnitRangeDropdownOpen(!unitRangeDropdownOpen);
-                    setServiceDropdownOpen(false);
-                  }}
                 />
-              </div>
+                <noscript>
+                  <button type="submit" className={styles.noJsFilterBtn}>
+                    Update Pricing
+                  </button>
+                </noscript>
+              </form>
             )}
 
             {cards.length === 0 ? (

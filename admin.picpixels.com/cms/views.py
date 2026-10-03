@@ -8,15 +8,17 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.conf import settings
+from core.captcha import verify_bot_protection
+from core.throttles import PublicFormRateThrottle
 
 from .models import (
     PageCategory, Page, Section, Banner, Service, Testimonial,
-    BlogCategory, BlogTag, BlogPost, BlogContentSection,
+    BlogCategory, BlogTag, BlogPost, BlogContentSection, BlogFeedback,
     FAQCategory, FAQ, ContactInquiry, TeamMember, BrandLogo,
     HeroSection, PricingPlan, Technology, Author, PricingPromotionSection,
     PricingConfigSection, PricingConfigCard,
     ServiceUnitRange, ServicePricingCard, ServicePricingCardPrice,
-    FreeTrial, FreeTrialAttachment,
+    FreeTrial, FreeTrialAttachment, ProductCategory,
     WhyChooseSection, WhyChooseFeatureSection,
     HomepageCTASection,
     AboutMissionVision, AboutCoreValue, AboutProcessStep, AboutPageSetting,
@@ -28,7 +30,7 @@ from .serializers import (
     PageCategorySerializer, PageSerializer, SectionSerializer, BannerSerializer,
     ServiceSerializer, ServiceListSerializer, TestimonialSerializer,
     BlogCategorySerializer, BlogTagSerializer,
-    BlogPostSerializer, BlogPostListSerializer, BlogContentSectionSerializer,
+    BlogPostSerializer, BlogPostListSerializer, BlogContentSectionSerializer, BlogFeedbackSerializer,
     FAQCategorySerializer, FAQSerializer,
     ContactInquirySerializer, TeamMemberSerializer, BrandLogoSerializer,
     HeroSectionSerializer, PricingPlanSerializer, TechnologySerializer,
@@ -36,6 +38,7 @@ from .serializers import (
     AuthorSerializer,
     ServicePricingSerializer,
     FreeTrialSerializer,
+    ProductCategorySerializer,
     WhyChooseSectionSerializer,
     WhyChooseFeatureSectionSerializer,
     HomepageCTASectionSerializer,
@@ -122,6 +125,7 @@ class ServiceViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
         qs = qs.only('id', 'title', 'slug', 'short_description', 'description', 'features', 'icon', 'image',
                       'hero_subtitle', 'hero_background', 'hero_cta_text', 'hero_cta_link',
                       'price', 'order', 'seo_title', 'seo_description',
+                      'canonical_url', 'meta_keywords', 'schema_type', 'custom_schema', 'og_image',
                       'brand_section_title', 'why_need_section_title', 'why_need_section_description',
                       'process_section_title', 'why_choose_title', 'tools_section_title',
                        'pricing_title', 'pricing_badge_text', 'pricing_heading', 'pricing_description',
@@ -132,15 +136,7 @@ class ServiceViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
         if self.request.query_params.get('all') != '1':
             qs = qs.filter(is_active=True)
 
-        location_param = self.request.query_params.get('location')
-        if location_param:
-            loc_clean = location_param.strip().lower().replace('-', ' ')
-            qs = qs.filter(
-                models.Q(available_locations=[]) |
-                models.Q(available_locations__isnull=True) |
-                models.Q(available_locations__icontains=loc_clean)
-            )
-
+        # Note: Services are not filtered by location; all active services remain visible
         return qs.order_by('order')
 
     def get_serializer_class(self):
@@ -255,6 +251,33 @@ class BlogPostViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
         serializer = BlogPostListSerializer(qs, many=True, context={'request': request})
         return Response(serializer.data)
 
+    @action(detail=True, methods=['post'], permission_classes=[permissions.AllowAny])
+    def feedback(self, request, slug=None):
+        post = self.get_object()
+        data = request.data.copy()
+        data['post'] = post.id
+
+        is_helpful = data.get('is_helpful')
+        if is_helpful is None:
+            return Response({'detail': 'is_helpful field is required (true/false).'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check bot protection honeypot
+        is_valid, err_msg = verify_bot_protection(request, data)
+        if not is_valid:
+            return Response({'detail': err_msg}, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = BlogFeedbackSerializer(data=data)
+        if serializer.is_valid():
+            feedback_obj = serializer.save(
+                ip_address=request.META.get('REMOTE_ADDR'),
+                user_agent=request.META.get('HTTP_USER_AGENT', '')[:255]
+            )
+            return Response(
+                {'detail': 'Thank you for your feedback!', 'id': feedback_obj.id},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class BlogContentViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
     queryset = BlogContentSection.objects.all()
@@ -317,11 +340,18 @@ class FAQViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
 class ContactInquiryViewSet(viewsets.ModelViewSet):
     queryset = ContactInquiry.objects.all()
     serializer_class = ContactInquirySerializer
+    throttle_classes = [PublicFormRateThrottle]
 
     def get_permissions(self):
         if self.action == 'create':
             return [permissions.AllowAny()]
         return [permissions.IsAuthenticated()]
+
+    def create(self, request, *args, **kwargs):
+        is_valid, err_msg = verify_bot_protection(request, request.data)
+        if not is_valid:
+            return Response({'detail': err_msg}, status=status.HTTP_400_BAD_REQUEST)
+        return super().create(request, *args, **kwargs)
 
 
 class TeamMemberViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
@@ -420,7 +450,14 @@ class FreeTrialViewSet(viewsets.ModelViewSet):
     queryset = FreeTrial.objects.prefetch_related('attachments').all()
     serializer_class = FreeTrialSerializer
     permission_classes = [permissions.AllowAny]
+    throttle_classes = [PublicFormRateThrottle]
     parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]
+
+    def create(self, request, *args, **kwargs):
+        is_valid, err_msg = verify_bot_protection(request, request.data)
+        if not is_valid:
+            return Response({'detail': err_msg}, status=status.HTTP_400_BAD_REQUEST)
+        return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         instance = serializer.save()
@@ -431,6 +468,13 @@ class FreeTrialViewSet(viewsets.ModelViewSet):
                 file=f,
                 original_filename=f.name,
             )
+
+
+class ProductCategoryViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
+    queryset = ProductCategory.objects.filter(is_active=True).order_by('order', 'name')
+    serializer_class = ProductCategorySerializer
+    permission_classes = [permissions.AllowAny]
+    pagination_class = None
 
 
 class WhyChooseSectionViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
@@ -573,15 +617,22 @@ class HomepageDataView(APIView):
         try:
             from portfolio.models import Portfolio, Category
             from portfolio.serializers import PortfolioSerializer, CategorySerializer
-            portfolios_qs = Portfolio.objects.filter(is_published=True, featured=True).select_related('category', 'service')[:8]
-            if not portfolios_qs:
+            portfolios_qs = (Portfolio.objects.filter(is_published=True, show_on_homepage=True)
+                             .select_related('category', 'service')
+                             .order_by('homepage_sort_order', 'sort_order', '-created_at'))
+            if not portfolios_qs.exists():
+                portfolios_qs = (Portfolio.objects.filter(is_published=True, featured=True)
+                                 .select_related('category', 'service')
+                                 .order_by('homepage_sort_order', 'sort_order', '-created_at')[:8])
+            if not portfolios_qs.exists():
                 portfolios_qs = Portfolio.objects.filter(is_published=True).select_related('category', 'service')[:8]
             portfolios_data = PortfolioSerializer(portfolios_qs, many=True, context={'request': request}).data
-            portfolio_cats_qs = Category.objects.filter(is_active=True).order_by('name')
+            portfolio_cats_qs = Category.objects.filter(is_active=True, show_on_homepage=True).order_by('homepage_sort_order', 'sort_order', 'name')
             portfolio_cats_data = CategorySerializer(portfolio_cats_qs, many=True, context={'request': request}).data
         except Exception:
             portfolios_data = []
             portfolio_cats_data = []
+
 
         # 5. Why Choose Us
         why_choose_section = WhyChooseSection.objects.filter(is_active=True).prefetch_related('items').first()

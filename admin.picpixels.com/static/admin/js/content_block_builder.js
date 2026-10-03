@@ -373,6 +373,43 @@
     body.querySelectorAll('select[data-field]').forEach(function(field) {
       field.addEventListener('change', function() { onFieldChange(index); });
     });
+
+    // Formatting Toolbar Helpers (Insert Link, Bold, Italic, H3)
+    body.querySelectorAll('.cb-tool-btn').forEach(function(toolBtn) {
+      toolBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var group = toolBtn.closest('.cb-field-group');
+        var textarea = group ? group.querySelector('textarea, input[data-field]') : null;
+        if (!textarea) return;
+
+        var start = textarea.selectionStart || 0;
+        var end = textarea.selectionEnd || 0;
+        var sel = textarea.value.substring(start, end);
+
+        if (toolBtn.classList.contains('cb-tool-link')) {
+          var url = prompt('Enter link URL (e.g. /services/clipping-path or https://...):', 'https://');
+          if (!url) return;
+          var linkText = sel || prompt('Enter link text:', 'Learn More') || url;
+          var replacement = '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + linkText + '</a>';
+          textarea.setRangeText(replacement, start, end, 'end');
+          textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        } else if (toolBtn.classList.contains('cb-tool-bold')) {
+          var text = sel || 'bold text';
+          textarea.setRangeText('<strong>' + text + '</strong>', start, end, 'end');
+          textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        } else if (toolBtn.classList.contains('cb-tool-italic')) {
+          var text = sel || 'italic text';
+          textarea.setRangeText('<em>' + text + '</em>', start, end, 'end');
+          textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        } else if (toolBtn.classList.contains('cb-tool-h3')) {
+          var text = sel || 'Subheading Title';
+          textarea.setRangeText('<h3>' + text + '</h3>', start, end, 'end');
+          textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+    });
+
     updateConditionalFields(body);
     body.querySelectorAll('[data-action="add-gallery-image"]').forEach(function(btn) {
       btn.addEventListener('click', function(e) { e.preventDefault(); addGalleryImage(body, index); });

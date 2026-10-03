@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import HomeLink from '@/components/layout/HomeLink';
 import { useSiteSettings } from '@/store/SiteSettingsContext';
 import styles from './styles.module.css';
-import { mediaUrl, type Service, type SiteSetting, type HomepageCTASection as HomepageCTAData } from '@/services/public-api';
+import { mediaUrl, fetchFooterServices, type Service, type SiteSetting, type HomepageCTASection as HomepageCTAData } from '@/services/public-api';
 import OptimizedImage from '@/components/media/OptimizedImage';
 import HomeCTASection from '@/components/ui/HomeCTASection';
 
@@ -21,33 +22,117 @@ export default function Footer({
   homepageCTA?: HomepageCTAData | null;
   hideCTA?: boolean;
 }) {
+  const pathname = usePathname();
   const ctx = useSiteSettings();
   const siteSettings = serverSettings || ctx.siteSettings;
   const [isLocationOpen, setIsLocationOpen] = useState(false);
+  const [footerServices, setFooterServices] = useState<Service[]>(_serverFooterServices || []);
+
+  useEffect(() => {
+    if (!_serverFooterServices || _serverFooterServices.length === 0) {
+      fetchFooterServices()
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) {
+            setFooterServices(data);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [_serverFooterServices]);
 
   const currentYear = new Date().getFullYear();
   const siteName = siteSettings?.site_name || 'PicPixels';
 
-  // Location Based Services (Editable from Django Admin)
+  // Location Based Services:
+  // Shows ONLY the location name (service titles are never displayed here).
   const locationTitle = siteSettings?.footer_location_title || 'Location Based Services';
-  const rawLocations = siteSettings?.footer_locations || 'Texas\nCalifornia\nFlorida\nNew York';
-  const locationItems = rawLocations
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .map((line) => {
-      if (line.includes('|')) {
-        const [name, url] = line.split('|').map((s) => s.trim());
-        return {
-          name,
-          url: url || `/services?location=${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`,
-        };
-      }
-      return {
-        name: line,
-        url: `/services?location=${encodeURIComponent(line.toLowerCase().replace(/\s+/g, '-'))}`,
-      };
-    });
+  const locationItems = useMemo(() => {
+    const items: { name: string; url: string }[] = [];
+
+    // Check if user is currently on a specific service page: /services/[slug]
+    const isServiceDetailPage = pathname?.startsWith('/services/') && pathname !== '/services/';
+    const currentSlug = isServiceDetailPage
+      ? pathname.replace(/^\/services\//, '').split('/')[0].split('?')[0]
+      : '';
+
+    const currentService = currentSlug
+      ? footerServices.find((s) => s.slug === currentSlug)
+      : null;
+
+    // 1. If on a service page and that service has specific available locations configured:
+    if (
+      currentService &&
+      Array.isArray(currentService.available_locations) &&
+      currentService.available_locations.length > 0
+    ) {
+      currentService.available_locations.forEach((loc) => {
+        const locClean = loc.trim();
+        if (!locClean) return;
+        const locSlug = locClean.toLowerCase().replace(/\s+/g, '-');
+        items.push({
+          name: locClean,
+          url: `/services/${currentService.slug}?location=${encodeURIComponent(locSlug)}`,
+        });
+      });
+      return items;
+    }
+
+    // 2. If services have available_locations defined, collect their locations (unique location names only)
+    if (footerServices && footerServices.length > 0) {
+      const seen = new Set<string>();
+      footerServices.forEach((svc) => {
+        const locs = Array.isArray(svc.available_locations) ? svc.available_locations : [];
+        if (locs.length > 0) {
+          locs.forEach((loc) => {
+            const locClean = loc.trim();
+            if (!locClean) return;
+            const key = locClean.toLowerCase();
+            if (!seen.has(key)) {
+              seen.add(key);
+              const locSlug = locClean.toLowerCase().replace(/\s+/g, '-');
+              items.push({
+                name: locClean,
+                url: currentSlug
+                  ? `/services/${currentSlug}?location=${encodeURIComponent(locSlug)}`
+                  : `/services/${svc.slug}?location=${encodeURIComponent(locSlug)}`,
+              });
+            }
+          });
+        }
+      });
+    }
+
+    // 3. Fallback to siteSettings.footer_locations (only when not on a specific service detail page)
+    if (items.length === 0 && !isServiceDetailPage) {
+      const rawLocations = siteSettings?.footer_locations || '';
+      rawLocations
+        .split('\n')
+        .map((line: string) => line.trim())
+        .filter(Boolean)
+        .forEach((line: string) => {
+          if (line.includes('|')) {
+            const [name, url] = line.split('|').map((s: string) => s.trim());
+            items.push({
+              name,
+              url:
+                url ||
+                (currentSlug
+                  ? `/services/${currentSlug}?location=${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`
+                  : `/services?location=${encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'))}`),
+            });
+          } else {
+            items.push({
+              name: line,
+              url: currentSlug
+                ? `/services/${currentSlug}?location=${encodeURIComponent(line.toLowerCase().replace(/\s+/g, '-'))}`
+                : `/services?location=${encodeURIComponent(line.toLowerCase().replace(/\s+/g, '-'))}`,
+            });
+          }
+        });
+    }
+
+    return items;
+  }, [footerServices, siteSettings?.footer_locations, pathname]);
 
   // Corporate Office – USA (Fully dynamic from Django Admin - no hardcoded fallbacks)
   const usaTitle = siteSettings?.usa_office_title?.trim() || '';
@@ -121,21 +206,20 @@ export default function Footer({
               </ul>
             </div>
 
-            {/* Column 4: Location Based Services Accordion Card */}
-            <div className={styles.locationCol}>
-              <div className={styles.locationCard}>
-                <div
-                  className={styles.locationHeader}
-                  onClick={() => setIsLocationOpen(!isLocationOpen)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setIsLocationOpen(!isLocationOpen)}
+            {/* Column 4: Location Based Services Accordion Card (HTML5 details/summary for no-JS support) */}
+            {locationItems.length > 0 && (
+              <div className={styles.locationCol}>
+                <details
+                  className={styles.locationCard}
+                  onToggle={(e) => setIsLocationOpen((e.currentTarget as HTMLDetailsElement).open)}
                 >
-                  <span>{locationTitle}</span>
-                  {isLocationOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                </div>
+                  <summary className={styles.locationHeader}>
+                    <span>{locationTitle}</span>
+                    <span className={styles.locationChevronWrap}>
+                      <ChevronDown size={14} className={styles.locationChevron} />
+                    </span>
+                  </summary>
 
-                {isLocationOpen && (
                   <ul className={styles.locationList}>
                     {locationItems.map((item, idx) => (
                       <li key={idx}>
@@ -143,9 +227,9 @@ export default function Footer({
                       </li>
                     ))}
                   </ul>
-                )}
+                </details>
               </div>
-            </div>
+            )}
 
             {/* Column 5: OFFICE ADDRESS */}
             {(hasUsaOffice || hasBdOffice) && (

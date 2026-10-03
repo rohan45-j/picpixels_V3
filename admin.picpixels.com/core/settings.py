@@ -26,6 +26,9 @@ env = environ.Env(
     EMAIL_USE_TLS=(bool, True),
     DEFAULT_FROM_EMAIL=(str, 'noreply@picpicxels.com'),
     FRONTEND_URL=(str, 'https://picpixels.com'),
+    CLOUDFLARE_TURNSTILE_SECRET_KEY=(str, ''),
+    CLOUDFLARE_TURNSTILE_SITE_KEY=(str, ''),
+    BOT_PROTECTION_ENABLED=(bool, True),
 )
 
 environ.Env.read_env(BASE_DIR / '.env')
@@ -56,6 +59,10 @@ if _frontend_url:
     _parsed = _frontend_url.replace('https://', '').replace('http://', '').split('/')[0]
     if _parsed and _parsed not in ALLOWED_HOSTS:
         ALLOWED_HOSTS.append(_parsed)
+
+CLOUDFLARE_TURNSTILE_SECRET_KEY = env('CLOUDFLARE_TURNSTILE_SECRET_KEY', default='')
+CLOUDFLARE_TURNSTILE_SITE_KEY = env('CLOUDFLARE_TURNSTILE_SITE_KEY', default='')
+BOT_PROTECTION_ENABLED = env('BOT_PROTECTION_ENABLED', default=True)
 
 # ── Security Settings ──────────────────────────────────────────
 CSRF_TRUSTED_ORIGINS = [
@@ -307,7 +314,11 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '500/hour',
         'user': '5000/hour',
-    } if not DEBUG else {},
+        'login': '10/minute',
+        'register': '5/minute',
+        'password_reset': '3/minute',
+        'public_form': '10/minute',
+    },
 }
 
 # ---------------------------------------------------------------------------
@@ -426,126 +437,107 @@ UNFOLD = {
                 ],
             },
             {
+                "title": "Orders & Workflows",
+                "icon": "receipt_long",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Orders",             "icon": "shopping_cart", "link": "/admin/orders/order/"},
+                    {"title": "Revision Requests",  "icon": "rate_review",   "link": "/admin/revisions/revisionrequest/"},
+                    {"title": "Workflow Templates", "icon": "account_tree",  "link": "/admin/workflows/workflowtemplate/"},
+                ],
+            },
+            {
+                "title": "Inquiries & Leads",
+                "icon": "mail",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Contact Inquiries",      "icon": "contact_mail",   "link": "/admin/cms/contactinquiry/"},
+                    {"title": "Trial & Order Requests", "icon": "rocket_launch",  "link": "/admin/cms/freetrial/"},
+                    {"title": "Product Categories",     "icon": "category",       "link": "/admin/cms/productcategory/"},
+                ],
+            },
+            {
+                "title": "Services & Pricing",
+                "icon": "handyman",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "All Services",          "icon": "build",          "link": "/admin/cms/service/"},
+                    {"title": "Service Pricing Cards", "icon": "credit_card",    "link": "/admin/cms/servicepricingcard/"},
+                    {"title": "Pricing Plans",         "icon": "sell",           "link": "/admin/cms/pricingplan/"},
+                    {"title": "Config Sections",       "icon": "tune",           "link": "/admin/cms/pricingconfigsection/"},
+                    {"title": "Config Cards",          "icon": "credit_card",    "link": "/admin/cms/pricingconfigcard/"},
+                    {"title": "Promotion Sections",    "icon": "celebration",    "link": "/admin/cms/pricingpromotionsection/"},
+                ],
+            },
+            {
+                "title": "Portfolio & Case Studies",
+                "icon": "work_history",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Portfolio Items",    "icon": "folder_open",    "link": "/admin/portfolio/portfolio/"},
+                    {"title": "Categories",         "icon": "category",       "link": "/admin/portfolio/category/"},
+                    {"title": "Services",           "icon": "handyman",       "link": "/admin/portfolio/service/"},
+                    {"title": "Before / After",     "icon": "compare",        "link": "/admin/portfolio/portfoliocomparison/"},
+                    {"title": "Case Studies",       "icon": "description",    "link": "/admin/case_studies/casestudy/"},
+                    {"title": "Case Study Categories","icon": "label",        "link": "/admin/case_studies/casestudycategory/"},
+                    {"title": "Case Study Tags",    "icon": "tag",            "link": "/admin/case_studies/casestudytag/"},
+                ],
+            },
+            {
+                "title": "Blog & Guides",
+                "icon": "newspaper",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Blog Posts",       "icon": "newspaper",       "link": "/admin/cms/blogpost/"},
+                    {"title": "Categories",       "icon": "category",        "link": "/admin/cms/blogcategory/"},
+                    {"title": "Tags",             "icon": "tag",             "link": "/admin/cms/blogtag/"},
+                    {"title": "Authors",          "icon": "edit_note",       "link": "/admin/cms/author/"},
+                    {"title": "Reader Feedback",  "icon": "thumbs_up_down",  "link": "/admin/cms/blogfeedback/"},
+                    {"title": "All Guides",       "icon": "menu_book",       "link": "/admin/guides/guide/"},
+                    {"title": "Guide Categories", "icon": "bookmark",        "link": "/admin/guides/guidecategory/"},
+                ],
+            },
+            {
                 "title": "Home Management",
                 "icon": "home",
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Hero Section",        "icon": "movie_creation", "link": "/admin/cms/herosection/"},
-                    {"title": "Hero Slides",         "icon": "slideshow",      "link": "/admin/cms/heroslide/"},
-                    {"title": "Hero Stats",          "icon": "leaderboard",    "link": "/admin/cms/herostat/"},
-                    {"title": "Trusted Brands",       "icon": "photo",          "link": "/admin/cms/brandlogo/"},
-                    {"title": "Technologies",        "icon": "biotech",        "link": "/admin/cms/technology/"},
-                    {"title": "Why Choose Us",       "icon": "thumb_up",       "link": "/admin/cms/whychoosesection/"},
-                    {"title": "Why Choose Features", "icon": "checklist",      "link": "/admin/cms/whychoosefeaturesection/"},
-                    {"title": "How It Works Items",  "icon": "timeline",       "link": "/admin/cms/whychooseitem/"},
-                    {"title": "Testimonials",        "icon": "format_quote",   "link": "/admin/cms/testimonial/"},
-                    {"title": "Team Members",        "icon": "group",          "link": "/admin/cms/teammember/"},
-                    {"title": "FAQ Categories",      "icon": "bookmark",       "link": "/admin/cms/faqcategory/"},
-                    {"title": "FAQs",                "icon": "quiz",           "link": "/admin/cms/faq/"},
+                    {"title": "Hero Section",        "icon": "movie_creation",  "link": "/admin/cms/herosection/"},
+                    {"title": "Hero Slides",         "icon": "slideshow",       "link": "/admin/cms/heroslide/"},
+                    {"title": "Hero Stats",          "icon": "leaderboard",     "link": "/admin/cms/herostat/"},
+                    {"title": "Trusted Brands",       "icon": "photo",           "link": "/admin/cms/brandlogo/"},
+                    {"title": "Technologies",        "icon": "biotech",         "link": "/admin/cms/technology/"},
+                    {"title": "Why Choose Us",       "icon": "thumb_up",        "link": "/admin/cms/whychoosesection/"},
+                    {"title": "Why Choose Features", "icon": "checklist",       "link": "/admin/cms/whychoosefeaturesection/"},
+                    {"title": "How It Works Items",  "icon": "timeline",        "link": "/admin/cms/whychooseitem/"},
+                    {"title": "Testimonials",        "icon": "format_quote",    "link": "/admin/cms/testimonial/"},
+                    {"title": "Homepage CTA",        "icon": "call_to_action",  "link": "/admin/cms/homepagectasection/"},
+                    {"title": "FAQ Categories",      "icon": "bookmark",        "link": "/admin/cms/faqcategory/"},
+                    {"title": "FAQs",                "icon": "quiz",            "link": "/admin/cms/faq/"},
+                    {"title": "Team Members",        "icon": "group",           "link": "/admin/cms/teammember/"},
                 ],
             },
             {
-                "title": "About Page",
-                "icon": "info",
+                "title": "Company & Pages",
+                "icon": "auto_stories",
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Company Story (Who We Are)","icon": "auto_stories",         "link": "/admin/cms/aboutstorysection/"},
-                    {"title": "Mission & Vision",          "icon": "visibility",           "link": "/admin/cms/aboutmissionvision/"},
-                    {"title": "Our Core Values",           "icon": "stars",                "link": "/admin/cms/aboutcorevalue/"},
-                    {"title": "Our Simple 6-Step Process", "icon": "format_list_numbered", "link": "/admin/cms/aboutprocessstep/"},
-                    {"title": "Section Headings",          "icon": "tune",                 "link": "/admin/cms/aboutpagesetting/"},
-                ],
-            },
-            {
-                "title": "Legal & Policies",
-                "icon": "policy",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {"title": "Privacy Policy",         "icon": "shield",       "link": "/admin/cms/privacypolicypage/"},
-                    {"title": "Privacy Sections",       "icon": "description",  "link": "/admin/cms/privacypolicysection/"},
-                    {"title": "Terms & Conditions",     "icon": "gavel",        "link": "/admin/cms/termsconditionpage/"},
-                    {"title": "Terms Clauses",          "icon": "article",      "link": "/admin/cms/termsclause/"},
-                ],
-            },
-            {
-                "title": "Services",
-                "icon": "handyman",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {"title": "All Services",            "icon": "handyman",       "link": "/admin/cms/service/"},
-                    {"title": "Content Sections",         "icon": "article",        "link": "/admin/cms/servicecontentsection/"},
-                    {"title": "Gallery Images",           "icon": "photo_library",  "link": "/admin/cms/servicegalleryimage/"},
-                    {"title": "Hero Images",              "icon": "image",          "link": "/admin/cms/serviceheroimage/"},
-                    {"title": "Service Pricing Cards",    "icon": "credit_card",    "link": "/admin/cms/servicepricingcard/"},
-                    {"title": "Service Pricing Card Prices","icon": "attach_money", "link": "/admin/cms/servicepricingcardprice/"},
-                    {"title": "Service Unit Ranges",      "icon": "linear_scale",   "link": "/admin/cms/serviceunitrange/"},
-                ],
-            },
-            {
-                "title": "Pricing",
-                "icon": "sell",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {"title": "Pricing Plans",              "icon": "sell",           "link": "/admin/cms/pricingplan/"},
-                    {"title": "Config Sections",             "icon": "tune",           "link": "/admin/cms/pricingconfigsection/"},
-                    {"title": "Config Cards",                "icon": "credit_card",    "link": "/admin/cms/pricingconfigcard/"},
-                    {"title": "Dropdown Options",            "icon": "arrow_drop_down_circle","link": "/admin/cms/pricingconfigdropdownoption/"},
-                    {"title": "Card Prices",                 "icon": "attach_money",   "link": "/admin/cms/pricingconfigcardprice/"},
-                    {"title": "Promotion Sections",          "icon": "celebration",    "link": "/admin/cms/pricingpromotionsection/"},
-                ],
-            },
-            {
-                "title": "Case Studies",
-                "icon": "work_history",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {"title": "All Case Studies", "icon": "description",     "link": "/admin/case_studies/casestudy/"},
-                    {"title": "Categories",        "icon": "category",       "link": "/admin/case_studies/casestudycategory/"},
-                    {"title": "Tags",              "icon": "label",          "link": "/admin/case_studies/casestudytag/"},
-                ],
-            },
-            {
-                "title": "Portfolio",
-                "icon": "folder",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {"title": "Portfolio Items",  "icon": "folder_open",   "link": "/admin/portfolio/portfolio/"},
-                    {"title": "Categories",       "icon": "category",      "link": "/admin/portfolio/category/"},
-                    {"title": "Services",         "icon": "handyman",      "link": "/admin/portfolio/service/"},
-                    {"title": "Gallery Images",   "icon": "photo_library", "link": "/admin/portfolio/portfoliogallery/"},
-                    {"title": "Before / After",   "icon": "compare",       "link": "/admin/portfolio/portfoliocomparison/"},
-                    {"title": "Portfolio FAQs",   "icon": "quiz",          "link": "/admin/portfolio/portfoliofaq/"},
-                ],
-            },
-            {
-                "title": "Guides",
-                "icon": "menu_book",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {"title": "All Guides",    "icon": "book",      "link": "/admin/guides/guide/"},
-                    {"title": "Categories",    "icon": "category",  "link": "/admin/guides/guidecategory/"},
-                ],
-            },
-            {
-                "title": "Blog",
-                "icon": "newspaper",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {"title": "Blog Posts",       "icon": "newspaper",  "link": "/admin/cms/blogpost/"},
-                    {"title": "Categories",        "icon": "category",  "link": "/admin/cms/blogcategory/"},
-                    {"title": "Tags",              "icon": "label",     "link": "/admin/cms/blogtag/"},
-                    {"title": "Authors",           "icon": "edit_note", "link": "/admin/cms/author/"},
-                    {"title": "Content Sections",  "icon": "layers",    "link": "/admin/cms/blogcontentsection/"},
-                    {"title": "Document Blocks",   "icon": "description","link": "/admin/cms/blogdocumentblock/"},
+                    {"title": "Pages",                    "icon": "description",            "link": "/admin/cms/page/"},
+                    {"title": "Page Categories",          "icon": "category",               "link": "/admin/cms/pagecategory/"},
+                    {"title": "Company Story (About Us)", "icon": "auto_stories",           "link": "/admin/cms/aboutstorysection/"},
+                    {"title": "Mission & Vision",         "icon": "visibility",             "link": "/admin/cms/aboutmissionvision/"},
+                    {"title": "Our Core Values",          "icon": "stars",                  "link": "/admin/cms/aboutcorevalue/"},
+                    {"title": "Our Simple 6-Step Process","icon": "format_list_numbered",   "link": "/admin/cms/aboutprocessstep/"},
+                    {"title": "Section Headings",         "icon": "tune",                   "link": "/admin/cms/aboutpagesetting/"},
+                    {"title": "Privacy Policy",           "icon": "shield",                 "link": "/admin/cms/privacypolicypage/"},
+                    {"title": "Terms & Conditions",       "icon": "gavel",                  "link": "/admin/cms/termsconditionpage/"},
                 ],
             },
             {
@@ -555,16 +547,6 @@ UNFOLD = {
                 "collapsible": True,
                 "items": [
                     {"title": "All Media Files", "icon": "perm_media", "link": "/admin/media_library/mediafile/"},
-                ],
-            },
-            {
-                "title": "Contact Management",
-                "icon": "mail",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {"title": "Contact Inquiries",      "icon": "mail",          "link": "/admin/cms/contactinquiry/"},
-                    {"title": "Trial & Order Requests", "icon": "rocket_launch", "link": "/admin/cms/freetrial/"},
                 ],
             },
             {
@@ -588,31 +570,7 @@ UNFOLD = {
                     {"title": "Site Settings",     "icon": "settings",       "link": "/admin/site_settings/sitesetting/"},
                     {"title": "SEO Settings",      "icon": "travel_explore", "link": "/admin/site_settings/seosetting/"},
                     {"title": "Navigation Menus",  "icon": "menu",           "link": "/admin/navigation/navigationitem/"},
-                    {"title": "Page Categories",   "icon": "category",       "link": "/admin/cms/pagecategory/"},
-                    {"title": "Pages",             "icon": "description",    "link": "/admin/cms/page/"},
                     {"title": "Banners",           "icon": "view_carousel",  "link": "/admin/cms/banner/"},
-                    {"title": "Sections",          "icon": "layers",         "link": "/admin/cms/section/"},
-                ],
-            },
-            {
-                "title": "Commerce",
-                "icon": "shopping_cart",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {"title": "Orders",       "icon": "receipt_long",  "link": "/admin/orders/order/"},
-                    {"title": "Order Items",  "icon": "inventory_2",   "link": "/admin/orders/orderitem/"},
-                    {"title": "Revisions",    "icon": "rate_review",   "link": "/admin/revisions/revisionrequest/"},
-                    {"title": "Annotations",  "icon": "edit",          "link": "/admin/revisions/imageannotation/"},
-                ],
-            },
-            {
-                "title": "Workflows",
-                "icon": "account_tree",
-                "separator": True,
-                "collapsible": True,
-                "items": [
-                    {"title": "Templates", "icon": "account_tree", "link": "/admin/workflows/workflowtemplate/"},
                 ],
             },
             {
@@ -621,12 +579,8 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Users",             "icon": "badge",            "link": "/admin/auth/user/"},
-                    {"title": "User Profiles",     "icon": "account_circle",   "link": "/admin/users/userprofile/"},
-                    {"title": "Groups",            "icon": "groups",           "link": "/admin/auth/group/"},
-                    {"title": "Subscription Plans","icon": "workspace_premium","link": "/admin/users/subscriptionplan/"},
-                    {"title": "Subscriptions",     "icon": "payments",         "link": "/admin/users/subscription/"},
-                    {"title": "Transactions",      "icon": "receipt",          "link": "/admin/users/transaction/"},
+                    {"title": "Users",               "icon": "person",         "link": "/admin/auth/user/"},
+                    {"title": "Roles & Permissions", "icon": "shield_person",  "link": "/admin/auth/group/"},
                 ],
             },
         ],

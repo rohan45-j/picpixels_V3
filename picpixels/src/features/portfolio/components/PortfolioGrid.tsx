@@ -10,13 +10,21 @@ import styles from '@/styles/modules/portfolio-grid.module.css';
 export default function PortfolioGrid({
   portfolios,
   categories,
+  initialCategory = '',
 }: {
   portfolios: PortfolioItem[];
   categories: PortfolioCategory[];
+  initialCategory?: string;
 }) {
-  const [activeCategory, setActiveCategory] = useState('');
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (initialCategory !== undefined) {
+      setActiveCategory(initialCategory);
+    }
+  }, [initialCategory]);
 
   const items = useMemo(
     () =>
@@ -63,7 +71,7 @@ export default function PortfolioGrid({
   };
 
   return (
-    <section className={styles.section}>
+    <section className={styles.section} id="latest-work">
       <div className={styles.container}>
         <Reveal variant="fadeUp" once={false}>
           <div className={styles.header}>
@@ -76,23 +84,34 @@ export default function PortfolioGrid({
         </Reveal>
 
         <div className={styles.filterBar}>
-          <button
+          <Link
+            href="/#latest-work"
             className={`${styles.filterBtn} ${activeCategory === '' ? styles.filterActive : ''}`}
-            onClick={() => handleFilter('')}
+            onClick={(e) => {
+              e.preventDefault();
+              handleFilter('');
+            }}
           >
             <span>All</span>
             <span className={styles.filterCount}>{portfolios.length}</span>
-          </button>
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              className={`${styles.filterBtn} ${activeCategory === cat.slug ? styles.filterActive : ''}`}
-              onClick={() => handleFilter(cat.slug)}
-            >
-              <span>{cat.name}</span>
-              <span className={styles.filterCount}>{cat.portfolio_count || 0}</span>
-            </button>
-          ))}
+          </Link>
+          {categories.map((cat) => {
+            const count = portfolios.filter((p) => p.category_slug === cat.slug).length;
+            return (
+              <Link
+                key={cat.id}
+                href={`/?portfolio_cat=${encodeURIComponent(cat.slug)}#latest-work`}
+                className={`${styles.filterBtn} ${activeCategory === cat.slug ? styles.filterActive : ''}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleFilter(cat.slug);
+                }}
+              >
+                <span>{cat.name}</span>
+                <span className={styles.filterCount}>{count > 0 ? count : (cat.portfolio_count || 0)}</span>
+              </Link>
+            );
+          })}
         </div>
 
         <div ref={gridRef} className={styles.grid}>

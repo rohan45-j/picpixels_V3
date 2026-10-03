@@ -4,16 +4,15 @@ import Footer from "@/components/layout/Footer";
 import SectionHeading from "@/components/ui/SectionHeading";
 import styles from "@/styles/modules/company.module.css";
 import Link from "next/link";
+import { buildPageMetadata, buildWebPageSchema, buildBreadcrumbSchema } from "@/lib/seo";
+import JsonLd from "@/components/seo/JsonLd";
 
-export const metadata: Metadata = {
-  title: "Careers",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Careers & Open Positions",
   description: "Join the PicPicxels team. We're hiring Senior AI Engineers, UI/UX Designers, Image Retouching Specialists, and more. Remote-friendly culture.",
-  openGraph: {
-    title: "Careers at PicPicxels | Join Our Team",
-    description: "Join the team that's redefining visual commerce. Remote-first culture, competitive pay, and growth opportunities.",
-    type: "website",
-  },
-};
+  path: "/careers",
+  keywords: ["photo editing careers", "image editor jobs", "remote design jobs", "picpixels careers"],
+});
 
 const openRoles = [
   { title: "Senior AI Engineer", dept: "Engineering", type: "Full-time", location: "Remote" },
@@ -34,9 +33,23 @@ const perks = [
 ];
 
 export default function Careers() {
+  const breadcrumbs = [
+    { name: "Home", path: "/" },
+    { name: "Careers", path: "/careers" },
+  ];
+
   return (
     <div className={styles.page}>
+      <JsonLd schema={buildBreadcrumbSchema(breadcrumbs)} />
+      <JsonLd
+        schema={buildWebPageSchema({
+          title: "Careers at PicPicxels",
+          description: "Join the PicPicxels team. Discover remote-friendly opportunities across engineering, design, and operations.",
+          path: "/careers",
+        })}
+      />
       <Header />
+
 
       {/* Hero */}
       <section className={styles.hero}>

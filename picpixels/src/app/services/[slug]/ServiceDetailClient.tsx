@@ -22,6 +22,31 @@ import ServicePricingSection from '@/features/services/components/ServicePricing
 import TestimonialCarousel from '@/components/ui/TestimonialCarousel';
 import { mediaUrl, type Service, type ServiceContentSection, type ContentBlock, type Technology, type Testimonial } from '@/services/public-api';
 
+function formatRichText(raw: string): string {
+  if (!raw) return '';
+  let formatted = raw.replace(
+    /\[([^\]]+)\]\(((?:https?:\/\/|\/)[^\s\)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
+  if (!/<[a-z][\s\S]*>/i.test(formatted)) {
+    formatted = formatted
+      .split(/\n\n+/)
+      .map((p) => `<p>${p.replace(/\n/g, '<br />')}</p>`)
+      .join('');
+  } else {
+    formatted = formatted.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"([^>]*)>/gi, (match, href, rest) => {
+      if (!rest.includes('rel=')) {
+        rest += ' rel="noopener noreferrer"';
+      }
+      if (!rest.includes('target=')) {
+        rest += ' target="_blank"';
+      }
+      return `<a href="${href}"${rest}>`;
+    });
+  }
+  return formatted;
+}
+
 function ContentSectionBlock({ section, index }: { section: ServiceContentSection; index: number }) {
   const isTextLeft = section.layout === 'text_left';
   const isFull = section.layout === 'full_width';
@@ -35,7 +60,7 @@ function ContentSectionBlock({ section, index }: { section: ServiceContentSectio
         <div className="container">
           <div className={styles.fullWidthContent}>
             {section.heading && <h2 className={styles.contentHeading} style={{ color: '#000000' }}>{renderHighlightedText(section.heading)}</h2>}
-            {section.content && <div className={styles.contentBody}>{section.content}</div>}
+            {section.content && <div className={styles.contentBody} dangerouslySetInnerHTML={{ __html: formatRichText(section.content) }} />}
             {section.image && (
               <div className={styles.contentImageBlock}>
                 <img
@@ -71,7 +96,7 @@ function ContentSectionBlock({ section, index }: { section: ServiceContentSectio
             )}
             <div className={styles.imageTopContent}>
               {section.heading && <h2 className={styles.contentHeading} style={{ color: '#000000' }}>{renderHighlightedText(section.heading)}</h2>}
-              {section.content && <div className={styles.contentBody}>{section.content}</div>}
+              {section.content && <div className={styles.contentBody} dangerouslySetInnerHTML={{ __html: formatRichText(section.content) }} />}
             </div>
           </div>
         </div>
@@ -85,7 +110,7 @@ function ContentSectionBlock({ section, index }: { section: ServiceContentSectio
         <div className="container">
           <div className={styles.fullWidthContent}>
             {section.heading && <h2 className={styles.contentHeading} style={{ color: '#000000' }}>{renderHighlightedText(section.heading)}</h2>}
-            {section.content && <div className={styles.contentBody}>{section.content}</div>}
+            {section.content && <div className={styles.contentBody} dangerouslySetInnerHTML={{ __html: formatRichText(section.content) }} />}
           </div>
         </div>
       </section>
@@ -100,7 +125,7 @@ function ContentSectionBlock({ section, index }: { section: ServiceContentSectio
       <div className={`container ${styles.contentBlockGrid}`}>
         <div className={styles.contentText} style={{ order: textOrder }}>
           {section.heading && <h2 className={styles.contentHeading} style={{ color: '#000000' }}>{renderHighlightedText(section.heading)}</h2>}
-          {section.content && <div className={styles.contentBody}>{section.content}</div>}
+          {section.content && <div className={styles.contentBody} dangerouslySetInnerHTML={{ __html: formatRichText(section.content) }} />}
         </div>
         {section.image && (
           <div className={styles.contentImageBlock} style={{ order: imageOrder }}>
@@ -183,7 +208,14 @@ function ServiceBlockRenderer({ blocks }: { blocks: ContentBlock[] }) {
   );
 }
 
-function HeroSection({ service }: { service: Service }) {
+function HeroSection({ service, location }: { service: Service; location?: string }) {
+  const formattedLocation = location
+    ? location
+        .split('-')
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ')
+    : '';
+
   const heroHeadline = service.hero_title || service.hero_subtitle || service.short_description;
   const heroSub = service.hero_title
     ? (service.hero_subtitle || service.short_description)
@@ -199,13 +231,20 @@ function HeroSection({ service }: { service: Service }) {
     <section className={styles.heroSection}>
       <div className={styles.heroSplit}>
         <div className={styles.heroLeft}>
-          {parseFloat(service.price || '0') > 0 && (
-            <span className={styles.serviceBadge}>${parseFloat(service.price).toFixed(2)} Per Image</span>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+            {parseFloat(service.price || '0') > 0 && (
+              <span className={styles.serviceBadge}>${parseFloat(service.price).toFixed(2)} Per Image</span>
+            )}
+          </div>
           
           {heroHeadline && (
             <h1 className={styles.title} style={{ color: service.title_color || '#000000' }}>
               {renderHighlightedText(heroHeadline, service.title_color)}
+              {formattedLocation && (
+                <span style={{ display: 'block', fontSize: '0.55em', fontWeight: 600, color: '#ff6b00', marginTop: 4 }}>
+                  in {formattedLocation}
+                </span>
+              )}
             </h1>
           )}
 
@@ -242,7 +281,7 @@ function AboutFeaturesSection({ service }: { service: Service }) {
         />
         <div className={styles.aboutFeaturesGrid}>
           <div className={styles.aboutColumn}>
-            <div className={styles.aboutContent}>{service.description}</div>
+            <div className={styles.aboutContent} dangerouslySetInnerHTML={{ __html: formatRichText(service.description) }} />
           </div>
           {service.features && service.features.length > 0 && (
             <div className={styles.featuresColumn}>
@@ -264,17 +303,18 @@ function AboutFeaturesSection({ service }: { service: Service }) {
 }
 
 export default function ServiceDetailClient({
-  service, related, technologies, testimonials, brandLogos,
+  service, related, technologies, testimonials, brandLogos, location,
 }: {
   service: Service;
   related: Service[];
   technologies: Technology[];
   testimonials: Testimonial[];
   brandLogos: BrandLogo[];
+  location?: string;
 }) {
   return (
     <main>
-      <HeroSection service={service} />
+      <HeroSection service={service} location={location} />
       <AboutFeaturesSection service={service} />
       <HighEndQualitySection />
       <ServiceEEATSection data={service.eeat ?? null} serviceTitle={service.title} />

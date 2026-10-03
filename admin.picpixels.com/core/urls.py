@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
+from django.views.generic import RedirectView
 from django.views.static import serve
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from cms.views import HomepageDataView
@@ -13,6 +14,7 @@ def cached_media_serve(request, path, document_root=None, show_indexes=False):
 
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/admin/', permanent=False)),
     path('admin/', admin.site.urls),
     path('api/v1/homepage/', HomepageDataView.as_view(), name='homepage-data'),
     path('api/v1/users/', include('users.urls')),

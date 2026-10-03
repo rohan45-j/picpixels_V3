@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { mediaUrl, type PortfolioItem, type PortfolioCategory } from '@/services/public-api';
 import styles from '@/styles/modules/portfolio-grid.module.css';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 function Skeleton() {
   return (
@@ -21,30 +21,40 @@ function Skeleton() {
 export default function PortfolioListClient({
   initialPortfolios,
   categories,
-  initialCategory,
+  initialCategory = '',
+  initialTotalCount,
+  initialSearch = '',
 }: {
   initialPortfolios: PortfolioItem[];
   categories: PortfolioCategory[];
   initialCategory?: string;
+  initialTotalCount?: number;
+  initialSearch?: string;
 }) {
-  const [activeCategory, setActiveCategory] = useState(initialCategory ?? '');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [items, setItems] = useState(initialPortfolios);
   const [page, setPage] = useState(1);
   const [hasNext, setHasNext] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(initialPortfolios.length === 0);
-  const [totalCount, setTotalCount] = useState(initialPortfolios.length);
+  const [initialLoading, setInitialLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(initialTotalCount ?? initialPortfolios.length);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const catCache = useRef<Record<string, { items: PortfolioItem[]; totalCount: number; hasNext: boolean }>>({});
 
   useEffect(() => {
-    if (initialPortfolios.length > 0) {
-      setInitialLoading(false);
+    setItems(initialPortfolios);
+    setActiveCategory(initialCategory);
+    setSearchQuery(initialSearch);
+    setTotalCount(initialTotalCount ?? initialPortfolios.length);
+    if (!initialCategory && !initialSearch && initialPortfolios.length > 0) {
+      catCache.current['all'] = {
+        items: initialPortfolios,
+        totalCount: initialTotalCount ?? initialPortfolios.length,
+        hasNext: false,
+      };
     }
-  }, [initialPortfolios]);
-
-  useEffect(() => {
-  }, [items]);
+  }, [initialPortfolios, initialCategory, initialTotalCount, initialSearch]);
 
   const fetchItems = useCallback(async (pageNum: number, append: boolean, cat: string, search: string) => {
     setLoading(true);
@@ -54,15 +64,20 @@ export default function PortfolioListClient({
       if (search) params.set('search', search);
       params.set('page', String(pageNum));
 
-      const resp = await fetch(`${API_BASE}/api/v1/portfolio/api/items/?${params.toString()}`, {
-        cache: 'no-store',
-      });
+      const resp = await fetch(`${API_BASE}/api/v1/portfolio/api/items/?${params.toString()}`);
       if (!resp.ok) return;
       const data = await resp.json();
       if (append) {
         setItems((prev) => [...prev, ...data.results]);
       } else {
         setItems(data.results);
+        if (!search) {
+          catCache.current[cat || 'all'] = {
+            items: data.results,
+            totalCount: data.count ?? data.results.length,
+            hasNext: !!data.next,
+          };
+        }
       }
       setTotalCount(data.count ?? data.results.length);
       setPage(pageNum);
@@ -75,6 +90,14 @@ export default function PortfolioListClient({
   const handleCategoryFilter = (slug: string) => {
     setActiveCategory(slug);
     setSearchQuery('');
+    const cacheKey = slug || 'all';
+    if (catCache.current[cacheKey]) {
+      setItems(catCache.current[cacheKey].items);
+      setTotalCount(catCache.current[cacheKey].totalCount);
+      setHasNext(catCache.current[cacheKey].hasNext);
+      setPage(1);
+      return;
+    }
     setInitialLoading(true);
     fetchItems(1, false, slug, '');
   };
@@ -101,41 +124,62 @@ export default function PortfolioListClient({
         <div className={styles.heroInner}>
           <h1 className={styles.heroTitle}>Portfolio</h1>
           <p className={styles.heroDesc}>Browse our latest projects and creative work.</p>
-          <div className={styles.searchWrap}>
+          <form
+            method="GET"
+            action="/portfolio"
+            className={styles.searchWrap}
+            onSubmit={(e) => {
+              if (searchQuery) {
+                clearTimeout(searchTimer.current);
+                handleCategoryFilter('');
+                fetchItems(1, false, '', searchQuery);
+              }
+            }}
+          >
+            {activeCategory && <input type="hidden" name="category" value={activeCategory} />}
             <svg className={styles.searchIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
             </svg>
             <input
               type="text"
+              name="search"
               className={styles.searchInput}
               placeholder="Search projects instantly..."
               value={searchQuery}
               onChange={(e) => handleSearch(e.target.value)}
               autoComplete="off"
             />
-          </div>
+          </form>
         </div>
       </header>
 
       <nav className={styles.filterBar}>
         <div className={styles.filterContainer}>
         <div className={styles.filterInner}>
-          <button
+          <Link
+            href="/portfolio"
             className={`${styles.filterBtn} ${activeCategory === '' && !searchQuery ? styles.filterActive : ''}`}
-            onClick={() => handleCategoryFilter('')}
+            onClick={(e) => {
+              e.preventDefault();
+              handleCategoryFilter('');
+            }}
           >
             All
             <span className={styles.filterCount}>{totalCount}</span>
-          </button>
+          </Link>
           {categories.map((cat) => (
-            <button
+            <Link
               key={cat.id}
+              href={`/portfolio?category=${encodeURIComponent(cat.slug)}`}
               className={`${styles.filterBtn} ${activeCategory === cat.slug ? styles.filterActive : ''}`}
-              onClick={() => handleCategoryFilter(cat.slug)}
+              onClick={(e) => {
+                e.preventDefault();
+                handleCategoryFilter(cat.slug);
+              }}
             >
               {cat.name}
               <span className={styles.filterCount}>{cat.portfolio_count ?? 0}</span>
-            </button>
+            </Link>
           ))}
         </div>
         </div>

@@ -1,7 +1,82 @@
 {% extends "admin/change_form.html" %}
 {% load i18n static admin_modify %}
 
+{% block extrahead %}
+  {{ block.super }}
+  <style>
+    .bpa-card-body details > summary { display: none !important; }
+    .bpa-card-body > fieldset > h2 { display: none !important; }
+    .bpa-card-body > fieldset > .leading-relaxed { display: none !important; }
+    .bpa-card { margin-bottom: 1.5rem; }
+
+    .bpa-schema-guide-box {
+      background: linear-gradient(135deg, rgba(255, 107, 0, 0.05) 0%, rgba(249, 115, 22, 0.02) 100%);
+      border: 1px solid rgba(255, 107, 0, 0.2);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+    }
+    .dark .bpa-schema-guide-box {
+      background: rgba(255, 107, 0, 0.08);
+      border-color: rgba(255, 107, 0, 0.25);
+    }
+    .bpa-schema-helper-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+      padding: 6px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    .dark .bpa-schema-helper-bar {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    .bpa-schema-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .dark .bpa-schema-btn {
+      background: #0f172a;
+      border-color: #475569;
+      color: #cbd5e1;
+    }
+    .bpa-schema-btn:hover {
+      background: #f1f5f9;
+      border-color: #94a3b8;
+      color: #0f172a;
+    }
+    .dark .bpa-schema-btn:hover {
+      background: #334155;
+      color: #ffffff;
+    }
+    .bpa-schema-btn-primary {
+      background: #ff6b00 !important;
+      border-color: #e05e00 !important;
+      color: #ffffff !important;
+    }
+    .bpa-schema-btn-primary:hover {
+      background: #e05e00 !important;
+    }
+  </style>
+{% endblock %}
+
 {% block field_sets %}
+  <div x-data="{ activeTab: 'general' }">
   {% for fieldset in adminform %}
     {% if fieldset.name %}
     <div class="bpa-card">
@@ -16,17 +91,39 @@
         {% endif %}
       </div>
       {% if fieldset.description %}
-      <div class="bpa-card-desc">{{ fieldset.description|safe }}</div>
+      <div class="bpa-card-desc">{{ fieldset.description }}</div>
+      {% endif %}
+      {% if "Structured Data" in fieldset.name %}
+      <div class="px-5 pt-3">
+        <div class="bpa-schema-guide-box">
+          <div class="flex items-start gap-2.5">
+            <span class="text-xl">💡</span>
+            <div class="text-xs text-gray-700 dark:text-gray-300 leading-relaxed">
+              <strong class="text-primary-600 dark:text-primary-400 font-semibold text-sm">Schema Markup (Structured Data) কী এবং এর কাজ কী?</strong>
+              <p class="mt-1">
+                Schema Markup হলো Google এবং অন্যান্য সার্চ ইঞ্জিনের জন্য বিশেষ স্ট্রাকচার্ড মেটাডেটা (JSON-LD)। এটি Google-কে স্পষ্টভাবে বুঝিয়ে দেয় যে এই পেইজটি কি একটি <strong>BlogPosting</strong>, টেকনিক্যাল গাইড নাকি আর্টিকেল। এর মাধ্যমে Google সার্চ রেজাল্টে রিচ স্নsnippet (যেমন: ছবি, প্রকাশের তারিখ, লেখকের নাম, এবং FAQ ড্রপডাউন) সরাসরি দেখায়—যা সাইটের CTR ও ভিজিটর অনেক বাড়িয়ে দেয়।
+              </p>
+              <ul class="mt-1.5 list-disc list-inside space-y-0.5 text-gray-600 dark:text-gray-400">
+                <li><strong>Schema type:</strong> সাধারণ ব্লগ পোস্টের জন্য <code>BlogPosting</code> সিলেক্ট রাখা ভালো। সাইট এটি স্বয়ংক্রিয়ভাবে জেনারেট করে গুগলে পাঠায়।</li>
+                <li><strong>Custom schema:</strong> আপনি চাইলে আলাদা কোনো এসইও টুল বা জেনারেটর থেকে তৈরি কাস্টম JSON-LD সরাসরি পেস্ট করতে পারেন (নিচের বাটন দিয়ে টেমপ্লেট লোড ও ভ্যালিডেট করতে পারবেন)।</li>
+                <li><strong>FAQ schema:</strong> Google Search এ FAQ ড্রপডাউন রিচ রেজাল্ট শো করাতে প্রশ্ন ও উত্তরের JSON অ্যারে যুক্ত করতে পারেন।</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
       {% endif %}
       <div class="bpa-card-body">
-        {% include "admin/includes/fieldset.html" with fieldset=fieldset %}
+        {% include "admin/includes/fieldset.html" with fieldset=fieldset stacked=1 %}
       </div>
     </div>
     {% else %}
       {# For unnamed fieldsets, render without card wrapper #}
-      {% include "admin/includes/fieldset.html" with fieldset=fieldset %}
+      {% include "admin/includes/fieldset.html" with fieldset=fieldset stacked=1 %}
     {% endif %}
   {% endfor %}
+  <div style="height: 100px;"></div>
+  </div>
 {% endblock %}
 
 {% block footer %}
@@ -49,4 +146,241 @@
       </div>
     </div>
   </div>
+  <script>
+  (function() {
+    'use strict';
+
+    function attachFormattingToolbar(textareaId, label) {
+      var textarea = document.getElementById(textareaId);
+      if (!textarea || textarea.dataset.hasToolbar) return;
+      textarea.dataset.hasToolbar = 'true';
+
+      var toolbar = document.createElement('div');
+      toolbar.className = 'flex items-center flex-wrap gap-1.5 p-2 bg-gray-100 dark:bg-gray-800 rounded-t-lg border border-gray-300 dark:border-gray-700 text-xs mb-0';
+      toolbar.innerHTML = `
+        <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 mr-1 flex items-center gap-1">
+          <span>✍️</span> ${label} Tools:
+        </span>
+        <button type="button" class="btn-fmt-link px-2.5 py-1 bg-white dark:bg-gray-700 hover:bg-primary-50 dark:hover:bg-primary-950/40 text-primary-600 dark:text-primary-400 font-semibold rounded border border-gray-300 dark:border-gray-600 flex items-center gap-1 shadow-2xs">
+          <span>🔗</span> Add Hyperlink
+        </button>
+        <button type="button" class="btn-fmt-bold px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-bold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+          B
+        </button>
+        <button type="button" class="btn-fmt-italic px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 italic font-serif rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+          I
+        </button>
+        <button type="button" class="btn-fmt-h3 px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+          H3
+        </button>
+        <button type="button" class="btn-fmt-ul px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+          • List
+        </button>
+      `;
+
+      textarea.classList.remove('rounded-lg');
+      textarea.classList.add('rounded-b-lg', 'border-t-0');
+      textarea.parentNode.insertBefore(toolbar, textarea);
+
+      toolbar.querySelector('.btn-fmt-link').addEventListener('click', function() {
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var selected = textarea.value.substring(start, end);
+        var url = prompt('Enter link URL (e.g. /services or https://...):', 'https://');
+        if (!url) return;
+        var text = selected || prompt('Enter link text:', 'Learn More') || url;
+        var linkTag = '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + text + '</a>';
+        textarea.focus();
+        textarea.setRangeText(linkTag, start, end, 'end');
+      });
+
+      toolbar.querySelector('.btn-fmt-bold').addEventListener('click', function() {
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var selected = textarea.value.substring(start, end) || 'Bold text';
+        textarea.focus();
+        textarea.setRangeText('<strong>' + selected + '</strong>', start, end, 'end');
+      });
+
+      toolbar.querySelector('.btn-fmt-italic').addEventListener('click', function() {
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var selected = textarea.value.substring(start, end) || 'Italic text';
+        textarea.focus();
+        textarea.setRangeText('<em>' + selected + '</em>', start, end, 'end');
+      });
+
+      toolbar.querySelector('.btn-fmt-h3').addEventListener('click', function() {
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var selected = textarea.value.substring(start, end) || 'Section Heading';
+        textarea.focus();
+        textarea.setRangeText('<h3>' + selected + '</h3>\n', start, end, 'end');
+      });
+
+      toolbar.querySelector('.btn-fmt-ul').addEventListener('click', function() {
+        var start = textarea.selectionStart;
+        var end = textarea.selectionEnd;
+        var selected = textarea.value.substring(start, end) || 'Key feature or highlight';
+        textarea.focus();
+        textarea.setRangeText('<ul>\n  <li>' + selected + '</li>\n</ul>\n', start, end, 'end');
+      });
+    }
+
+    function initSchemaHelpers() {
+      // Ensure all details inside cards are open so fields are visible
+      document.querySelectorAll('.bpa-card-body details').forEach(function(d) {
+        d.setAttribute('open', '');
+      });
+
+      // Custom Schema Helper
+      var customSchema = document.getElementById('id_custom_schema');
+      if (customSchema && !customSchema.dataset.hasHelper) {
+        customSchema.dataset.hasHelper = 'true';
+        var helperBar = document.createElement('div');
+        helperBar.className = 'bpa-schema-helper-bar';
+        helperBar.innerHTML = `
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-bold text-gray-700 dark:text-gray-300">⚡ JSON-LD Tools:</span>
+            <button type="button" class="bpa-schema-btn bpa-schema-btn-primary" id="btn-load-schema-tpl">
+              📋 Load BlogPosting Template
+            </button>
+            <button type="button" class="bpa-schema-btn" id="btn-validate-schema">
+              ✓ Validate JSON
+            </button>
+            <button type="button" class="bpa-schema-btn" id="btn-clear-schema">
+              🗑️ Clear
+            </button>
+          </div>
+          <div id="schema-validate-feedback" class="text-xs font-semibold"></div>
+        `;
+        customSchema.parentNode.insertBefore(helperBar, customSchema);
+
+        helperBar.querySelector('#btn-load-schema-tpl').addEventListener('click', function() {
+          var titleEl = document.getElementById('id_title');
+          var title = (titleEl && titleEl.value) || 'Your Blog Post Title';
+          var descEl = document.getElementById('id_short_description') || document.getElementById('id_excerpt');
+          var desc = (descEl && descEl.value) || 'A comprehensive guide published on PicPixels.';
+          var tpl = {
+            "@context": "https://schema.org",
+            "@type": "BlogPosting",
+            "headline": title,
+            "description": desc,
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": window.location.origin + "/blog/"
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "PicPixels",
+              "url": "https://www.picpicxels.com"
+            }
+          };
+          customSchema.value = JSON.stringify(tpl, null, 2);
+          var fb = helperBar.querySelector('#schema-validate-feedback');
+          fb.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-semibold">✨ Template loaded!</span>';
+          setTimeout(function() { fb.innerHTML = ''; }, 3000);
+        });
+
+        helperBar.querySelector('#btn-validate-schema').addEventListener('click', function() {
+          var fb = helperBar.querySelector('#schema-validate-feedback');
+          var val = customSchema.value.trim();
+          if (!val) {
+            fb.innerHTML = '<span class="text-amber-500">ℹ️ Field is empty (optional)</span>';
+            return;
+          }
+          try {
+            JSON.parse(val);
+            fb.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-semibold">✅ Valid JSON-LD!</span>';
+          } catch(err) {
+            fb.innerHTML = '<span class="text-red-500 font-semibold">❌ Invalid: ' + err.message + '</span>';
+          }
+        });
+
+        helperBar.querySelector('#btn-clear-schema').addEventListener('click', function() {
+          if (confirm('Clear custom schema?')) {
+            customSchema.value = '';
+            helperBar.querySelector('#schema-validate-feedback').innerHTML = '';
+          }
+        });
+      }
+
+      // FAQ Schema Helper
+      var faqSchema = document.getElementById('id_faq_schema');
+      if (faqSchema && !faqSchema.dataset.hasHelper) {
+        faqSchema.dataset.hasHelper = 'true';
+        var faqBar = document.createElement('div');
+        faqBar.className = 'bpa-schema-helper-bar';
+        faqBar.innerHTML = `
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-bold text-gray-700 dark:text-gray-300">⚡ FAQ Schema Tools:</span>
+            <button type="button" class="bpa-schema-btn bpa-schema-btn-primary" id="btn-load-faq-tpl">
+              📋 Insert Sample FAQ Array
+            </button>
+            <button type="button" class="bpa-schema-btn" id="btn-validate-faq">
+              ✓ Validate FAQ JSON
+            </button>
+            <button type="button" class="bpa-schema-btn" id="btn-clear-faq">
+              🗑️ Clear
+            </button>
+          </div>
+          <div id="faq-validate-feedback" class="text-xs font-semibold"></div>
+        `;
+        faqSchema.parentNode.insertBefore(faqBar, faqSchema);
+
+        faqBar.querySelector('#btn-load-faq-tpl').addEventListener('click', function() {
+          var sample = [
+            {
+              "question": "What is the turnaround time for PicPixels services?",
+              "answer": "Our standard delivery turnaround is 12 to 24 hours, with rush options available."
+            },
+            {
+              "question": "How do I request revisions?",
+              "answer": "You can request free revisions anytime through your client dashboard."
+            }
+          ];
+          faqSchema.value = JSON.stringify(sample, null, 2);
+          var fb = faqBar.querySelector('#faq-validate-feedback');
+          fb.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-semibold">✨ Sample FAQ inserted!</span>';
+          setTimeout(function() { fb.innerHTML = ''; }, 3000);
+        });
+
+        faqBar.querySelector('#btn-validate-faq').addEventListener('click', function() {
+          var fb = faqBar.querySelector('#faq-validate-feedback');
+          var val = faqSchema.value.trim();
+          if (!val) {
+            fb.innerHTML = '<span class="text-amber-500">ℹ️ Field is empty (optional)</span>';
+            return;
+          }
+          try {
+            var parsed = JSON.parse(val);
+            if (!Array.isArray(parsed)) {
+              fb.innerHTML = '<span class="text-red-500 font-semibold">❌ Must be a JSON array: [{question: ..., answer: ...}]</span>';
+              return;
+            }
+            fb.innerHTML = '<span class="text-emerald-600 dark:text-emerald-400 font-semibold">✅ Valid FAQ format (' + parsed.length + ' items)!</span>';
+          } catch(err) {
+            fb.innerHTML = '<span class="text-red-500 font-semibold">❌ Invalid: ' + err.message + '</span>';
+          }
+        });
+
+        faqBar.querySelector('#btn-clear-faq').addEventListener('click', function() {
+          if (confirm('Clear FAQ schema?')) {
+            faqSchema.value = '';
+            faqBar.querySelector('#faq-validate-feedback').innerHTML = '';
+          }
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        attachFormattingToolbar('id_short_description', 'Short Description');
+        attachFormattingToolbar('id_excerpt', 'Excerpt');
+        attachFormattingToolbar('id_content', 'Content');
+        initSchemaHelpers();
+      }, 200);
+    });
+  })();
+  </script>
 {% endblock %}

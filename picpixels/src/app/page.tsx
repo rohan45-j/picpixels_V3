@@ -2,7 +2,6 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Hero from '@/features/home/components/Hero';
 import HomeClient from './HomeClient';
-import { Suspense } from 'react';
 import type {
   Service, Testimonial, Technology, PortfolioItem, PortfolioCategory, BlogPost, CaseStudyItem,
   WhyChooseSection, WhyChooseFeatureSection, HeroSection, BrandLogo, PricingConfigSectionData, SiteSetting,
@@ -10,35 +9,19 @@ import type {
 } from '@/services/public-api';
 import { fetchHomepageData, fetchSiteSettings } from '@/services/public-api';
 import { fetchCriticalJSON, fetchBackgroundJSON } from '@/lib/fetch';
+import { buildPageMetadata, buildWebSiteSchema } from '@/lib/seo';
+import JsonLd from '@/components/seo/JsonLd';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
 export const revalidate = 60;
 
-// Skeleton loader components for better perceived performance
-function HeroSkeleton() {
-  return (
-    <div className="animate-pulse min-h-[60vh] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900" />
-  );
-}
-
-function HomeClientSkeleton() {
-  return (
-    <div className="space-y-12 animate-pulse">
-      <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mx-auto" />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-4">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="space-y-3">
-            <div className="h-40 bg-gray-200 dark:bg-gray-700 rounded" />
-            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full" />
-            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-2/3" />
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
+export const metadata = buildPageMetadata({
+  title: 'PicPicxels | Professional Photo Editing Services | 5M+ Images Edited',
+  description: 'Pixel-perfect clipping path, background removal, photo retouching, ghost mannequin & color correction services. 500+ active brands trust PicPicxels with guaranteed 24h turnaround.',
+  path: '/',
+  keywords: ['photo editing', 'clipping path service', 'background removal', 'ecommerce image retouching', 'ghost mannequin', 'color correction', 'PicPicxels'],
+});
 
 async function getHomepageData() {
   // Use consolidated homepage API if available, otherwise fall back to parallel fetches with optimized caching
@@ -97,7 +80,7 @@ async function getHomepageData() {
     fetchBackgroundJSON<{ results: Testimonial[] }>(`${BASE_URL}/api/v1/cms/testimonials/`, fetchOpts),
     fetchBackgroundJSON<{ results: Technology[] }>(`${BASE_URL}/api/v1/cms/technologies/`, fetchOpts),
     fetchBackgroundJSON<PortfolioItem[]>(`${BASE_URL}/api/v1/portfolio/api/items/homepage/`, fetchOpts),
-    fetchBackgroundJSON<PortfolioCategory[]>(`${BASE_URL}/api/v1/portfolio/api/categories/`, fetchOpts),
+    fetchBackgroundJSON<PortfolioCategory[]>(`${BASE_URL}/api/v1/portfolio/api/categories/?homepage=true`, fetchOpts),
     fetchBackgroundJSON<{ results: WhyChooseSection[] }>(`${BASE_URL}/api/v1/cms/why-choose-us/`, fetchOpts),
     fetchBackgroundJSON<BlogPost[]>(`${BASE_URL}/api/v1/cms/blog/posts/latest/`, fetchOpts),
     fetchBackgroundJSON<CaseStudyItem[]>(`${BASE_URL}/api/v1/case-studies/api/items/homepage-section/`, fetchOpts),
@@ -150,40 +133,46 @@ async function getHomepageData() {
   };
 }
 
-async function HomeContent() {
+async function HomeContent({ initialPortfolioCategory = '' }: { initialPortfolioCategory?: string } = {}) {
   const { services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures, heroData, brandLogos, pricingConfig, homepageCTA, faqs, siteSettings } = await getHomepageData();
+  const homepagePortfolios = (portfolios && portfolios.length > 0) ? portfolios : [];
+  const homepageCategories = (portfolioCategories || []).filter((c) => c.show_on_homepage !== false);
 
   return (
     <>
+      <JsonLd data={buildWebSiteSchema()} />
       <Header />
       <main id="main-content">
-        <Suspense fallback={<HeroSkeleton />}>
-          <Hero hero={heroData} />
-        </Suspense>
-        <Suspense fallback={<HomeClientSkeleton />}>
-          <HomeClient
-            services={services}
-            testimonials={testimonials}
-            technologies={technologies}
-            portfolios={portfolios}
-            portfolioCategories={portfolioCategories}
-            whyChooseUs={whyChooseUs}
-            latestBlogs={latestBlogs}
-            caseStudies={caseStudies}
-            whyChooseFeatures={whyChooseFeatures}
-            heroData={heroData}
-            brandLogos={brandLogos}
-            pricingConfig={pricingConfig}
-            homepageCTA={homepageCTA}
-            faqs={faqs}
-          />
-        </Suspense>
+        <Hero hero={heroData} />
+        <HomeClient
+          services={services}
+          testimonials={testimonials}
+          technologies={technologies}
+          portfolios={homepagePortfolios}
+          portfolioCategories={homepageCategories}
+          whyChooseUs={whyChooseUs}
+          latestBlogs={latestBlogs}
+          caseStudies={caseStudies}
+          whyChooseFeatures={whyChooseFeatures}
+          heroData={heroData}
+          brandLogos={brandLogos}
+          pricingConfig={pricingConfig}
+          homepageCTA={homepageCTA}
+          faqs={faqs}
+          initialPortfolioCategory={initialPortfolioCategory}
+        />
       </main>
-      <Footer siteSettings={siteSettings} homepageCTA={homepageCTA} />
+      <Footer siteSettings={siteSettings} homepageCTA={homepageCTA} footerServices={services} />
     </>
   );
 }
 
-export default async function Home() {
-  return <HomeContent />;
+export default async function Home({
+  searchParams,
+}: {
+  searchParams?: Promise<{ category?: string; portfolio_cat?: string }>;
+} = {}) {
+  const sp = searchParams ? await searchParams : undefined;
+  const initialCategory = sp?.portfolio_cat || sp?.category || '';
+  return <HomeContent initialPortfolioCategory={initialCategory} />;
 }

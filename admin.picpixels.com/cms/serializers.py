@@ -2,12 +2,12 @@ from rest_framework import serializers
 from .models import (
     PageCategory, Page, Section, Banner, Service, ServiceGalleryImage, ServiceContentSection, ServiceHeroImage,
     HeroSection, HeroSlide, HeroStat, Testimonial,
-    Author, BlogCategory, BlogTag, BlogPost, BlogContentSection, BlogDocumentBlock,
+    Author, BlogCategory, BlogTag, BlogPost, BlogContentSection, BlogDocumentBlock, BlogFeedback,
     FAQCategory, FAQ, ContactInquiry, TeamMember, BrandLogo,
     PricingPlan, Technology, PricingPromotionSection,
     PricingConfigSection, PricingConfigDropdownOption, PricingConfigCard, PricingConfigCardPrice, PricingConfigCTA,
     ServiceUnitRange, ServicePricingCard, ServicePricingCardPrice,
-    FreeTrial, FreeTrialAttachment,
+    FreeTrial, FreeTrialAttachment, ProductCategory,
     WhyChooseSection, WhyChooseItem,
     WhyChooseFeatureSection, WhyChooseFeatureItem,
     HomepageCTASection,
@@ -157,12 +157,13 @@ class ServiceSerializer(serializers.ModelSerializer):
     tools = ServiceToolSerializer(many=True, read_only=True)
     pricing_tier_cards = ServicePricingTierCardSerializer(many=True, read_only=True)
     client_feedbacks = serializers.SerializerMethodField()
+    og_image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
         fields = ['id', 'title', 'title_color', 'slug', 'short_description', 'description', 'features', 'icon', 'image', 'image_alt',
                   'hero_title', 'hero_subtitle', 'hero_background', 'hero_image_alt', 'hero_cta_text', 'hero_cta_link',
-                  'price', 'order', 'seo_title', 'seo_description',
+                  'price', 'order', 'seo_title', 'seo_description', 'canonical_url', 'meta_keywords', 'schema_type', 'custom_schema', 'og_image', 'og_image_url',
                   'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'show_in_related',
                   'is_active', 'is_featured', 'available_locations', 'content_blocks', 'created_at', 'updated_at',
                   'gallery_images', 'content_sections', 'hero_images', 'faqs',
@@ -174,6 +175,14 @@ class ServiceSerializer(serializers.ModelSerializer):
                    'brand_logos', 'why_need_features', 'process_steps', 'why_choose_cards',
                    'tools', 'pricing_tier_cards', 'client_feedbacks']
         read_only_fields = ['created_at', 'updated_at']
+
+    def get_og_image_url(self, obj):
+        if obj.og_image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.og_image.url)
+            return obj.og_image.url
+        return None
 
     def get_faqs(self, obj):
         qs = getattr(obj, '_prefetched_faqs', None)
@@ -524,6 +533,13 @@ class FreeTrialSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
 
 
+class ProductCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductCategory
+        fields = ['id', 'name', 'slug', 'order', 'is_active']
+
+
+
 class WhyChooseItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = WhyChooseItem
@@ -667,6 +683,16 @@ class TermsConditionPageSerializer(serializers.ModelSerializer):
     def get_clauses(self, obj):
         active_clauses = obj.clauses.filter(is_active=True).order_by('display_order', 'id')
         return TermsClauseSerializer(active_clauses, many=True).data
+
+
+class BlogFeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogFeedback
+        fields = [
+            'id', 'post', 'is_helpful', 'rating', 'comment',
+            'user_name', 'user_email', 'created_at',
+        ]
+        read_only_fields = ['id', 'created_at']
 
 
 

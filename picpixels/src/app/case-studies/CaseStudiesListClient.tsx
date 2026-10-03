@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { mediaUrl, type CaseStudyItem, type CaseStudyCategory } from '@/services/public-api';
 import styles from '@/styles/modules/case-studies.module.css';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 const PER_PAGE = 12;
 
 function formatDate(dateStr: string | null | undefined): string {
@@ -24,14 +24,18 @@ export default function CaseStudiesListClient({
   initialItems,
   categories,
   totalInitial,
+  initialCategory = '',
+  initialSearch = '',
 }: {
   initialItems: CaseStudyItem[];
   categories: CaseStudyCategory[];
   totalInitial: number;
+  initialCategory?: string;
+  initialSearch?: string;
 }) {
-  const [activeCategory, setActiveCategory] = useState('');
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [search, setSearch] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
   const [sort, setSort] = useState('newest');
   const [items, setItems] = useState(initialItems);
   const [page, setPage] = useState(1);
@@ -41,6 +45,14 @@ export default function CaseStudiesListClient({
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const isInitialMount = useRef(true);
   const totalPages = Math.ceil(totalCount / PER_PAGE);
+
+  useEffect(() => {
+    setItems(initialItems);
+    setActiveCategory(initialCategory);
+    setSearch(initialSearch);
+    setDebouncedSearch(initialSearch);
+    setTotalCount(totalInitial);
+  }, [initialItems, initialCategory, initialSearch, totalInitial]);
 
   const hasActiveFilters = activeCategory || debouncedSearch || sort !== 'newest';
   const featured = items.find(item => item.featured === true) ?? null;
@@ -63,9 +75,7 @@ export default function CaseStudiesListClient({
       if (q) params.set('search', q);
       if (sortBy !== 'newest') params.set('ordering', sortBy);
       params.set('page', String(pageNum));
-      const resp = await fetch(`${API_BASE}/api/v1/case-studies/api/items/?${params.toString()}`, {
-        cache: 'no-store',
-      });
+      const resp = await fetch(`${API_BASE}/api/v1/case-studies/api/items/?${params.toString()}`);
       if (!resp.ok) {
         setError(true);
         return;
@@ -223,20 +233,28 @@ export default function CaseStudiesListClient({
               />
             </div>
             <div className={styles.filterWrap}>
-              <button
+              <Link
+                href="/case-studies"
                 className={`${styles.filterBtn} ${activeCategory === '' ? styles.filterBtnActive : ''}`}
-                onClick={() => handleCategoryFilter('')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleCategoryFilter('');
+                }}
               >
                 All
-              </button>
+              </Link>
               {categories.filter((c) => (c.case_study_count ?? 0) > 0).map((cat) => (
-                <button
+                <Link
                   key={cat.id}
+                  href={`/case-studies?category=${encodeURIComponent(cat.slug)}`}
                   className={`${styles.filterBtn} ${activeCategory === cat.slug ? styles.filterBtnActive : ''}`}
-                  onClick={() => handleCategoryFilter(cat.slug)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleCategoryFilter(cat.slug);
+                  }}
                 >
                   {cat.name}
-                </button>
+                </Link>
               ))}
             </div>
             <div className={styles.controlsRight}>

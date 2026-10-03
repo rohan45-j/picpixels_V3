@@ -5,12 +5,12 @@
   <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
     <div id="{{ widget_name }}_status_wrap">
       {% if not items %}
-        <span id="{{ widget_name }}_status_badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
-          🌐 Available in All Locations (Global Default)
+        <span id="{{ widget_name }}_status_badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: #f8fafc; color: #475569; border: 1px solid #cbd5e1;">
+          📍 No specific footer locations selected (Global)
         </span>
       {% else %}
         <span id="{{ widget_name }}_status_badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 700; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;">
-          📍 Available only in {{ items|length }} selected location{{ items|length|pluralize }}
+          📍 Linked in footer for {{ items|length }} location{{ items|length|pluralize }}
         </span>
       {% endif %}
     </div>
@@ -18,7 +18,7 @@
     <!-- Quick Actions -->
     <div style="display: flex; gap: 8px;">
       <button type="button" id="{{ widget_name }}_btn_all" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">
-        🌐 Reset to All Locations
+        Clear All
       </button>
       <button type="button" id="{{ widget_name }}_btn_select_all" style="background: #f8fafc; border: 1px solid #cbd5e1; color: #334155; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;">
         ✓ Select All Presets
@@ -28,7 +28,7 @@
 
   <!-- Instructions -->
   <p style="font-size: 12px; color: #64748b; margin: 0 0 10px 0;">
-    Click any location to toggle availability. When none are selected, this service is visible across <strong>all locations globally</strong>.
+    Click location chips to assign which location(s) this service will be linked under in the <strong>Website Footer</strong>. When clicked from the footer, this service's page will open directly on that location basis. (Note: Services are never restricted or filtered out on the main /services catalog).
   </p>
 
   <!-- Location Chips Grid -->
@@ -106,27 +106,23 @@
     // Update status badge
     if (statusBadge) {
       if (selectedItems.length === 0) {
-        statusBadge.style.background = '#ecfdf5';
-        statusBadge.style.color = '#047857';
-        statusBadge.style.borderColor = '#a7f3d0';
-        statusBadge.textContent = '🌐 Available in All Locations (Global Default)';
+        statusBadge.style.background = '#f8fafc';
+        statusBadge.style.color = '#475569';
+        statusBadge.style.borderColor = '#cbd5e1';
+        statusBadge.textContent = '📍 No specific footer locations selected (Global)';
       } else {
         statusBadge.style.background = '#eff6ff';
         statusBadge.style.color = '#1d4ed8';
         statusBadge.style.borderColor = '#bfdbfe';
-        statusBadge.textContent = '📍 Available only in ' + selectedItems.length + ' selected location' + (selectedItems.length > 1 ? 's' : '');
+        statusBadge.textContent = '📍 Linked in footer for ' + selectedItems.length + ' location' + (selectedItems.length > 1 ? 's' : '');
       }
     }
 
     // Update tab badge in Service Editor header
     const tabBadge = document.getElementById('badge-location');
     if (tabBadge) {
-      if (selectedItems.length > 0) {
-        tabBadge.textContent = selectedItems.length;
-        tabBadge.style.display = '';
-      } else {
-        tabBadge.style.display = 'none';
-      }
+      tabBadge.textContent = selectedItems.length;
+      tabBadge.style.display = '';
     }
   }
 

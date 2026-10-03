@@ -4,21 +4,19 @@ import Footer from '@/components/layout/Footer';
 import type { PortfolioItem, PortfolioCategory, HomepageCTASection as HomepageCTAType, FAQ } from '@/services/public-api';
 import PortfolioListClient from './PortfolioListClient';
 import PortfolioFAQSection from '@/components/ui/PortfolioFAQSection';
-import HomeCTASection from '@/components/ui/HomeCTASection';
-
-export const metadata: Metadata = {
-  title: 'Portfolio',
-  description: 'Browse our portfolio of professional photo editing projects. See before and after examples of clipping path, retouching, ghost mannequin, and more.',
-  openGraph: {
-    title: 'Portfolio | PicPicxels Photo Editing',
-    description: 'See our portfolio of professional photo editing projects. Before and after examples across multiple categories.',
-    type: 'website',
-  },
-};
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
+import { buildPageMetadata, buildCollectionSchema, buildBreadcrumbSchema } from '@/lib/seo';
+import JsonLd from '@/components/seo/JsonLd';
 
 export const revalidate = 60;
+
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Portfolio | Professional Photo Editing Case Studies & Examples',
+  description: 'Explore our comprehensive portfolio of 30+ photo editing projects across fashion, jewelry, footwear, beauty, furniture, and industrial products. See pixel-perfect before & after examples.',
+  path: '/portfolio',
+  keywords: ['photo editing portfolio', 'clipping path examples', 'jewelry retouching before after', 'ghost mannequin samples', 'ecommerce photo editing'],
+});
+
+const API_BASE = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 async function fetchJson<T>(url: string): Promise<T | null> {
   try {
@@ -30,25 +28,62 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   }
 }
 
-export default async function PortfolioPage() {
+export default async function PortfolioPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ category?: string; search?: string; page?: string }>;
+} = {}) {
+  const sp = searchParams ? await searchParams : undefined;
+  const currentCategory = sp?.category || '';
+  const currentSearch = sp?.search || '';
+  const currentPage = sp?.page || '1';
+
+  const params = new URLSearchParams();
+  params.set('page_size', '36');
+  if (currentCategory) params.set('category', currentCategory);
+  if (currentSearch) params.set('search', currentSearch);
+  if (currentPage && currentPage !== '1') params.set('page', currentPage);
+
   const [portfoliosRes, categories, faqsRes, ctaRes] = await Promise.all([
-    fetchJson<{ results: PortfolioItem[] }>(`${API_BASE}/api/v1/portfolio/api/items/`),
+    fetchJson<{ results: PortfolioItem[]; count?: number }>(`${API_BASE}/api/v1/portfolio/api/items/?${params.toString()}`),
     fetchJson<PortfolioCategory[]>(`${API_BASE}/api/v1/portfolio/api/categories/`),
     fetchJson<{ results: FAQ[] }>(`${API_BASE}/api/v1/cms/faqs/?is_portfolio_faq=true`),
     fetchJson<{ results: HomepageCTAType[] }>(`${API_BASE}/api/v1/cms/homepage-cta/`),
   ]);
 
   const initialPortfolios = portfoliosRes?.results ?? [];
+  const initialTotalCount = portfoliosRes?.count ?? initialPortfolios.length;
   const faqs = faqsRes?.results ?? [];
   const homepageCTA = ctaRes?.results?.[0] ?? null;
 
+  const collectionSchema = buildCollectionSchema({
+    name: 'PicPicxels Portfolio Showcase',
+    description: 'Extensive gallery of professional photo editing, clipping path, retouching, and color correction projects.',
+    path: '/portfolio',
+    items: initialPortfolios.map((item) => ({
+      name: item.title,
+      url: `/portfolio/${item.slug}`,
+      description: item.short_description,
+      image: item.featured_image || item.after_image,
+    })),
+  });
+
+  const breadcrumbsSchema = buildBreadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Portfolio', path: '/portfolio' },
+  ]);
+
   return (
     <>
+      <JsonLd data={[collectionSchema, breadcrumbsSchema]} />
       <Header />
       <main id="main-content">
         <PortfolioListClient
           initialPortfolios={initialPortfolios}
           categories={categories ?? []}
+          initialCategory={currentCategory}
+          initialTotalCount={initialTotalCount}
+          initialSearch={currentSearch}
         />
         <PortfolioFAQSection faqs={faqs} />
       </main>
@@ -56,5 +91,6 @@ export default async function PortfolioPage() {
     </>
   );
 }
+
 
 

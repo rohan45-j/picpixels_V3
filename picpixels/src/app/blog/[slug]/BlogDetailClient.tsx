@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Clock, ChevronRight, ArrowLeft, ArrowRight, Calendar, User, Share2, FileText, Download } from 'lucide-react';
 import Reveal from '@/components/animations/Reveal';
 import BlockRenderer from '@/features/blog/BlockRenderer';
+import BlogFeedbackWidget from '@/components/blog/BlogFeedbackWidget';
 import styles from '@/styles/modules/blog.module.css';
 import { mediaUrl, type BlogPost, type ContentBlock } from '@/services/public-api';
 
@@ -434,6 +435,8 @@ export default function BlogDetailClient({ post, allPosts }: { post: BlogPost; a
               </div>
             </Reveal>
           )}
+
+          <BlogFeedbackWidget postSlug={post.slug} postTitle={post.title} />
 
           <div className={styles.articleFooter}>
             <Link href="/blog" className={styles.footerLink}>

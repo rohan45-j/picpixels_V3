@@ -8,9 +8,12 @@ import type { BlogPost } from '@/services/public-api';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
+export const revalidate = 300;
+const isDev = process.env.NODE_ENV === 'development';
+
 const fetchBlogPost = cache(async (slug: string): Promise<BlogPost | null> => {
   try {
-    const resp = await fetch(`${BASE_URL}/api/v1/cms/blog/posts/${slug}/`, { next: { revalidate: 300 } });
+    const resp = await fetch(`${BASE_URL}/api/v1/cms/blog/posts/${slug}/`, { next: { revalidate: 60 } });
     if (resp.ok) return await resp.json();
   } catch {}
   return null;
@@ -18,7 +21,7 @@ const fetchBlogPost = cache(async (slug: string): Promise<BlogPost | null> => {
 
 const fetchBlogPosts = cache(async (): Promise<BlogPost[]> => {
   try {
-    const resp = await fetch(`${BASE_URL}/api/v1/cms/blog/posts/`, { next: { revalidate: 300 } });
+    const resp = await fetch(`${BASE_URL}/api/v1/cms/blog/posts/`, { next: { revalidate: 60 } });
     if (resp.ok) {
       const data = await resp.json();
       return data.results || data || [];
@@ -124,6 +127,18 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           { '@type': 'ListItem', position: 3, name: post.title },
         ],
       },
+      ...(Array.isArray((post as any).faq_schema) && (post as any).faq_schema.length > 0 ? [{
+        '@type': 'FAQPage',
+        '@id': `${url}#faq`,
+        mainEntity: (post as any).faq_schema.map((item: any) => ({
+          '@type': 'Question',
+          name: item.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: (item.answer || '').replace(/<[^>]*>/g, ''),
+          },
+        })),
+      }] : []),
     ].filter(Boolean),
   };
 

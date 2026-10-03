@@ -72,6 +72,22 @@ function injectHeadingIds(html: string) {
   });
 }
 
+function formatContentHtml(html: string) {
+  if (!html) return html;
+  let formatted = injectHeadingIds(html);
+  // Auto-convert markdown style [text](url) to HTML links
+  formatted = formatted.replace(
+    /\[([^\]]+)\]\(((?:https?:\/\/|\/)[^\s\)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
+  // Ensure external links have rel and target
+  formatted = formatted.replace(
+    /<a\s+(?:[^>]*?\s+)?href=["'](https?:\/\/[^"']+)["'](?![^>]*target=)[^>]*>/gi,
+    '<a href="$1" target="_blank" rel="noopener noreferrer">'
+  );
+  return formatted;
+}
+
 
 export default function BlockRenderer({ blocks }: { blocks: ContentBlock[] }) {
   const headings = blocks.filter((b) => b.type === 'heading');
@@ -88,7 +104,7 @@ export default function BlockRenderer({ blocks }: { blocks: ContentBlock[] }) {
             return <h2 key={i} id={id} className={styles.contentH2}>{block.content}</h2>;
 
           case 'text':
-            return <div key={i} className={styles.contentP} dangerouslySetInnerHTML={{ __html: injectHeadingIds(block.content || '') }} />;
+            return <div key={i} className={styles.contentP} dangerouslySetInnerHTML={{ __html: formatContentHtml(block.content || '') }} />;
 
           case 'image':
             return (

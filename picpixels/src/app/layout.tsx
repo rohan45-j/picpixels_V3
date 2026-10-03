@@ -17,10 +17,14 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.picpicxels.com'),
   title: "PicPicxels | Professional Photo Editing Services | Image & Photo Editing",
   description: "Get pixel-perfect photo editing services at affordable pricing. We offer clipping path, background removal, image masking, ghost mannequin, retouching, color correction & more. 5M+ images edited.",
   keywords: ["photo editing", "clipping path", "background removal", "image retouching", "ghost mannequin", "color correction", "ecommerce image editing", "PicPicxels"],
   icons: { icon: [], apple: [] },
+  alternates: {
+    canonical: "https://www.picpicxels.com",
+  },
   openGraph: {
     title: "PicPicxels | Professional Photo Editing Services at Affordable Pricing",
     description: "Get pixel-perfect photo editing services with quality as our top priority. We edited over 5m+ images for brands, retailers, media agencies, and commercial photographers.",
@@ -77,6 +81,44 @@ export default async function RootLayout({
             <link rel="apple-touch-icon" href={`${siteSettings.favicon}?v=${siteSettings.updated_at || ''}`} />
           </>
         )}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add('js');`,
+          }}
+        />
+        <noscript>
+          <style
+            dangerouslySetInnerHTML={{
+              __html: `
+                .reveal,
+                .reveal-fadeUp,
+                .reveal-fadeDown,
+                .reveal-fadeLeft,
+                .reveal-fadeRight,
+                .reveal-fadeIn,
+                .reveal-scaleIn,
+                .reveal-flipUp,
+                .reveal-stagger > .reveal,
+                [class*="TrustBar_section"],
+                [class*="TestimonialCarousel_wrapper"],
+                [class*="statCard"],
+                .service-card,
+                .gallery-reveal,
+                .gallery-reveal-visible,
+                .ba-card,
+                .portfolio-card,
+                .service-gallery-wrapper,
+                [class*="gridCell"] {
+                  opacity: 1 !important;
+                  transform: none !important;
+                  pointer-events: auto !important;
+                  visibility: visible !important;
+                  transition: none !important;
+                }
+              `,
+            }}
+          />
+        </noscript>
         <script
           dangerouslySetInnerHTML={{
             __html: `

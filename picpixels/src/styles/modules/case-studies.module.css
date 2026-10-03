@@ -233,6 +233,7 @@
   background: var(--color-bg-card);
   color: var(--color-muted);
   cursor: pointer;
+  text-decoration: none;
   transition: all 0.25s ease;
   white-space: nowrap;
 }

@@ -451,3 +451,30 @@
     left: auto;
   }
 }
+
+@media (scripting: none) {
+  .stacked-section {
+    height: auto !important;
+    overflow: visible !important;
+    padding-bottom: 3rem !important;
+  }
+  .stacked-cards-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+    pointer-events: auto !important;
+    padding: 1.5rem !important;
+    overflow: visible !important;
+  }
+  .stack-card {
+    position: relative !important;
+    inset: auto !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 960px !important;
+    height: auto !important;
+    min-height: 280px !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

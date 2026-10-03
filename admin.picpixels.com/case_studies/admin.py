@@ -134,14 +134,19 @@ class CaseStudyAdmin(ModelAdmin):
         ('Publishing', {
             'fields': ('status', 'publish_date', 'is_published', 'featured', 'sort_order'),
         }),
-        ('SEO', {
-            'fields': ('meta_title', 'meta_description', 'canonical_url'),
+        ('🔍 SEO, Canonical & Schema Settings', {
+            'fields': (
+                'meta_title', 'meta_description', 'meta_keywords',
+                'canonical_url', 'schema_type', 'custom_schema',
+            ),
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',),
         }),
     )
+
+    change_form_template = 'admin/case_studies/case_study/change_form.html'
 
     def thumbnail_preview(self, obj):
         if obj.featured_image:

@@ -16,6 +16,35 @@ type GridItem =
   | { type: 'comparison'; before: string; after: string; beforeAlt: string; afterAlt: string; label?: string }
   | { type: 'image'; src: string; alt: string };
 
+function formatRichText(raw: string): string {
+  if (!raw) return '';
+  // Convert markdown links [text](url)
+  let formatted = raw.replace(
+    /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+  );
+
+  // If plain text (no HTML tags), wrap paragraphs
+  if (!/<[a-z][\s\S]*>/i.test(formatted)) {
+    formatted = formatted
+      .split(/\n\n+/)
+      .map((p) => `<p>${p.replace(/\n/g, '<br />')}</p>`)
+      .join('');
+  } else {
+    // Ensure all <a> tags have rel="noopener noreferrer" and target="_blank"
+    formatted = formatted.replace(/<a\s+(?:[^>]*?\s+)?href="([^"]*)"([^>]*)>/gi, (match, href, rest) => {
+      if (!rest.includes('rel=')) {
+        rest += ' rel="noopener noreferrer"';
+      }
+      if (!rest.includes('target=')) {
+        rest += ' target="_blank"';
+      }
+      return `<a href="${href}"${rest}>`;
+    });
+  }
+  return formatted;
+}
+
 export default function PortfolioDetailClient({
   project,
 }: {
@@ -24,7 +53,7 @@ export default function PortfolioDetailClient({
 }) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const [visibleCards, setVisibleCards] = useState<Set<number>>(new Set());
+  const [visibleCards, setVisibleCards] = useState<Set<number>>(() => new Set(Array.from({ length: 50 }, (_, i) => i)));
   const gridRef = useRef<HTMLDivElement>(null);
 
   const hasPrimaryComparison =
@@ -72,6 +101,21 @@ export default function PortfolioDetailClient({
           });
         }
       });
+    }
+
+    // Also include featured_image if not already present
+    const featSrc = mediaUrl(project.featured_image_url || project.featured_image);
+    if (featSrc) {
+      const alreadyIncluded =
+        items.some((it) => (it.type === 'image' && it.src === featSrc) || (it.type === 'comparison' && (it.before === featSrc || it.after === featSrc))) ||
+        project.gallery?.some((g) => mediaUrl(g.image_url || g.image) === featSrc);
+      if (!alreadyIncluded && !hasPrimaryComparison) {
+        items.unshift({
+          type: 'image',
+          src: featSrc,
+          alt: project.featured_image_alt || project.title,
+        });
+      }
     }
 
     return items;
@@ -157,6 +201,8 @@ export default function PortfolioDetailClient({
 
       <section className={detailStyles.mainSection}>
         <div className={detailStyles.container}>
+
+
           {gridItems.length > 0 ? (
             <div className={detailStyles.grid} ref={gridRef}>
               {gridItems.map((item, idx) => (
@@ -184,7 +230,12 @@ export default function PortfolioDetailClient({
                           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/>
                         </svg>
                       </div>
-                      <img src={item.src} alt={item.alt} loading="lazy" />
+                      <img
+                        src={item.src}
+                        alt={item.alt}
+                        loading={idx < 4 ? 'eager' : 'lazy'}
+                        decoding="async"
+                      />
                     </>
                   )}
                 </div>

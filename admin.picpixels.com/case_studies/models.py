@@ -98,7 +98,23 @@ class CaseStudy(models.Model):
     # SEO
     meta_title = models.CharField(max_length=500, blank=True, default='')
     meta_description = models.TextField(blank=True, default='')
-    canonical_url = models.URLField(blank=True, default='')
+    meta_keywords = models.CharField(max_length=500, blank=True, default='', help_text='Comma-separated SEO keywords')
+    canonical_url = models.URLField(blank=True, default='', help_text='Custom canonical URL (defaults to https://www.picpicxels.com/case-studies/<slug>)')
+    schema_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('Article', 'Article (Standard)'),
+            ('TechArticle', 'TechArticle / Case Study'),
+            ('CreativeWork', 'CreativeWork'),
+            ('custom', 'Custom JSON-LD'),
+        ],
+        default='Article',
+        help_text='Schema.org type for this case study'
+    )
+    custom_schema = models.TextField(
+        blank=True, default='',
+        help_text='Paste custom JSON-LD schema (valid JSON object or @graph array). Overrides default schema if set.'
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

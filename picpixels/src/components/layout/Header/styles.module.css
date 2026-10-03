@@ -71,10 +71,25 @@
   display: flex;
   align-items: center;
   gap: 2px;
+  height: 100%;
 }
 
 .navItem {
   position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.navItem::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  left: -20px;
+  right: -20px;
+  height: 35px;
+  background: transparent;
+  pointer-events: auto;
 }
 
 .navLink {
@@ -233,18 +248,51 @@
 
 .dropdownWrapper {
   position: fixed;
-  top: 124px;
+  top: 114px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 999;
+  z-index: 1005;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0.2s ease;
+  pointer-events: none;
+  padding-top: 6px;
+}
+
+.dropdownWrapper::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  left: -100px;
+  right: -100px;
+  height: 36px;
+  background: transparent;
+  pointer-events: auto;
 }
 
 .dropdownVisible {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
+}
+
+.navItem:hover .dropdownWrapper,
+.navItem:focus-within .dropdownWrapper,
+.dropdownWrapper:hover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.navItem:hover .chevron,
+.navItem:focus-within .chevron {
+  transform: rotate(180deg);
+}
+
+.navItem:hover .navLink,
+.navItem:focus-within .navLink {
+  color: var(--color-text);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .simpleDropdown {
@@ -279,12 +327,14 @@
   z-index: 999;
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 .backdropVisible {
   opacity: 1;
   visibility: visible;
+  pointer-events: auto;
 }
 
 .mobileDrawer {

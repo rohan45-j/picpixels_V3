@@ -267,10 +267,26 @@
   font-weight: 700;
   color: #000000;
   transition: background 0.15s ease;
+  list-style: none;
+}
+
+.locationHeader::-webkit-details-marker {
+  display: none;
 }
 
 .locationHeader:hover {
   background: #e5e7eb;
+}
+
+.locationChevronWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+.locationCard[open] .locationChevronWrap {
+  transform: rotate(180deg);
 }
 
 .locationList {

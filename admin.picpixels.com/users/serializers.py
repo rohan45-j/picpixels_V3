@@ -79,13 +79,12 @@ class RegisterSerializer(serializers.Serializer):
             first_name=validated_data.get('first_name', ''),
             last_name=validated_data.get('last_name', '')
         )
-        profile = UserProfile.objects.create(
-            user=user,
-            company_name=validated_data.get('company_name', ''),
-            phone_number=validated_data.get('phone_number', ''),
-            website=validated_data.get('website', ''),
-            role='client'
-        )
+        profile, _ = UserProfile.objects.get_or_create(user=user)
+        profile.company_name = validated_data.get('company_name', '')
+        profile.phone_number = validated_data.get('phone_number', '')
+        profile.website = validated_data.get('website', '')
+        profile.role = 'client'
+        profile.save()
         return profile
 
 

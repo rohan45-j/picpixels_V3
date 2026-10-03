@@ -3,15 +3,19 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ContactClient from './ContactClient';
 import { fetchSiteSettings, type FAQ, type SiteSetting } from '@/services/public-api';
+import { buildPageMetadata, buildContactSchema, buildBreadcrumbSchema } from '@/lib/seo';
+import JsonLd from '@/components/seo/JsonLd';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: 'Contact Us | PicPicxels',
-  description: 'Get in touch with PicPicxels. Send us your images via Wetransfer or Dropbox and get a free trial.',
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Contact Us | PicPicxels Photo Editing Studio',
+  description: 'Get in touch with PicPicxels. Send your project requirements, request a custom volume discount, or speak with our photo editing production directors.',
+  path: '/contact',
+  keywords: ['contact PicPicxels', 'photo editing studio contact', 'custom quote image editing', 'ecommerce photo editing support'],
+});
 
 export default async function Contact() {
   let faqs: FAQ[] = [];
@@ -29,8 +33,15 @@ export default async function Contact() {
     siteSettings = settings;
   } catch {}
 
+  const contactSchema = buildContactSchema();
+  const breadcrumbSchema = buildBreadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'Contact Us', path: '/contact' },
+  ]);
+
   return (
     <>
+      <JsonLd data={[contactSchema, breadcrumbSchema]} />
       <Header />
       <main id="main-content">
         <ContactClient faqs={faqs} initialSiteSettings={siteSettings} />

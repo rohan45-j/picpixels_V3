@@ -3,6 +3,7 @@
 }
 
 .dropZone {
+  display: block;
   border: 2px dashed rgba(0, 0, 0, 0.12);
   border-radius: var(--radius-md, 12px);
   background: var(--color-bg, #f8f9fa);

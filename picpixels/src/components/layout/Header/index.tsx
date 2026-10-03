@@ -10,11 +10,7 @@ import { useSharedData } from '@/store/SharedDataContext';
 import { usePrefetchRoutes } from '@/hooks/usePrefetchRoutes';
 import styles from './styles.module.css';
 import { mediaUrl } from '@/services/public-api';
-import dynamic from 'next/dynamic';
-
-const MegaMenu = dynamic(() => import('./MegaMenu'), {
-  ssr: false,
-});
+import MegaMenu from './MegaMenu';
 
 export default function Header() {
   const pathname = usePathname();
@@ -93,6 +89,9 @@ export default function Header() {
   const renderDesktopDropdown = (item: any) => {
     const children = item.children || [];
     const isOpen = activeDropdown === item.label;
+    const defaultHref = item.url && item.url !== '#'
+      ? item.url
+      : (item.label?.toLowerCase() === 'services' ? '/services' : (item.label?.toLowerCase() === 'learn' ? '/blog' : '#'));
     return (
       <div
         key={item.id}
@@ -100,8 +99,13 @@ export default function Header() {
         onMouseEnter={() => handleMouseEnter(item.label)}
         onMouseLeave={handleMouseLeave}
       >
-        <button
-          onClick={() => handleClick(item.label)}
+        <Link
+          href={defaultHref}
+          onClick={() => {
+            if (isMegaMenu(item) || children.length > 0) {
+              handleClick(item.label);
+            }
+          }}
           className={`${styles.navLink} ${isOpen ? styles.navLinkActive : ''}`}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -110,7 +114,7 @@ export default function Header() {
           <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ''}`}>
             <ChevronDown />
           </span>
-        </button>
+        </Link>
         <div className={`${styles.dropdownWrapper} ${isOpen ? styles.dropdownVisible : ''}`}>
           {isMegaMenu(item) ? (
             <MegaMenu services={services} />

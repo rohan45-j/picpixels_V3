@@ -113,7 +113,10 @@ class CaseStudyDetailSerializer(CaseStudyListSerializer):
     project_goals = serializers.CharField(read_only=True)
     meta_title = serializers.CharField(read_only=True)
     meta_description = serializers.CharField(read_only=True)
+    meta_keywords = serializers.CharField(read_only=True)
     canonical_url = serializers.URLField(read_only=True)
+    schema_type = serializers.CharField(read_only=True)
+    custom_schema = serializers.CharField(read_only=True)
     og_image = serializers.ImageField(read_only=True)
     status = serializers.CharField(read_only=True)
     prev_case_study = serializers.SerializerMethodField()
@@ -128,7 +131,8 @@ class CaseStudyDetailSerializer(CaseStudyListSerializer):
             'services_provided', 'technologies_used',
             'project_duration', 'completion_date',
             'brand_values', 'project_goals',
-            'meta_title', 'meta_description', 'canonical_url', 'og_image',
+            'meta_title', 'meta_description', 'meta_keywords', 'canonical_url',
+            'schema_type', 'custom_schema', 'og_image',
             'status',
             'prev_case_study', 'next_case_study', 'related_case_studies',
         ]

@@ -50,6 +50,7 @@ export interface SiteSetting {
   bd_office_phone?: string;
   bd_office_email?: string;
   bd_office_address?: string;
+  business_hours?: string;
 }
 
 export interface SEOSetting {

@@ -1,0 +1,232 @@
+{% extends "admin/change_form.html" %}
+{% load i18n static admin_modify %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/role_permissions.css' %}?v=1">
+<script src="{% static 'admin/js/role_permissions.js' %}?v=1" defer></script>
+{% endblock %}
+
+{% block field_sets %}
+<div class="role-editor-wrapper">
+  {# ── Header Banner ── #}
+  <div class="role-header-banner">
+    <div class="role-header-title-wrap">
+      <span class="role-badge-chip">Access Control (RBAC)</span>
+      <h1>
+        <span>🛡️</span>
+        {% if original %}Edit Role: {{ original.name }}{% else %}Create New Role{% endif %}
+      </h1>
+      <p class="role-header-desc">
+        Define role identity and assign granular access permissions across all platform modules.
+      </p>
+    </div>
+    <div>
+      <a href="/admin/auth/group/" class="role-back-btn">← Back to Roles</a>
+    </div>
+  </div>
+
+  {# ── Role Name Field Card ── #}
+  <div class="role-name-card">
+    <label class="role-field-label" for="id_name">
+      Role Name <span class="req">*</span>
+    </label>
+    <input type="text"
+           name="name"
+           id="id_name"
+           value="{% if form.name.value %}{{ form.name.value }}{% endif %}"
+           class="role-name-input"
+           placeholder="e.g., Content Editor, Order Manager, Support Lead"
+           required
+           maxlength="150"
+           autocomplete="off">
+    {% if form.name.errors %}
+      <div style="color: #ef4444; font-size: 0.8rem; margin-top: 0.4rem; font-weight: 600;">
+        {{ form.name.errors.0 }}
+      </div>
+    {% endif %}
+    <p class="role-field-help">
+      Use a clear, descriptive title. Users assigned this role will inherit all granted module permissions below.
+    </p>
+  </div>
+
+  {# ── Sticky Permission Toolbar ── #}
+  <div class="role-matrix-toolbar">
+    <div class="role-search-wrap">
+      <span class="role-search-icon">🔍</span>
+      <input type="text"
+             id="role-perm-search"
+             class="role-search-input"
+             placeholder="Search modules, models or permissions (e.g., 'orders', 'services', 'delete')...">
+    </div>
+
+    <div class="role-toolbar-actions">
+      <div class="role-counter-pill">
+        ⚡ <span id="role-selected-count">{{ permission_matrix.total_checked }}</span> / <span id="role-total-count">{{ permission_matrix.total_perms }}</span> selected (<span id="role-selected-pct">0%</span>)
+      </div>
+      <button type="button" class="role-tool-btn primary" id="role-btn-select-all">
+        <span>✓</span> Select All
+      </button>
+      <button type="button" class="role-tool-btn" id="role-btn-clear-all">
+        <span>✕</span> Clear All
+      </button>
+      <button type="button" class="role-tool-btn" id="role-btn-toggle-expand">
+        <span>↕</span> Collapse All
+      </button>
+    </div>
+  </div>
+
+  {# ── Categorized Modules Permission Matrix ── #}
+  <div class="role-modules-container">
+    {% for mod in permission_matrix.modules %}
+      <div class="role-module-card" data-module-id="{{ mod.id }}">
+        {# Module Card Header #}
+        <div class="role-module-header">
+          <div class="role-module-title-area">
+            <div class="role-module-icon-wrap">
+              {% if mod.icon == 'receipt_long' %}📦
+              {% elif mod.icon == 'mail' %}✉️
+              {% elif mod.icon == 'handyman' %}🛠️
+              {% elif mod.icon == 'work_history' %}💼
+              {% elif mod.icon == 'newspaper' %}📰
+              {% elif mod.icon == 'home' %}🏠
+              {% elif mod.icon == 'auto_stories' %}📄
+              {% elif mod.icon == 'perm_media' %}🖼️
+              {% elif mod.icon == 'mark_email_unread' %}🔔
+              {% elif mod.icon == 'settings' %}⚙️
+              {% elif mod.icon == 'group' %}👥
+              {% else %}📁{% endif %}
+            </div>
+            <div>
+              <h3 class="role-module-title">{{ mod.title }}</h3>
+              <p class="role-module-desc">{{ mod.description }}</p>
+            </div>
+          </div>
+
+          <div class="role-module-controls">
+            <span class="role-module-badge {% if mod.checked_perms > 0 %}active{% endif %}">
+              {{ mod.checked_perms }} / {{ mod.total_perms }} perms
+            </span>
+            <button type="button" class="role-toggle-module-btn" title="Toggle all permissions in this module">
+              Toggle Module
+            </button>
+            <span class="role-chevron">▼</span>
+          </div>
+        </div>
+
+        {# Module Table Body #}
+        <div class="role-module-body">
+          <table class="role-perm-table">
+            <thead>
+              <tr>
+                <th>Resource / Model</th>
+                <th>View</th>
+                <th>Create (Add)</th>
+                <th>Edit (Change)</th>
+                <th>Delete</th>
+                <th>All</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for row in mod.rows %}
+                <tr>
+                  <td>
+                    <span class="role-resource-name">{{ row.display_name }}</span>
+                    <span class="role-resource-meta">{{ row.app_label }}.{{ row.model_name }}</span>
+                  </td>
+
+                  {# View Permission #}
+                  <td>
+                    {% if row.perms.view %}
+                      <label class="role-check-wrap" title="{{ row.perms.view.name }}">
+                        <input type="checkbox"
+                               name="permissions"
+                               value="{{ row.perms.view.id }}"
+                               class="role-check-input role-perm-checkbox"
+                               {% if row.perms.view.checked %}checked{% endif %}>
+                      </label>
+                    {% else %}
+                      <span style="color:#cbd5e1">—</span>
+                    {% endif %}
+                  </td>
+
+                  {# Add Permission #}
+                  <td>
+                    {% if row.perms.add %}
+                      <label class="role-check-wrap" title="{{ row.perms.add.name }}">
+                        <input type="checkbox"
+                               name="permissions"
+                               value="{{ row.perms.add.id }}"
+                               class="role-check-input role-perm-checkbox"
+                               {% if row.perms.add.checked %}checked{% endif %}>
+                      </label>
+                    {% else %}
+                      <span style="color:#cbd5e1">—</span>
+                    {% endif %}
+                  </td>
+
+                  {# Change Permission #}
+                  <td>
+                    {% if row.perms.change %}
+                      <label class="role-check-wrap" title="{{ row.perms.change.name }}">
+                        <input type="checkbox"
+                               name="permissions"
+                               value="{{ row.perms.change.id }}"
+                               class="role-check-input role-perm-checkbox"
+                               {% if row.perms.change.checked %}checked{% endif %}>
+                      </label>
+                    {% else %}
+                      <span style="color:#cbd5e1">—</span>
+                    {% endif %}
+                  </td>
+
+                  {# Delete Permission #}
+                  <td>
+                    {% if row.perms.delete %}
+                      <label class="role-check-wrap" title="{{ row.perms.delete.name }}">
+                        <input type="checkbox"
+                               name="permissions"
+                               value="{{ row.perms.delete.id }}"
+                               class="role-check-input role-perm-checkbox"
+                               {% if row.perms.delete.checked %}checked{% endif %}>
+                      </label>
+                    {% else %}
+                      <span style="color:#cbd5e1">—</span>
+                    {% endif %}
+                  </td>
+
+                  {# Row All Toggle #}
+                  <td>
+                    <button type="button" class="role-row-toggle" title="Toggle all permissions for this resource">
+                      Row All
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  {# ── Modern Bottom Save Actions ── #}
+  <div class="role-bottom-actions">
+    <a href="/admin/auth/group/" class="role-submit-btn secondary" style="text-decoration:none;">
+      Cancel
+    </a>
+    <input type="submit"
+           name="_continue"
+           value="Save and continue editing"
+           class="role-submit-btn secondary">
+    <input type="submit"
+           name="_save"
+           value="Save Role & Permissions"
+           class="role-submit-btn">
+  </div>
+</div>
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+{# Suppress default ugly submit row since we have custom role-bottom-actions #}
+{% endblock %}

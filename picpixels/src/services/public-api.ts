@@ -15,7 +15,8 @@ function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCa
 
 /**
  * Consolidated homepage data fetch - single API call replaces 13 separate calls
- * This should be implemented as a Django endpoint at /api/v1/homepage/
+ * This should be imp
+ * lemented as a Django endpoint at /api/v1/homepage/
  * Returns all data needed for homepage in one request (~1-2s vs 13x3s=39s)
  */
 export interface HomepageData {
@@ -37,8 +38,7 @@ export interface HomepageData {
 
 export async function fetchHomepageData(): Promise<HomepageData | null> {
   try {
-    const revalidate = process.env.NODE_ENV === 'development' ? 5 : 60;
-    const resp = await apiFetch(`${BASE_URL}/api/v1/homepage/`, { revalidate });
+    const resp = await apiFetch(`${BASE_URL}/api/v1/homepage/`, { revalidate: 60 });
     if (!resp.ok) return null;
     return await resp.json();
   } catch (e) {
@@ -101,6 +101,18 @@ export interface SiteSetting {
   custom_body_start_scripts?: string;
   custom_body_end_scripts?: string;
   organization_schema?: string;
+  footer_location_title?: string;
+  footer_locations?: string;
+  usa_office_title?: string;
+  usa_office_phone?: string;
+  usa_office_email?: string;
+  usa_office_address?: string;
+  bd_office_title?: string;
+  bd_office_phone?: string;
+  bd_office_email?: string;
+  bd_office_address?: string;
+  recaptcha_site_key?: string;
+  business_hours?: string;
 }
 
 export interface SEOSetting {
@@ -277,6 +289,12 @@ export interface Service {
   order: number;
   seo_title?: string;
   seo_description?: string;
+  canonical_url?: string;
+  meta_keywords?: string;
+  schema_type?: string;
+  custom_schema?: string;
+  og_image?: string;
+  og_image_url?: string;
   show_in_mega_menu: boolean;
   show_on_homepage: boolean;
   show_in_footer: boolean;
@@ -641,9 +659,15 @@ export interface PortfolioItem {
   comparisons: PortfolioComparisonItem[];
   meta_title: string;
   meta_description: string;
+  meta_keywords?: string;
+  canonical_url?: string;
+  schema_type?: string;
+  og_image?: string;
+  og_image_url?: string;
   prev_project?: { title: string; slug: string } | null;
   next_project?: { title: string; slug: string } | null;
   created_at: string;
+  updated_at?: string;
 }
 
 export async function fetchPortfolioCategories(): Promise<PortfolioCategory[]> {
@@ -750,7 +774,10 @@ export interface CaseStudyItem {
   status: string;
   meta_title?: string;
   meta_description?: string;
+  meta_keywords?: string;
   canonical_url?: string;
+  schema_type?: string;
+  custom_schema?: string;
   prev_case_study?: { title: string; slug: string } | null;
   next_case_study?: { title: string; slug: string } | null;
   related_case_studies?: CaseStudyItem[];
@@ -1450,7 +1477,7 @@ export interface PricingService {
 
 export async function fetchPricingServices(): Promise<PricingService[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/pricing/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/pricing/`, { revalidate: 300 });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data || [];
@@ -1462,7 +1489,7 @@ export async function fetchPricingServices(): Promise<PricingService[]> {
 
 export async function fetchPricingServiceBySlug(slug: string): Promise<PricingService | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/pricing-services/${slug}/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/pricing-services/${slug}/`, { revalidate: 300 });
     if (!resp.ok) return null;
     return await resp.json();
   } catch (e) {
@@ -1473,7 +1500,7 @@ export async function fetchPricingServiceBySlug(slug: string): Promise<PricingSe
 
 export async function fetchPricingPromotions(): Promise<PricingPromotion[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/pricing-promotions/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/pricing-promotions/`, { revalidate: 300 });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data || [];
@@ -1494,13 +1521,22 @@ export interface OrderSummaryData {
   unitRange?: string;
   quantity?: number;
   totalPrice?: string;
+  _timestamp?: number;
 }
 
 const ORDER_STORAGE_KEY = 'picpicxels_order_summary';
 
 export function storeOrderSummary(data: OrderSummaryData): void {
   try {
-    localStorage.setItem(ORDER_STORAGE_KEY, JSON.stringify(data));
+    const payload: OrderSummaryData = {
+      ...data,
+      _timestamp: Date.now(),
+    };
+    const jsonStr = JSON.stringify(payload);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(ORDER_STORAGE_KEY, jsonStr);
+      document.cookie = `order_summary=${encodeURIComponent(jsonStr)}; path=/; max-age=600; SameSite=Lax`;
+    }
   } catch {
     // localStorage may be full or unavailable
   }
@@ -1508,8 +1544,17 @@ export function storeOrderSummary(data: OrderSummaryData): void {
 
 export function getOrderSummary(): OrderSummaryData | null {
   try {
-    const raw = localStorage.getItem(ORDER_STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as OrderSummaryData) : null;
+    if (typeof window !== 'undefined') {
+      const raw = localStorage.getItem(ORDER_STORAGE_KEY);
+      if (raw) {
+        return JSON.parse(raw) as OrderSummaryData;
+      }
+      const match = document.cookie.match(/(?:^|;\s*)order_summary=([^;]*)/);
+      if (match) {
+        return JSON.parse(decodeURIComponent(match[1])) as OrderSummaryData;
+      }
+    }
+    return null;
   } catch {
     return null;
   }
@@ -1517,7 +1562,10 @@ export function getOrderSummary(): OrderSummaryData | null {
 
 export function clearOrderSummary(): void {
   try {
-    localStorage.removeItem(ORDER_STORAGE_KEY);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(ORDER_STORAGE_KEY);
+      document.cookie = 'order_summary=; path=/; max-age=0; SameSite=Lax';
+    }
   } catch {
     // noop
   }
@@ -1536,6 +1584,29 @@ export async function fetchPricingConfig(): Promise<PricingConfigSectionData | n
   }
 }
 
+export interface ProductCategoryItem {
+  id: number;
+  name: string;
+  slug: string;
+  order: number;
+  is_active: boolean;
+}
+
+export async function getProductCategories(): Promise<ProductCategoryItem[]> {
+  try {
+    const res = await fetch(`${BASE_URL}/api/v1/cms/product-categories/`, {
+      next: { revalidate: 60 },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.results || []);
+  } catch (e) {
+    console.error('Failed to fetch product categories', e);
+    return [];
+  }
+}
+
+
 export async function submitFreeTrial(data: {
   full_name: string;
   company_name?: string;
@@ -1545,6 +1616,10 @@ export async function submitFreeTrial(data: {
   product_category: string;
   drive_link?: string;
   project_requirements: string;
+  website_hp?: string;
+  recaptcha_token?: string;
+  cf_turnstile_response?: string;
+  captcha_token?: string;
 }, files?: File[]): Promise<boolean> {
   try {
     const form = new FormData();

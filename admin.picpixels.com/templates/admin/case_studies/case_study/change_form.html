@@ -1,0 +1,105 @@
+{% extends "admin/change_form.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+{{ block.super }}
+<script>
+(function() {
+    'use strict';
+
+    function attachFormattingToolbar(textareaId, label) {
+        const textarea = document.getElementById(textareaId);
+        if (!textarea || textarea.dataset.hasToolbar) return;
+        textarea.dataset.hasToolbar = 'true';
+
+        const toolbar = document.createElement('div');
+        toolbar.className = 'flex items-center flex-wrap gap-1.5 p-2 bg-gray-100 dark:bg-gray-800 rounded-t-lg border border-gray-300 dark:border-gray-700 text-xs mb-0';
+        toolbar.innerHTML = `
+            <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 mr-1 flex items-center gap-1">
+                <span>✍️</span> ${label} Tools:
+            </span>
+            <button type="button" class="btn-fmt-link px-2.5 py-1 bg-white dark:bg-gray-700 hover:bg-primary-50 dark:hover:bg-primary-950/40 text-primary-600 dark:text-primary-400 font-semibold rounded border border-gray-300 dark:border-gray-600 flex items-center gap-1 shadow-2xs">
+                <span>🔗</span> Add Hyperlink
+            </button>
+            <button type="button" class="btn-fmt-bold px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-bold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+                B
+            </button>
+            <button type="button" class="btn-fmt-italic px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 italic font-serif rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+                I
+            </button>
+            <button type="button" class="btn-fmt-h3 px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+                H3
+            </button>
+            <button type="button" class="btn-fmt-ul px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+                • List
+            </button>
+        `;
+
+        textarea.classList.remove('rounded-lg');
+        textarea.classList.add('rounded-b-lg', 'border-t-0');
+        textarea.parentNode.insertBefore(toolbar, textarea);
+
+        // Hyperlink insertion
+        toolbar.querySelector('.btn-fmt-link').addEventListener('click', () => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end);
+            const url = prompt('Enter link URL (e.g. /services/clipping-path or https://...):', 'https://');
+            if (!url) return;
+            const text = selected || prompt('Enter link text:', 'Learn More') || url;
+            const linkTag = `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+            textarea.focus();
+            textarea.setRangeText(linkTag, start, end, 'end');
+        });
+
+        // Bold
+        toolbar.querySelector('.btn-fmt-bold').addEventListener('click', () => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end) || 'Bold text';
+            textarea.focus();
+            textarea.setRangeText(`<strong>${selected}</strong>`, start, end, 'end');
+        });
+
+        // Italic
+        toolbar.querySelector('.btn-fmt-italic').addEventListener('click', () => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end) || 'Italic text';
+            textarea.focus();
+            textarea.setRangeText(`<em>${selected}</em>`, start, end, 'end');
+        });
+
+        // Heading 3
+        toolbar.querySelector('.btn-fmt-h3').addEventListener('click', () => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end) || 'Section Heading';
+            textarea.focus();
+            textarea.setRangeText(`<h3>${selected}</h3>\n`, start, end, 'end');
+        });
+
+        // Bullet List
+        toolbar.querySelector('.btn-fmt-ul').addEventListener('click', () => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end) || 'Key feature or highlight';
+            textarea.focus();
+            textarea.setRangeText(`<ul>\n  <li>${selected}</li>\n</ul>\n`, start, end, 'end');
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            attachFormattingToolbar('id_introduction', 'Introduction');
+            attachFormattingToolbar('id_project_overview', 'Project Overview');
+            attachFormattingToolbar('id_challenges', 'Challenges');
+            attachFormattingToolbar('id_solution', 'Solution');
+            attachFormattingToolbar('id_process_workflow', 'Process Workflow');
+            attachFormattingToolbar('id_results', 'Results');
+            attachFormattingToolbar('id_full_content', 'Full Content');
+        }, 200);
+    });
+})();
+</script>
+{% endblock %}

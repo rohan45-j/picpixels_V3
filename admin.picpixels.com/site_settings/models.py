@@ -12,6 +12,11 @@ class SiteSetting(models.Model):
     support_email = models.EmailField(blank=True)
     support_phone = models.CharField(max_length=20, blank=True)
     address = models.TextField(blank=True)
+    business_hours = models.TextField(
+        blank=True,
+        default='Mon – Fri: 9:00 AM – 6:00 PM\nSat: 10:00 AM – 4:00 PM',
+        help_text='Business hours displayed on contact and demo pages (one per line, e.g. "Mon – Fri: 9:00 AM – 6:00 PM\\nSat: 10:00 AM – 4:00 PM")'
+    )
     social_links = models.JSONField(default=dict, blank=True,
                                     help_text='JSON object of social platform URLs')
     copyright_text = models.CharField(max_length=200, blank=True)
@@ -110,6 +115,20 @@ class SiteSetting(models.Model):
     organization_schema = models.TextField(
         blank=True, default='',
         help_text='Global Organization / LocalBusiness JSON-LD Schema (leave empty for auto-generated schema)'
+    )
+
+    # Bot Protection / Google reCAPTCHA
+    recaptcha_enabled = models.BooleanField(
+        default=False,
+        help_text='Enable Google reCAPTCHA bot protection on public forms (Contact, Free Trial)'
+    )
+    recaptcha_site_key = models.CharField(
+        max_length=255, blank=True, default='',
+        help_text='Google reCAPTCHA v2/v3 Site Key (public)'
+    )
+    recaptcha_secret_key = models.CharField(
+        max_length=255, blank=True, default='',
+        help_text='Google reCAPTCHA Secret Key (kept private on server)'
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

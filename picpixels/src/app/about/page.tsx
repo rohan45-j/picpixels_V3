@@ -5,19 +5,19 @@ import AboutClient from './AboutClient';
 import type { Testimonial, BrandLogo, SiteSetting, AboutPageData } from '@/services/public-api';
 import { fetchBrandLogos, fetchSiteSettings, fetchAboutPageData } from '@/services/public-api';
 
+import { buildPageMetadata, buildBreadcrumbSchema, SITE_URL } from '@/lib/seo';
+import JsonLd from '@/components/seo/JsonLd';
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: 'About Us',
-  description: 'PicPicxels is a trusted virtual photo editing studio. 5M+ images edited for brands, retailers, and agencies worldwide. 10+ years of experience.',
-  openGraph: {
-    title: 'About PicPicxels | Professional Photo Editing Studio',
-    description: 'Your trusted virtual photo editing solution. 5M+ images edited. 500+ active clients. 10+ years experience.',
-    type: 'website',
-  },
-};
+export const metadata: Metadata = buildPageMetadata({
+  title: 'About Us | PicPicxels Virtual Photo Editing Studio',
+  description: 'Learn about PicPicxels, a global photo editing studio with 10+ years experience, 500+ brand clients, and 5M+ images edited with perfection.',
+  path: '/about',
+  keywords: ['about PicPicxels', 'photo editing team', 'commercial retouching agency', 'virtual image studio'],
+});
 
 export default async function About() {
   let testimonials: Testimonial[] = [];
@@ -40,8 +40,29 @@ export default async function About() {
     aboutData = about;
   } catch {}
 
+  const aboutSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    '@id': `${SITE_URL}/about#about`,
+    url: `${SITE_URL}/about`,
+    name: 'About PicPicxels',
+    description: 'Learn about PicPicxels, a global photo editing studio with 10+ years experience, 500+ brand clients, and 5M+ images edited.',
+    mainEntity: {
+      '@type': 'Organization',
+      name: 'PicPicxels',
+      url: SITE_URL,
+      logo: `${SITE_URL}/logo.png`,
+    },
+  };
+
+  const breadcrumbsSchema = buildBreadcrumbSchema([
+    { name: 'Home', path: '/' },
+    { name: 'About Us', path: '/about' },
+  ]);
+
   return (
     <>
+      <JsonLd data={[aboutSchema, breadcrumbsSchema]} />
       <Header />
       <main id="main-content">
         <AboutClient testimonials={testimonials} brandLogos={brandLogos} aboutData={aboutData} />

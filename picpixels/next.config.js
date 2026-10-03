@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   compress: true,
-  output: 'standalone',
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -112,7 +111,20 @@ const nextConfig = {
   },
 
   async rewrites() {
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
     return [
+      {
+        source: '/sourceMap/:path*',
+        destination: '/empty.map',
+      },
+      {
+        source: '/:path*.map',
+        destination: '/empty.map',
+      },
+      {
+        source: '/media/:path*',
+        destination: `${backendUrl}/media/:path*`,
+      },
       {
         source: '/guides',
         destination: '/guid',

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useEffect, useState } from 'react';
-import type { ServiceGalleryImage } from '@/services/public-api';
+import { mediaUrl, type ServiceGalleryImage } from '@/services/public-api';
 import BeforeAfterSlider from './BeforeAfterSlider';
 import PortfolioGallery from './PortfolioGallery';
 import GalleryLightbox from './GalleryLightbox';
@@ -13,7 +13,7 @@ interface ServiceGalleryProps {
 
 function useScrollReveal() {
   const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
     const el = ref.current;
@@ -66,7 +66,7 @@ export default function ServiceGallery({ images, serviceTitle }: ServiceGalleryP
   const [lightboxPortfolio, setLightboxPortfolio] = useState<number | null>(null);
 
   const portfolioLightboxImages = useMemo(
-    () => portfolio.map((img) => ({ src: img.image, alt: img.alt_text || img.caption })),
+    () => portfolio.map((img) => ({ src: mediaUrl(img.image) || img.image, alt: img.alt_text || img.caption })),
     [portfolio],
   );
 
@@ -81,7 +81,7 @@ export default function ServiceGallery({ images, serviceTitle }: ServiceGalleryP
             <div className="service-gallery-section">
               <h2 className="service-gallery-heading" style={{ color: '#000000' }}>Featured Before & After Showcase</h2>
               <p className="service-gallery-desc">
-                See the transformation quality of our {serviceTitle.toLowerCase()} service
+                See the transformation quality of our {serviceTitle.toLowerCase().replace(/\s+service$/i, '')} service
               </p>
             </div>
             <div className="ba-grid">
@@ -89,8 +89,8 @@ export default function ServiceGallery({ images, serviceTitle }: ServiceGalleryP
                 <AnimatedSection key={img.id || i} delay={i * 150}>
                   <div className="ba-card">
                     <BeforeAfterSlider
-                      beforeImage={img.before_image!}
-                      afterImage={img.after_image!}
+                      beforeImage={mediaUrl(img.before_image) || img.before_image!}
+                      afterImage={mediaUrl(img.after_image) || img.after_image!}
                       beforeLabel="Before"
                       afterLabel="After"
                       alt={img.alt_text || img.caption || serviceTitle}

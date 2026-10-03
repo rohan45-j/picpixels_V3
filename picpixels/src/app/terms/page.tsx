@@ -5,18 +5,18 @@ import styles from '@/styles/modules/legal.module.css';
 import SectionHeading from '@/components/ui/SectionHeading';
 import Reveal from '@/components/animations/Reveal';
 import { fetchTermsConditions, fetchSiteSettings } from '@/services/public-api';
+import { buildPageMetadata, buildWebPageSchema, buildBreadcrumbSchema } from '@/lib/seo';
+import JsonLd from '@/components/seo/JsonLd';
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: 'Terms & Conditions',
-  description: 'PicPicxels Terms and Conditions. Read about service usage, payments, intellectual property, data protection, and your legal rights.',
-  openGraph: {
-    title: 'Terms & Conditions | PicPicxels',
-    description: 'Read the PicPicxels Terms and Conditions governing your use of our platform and services.',
-    type: 'website',
-  },
-};
+  description: 'PicPicxels Terms and Conditions. Read about service usage, client image ownership, payments, intellectual property, and guarantees.',
+  path: '/terms',
+  keywords: ['terms and conditions', 'terms of service', 'client image rights', 'picpixels legal'],
+});
+
 
 const defaultHighlights = [
   { num: '01', title: 'Fair Usage', desc: 'Transparent, fair usage policies that protect both our platform and our clients.' },
@@ -145,11 +145,25 @@ export default async function TermsPage() {
     ? termsData.clauses
     : defaultClauses;
 
+  const breadcrumbs = [
+    { name: 'Home', path: '/' },
+    { name: 'Terms & Conditions', path: '/terms' },
+  ];
+
   return (
     <>
+      <JsonLd schema={buildBreadcrumbSchema(breadcrumbs)} />
+      <JsonLd
+        schema={buildWebPageSchema({
+          title: 'Terms & Conditions - PicPicxels',
+          description: heroSub,
+          path: '/terms',
+        })}
+      />
       <Header />
       <main>
         {/* Hero */}
+
         <Reveal variant="fadeDown">
           <section className={styles.hero}>
             <h1 className={styles.heroTitle}>{heroTitle}</h1>

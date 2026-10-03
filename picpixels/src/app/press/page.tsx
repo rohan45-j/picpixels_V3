@@ -4,18 +4,18 @@ import Footer from "@/components/layout/Footer";
 import SectionHeading from "@/components/ui/SectionHeading";
 import styles from "@/styles/modules/company.module.css";
 import Link from "next/link";
+import { buildPageMetadata, buildWebPageSchema, buildBreadcrumbSchema } from "@/lib/seo";
+import JsonLd from "@/components/seo/JsonLd";
 
-export const metadata: Metadata = {
-  title: "Press & Media",
+export const metadata: Metadata = buildPageMetadata({
+  title: "Press & Media Coverage",
   description: "PicPicxels in the news. Press releases, media coverage, and brand assets for journalists and media partners.",
-  openGraph: {
-    title: "PicPicxels Press & Media",
-    description: "Find the latest press releases, media coverage, and brand assets.",
-    type: "website",
-  },
-};
+  path: "/press",
+  keywords: ["picpixels news", "photo editing press release", "ecommerce imagery media kit"],
+});
 
 const articles = [
+
   {
     icon: "📰",
     tag: "TechCrunch",
@@ -61,9 +61,23 @@ const mediaContacts = [
 ];
 
 export default function Press() {
+  const breadcrumbs = [
+    { name: "Home", path: "/" },
+    { name: "Press", path: "/press" },
+  ];
+
   return (
     <div className={styles.page}>
+      <JsonLd schema={buildBreadcrumbSchema(breadcrumbs)} />
+      <JsonLd
+        schema={buildWebPageSchema({
+          title: "Press & Media Coverage - PicPicxels",
+          description: "Press releases, news coverage, and media assets for PicPicxels.",
+          path: "/press",
+        })}
+      />
       <Header />
+
 
       {/* Hero */}
       <section className={styles.hero}>

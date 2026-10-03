@@ -1,0 +1,318 @@
+{% extends "admin/change_form.html" %}
+{% load i18n static %}
+
+{% block after_field_sets %}
+{{ block.super }}
+
+<div class="mt-6 mb-8 border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900 shadow-sm overflow-hidden">
+    <!-- Card Header -->
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-gray-50/80 dark:bg-gray-800/40 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <span class="text-xl">📸</span>
+            <div>
+                <h3 class="text-base font-bold text-gray-900 dark:text-gray-100">
+                    Bulk Add Images to Gallery
+                </h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Select or drag &amp; drop multiple images (10, 20+ images) to add to this portfolio's gallery at once.
+                </p>
+            </div>
+        </div>
+
+        {% if original.pk %}
+        <a href="{% url 'admin:portfolio_portfoliogallery_bulk_upload' %}?portfolio_id={{ original.pk }}"
+           target="_blank"
+           class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/40 rounded-lg hover:underline border border-primary-200 dark:border-primary-900">
+            <span>↗</span> Open Fullscreen Uploader
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Card Body -->
+    <div class="p-6 space-y-4">
+        <div>
+            <label class="block text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1.5">
+                Default Caption / Alt Text (Optional)
+            </label>
+            <input type="text" name="bulk_alt_prefix" id="bulk_alt_prefix"
+                   placeholder="e.g. {{ original.title|default:'Portfolio' }} Retouching Detail"
+                   class="w-full px-3.5 py-2 text-sm rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+            <p class="text-[11px] text-gray-400 mt-1">If empty, images will be automatically numbered using this portfolio's title.</p>
+        </div>
+
+        <!-- Dropzone -->
+        <div id="bulk-inline-dropzone"
+             class="border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-primary-500 dark:hover:border-primary-400 rounded-xl p-6 text-center cursor-pointer transition-colors bg-gray-50 dark:bg-gray-800/30">
+            <input type="file" name="bulk_gallery_images" id="bulk_gallery_images" multiple accept="image/*" class="hidden" />
+            <div class="flex flex-col items-center justify-center">
+                <span class="text-3xl mb-2">📁</span>
+                <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">
+                    Click to select multiple images or drag &amp; drop here
+                </p>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                    Hold Ctrl (or Shift) to select multiple image files at once.
+                </p>
+                <button type="button" onclick="document.getElementById('bulk_gallery_images').click();"
+                        class="mt-3 px-3.5 py-1.5 bg-primary-600 hover:bg-primary-700 text-white text-xs font-semibold rounded-lg shadow-sm transition">
+                    Browse Files
+                </button>
+            </div>
+        </div>
+
+        <!-- Selected Thumbnails Preview -->
+        <div id="bulk-preview-wrapper" class="hidden pt-2">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                    <span>Selected for Upload:</span>
+                    <span id="bulk-preview-count" class="px-2 py-0.5 rounded-full bg-primary-100 dark:bg-primary-900/60 text-primary-700 dark:text-primary-300 text-xs">0 files</span>
+                </span>
+                <button type="button" id="bulk-clear-all" class="text-xs text-red-500 hover:underline">
+                    Clear Selection
+                </button>
+            </div>
+
+            <div id="bulk-thumbnails-grid"
+                 class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3 max-h-72 overflow-y-auto p-2.5 border border-gray-200 dark:border-gray-800 rounded-lg bg-gray-50/50 dark:bg-gray-800/20">
+            </div>
+
+            <div class="mt-4 flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-200 dark:border-gray-800">
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    💡 <strong>Tip:</strong> These files will automatically save to the gallery when you click <em>Save</em> or <em>Save and continue editing</em> below.
+                </p>
+
+                {% if original.pk %}
+                <button type="button" id="bulk-ajax-upload-btn"
+                        class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm transition flex items-center gap-1.5">
+                    <span>⚡</span> Upload Now to Gallery (Instant)
+                </button>
+                {% endif %}
+            </div>
+
+            <div id="bulk-upload-status" class="hidden mt-2 p-3 text-xs rounded-lg"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const dropzone = document.getElementById('bulk-inline-dropzone');
+    const input = document.getElementById('bulk_gallery_images');
+    const wrapper = document.getElementById('bulk-preview-wrapper');
+    const grid = document.getElementById('bulk-thumbnails-grid');
+    const countBadge = document.getElementById('bulk-preview-count');
+    const clearBtn = document.getElementById('bulk-clear-all');
+    const ajaxBtn = document.getElementById('bulk-ajax-upload-btn');
+    const statusBox = document.getElementById('bulk-upload-status');
+
+    if (!dropzone || !input) return;
+
+    ['dragenter', 'dragover'].forEach(evt => {
+        dropzone.addEventListener(evt, (e) => {
+            e.preventDefault();
+            dropzone.classList.add('border-primary-500', 'bg-primary-50/10');
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(evt => {
+        dropzone.addEventListener(evt, (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('border-primary-500', 'bg-primary-50/10');
+        });
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        if (e.dataTransfer.files && e.dataTransfer.files.length) {
+            input.files = e.dataTransfer.files;
+            renderThumbnails();
+        }
+    });
+
+    input.addEventListener('change', renderThumbnails);
+
+    function renderThumbnails() {
+        grid.innerHTML = '';
+        const files = Array.from(input.files || []);
+        if (!files.length) {
+            wrapper.classList.add('hidden');
+            return;
+        }
+
+        wrapper.classList.remove('hidden');
+        countBadge.textContent = files.length + (files.length === 1 ? ' file' : ' files');
+
+        files.forEach((file) => {
+            const card = document.createElement('div');
+            card.className = 'border border-gray-200 dark:border-gray-700 rounded-lg p-1.5 bg-white dark:bg-gray-800 text-center shadow-xs';
+
+            const img = document.createElement('img');
+            img.className = 'w-full h-20 object-cover rounded';
+            img.src = URL.createObjectURL(file);
+
+            const name = document.createElement('p');
+            name.className = 'text-[11px] truncate text-gray-700 dark:text-gray-300 mt-1 font-mono';
+            name.textContent = file.name;
+
+            const size = document.createElement('p');
+            size.className = 'text-[10px] text-gray-400';
+            size.textContent = (file.size / 1024).toFixed(1) + ' KB';
+
+            card.appendChild(img);
+            card.appendChild(name);
+            card.appendChild(size);
+            grid.appendChild(card);
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            renderThumbnails();
+            if (statusBox) statusBox.classList.add('hidden');
+        });
+    }
+
+    // Instant AJAX upload if item already has PK
+    {% if original.pk %}
+    if (ajaxBtn) {
+        ajaxBtn.addEventListener('click', async () => {
+            const files = Array.from(input.files || []);
+            if (!files.length) {
+                alert('Please select at least one image file first.');
+                return;
+            }
+
+            const formData = new FormData();
+            files.forEach(f => formData.append('images', f));
+            const altPrefix = document.getElementById('bulk_alt_prefix').value;
+            if (altPrefix) formData.append('bulk_alt_prefix', altPrefix);
+
+            // CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '';
+            formData.append('csrfmiddlewaretoken', csrfToken);
+
+            ajaxBtn.disabled = true;
+            ajaxBtn.innerHTML = '<span>⏳</span> Uploading...';
+            statusBox.className = 'p-3 text-xs rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-900 block';
+            statusBox.textContent = `Uploading ${files.length} images to gallery...`;
+
+            try {
+                const response = await fetch('/admin/portfolio/portfolio/{{ original.pk }}/quick-bulk-upload/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                    }
+                });
+
+                const data = await response.json();
+                if (response.ok && data.status === 'success') {
+                    statusBox.className = 'p-3 text-xs rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900 block';
+                    statusBox.textContent = '🎉 ' + data.message + ' Refreshing inline gallery...';
+                    input.value = '';
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1200);
+                } else {
+                    throw new Error(data.message || 'Upload failed');
+                }
+            } catch (err) {
+                statusBox.className = 'p-3 text-xs rounded-lg bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900 block';
+                statusBox.textContent = '❌ Error uploading images: ' + err.message;
+                ajaxBtn.disabled = false;
+                ajaxBtn.innerHTML = '<span>⚡</span> Upload Now to Gallery (Instant)';
+            }
+        });
+    }
+    {% endif %}
+
+    // ── Content Formatting & Hyperlink Toolbar ──
+    function attachFormattingToolbar(textareaId, label) {
+        const textarea = document.getElementById(textareaId);
+        if (!textarea || textarea.dataset.hasToolbar) return;
+        textarea.dataset.hasToolbar = 'true';
+
+        const toolbar = document.createElement('div');
+        toolbar.className = 'flex items-center flex-wrap gap-1.5 p-2 bg-gray-100 dark:bg-gray-800 rounded-t-lg border border-gray-300 dark:border-gray-700 text-xs mb-0';
+        toolbar.innerHTML = `
+            <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 mr-1 flex items-center gap-1">
+                <span>✍️</span> ${label} Tools:
+            </span>
+            <button type="button" class="btn-fmt-link px-2.5 py-1 bg-white dark:bg-gray-700 hover:bg-primary-50 dark:hover:bg-primary-950/40 text-primary-600 dark:text-primary-400 font-semibold rounded border border-gray-300 dark:border-gray-600 flex items-center gap-1 shadow-2xs">
+                <span>🔗</span> Add Hyperlink
+            </button>
+            <button type="button" class="btn-fmt-bold px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-bold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+                B
+            </button>
+            <button type="button" class="btn-fmt-italic px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 italic font-serif rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+                I
+            </button>
+            <button type="button" class="btn-fmt-h3 px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+                H3
+            </button>
+            <button type="button" class="btn-fmt-ul px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-semibold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
+                • List
+            </button>
+        `;
+
+        textarea.classList.remove('rounded-lg');
+        textarea.classList.add('rounded-b-lg', 'border-t-0');
+        textarea.parentNode.insertBefore(toolbar, textarea);
+
+        // Hyperlink insertion
+        toolbar.querySelector('.btn-fmt-link').addEventListener('click', () => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end);
+            const url = prompt('Enter link URL (e.g. /services/clipping-path or https://...):', 'https://');
+            if (!url) return;
+            const text = selected || prompt('Enter link text:', 'Learn More') || url;
+            const linkTag = `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+            textarea.focus();
+            textarea.setRangeText(linkTag, start, end, 'end');
+        });
+
+        // Bold
+        toolbar.querySelector('.btn-fmt-bold').addEventListener('click', () => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end) || 'Bold text';
+            textarea.focus();
+            textarea.setRangeText(`<strong>${selected}</strong>`, start, end, 'end');
+        });
+
+        // Italic
+        toolbar.querySelector('.btn-fmt-italic').addEventListener('click', () => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end) || 'Italic text';
+            textarea.focus();
+            textarea.setRangeText(`<em>${selected}</em>`, start, end, 'end');
+        });
+
+        // Heading 3
+        toolbar.querySelector('.btn-fmt-h3').addEventListener('click', () => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end) || 'Section Heading';
+            textarea.focus();
+            textarea.setRangeText(`<h3>${selected}</h3>\n`, start, end, 'end');
+        });
+
+        // Bullet List
+        toolbar.querySelector('.btn-fmt-ul').addEventListener('click', () => {
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end) || 'Key feature or highlight';
+            textarea.focus();
+            textarea.setRangeText(`<ul>\n  <li>${selected}</li>\n</ul>\n`, start, end, 'end');
+        });
+    }
+
+    setTimeout(() => {
+        attachFormattingToolbar('id_short_description', 'Short Description');
+        attachFormattingToolbar('id_full_description', 'Full Description');
+    }, 200);
+})();
+</script>
+{% endblock %}
+

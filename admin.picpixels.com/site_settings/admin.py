@@ -14,8 +14,9 @@ class SiteSettingAdmin(ModelAdmin):
     ('🎨 Branding Assets (Logo & Favicon)', {
         'fields': ('site_name', 'tagline', 'logo', 'logo_alt', 'favicon', 'favicon_alt'),
     }),
-        ('Contact Information', {
-            'fields': ('support_email', 'support_phone', 'address'),
+        ('📞 Contact Information & Business Hours', {
+            'fields': ('support_email', 'support_phone', 'address', 'business_hours'),
+            'description': 'Configure public contact details and working hours shown on Contact and Demo pages.',
         }),
         ('📍 Footer: Location Based Services', {
             'fields': ('footer_location_title', 'footer_locations'),
@@ -53,6 +54,14 @@ class SiteSettingAdmin(ModelAdmin):
         ('🏷️ Global Schema Markup (JSON-LD)', {
             'fields': ('organization_schema',),
             'description': 'Custom Organization or LocalBusiness JSON-LD markup. Leave empty for automatic Organization schema.',
+        }),
+        ('🛡️ Bot Protection & Google reCAPTCHA', {
+            'fields': (
+                'recaptcha_enabled',
+                'recaptcha_site_key',
+                'recaptcha_secret_key',
+            ),
+            'description': 'Enable Google reCAPTCHA bot protection on public forms. Enter your reCAPTCHA v2 / v3 keys from Google Cloud Console.',
         }),
     )
 

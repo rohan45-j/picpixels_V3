@@ -14,8 +14,8 @@ function easeOutCubic(t: number): number {
 }
 
 export default function AnimatedStatCard({ value, label, index }: { value: string; label: string; index: number }) {
-  const [display, setDisplay] = useState<string>('');
-  const [phase, setPhase] = useState<'hidden' | 'entering' | 'counting' | 'done'>('hidden');
+  const [display, setDisplay] = useState<string>(value);
+  const [phase, setPhase] = useState<'hidden' | 'entering' | 'counting' | 'done'>('done');
   const ref = useRef<HTMLDivElement>(null);
   const startedRef = useRef(false);
 

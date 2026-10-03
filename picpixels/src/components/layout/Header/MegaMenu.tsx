@@ -1,12 +1,7 @@
-'use client';
-
-import { motion } from 'framer-motion';
 import { ArrowRight, FileText } from 'lucide-react';
 import Link from 'next/link';
 import styles from './MegaMenu.module.css';
 import type { Service } from '@/services/public-api';
-
-const MotionLink = motion(Link);
 
 interface MegaMenuProps {
   services: Service[];
@@ -18,13 +13,7 @@ export default function MegaMenu({ services }: MegaMenuProps) {
   const rightCol = services.slice(mid);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -15, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className={styles.container}
-    >
+    <div className={styles.container}>
       <div className={styles.grid}>
         <div className={styles.servicesSection}>
           {services.length === 0 && (
@@ -32,14 +21,11 @@ export default function MegaMenu({ services }: MegaMenuProps) {
           )}
           <div className={styles.servicesGrid}>
             <div className={styles.servicesColumn}>
-              {leftCol.map((svc, i) => (
-                <MotionLink
+              {leftCol.map((svc) => (
+                <Link
                   key={svc.id}
                   href={`/services/${svc.slug}`}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.25, delay: i * 0.04 }}
-                  whileHover={{ x: 4 }}
+                  prefetch={true}
                   className={styles.menuItem}
                 >
                   <div className={styles.iconBox}>
@@ -53,18 +39,15 @@ export default function MegaMenu({ services }: MegaMenuProps) {
                     )}
                   </div>
                   <span className={styles.menuLabel}>{svc.title}</span>
-                </MotionLink>
+                </Link>
               ))}
             </div>
             <div className={styles.servicesColumn}>
-              {rightCol.map((svc, i) => (
-                <MotionLink
+              {rightCol.map((svc) => (
+                <Link
                   key={svc.id}
                   href={`/services/${svc.slug}`}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.25, delay: (mid + i) * 0.04 }}
-                  whileHover={{ x: 4 }}
+                  prefetch={true}
                   className={styles.menuItem}
                 >
                   <div className={styles.iconBox}>
@@ -78,11 +61,11 @@ export default function MegaMenu({ services }: MegaMenuProps) {
                     )}
                   </div>
                   <span className={styles.menuLabel}>{svc.title}</span>
-                </MotionLink>
+                </Link>
               ))}
             </div>
           </div>
-          <Link href="/services" className={styles.viewAllBtn}>
+          <Link href="/services" prefetch={true} className={styles.viewAllBtn}>
             View All Services
             <ArrowRight className={styles.viewAllIcon} />
           </Link>
@@ -93,12 +76,7 @@ export default function MegaMenu({ services }: MegaMenuProps) {
             <div className={styles.promoBlob1} />
             <div className={styles.promoBlob2} />
             <div className={styles.promoOverlay} />
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className={styles.promoContent}
-            >
+            <div className={styles.promoContent}>
               <h3 className={styles.promoTitle}>
                 Transform Your Business With Professional Digital Solutions
               </h3>
@@ -109,10 +87,10 @@ export default function MegaMenu({ services }: MegaMenuProps) {
                 Free Trial
                 <ArrowRight />
               </Link>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

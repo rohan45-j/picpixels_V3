@@ -7,7 +7,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug', 'is_active', 'portfolio_count']
+        fields = ['id', 'name', 'slug', 'is_active', 'show_on_homepage', 'homepage_sort_order', 'portfolio_count']
 
     def get_portfolio_count(self, obj):
         return obj.portfolios.filter(is_published=True).count()
@@ -68,6 +68,7 @@ class PortfolioSerializer(serializers.ModelSerializer):
     featured_image_url = serializers.SerializerMethodField()
     before_image_url = serializers.SerializerMethodField()
     after_image_url = serializers.SerializerMethodField()
+    og_image_url = serializers.SerializerMethodField()
     gallery = PortfolioGallerySerializer(many=True, read_only=True)
     comparisons = PortfolioComparisonSerializer(many=True, read_only=True)
     prev_project = serializers.SerializerMethodField()
@@ -84,11 +85,23 @@ class PortfolioSerializer(serializers.ModelSerializer):
             'after_image', 'after_image_alt', 'after_image_url',
             'short_description', 'full_description',
             'client', 'completion_date', 'project_url',
-            'featured', 'gallery', 'comparisons',
-            'meta_title', 'meta_description',
+            'featured', 'show_on_homepage', 'homepage_sort_order',
+            'gallery', 'comparisons',
+            'meta_title', 'meta_description', 'meta_keywords',
+            'canonical_url', 'schema_type', 'og_image', 'og_image_url',
             'prev_project', 'next_project',
             'created_at', 'updated_at',
         ]
+
+    def get_og_image_url(self, obj):
+        if obj.og_image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.og_image.url)
+            return obj.og_image.url
+        return None
+
+
 
     def get_featured_image_url(self, obj):
         if obj.featured_image:

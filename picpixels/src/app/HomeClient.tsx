@@ -1,5 +1,4 @@
 'use client';
-import dynamic from 'next/dynamic';
 import SectionHeading from '@/components/ui/SectionHeading';
 
 import Link from 'next/link';
@@ -19,23 +18,10 @@ import FAQSection from '@/components/ui/FAQSection';
 import QualityAssurance from '@/components/ui/QualityAssurance';
 import HomeCTASection from '@/components/ui/HomeCTASection';
 
-// Lazy load heavy components that are below the fold
-const HighEndQualitySection = dynamic(() => import('@/components/ui/HighEndQualitySection'), {
-  ssr: false,
-  loading: () => <div className={styles.skeletonSection} />,
-});
-const PortfolioGrid = dynamic(() => import('@/features/portfolio/components/PortfolioGrid'), {
-  ssr: false,
-  loading: () => <div className={styles.skeletonSection} />,
-});
-const PricingConfigurator = dynamic(() => import('@/features/pricing/components/PricingConfigurator'), {
-  ssr: false,
-  loading: () => <div className={styles.skeletonSection} />,
-});
-const HomeWhyChooseUsNew = dynamic(() => import('@/components/ui/HomeWhyChooseUsNew'), {
-  ssr: false,
-  loading: () => <div className={styles.skeletonSection} />,
-});
+import HighEndQualitySection from '@/components/ui/HighEndQualitySection';
+import PortfolioGrid from '@/features/portfolio/components/PortfolioGrid';
+import PricingConfigurator from '@/features/pricing/components/PricingConfigurator';
+import HomeWhyChooseUsNew from '@/components/ui/HomeWhyChooseUsNew';
 
 const processSteps = [
   { step: '01', title: 'Request a quote', desc: 'Use our quotation/free trial to send us a quote request for the photographs you need to edit.', icon: FileText },
@@ -46,8 +32,8 @@ const processSteps = [
   { step: '06', title: 'Give us review', desc: 'Your review is important to us. Help us improve and serve you better.', icon: Star },
 ];
 
-export default function HomeClient({ services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures, heroData, brandLogos, pricingConfig, homepageCTA, faqs }: {
-  services: Service[]; testimonials: Testimonial[]; technologies: Technology[]; portfolios: PortfolioItem[]; portfolioCategories: PortfolioCategory[]; whyChooseUs: WhyChooseSection | null; latestBlogs: BlogPost[]; caseStudies: CaseStudyItem[]; whyChooseFeatures: WhyChooseFeatureSection | null; heroData: HeroSection | null; brandLogos: BrandLogo[]; pricingConfig: PricingConfigSectionData | null; homepageCTA?: HomepageCTADataType | null; faqs?: FAQ[];
+export default function HomeClient({ services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures, heroData, brandLogos, pricingConfig, homepageCTA, faqs, initialPortfolioCategory }: {
+  services: Service[]; testimonials: Testimonial[]; technologies: Technology[]; portfolios: PortfolioItem[]; portfolioCategories: PortfolioCategory[]; whyChooseUs: WhyChooseSection | null; latestBlogs: BlogPost[]; caseStudies: CaseStudyItem[]; whyChooseFeatures: WhyChooseFeatureSection | null; heroData: HeroSection | null; brandLogos: BrandLogo[]; pricingConfig: PricingConfigSectionData | null; homepageCTA?: HomepageCTADataType | null; faqs?: FAQ[]; initialPortfolioCategory?: string;
 }) {
 
   return (
@@ -97,7 +83,7 @@ export default function HomeClient({ services, testimonials, technologies, portf
         </div>
       </section>
 
-      <Reveal variant="fadeUp" once={false}><PortfolioGrid portfolios={portfolios} categories={portfolioCategories} /></Reveal>
+      <Reveal variant="fadeUp" once={false}><PortfolioGrid portfolios={portfolios} categories={portfolioCategories} initialCategory={initialPortfolioCategory} /></Reveal>
 
       <section className={`${styles.section} ${styles.sectionAlt} ${styles.testimonialSection}`}>
         <div className="container">

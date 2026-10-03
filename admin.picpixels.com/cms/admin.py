@@ -24,11 +24,11 @@ import json
 from .models import (
     PageCategory, Page, Section, Banner, Service, ServiceGalleryImage, ServiceContentSection, ServiceHeroImage,
     HeroSection, HeroSlide, HeroStat, Testimonial,
-    Author, BlogCategory, BlogTag, BlogPost, BlogContentSection, BlogDocumentBlock,
+    Author, BlogCategory, BlogTag, BlogPost, BlogContentSection, BlogDocumentBlock, BlogFeedback,
     FAQCategory, FAQ, ContactInquiry, TeamMember, BrandLogo,
     PricingPlan, Technology, PricingPromotionSection,
     PricingConfigSection, PricingConfigDropdownOption, PricingConfigCard, PricingConfigCardPrice, PricingConfigCTA,
-    FreeTrial, FreeTrialAttachment,
+    FreeTrial, FreeTrialAttachment, ProductCategory,
     ServiceUnitRange, ServicePricingCard, ServicePricingCardPrice,
     WhyChooseSection, WhyChooseItem, WhyChooseFeatureSection, WhyChooseFeatureItem,
     HomepageCTASection,
@@ -82,7 +82,7 @@ class PageAdmin(ModelAdmin):
         }),
         ('🏷️ Schema Markup (Structured Data)', {
             'fields': ('schema_type', 'custom_schema'),
-            'description': 'Select the Schema.org type for this page or provide custom JSON-LD (without <script> tags).',
+            'description': 'Select the Schema.org type for this page or provide custom JSON-LD (raw JSON without script tags).',
         }),
     )
 
@@ -207,25 +207,43 @@ class ServiceContentSectionForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'is_active': CustomToggleSwitch,
-            'content': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Write your content here. Plain text only.'}),
+            'heading': forms.TextInput(attrs={
+                'placeholder': 'Section Heading (e.g. Precise isolation of complex subjects)',
+                'style': 'width: 100% !important; max-width: 100% !important; font-size: 15px; font-weight: 600;',
+            }),
+            'content': forms.Textarea(attrs={
+                'rows': 7,
+                'placeholder': 'Write description content. Use "🔗 Add Hyperlink" above to add links.',
+                'style': 'width: 100% !important; min-height: 160px; font-size: 14px; line-height: 1.6;',
+            }),
         }
 
     class Media:
-        js = ('admin/js/service_content_section.js?v=2',)
+        js = ('admin/js/service_content_section.js?v=5',)
 
 
-class ServiceContentSectionInline(TabularInline):
+class ServiceContentSectionInline(StackedInline):
     model = ServiceContentSection
     form = ServiceContentSectionForm
-    extra = 1
-    fields = ('layout', 'heading', 'content', 'image', 'image_preview', 'image_alt', 'order', 'is_active')
-    readonly_fields = ('image_preview',)
+    extra = 0
     ordering = ('order',)
     verbose_name = 'Other Content'
     verbose_name_plural = 'Others Content'
+    readonly_fields = ('image_preview',)
     formfield_overrides = {
         models.BooleanField: {'widget': CustomToggleSwitch},
     }
+    fieldsets = (
+        (None, {
+            'fields': (
+                ('layout', 'order', 'is_active'),
+                'heading',
+                'content',
+                ('image', 'image_preview'),
+                'image_alt',
+            ),
+        }),
+    )
 
     @display(description='Preview')
     def image_preview(self, obj):
@@ -517,7 +535,8 @@ class ServiceAdminForm(forms.ModelForm):
             'slug': 'Auto-generated from title. Used in the page URL.',
             'short_description': 'Brief one-liner shown on service cards across the site.',
             'description': 'Full description displayed on the service detail page.',
-            'available_locations': 'Select or add locations where this service is available. Leave empty to make it available in all locations.',
+            'available_locations': 'Select or add location(s) for this service in the footer (e.g. Texas, California, New York). When Show in footer is enabled, links to this service for these locations will appear in the website footer.',
+            'show_in_footer': 'Show this service in footer Location Based Services links.',
             'icon': 'Material icon name or emoji, e.g. "brush", "✨".',
             'image': 'Recommended: 800 × 600 px (4:3). Thumbnail shown on service cards and listings.',
             'image_alt': 'Describes the thumbnail for screen readers and SEO. Auto-fills with filename by default.',
@@ -649,17 +668,21 @@ class ServiceAdmin(ModelAdmin):
             ),
         }),
         ('Location & Availability', {
-            'fields': ('available_locations',),
+            'fields': (
+                'available_locations',
+                'show_in_footer',
+            ),
             'description': 'Specify which geographic locations this service is available in. Click on any location chip to add or remove it. If none are selected, this service is available across all locations globally.',
         }),
         ('SEO & Display', {
             'classes': ('collapse',),
             'fields': (
-                'seo_title', 'seo_description',
+                'seo_title', 'seo_description', 'canonical_url', 'meta_keywords',
+                'schema_type', 'custom_schema', 'og_image',
                 'order', 'price',
                 'is_active', 'is_featured',
                 'show_in_mega_menu', 'show_on_homepage',
-                'show_in_footer', 'show_in_related',
+                'show_in_related',
             ),
         }),
     )
@@ -1223,9 +1246,38 @@ class BlogPostAdminForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'content_blocks': ContentBlockPreviewWidget(),
-            # 'published_at': ModernDateTimeWidget(),
-            # 'scheduled_at': ModernDateTimeWidget(),
+            'custom_schema': forms.Textarea(attrs={
+                'rows': 7,
+                'placeholder': '{\n  "@context": "https://schema.org",\n  "@type": "BlogPosting",\n  "headline": "...",\n  "description": "..."\n}',
+                'style': 'font-family: Consolas, monospace; font-size: 12.5px; line-height: 1.5;',
+            }),
+            'faq_schema': forms.Textarea(attrs={
+                'rows': 5,
+                'placeholder': '[\n  {\n    "question": "What is clipping path?",\n    "answer": "A closed vector path..."\n  }\n]',
+                'style': 'font-family: Consolas, monospace; font-size: 12.5px; line-height: 1.5;',
+            }),
         }
+
+    def clean_custom_schema(self):
+        data = self.cleaned_data.get('custom_schema')
+        if data and data.strip():
+            try:
+                json.loads(data.strip())
+            except json.JSONDecodeError as err:
+                raise forms.ValidationError(f'Invalid JSON-LD syntax: {err}')
+        return data
+
+    def clean_faq_schema(self):
+        data = self.cleaned_data.get('faq_schema')
+        if isinstance(data, str) and data.strip():
+            try:
+                parsed = json.loads(data.strip())
+                if not isinstance(parsed, list):
+                    raise forms.ValidationError('FAQ schema must be a JSON array of {"question": "...", "answer": "..."} objects.')
+                return parsed
+            except json.JSONDecodeError as err:
+                raise forms.ValidationError(f'Invalid FAQ JSON syntax: {err}')
+        return data or []
 
     def clean_content_blocks(self):
         """Ensure content_blocks is stored as a Python list.
@@ -1285,7 +1337,7 @@ class BlogPostAdmin(ModelAdmin):
     }),
         ('🏷️ Schema Markup (Structured Data)', {
             'fields': ('schema_type', 'custom_schema', 'faq_schema'),
-            'description': 'Configure Schema.org type for this blog post. You can also paste custom JSON-LD (without <script> tags).',
+            'description': 'Configure Schema.org type for this blog post. You can also paste custom JSON-LD (raw JSON without script tags).',
         }),
         ('Advanced SEO', {
             'classes': ('collapse',),
@@ -1906,6 +1958,26 @@ class FreeTrialAttachmentInline(TabularInline):
         return False
 
 
+@admin.register(ProductCategory)
+class ProductCategoryAdmin(ModelAdmin):
+    list_display = ('name', 'slug', 'order', 'is_active', 'created_at')
+    list_editable = ('order', 'is_active')
+    list_filter = ('is_active', 'created_at')
+    search_fields = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
+    ordering = ('order', 'name')
+    list_fullwidth = True
+    formfield_overrides = {
+        models.BooleanField: {'widget': CustomToggleSwitch},
+    }
+    fieldsets = (
+        ('Category Information', {
+            'fields': ('name', 'slug', 'order', 'is_active'),
+            'description': 'Manage product categories shown in the Free Trial and Order Request forms.',
+        }),
+    )
+
+
 @admin.register(FreeTrial)
 class FreeTrialAdmin(ModelAdmin):
     list_display = ('type_badge', 'full_name', 'phone_actions', 'email', 'product_name', 'country', 'sms_status', 'is_read', 'created_at')
@@ -2413,6 +2485,27 @@ class TermsClauseAdmin(ModelAdmin):
             'description': 'HTML or text content (supports <p>, <ul>, <li>, <strong>, etc.)',
         }),
     )
+
+
+@admin.register(BlogFeedback)
+class BlogFeedbackAdmin(ModelAdmin):
+    list_display = ('post_title', 'helpfulness_badge', 'rating', 'user_name', 'user_email', 'created_at')
+    list_filter = ('is_helpful', 'rating', 'created_at')
+    list_filter_submit = True
+    search_fields = ('post__title', 'comment', 'user_name', 'user_email')
+    readonly_fields = ('post', 'is_helpful', 'rating', 'comment', 'user_name', 'user_email', 'ip_address', 'user_agent', 'created_at')
+    ordering = ('-created_at',)
+    list_fullwidth = True
+
+    @display(description='Post')
+    def post_title(self, obj):
+        return obj.post.title[:50]
+
+    @display(description='Helpful?')
+    def helpfulness_badge(self, obj):
+        if obj.is_helpful:
+            return format_html('<span style="background:#10b98120;color:#10b981;padding:2px 8px;border-radius:100px;font-weight:600">👍 Yes</span>')
+        return format_html('<span style="background:#ef444420;color:#ef4444;padding:2px 8px;border-radius:100px;font-weight:600">👎 No</span>')
 
 
 

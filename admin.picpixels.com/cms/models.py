@@ -58,7 +58,7 @@ class Page(models.Model):
     )
     custom_schema = models.TextField(
         blank=True, default='',
-        help_text='Custom JSON-LD structured data (paste valid JSON object, without <script> tags)'
+        help_text='Custom JSON-LD structured data (paste valid JSON object, without script tags)'
     )
     content = JSONField(default=dict, help_text="Structure describing sections and components")
     is_active = models.BooleanField(default=True, help_text='Show page on the website')
@@ -124,6 +124,24 @@ class Service(models.Model):
     order = models.PositiveIntegerField(default=0)
     seo_title = models.CharField(max_length=200, blank=True, help_text='Custom SEO title for this service page')
     seo_description = models.TextField(blank=True, help_text='Custom SEO meta description')
+    canonical_url = models.URLField(blank=True, default='', help_text='Custom canonical URL (defaults to https://www.picpicxels.com/services/<slug>)')
+    meta_keywords = models.CharField(max_length=500, blank=True, default='', help_text='Comma-separated SEO keywords')
+    schema_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('Service', 'Service (Standard)'),
+            ('ProfessionalService', 'ProfessionalService'),
+            ('Product', 'Product / Package'),
+            ('custom', 'Custom JSON-LD'),
+        ],
+        default='Service',
+        help_text='Schema.org type for this service'
+    )
+    custom_schema = models.TextField(
+        blank=True, default='',
+        help_text='Paste custom JSON-LD schema (valid JSON object or @graph array). Overrides default schema if set.'
+    )
+    og_image = models.ImageField(upload_to='services/og/', blank=True, null=True, help_text='Social share / OpenGraph image (1200x630 recommended)')
     show_in_mega_menu = models.BooleanField(default=True, help_text='Show in Solutions mega menu')
     show_on_homepage = models.BooleanField(default=True, help_text='Show in homepage popular services section')
     show_in_footer = models.BooleanField(default=True, help_text='Show in footer services links')
@@ -985,6 +1003,23 @@ class ServicePricingCardPrice(models.Model):
         return f'{self.card.name} @ {self.unit_range.label} = ${self.price}'
 
 
+class ProductCategory(models.Model):
+    name = models.CharField(max_length=100, help_text='Category title, e.g. Clothing / Apparel')
+    slug = models.SlugField(max_length=100, unique=True, help_text='URL-friendly slug, e.g. clothing')
+    order = models.PositiveIntegerField(default=0, help_text='Display sort order')
+    is_active = models.BooleanField(default=True, help_text='Display in Free Trial / Order form')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order', 'name']
+        verbose_name = 'Product Category'
+        verbose_name_plural = 'Product Categories'
+
+    def __str__(self):
+        return self.name
+
+
 class FreeTrial(models.Model):
     PRODUCT_CATEGORIES = [
         ('clothing', 'Clothing / Apparel'),
@@ -1602,4 +1637,25 @@ class TermsClause(models.Model):
         return self.title
 
 
+class BlogFeedback(models.Model):
+    post = models.ForeignKey(
+        'BlogPost', on_delete=models.CASCADE, related_name='feedbacks',
+        help_text='The blog post this feedback is for'
+    )
+    is_helpful = models.BooleanField(help_text='Did the reader find this article helpful?')
+    rating = models.PositiveSmallIntegerField(null=True, blank=True, help_text='Rating from 1 to 5 stars')
+    comment = models.TextField(blank=True, default='', help_text='Reader comment or suggestion')
+    user_name = models.CharField(max_length=150, blank=True, default='')
+    user_email = models.EmailField(blank=True, default='')
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.CharField(max_length=255, blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Blog Feedback'
+        verbose_name_plural = 'Blog Feedbacks'
+
+    def __str__(self):
+        helpful = 'Helpful' if self.is_helpful else 'Not Helpful'
+        return f"{self.post.title[:30]} — {helpful} ({self.created_at.strftime('%Y-%m-%d')})"

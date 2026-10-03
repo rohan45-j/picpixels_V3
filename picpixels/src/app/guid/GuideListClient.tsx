@@ -5,7 +5,7 @@ import { mediaUrl, type GuideItem, type GuideCategory } from '@/services/public-
 import gridStyles from '@/styles/modules/portfolio-grid.module.css';
 import styles from '@/styles/modules/guides.module.css';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
 function Skeleton() {
   return (
@@ -27,25 +27,38 @@ function Skeleton() {
 export default function GuideListClient({
   initialItems,
   categories,
-  initialCategory,
+  initialCategory = '',
+  initialSearch = '',
 }: {
   initialItems: GuideItem[];
   categories: GuideCategory[];
   initialCategory?: string;
+  initialSearch?: string;
 }) {
-  const [activeCategory, setActiveCategory] = useState(initialCategory ?? '');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [items, setItems] = useState(initialItems);
   const [page, setPage] = useState(1);
   const [hasNext, setHasNext] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(initialItems.length === 0);
+  const [initialLoading, setInitialLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(initialItems.length);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const catCache = useRef<Record<string, { items: Guide[]; totalCount: number; hasNext: boolean }>>({});
 
   useEffect(() => {
-    if (initialItems.length > 0) setInitialLoading(false);
-  }, [initialItems]);
+    setItems(initialItems);
+    setActiveCategory(initialCategory);
+    setSearchQuery(initialSearch);
+    setTotalCount(initialItems.length);
+    if (!initialCategory && !initialSearch && initialItems.length > 0) {
+      catCache.current['all'] = {
+        items: initialItems,
+        totalCount: initialItems.length,
+        hasNext: false,
+      };
+    }
+  }, [initialItems, initialCategory, initialSearch]);
 
   const fetchItems = useCallback(async (pageNum: number, append: boolean, cat: string, search: string) => {
     setLoading(true);
@@ -54,15 +67,20 @@ export default function GuideListClient({
       if (cat) params.set('category', cat);
       if (search) params.set('search', search);
       params.set('page', String(pageNum));
-      const resp = await fetch(`${API_BASE}/api/v1/guides/api/items/?${params.toString()}`, {
-        cache: 'no-store',
-      });
+      const resp = await fetch(`${API_BASE}/api/v1/guides/api/items/?${params.toString()}`);
       if (!resp.ok) return;
       const data = await resp.json();
       if (append) {
         setItems((prev) => [...prev, ...data.results]);
       } else {
         setItems(data.results);
+        if (!search) {
+          catCache.current[cat || 'all'] = {
+            items: data.results,
+            totalCount: data.count ?? data.results.length,
+            hasNext: !!data.next,
+          };
+        }
       }
       setTotalCount(data.count ?? data.results.length);
       setPage(pageNum);
@@ -75,6 +93,14 @@ export default function GuideListClient({
   const handleCategoryFilter = (slug: string) => {
     setActiveCategory(slug);
     setSearchQuery('');
+    const cacheKey = slug || 'all';
+    if (catCache.current[cacheKey]) {
+      setItems(catCache.current[cacheKey].items);
+      setTotalCount(catCache.current[cacheKey].totalCount);
+      setHasNext(catCache.current[cacheKey].hasNext);
+      setPage(1);
+      return;
+    }
     setInitialLoading(true);
     fetchItems(1, false, slug, '');
   };
@@ -121,22 +147,30 @@ export default function GuideListClient({
       <nav className={gridStyles.filterBar}>
         <div className={gridStyles.filterContainer}>
           <div className={gridStyles.filterInner}>
-            <button
+            <Link
+              href="/guid"
               className={`${gridStyles.filterBtn} ${activeCategory === '' && !searchQuery ? gridStyles.filterActive : ''}`}
-              onClick={() => handleCategoryFilter('')}
+              onClick={(e) => {
+                e.preventDefault();
+                handleCategoryFilter('');
+              }}
             >
               All
               <span className={gridStyles.filterCount}>{totalCount}</span>
-            </button>
+            </Link>
             {categories.map((cat) => (
-              <button
+              <Link
                 key={cat.id}
+                href={`/guid?category=${encodeURIComponent(cat.slug)}`}
                 className={`${gridStyles.filterBtn} ${activeCategory === cat.slug ? gridStyles.filterActive : ''}`}
-                onClick={() => handleCategoryFilter(cat.slug)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleCategoryFilter(cat.slug);
+                }}
               >
                 {cat.name}
                 <span className={gridStyles.filterCount}>{cat.guide_count ?? 0}</span>
-              </button>
+              </Link>
             ))}
           </div>
         </div>
