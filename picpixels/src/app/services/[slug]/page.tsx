@@ -8,7 +8,7 @@ import type { Service, Technology, Testimonial, BrandLogo, SiteSetting } from '@
 
 import { cache } from 'react';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 export const revalidate = 300;
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -51,34 +51,18 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
-  searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams?: Promise<{ location?: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const resolvedSearchParams = searchParams ? await searchParams : {};
-  const rawLocation = resolvedSearchParams.location ? String(resolvedSearchParams.location).trim() : '';
   const service = await fetchService(slug);
   if (!service) return { title: 'Service Not Found' };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.picpicxels.com';
   const canonical = service.canonical_url || `${siteUrl}/services/${slug}`;
 
-  const locFormatted = rawLocation
-    ? rawLocation
-        .split('-')
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(' ')
-    : '';
-
-  const title = locFormatted
-    ? `${service.title} in ${locFormatted} | Photo Editing Service | PicPixels`
-    : (service.seo_title || `${service.title} | Photo Editing Service | PicPixels`);
-
-  const description = locFormatted
-    ? `Professional ${service.title.toLowerCase()} service for clients in ${locFormatted}. High quality retouching, clipping path & commercial photo editing by PicPixels.`
-    : (service.seo_description || service.short_description || `Professional ${service.title.toLowerCase()} service by PicPixels.`);
+  const title = service.seo_title || `${service.title} | Photo Editing Service | PicPixels`;
+  const description = service.seo_description || service.short_description || `Professional ${service.title.toLowerCase()} service by PicPixels.`;
 
   const keywords = service.meta_keywords
     ? service.meta_keywords.split(',').map((k) => k.trim()).filter(Boolean)
@@ -108,14 +92,10 @@ export async function generateMetadata({
 
 export default async function ServiceDetailPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams?: Promise<{ location?: string }>;
 }) {
   const { slug } = await params;
-  const resolvedSearchParams = searchParams ? await searchParams : {};
-  const location = resolvedSearchParams.location ? String(resolvedSearchParams.location).trim() : '';
 
   const [service, relatedServices, technologies, testimonials, brandLogos, siteSettings, footerServicesData] = await Promise.all([
     fetchService(slug),
@@ -150,24 +130,13 @@ export default async function ServiceDetailPage({
     ],
   };
 
-  const locFormatted = location
-    ? location
-        .split('-')
-        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(' ')
-    : '';
-
   const schemaType = service.schema_type && service.schema_type !== 'custom' ? service.schema_type : 'Service';
   const defaultServiceJsonLd = {
     '@context': 'https://schema.org',
     '@type': schemaType,
     '@id': `${canonical}#service`,
     url: canonical,
-    name: locFormatted ? `${service.title} in ${locFormatted}` : service.title,
-    areaServed: locFormatted ? {
-      '@type': 'AdministrativeArea',
-      name: locFormatted,
-    } : undefined,
+    name: service.title,
     description: (service.short_description || service.description || '').replace(/<[^>]*>/g, '').slice(0, 300),
     provider: {
       '@type': 'Organization',
@@ -208,7 +177,7 @@ export default async function ServiceDetailPage({
         technologies={technologies}
         testimonials={testimonials}
         brandLogos={brandLogos}
-        location={location}
+        location=""
       />
       <Footer siteSettings={siteSettings} footerServices={allFooterServices} />
     </>

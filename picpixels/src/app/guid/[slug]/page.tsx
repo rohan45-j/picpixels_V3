@@ -6,7 +6,7 @@ import Footer from '@/components/layout/Footer';
 import type { GuideItem } from '@/services/public-api';
 import GuideDetailClient from './GuideDetailClient';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
 const fetchGuide = cache(async (slug: string): Promise<GuideItem | null> => {
   try {

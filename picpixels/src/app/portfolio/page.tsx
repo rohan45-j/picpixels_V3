@@ -16,7 +16,7 @@ export const metadata: Metadata = buildPageMetadata({
   keywords: ['photo editing portfolio', 'clipping path examples', 'jewelry retouching before after', 'ghost mannequin samples', 'ecommerce photo editing'],
 });
 
-const API_BASE = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const API_BASE = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
 async function fetchJson<T>(url: string): Promise<T | null> {
   try {

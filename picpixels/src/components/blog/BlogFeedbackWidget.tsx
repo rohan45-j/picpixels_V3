@@ -43,7 +43,7 @@ export default function BlogFeedbackWidget({ postSlug, postTitle }: BlogFeedback
 
     setLoading(true);
     try {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
       const resp = await fetch(`${apiBase}/api/v1/cms/blog/posts/${postSlug}/feedback/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

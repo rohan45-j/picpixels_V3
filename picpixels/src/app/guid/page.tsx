@@ -13,7 +13,7 @@ export const metadata: Metadata = buildPageMetadata({
   keywords: ['photo editing guides', 'clipping path tutorial', 'ecommerce photo standards', 'retouching techniques'],
 });
 
-const API_BASE = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const API_BASE = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
 export const revalidate = 60;
 

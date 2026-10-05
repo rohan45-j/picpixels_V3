@@ -7,7 +7,7 @@ import PortfolioDetailClient from './PortfolioDetailClient';
 import { SITE_URL, buildBreadcrumbSchema } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
 export const revalidate = 60;
 const isDev = process.env.NODE_ENV === 'development';

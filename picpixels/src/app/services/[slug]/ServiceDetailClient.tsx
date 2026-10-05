@@ -1,6 +1,8 @@
 'use client';
 
+import { Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { CheckCircle } from 'lucide-react';
 import Reveal from '@/components/animations/Reveal';
 import HeroCarousel from '@/components/media/HeroCarousel';
@@ -302,6 +304,12 @@ function AboutFeaturesSection({ service }: { service: Service }) {
   );
 }
 
+function LocationHeroWrapper({ service, fallbackLocation }: { service: Service; fallbackLocation?: string }) {
+  const searchParams = useSearchParams();
+  const location = fallbackLocation || searchParams?.get('location') || '';
+  return <HeroSection service={service} location={location} />;
+}
+
 export default function ServiceDetailClient({
   service, related, technologies, testimonials, brandLogos, location,
 }: {
@@ -314,7 +322,9 @@ export default function ServiceDetailClient({
 }) {
   return (
     <main>
-      <HeroSection service={service} location={location} />
+      <Suspense fallback={<HeroSection service={service} location={location} />}>
+        <LocationHeroWrapper service={service} fallbackLocation={location} />
+      </Suspense>
       <AboutFeaturesSection service={service} />
       <HighEndQualitySection />
       <ServiceEEATSection data={service.eeat ?? null} serviceTitle={service.title} />
