@@ -1226,6 +1226,10 @@ export default function OrderSummaryClient({
                 </div>
               </div>
 
+              <div style={{ margin: '0.75rem 0' }}>
+                <BotProtection onChange={setBotPayload} />
+              </div>
+
               <button
                 type="button"
                 className={styles.submitBtn}

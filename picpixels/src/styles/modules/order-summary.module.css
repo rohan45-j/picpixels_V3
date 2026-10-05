@@ -224,6 +224,171 @@
   line-height: 1.5;
 }
 
+.changePlanBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 138, 80, 0.08);
+  border: 1px solid rgba(255, 138, 80, 0.25);
+  color: #ea580c;
+  padding: 0.42rem 0.95rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+}
+
+.changePlanBtn:hover {
+  background: #ea580c;
+  border-color: #ea580c;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.2);
+}
+
+/* ═══════════════════════════════════════════════
+   INLINE CONFIGURATOR DRAWER
+   ═══════════════════════════════════════════════ */
+.configDrawer {
+  margin-top: 1.25rem;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  box-shadow: inset 0 2px 6px rgba(15, 23, 42, 0.02);
+  animation: configSlideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes configSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.configSectionLabel {
+  display: block;
+  font-size: 0.725rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #64748b;
+  margin-bottom: 0.6rem;
+}
+
+.serviceTabsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.serviceTabBtn {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #334155;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.serviceTabBtn:hover {
+  border-color: #fb923c;
+  color: #ea580c;
+}
+
+.serviceTabBtnActive {
+  background: #ea580c;
+  border-color: #ea580c;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.25);
+}
+
+.cardPickGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.65rem;
+}
+
+.cardPickItem {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.75rem 0.65rem;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.cardPickItem:hover {
+  border-color: #fb923c;
+  transform: translateY(-1px);
+}
+
+.cardPickItemActive {
+  border-color: #ea580c;
+  background: rgba(255, 138, 80, 0.05);
+  box-shadow: 0 0 0 1.5px #ea580c;
+}
+
+.cardPickName {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.25rem;
+}
+
+.cardPickPrice {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ea580c;
+}
+
+.volumeTierWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.volumeTierPill {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  color: #475569;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.775rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.volumeTierPill:hover {
+  border-color: #ea580c;
+  color: #ea580c;
+}
+
+.volumeTierPillActive {
+  background: linear-gradient(135deg, #FF8A50 0%, #ea580c 100%);
+  border-color: #ea580c;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.25);
+}
+
 /* ═══════════════════════════════════════════════
    PACKAGE OVERVIEW CARD
    ═══════════════════════════════════════════════ */

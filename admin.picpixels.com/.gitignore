@@ -6,7 +6,8 @@ venv/
 env/
 .venv/
 .env
-db.sqlite3
+db.sqlite3*
+*.sqlite3*
 media/
 !media/**/.gitkeep
 staticfiles/

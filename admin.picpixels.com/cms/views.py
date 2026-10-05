@@ -454,7 +454,8 @@ class FreeTrialViewSet(viewsets.ModelViewSet):
     parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]
 
     def create(self, request, *args, **kwargs):
-        is_valid, err_msg = verify_bot_protection(request, request.data)
+        is_order = request.data.get('request_type') == 'order_request'
+        is_valid, err_msg = verify_bot_protection(request, request.data, require_captcha=not is_order)
         if not is_valid:
             return Response({'detail': err_msg}, status=status.HTTP_400_BAD_REQUEST)
         return super().create(request, *args, **kwargs)

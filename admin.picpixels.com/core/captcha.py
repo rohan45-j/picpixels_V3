@@ -156,9 +156,12 @@ def verify_bot_protection(request, data: dict, require_captcha: bool = True) -> 
     if ts:
         try:
             loaded_at = float(ts)
+            if loaded_at > 1e11:  # JavaScript Date.now() is in milliseconds
+                loaded_at = loaded_at / 1000.0
             now = time.time()
-            if (now - loaded_at) < 0.6:
-                logger.warning(f"Bot detected via submission speed: {now - loaded_at:.2f}s")
+            elapsed = now - loaded_at
+            if 0 <= elapsed < 0.6:
+                logger.warning(f"Bot detected via submission speed: {elapsed:.2f}s")
                 return False, "Submission was too fast. Please try again."
         except (ValueError, TypeError):
             pass

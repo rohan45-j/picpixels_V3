@@ -60,6 +60,13 @@ export default function GuideListClient({
     }
   }, [initialItems, initialCategory, initialSearch]);
 
+  const getRequestUrl = (endpoint: string) => {
+    if (typeof window !== 'undefined') {
+      return endpoint;
+    }
+    return `${API_BASE}${endpoint}`;
+  };
+
   const fetchItems = useCallback(async (pageNum: number, append: boolean, cat: string, search: string) => {
     setLoading(true);
     try {
@@ -67,25 +74,30 @@ export default function GuideListClient({
       if (cat) params.set('category', cat);
       if (search) params.set('search', search);
       params.set('page', String(pageNum));
-      const resp = await fetch(`${API_BASE}/api/v1/guides/api/items/?${params.toString()}`);
+      
+      const endpoint = `/api/v1/guides/api/items/?${params.toString()}`;
+      const resp = await fetch(getRequestUrl(endpoint));
       if (!resp.ok) return;
       const data = await resp.json();
+      const results = data.results || [];
       if (append) {
-        setItems((prev) => [...prev, ...data.results]);
+        setItems((prev) => [...prev, ...results]);
       } else {
-        setItems(data.results);
+        setItems(results);
         if (!search) {
           catCache.current[cat || 'all'] = {
-            items: data.results,
-            totalCount: data.count ?? data.results.length,
+            items: results,
+            totalCount: data.count ?? results.length,
             hasNext: !!data.next,
           };
         }
       }
-      setTotalCount(data.count ?? data.results.length);
+      setTotalCount(data.count ?? results.length);
       setPage(pageNum);
       setHasNext(!!data.next);
-    } catch { /* ignore */ }
+    } catch (err) {
+      console.error('[Guides] Failed to fetch items:', err);
+    }
     setLoading(false);
     setInitialLoading(false);
   }, []);
@@ -93,6 +105,19 @@ export default function GuideListClient({
   const handleCategoryFilter = (slug: string) => {
     setActiveCategory(slug);
     setSearchQuery('');
+
+    // Update browser URL query string without reloading page
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (slug) {
+        url.searchParams.set('category', slug);
+      } else {
+        url.searchParams.delete('category');
+      }
+      url.searchParams.delete('search');
+      window.history.pushState({}, '', url.toString());
+    }
+
     const cacheKey = slug || 'all';
     if (catCache.current[cacheKey]) {
       setItems(catCache.current[cacheKey].items);
@@ -101,15 +126,55 @@ export default function GuideListClient({
       setPage(1);
       return;
     }
+
+    // Instant local filter if we already have the full list in 'all'
+    if (catCache.current['all'] && !catCache.current['all'].hasNext) {
+      const allList = catCache.current['all'].items;
+      const matched = slug
+        ? allList.filter((item) => item.category_slug === slug || String(item.category) === slug)
+        : allList;
+      setItems(matched);
+      setTotalCount(matched.length);
+      setHasNext(false);
+      setPage(1);
+      catCache.current[cacheKey] = {
+        items: matched,
+        totalCount: matched.length,
+        hasNext: false,
+      };
+      return;
+    }
+
     setInitialLoading(true);
     fetchItems(1, false, slug, '');
   };
+
+  // Sync state if user clicks browser Back / Forward
+  useEffect(() => {
+    const handlePopState = () => {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get('category') || '';
+      const search = params.get('search') || '';
+      setActiveCategory(cat);
+      setSearchQuery(search);
+      fetchItems(1, false, cat, search);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [fetchItems]);
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
     clearTimeout(searchTimer.current);
     searchTimer.current = setTimeout(() => {
       setActiveCategory('');
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('category');
+        if (value) url.searchParams.set('search', value);
+        else url.searchParams.delete('search');
+        window.history.pushState({}, '', url.toString());
+      }
       setInitialLoading(true);
       fetchItems(1, false, '', value);
     }, 350);

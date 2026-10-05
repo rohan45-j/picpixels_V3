@@ -160,6 +160,19 @@ export function CustomBodyStartScripts({ settings }: TrackingScriptsProps) {
   );
 }
 
+export function CustomHeadScripts({ settings }: TrackingScriptsProps) {
+  const scripts = settings?.custom_head_scripts?.trim();
+  if (!scripts) return null;
+
+  return (
+    <div
+      id="custom-head-scripts"
+      style={{ display: 'none' }}
+      dangerouslySetInnerHTML={{ __html: scripts }}
+    />
+  );
+}
+
 export function CustomBodyEndScripts({ settings }: TrackingScriptsProps) {
   const scripts = settings?.custom_body_end_scripts?.trim();
   if (!scripts) return null;

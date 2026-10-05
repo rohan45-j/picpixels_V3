@@ -66,6 +66,13 @@ export default function CaseStudiesListClient({
     return () => clearTimeout(searchTimer.current);
   }, [search]);
 
+  const getRequestUrl = (endpoint: string) => {
+    if (typeof window !== 'undefined') {
+      return endpoint;
+    }
+    return `${API_BASE}${endpoint}`;
+  };
+
   const fetchItems = useCallback(async (pageNum: number, cat: string, q: string, sortBy: string) => {
     setLoading(true);
     setError(false);
@@ -75,14 +82,16 @@ export default function CaseStudiesListClient({
       if (q) params.set('search', q);
       if (sortBy !== 'newest') params.set('ordering', sortBy);
       params.set('page', String(pageNum));
-      const resp = await fetch(`${API_BASE}/api/v1/case-studies/api/items/?${params.toString()}`);
+      
+      const endpoint = `/api/v1/case-studies/api/items/?${params.toString()}`;
+      const resp = await fetch(getRequestUrl(endpoint));
       if (!resp.ok) {
         setError(true);
         return;
       }
       const data = await resp.json();
-      setItems(data.results);
-      setTotalCount(data.count ?? data.results.length);
+      setItems(data.results || []);
+      setTotalCount(data.count ?? (data.results || []).length);
       setPage(pageNum);
     } catch {
       setError(true);
@@ -102,6 +111,14 @@ export default function CaseStudiesListClient({
     setActiveCategory(slug);
     setSearch('');
     setDebouncedSearch('');
+
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href);
+      if (slug) url.searchParams.set('category', slug);
+      else url.searchParams.delete('category');
+      url.searchParams.delete('search');
+      window.history.pushState({}, '', url.toString());
+    }
   };
 
   const handleReset = () => {

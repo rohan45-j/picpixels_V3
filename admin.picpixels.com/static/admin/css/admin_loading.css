@@ -1,0 +1,109 @@
+/* PicPixels Admin User-Friendly Loading UI */
+#admin-top-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3.5px;
+  width: 0%;
+  background: linear-gradient(90deg, #FF8A50 0%, #ea580c 50%, #f97316 100%);
+  z-index: 9999999;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+  box-shadow: 0 0 10px rgba(255, 138, 80, 0.7), 0 0 5px rgba(234, 88, 12, 0.5);
+  pointer-events: none;
+  opacity: 0;
+}
+
+#admin-top-progress.active {
+  opacity: 1;
+}
+
+#admin-top-progress.indeterminate {
+  opacity: 1;
+  width: 100%;
+  animation: adminProgressIndeterminate 1.4s infinite ease-in-out;
+}
+
+@keyframes adminProgressIndeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* User-Friendly Loading Overlay Toast */
+.admin-loading-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 10px 22px;
+  border-radius: 9999px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 9999998;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-loading-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.admin-loading-toast-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2.2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #FF8A50;
+  border-radius: 50%;
+  animation: adminSpinnerSpin 0.7s linear infinite;
+}
+
+@keyframes adminSpinnerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Button Loading States */
+.admin-btn-loading {
+  position: relative;
+  pointer-events: none !important;
+  opacity: 0.85 !important;
+  padding-left: 36px !important;
+  transition: all 0.2s ease !important;
+}
+
+.admin-btn-loading::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  margin-top: -8px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: adminSpinnerSpin 0.7s linear infinite;
+}
+
+/* Sidebar Active Module Click Feedback */
+.admin-nav-item-loading {
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}

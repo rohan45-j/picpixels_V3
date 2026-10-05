@@ -168,8 +168,20 @@ else:
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+            'OPTIONS': {
+                'timeout': 20,
+            }
         }
     }
+    from django.db.backends.signals import connection_created
+    def _configure_sqlite_performance(sender, connection, **kwargs):
+        if connection.vendor == 'sqlite':
+            cursor = connection.cursor()
+            cursor.execute('PRAGMA journal_mode = WAL;')
+            cursor.execute('PRAGMA synchronous = NORMAL;')
+            cursor.execute('PRAGMA busy_timeout = 10000;')
+            cursor.execute('PRAGMA cache_size = -32000;')
+    connection_created.connect(_configure_sqlite_performance)
 
 CACHES = {
     'default': {
@@ -380,10 +392,12 @@ UNFOLD = {
         "/static/admin/css/custom_table.css",
         "/static/admin/css/dashboard-redesign.css",
         "/static/admin/css/light-mode-fix.css",
+        "/static/admin/css/admin_loading.css",
     ],
     "SCRIPTS": [
         "/static/admin/js/sidebar.js",
         "/static/admin/js/toggle.js?v=2",
+        "/static/admin/js/admin_loading.js",
     ],
     "COMMAND": {
         "search_models": True,

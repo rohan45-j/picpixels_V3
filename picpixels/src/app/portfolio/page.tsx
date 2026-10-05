@@ -19,13 +19,19 @@ export const metadata: Metadata = buildPageMetadata({
 
 const API_BASE = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
-export default async function PortfolioPage() {
-  const currentCategory = '';
-  const currentSearch = '';
-  const currentPage = '1';
+export default async function PortfolioPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ category?: string; search?: string }>;
+}) {
+  const resolvedParams = searchParams ? await searchParams : {};
+  const currentCategory = resolvedParams.category || '';
+  const currentSearch = resolvedParams.search || '';
 
   const params = new URLSearchParams();
   params.set('page_size', '18');
+  if (currentCategory) params.set('category', currentCategory);
+  if (currentSearch) params.set('search', currentSearch);
 
   const [portfoliosRes, categories, faqsRes, ctaRes] = await Promise.all([
     cachedJsonFetch<{ results: PortfolioItem[]; count?: number }>(`${API_BASE}/api/v1/portfolio/api/items/?${params.toString()}`, 180),

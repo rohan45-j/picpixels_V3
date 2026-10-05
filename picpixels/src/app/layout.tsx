@@ -39,10 +39,10 @@ import {
   GSCMeta,
   FacebookPixelHead,
   OrganizationSchema,
+  CustomHeadScripts,
   CustomBodyStartScripts,
   CustomBodyEndScripts,
 } from "@/components/seo/TrackingScripts";
-import { CustomHeadInjector } from "@/components/seo/CustomHeadInjector";
 
 import NavigationProgress from "@/components/ui/NavigationProgress";
 import { cachedJsonFetch } from "@/services/public-api";
@@ -158,7 +158,7 @@ export default async function RootLayout({
       </head>
       <body suppressHydrationWarning>
         <OrganizationSchema settings={siteSettings} />
-        <CustomHeadInjector scripts={siteSettings?.custom_head_scripts} />
+        <CustomHeadScripts settings={siteSettings} />
         <GTMBody settings={siteSettings} />
         <CustomBodyStartScripts settings={siteSettings} />
         <SiteSettingsProvider initialSettings={siteSettings}>

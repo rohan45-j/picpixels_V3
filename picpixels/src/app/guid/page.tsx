@@ -17,12 +17,23 @@ const API_BASE = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL
 
 export const revalidate = 60;
 
-export default async function GuidePage() {
-  const currentCategory = '';
-  const currentSearch = '';
+export default async function GuidePage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ category?: string; search?: string }>;
+}) {
+  const resolvedParams = searchParams ? await searchParams : {};
+  const currentCategory = resolvedParams.category || '';
+  const currentSearch = resolvedParams.search || '';
+
+  const params = new URLSearchParams();
+  if (currentCategory) params.set('category', currentCategory);
+  if (currentSearch) params.set('search', currentSearch);
+
+  const queryString = params.toString() ? `?${params.toString()}` : '';
 
   const [itemsRes, categories] = await Promise.all([
-    cachedJsonFetch<{ results: GuideItem[] }>(`${API_BASE}/api/v1/guides/api/items/`, 300),
+    cachedJsonFetch<{ results: GuideItem[] }>(`${API_BASE}/api/v1/guides/api/items/${queryString}`, 180),
     cachedJsonFetch<GuideCategory[]>(`${API_BASE}/api/v1/guides/api/categories/`, 300),
   ]);
 

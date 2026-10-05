@@ -5,31 +5,41 @@ from django.core.cache import cache
 from site_settings.models import SiteSetting
 
 
+_SITE_SETTINGS_CACHE_KEY = 'site_settings_context'
+_NAV_ITEMS_CACHE_KEY = 'nav_items_context'
+_DASHBOARD_CACHE_KEY = 'admin_dashboard_stats'
+_DASHBOARD_CACHE_TTL = 300
+
 def site_settings(request):
-    try:
-        settings = SiteSetting.objects.first()
-    except Exception:
-        settings = None
+    settings = cache.get(_SITE_SETTINGS_CACHE_KEY)
+    if settings is None:
+        try:
+            settings = SiteSetting.objects.first()
+            if settings:
+                cache.set(_SITE_SETTINGS_CACHE_KEY, settings, 300)
+        except Exception:
+            settings = None
     return {'site_settings': settings}
 
 
 def navigation_items(request):
-    try:
-        from navigation.models import NavigationItem
-        items = NavigationItem.objects.filter(
-            is_active=True, location='header'
-        ).order_by('order').select_related('parent')
-        return {'nav_items': items}
-    except Exception:
-        return {'nav_items': []}
-
-
-_DASHBOARD_CACHE_KEY = 'admin_dashboard_stats'
-_DASHBOARD_CACHE_TTL = 300
+    items = cache.get(_NAV_ITEMS_CACHE_KEY)
+    if items is None:
+        try:
+            from navigation.models import NavigationItem
+            items = list(NavigationItem.objects.filter(
+                is_active=True, location='header'
+            ).order_by('order').select_related('parent'))
+            cache.set(_NAV_ITEMS_CACHE_KEY, items, 300)
+        except Exception:
+            items = []
+    return {'nav_items': items}
 
 
 def admin_dashboard_stats(request):
-    if not request.path.startswith('/admin/'):
+    # Only compute dashboard stats on the actual dashboard home page (/admin or /admin/)
+    # On other admin pages (module change lists, form updates, etc.), skip completely for speed!
+    if request.path.rstrip('/') != '/admin':
         return {}
 
     stats = cache.get(_DASHBOARD_CACHE_KEY)

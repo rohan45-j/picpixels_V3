@@ -11,6 +11,7 @@
     <link href="{% static 'admin/css/light-mode-fix.css' %}" rel="stylesheet">
     <link href="{% static 'admin/css/responsive.css' %}" rel="stylesheet">
     <link href="{% static 'admin/css/notifications.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/admin_loading.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block extrahead %}
@@ -19,6 +20,7 @@
     <script src="{% static 'admin/js/toggle.js' %}" defer></script>
     <script src="{% static 'admin/js/sidebar.js' %}" defer></script>
     <script src="{% static 'admin/js/notifications.js' %}" defer></script>
+    <script src="{% static 'admin/js/admin_loading.js' %}" defer></script>
     {% if site_settings and site_settings.favicon %}
     <script>
         (function() {
