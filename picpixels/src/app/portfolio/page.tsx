@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import type { PortfolioItem, PortfolioCategory, HomepageCTASection as HomepageCTAType, FAQ } from '@/services/public-api';
+import { cachedJsonFetch } from '@/services/public-api';
 import PortfolioListClient from './PortfolioListClient';
 import PortfolioFAQSection from '@/components/ui/PortfolioFAQSection';
 import { buildPageMetadata, buildCollectionSchema, buildBreadcrumbSchema } from '@/lib/seo';
@@ -18,29 +19,19 @@ export const metadata: Metadata = buildPageMetadata({
 
 const API_BASE = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
-async function fetchJson<T>(url: string): Promise<T | null> {
-  try {
-    const resp = await fetch(url, { next: { revalidate: 60 } });
-    if (!resp.ok) return null;
-    return await resp.json();
-  } catch {
-    return null;
-  }
-}
-
 export default async function PortfolioPage() {
   const currentCategory = '';
   const currentSearch = '';
   const currentPage = '1';
 
   const params = new URLSearchParams();
-  params.set('page_size', '36');
+  params.set('page_size', '18');
 
   const [portfoliosRes, categories, faqsRes, ctaRes] = await Promise.all([
-    fetchJson<{ results: PortfolioItem[]; count?: number }>(`${API_BASE}/api/v1/portfolio/api/items/?${params.toString()}`),
-    fetchJson<PortfolioCategory[]>(`${API_BASE}/api/v1/portfolio/api/categories/`),
-    fetchJson<{ results: FAQ[] }>(`${API_BASE}/api/v1/cms/faqs/?is_portfolio_faq=true`),
-    fetchJson<{ results: HomepageCTAType[] }>(`${API_BASE}/api/v1/cms/homepage-cta/`),
+    cachedJsonFetch<{ results: PortfolioItem[]; count?: number }>(`${API_BASE}/api/v1/portfolio/api/items/?${params.toString()}`, 180),
+    cachedJsonFetch<PortfolioCategory[]>(`${API_BASE}/api/v1/portfolio/api/categories/`, 300),
+    cachedJsonFetch<{ results: FAQ[] }>(`${API_BASE}/api/v1/cms/faqs/?is_portfolio_faq=true`, 300),
+    cachedJsonFetch<{ results: HomepageCTAType[] }>(`${API_BASE}/api/v1/cms/homepage-cta/`, 300),
   ]);
 
   const initialPortfolios = portfoliosRes?.results ?? [];

@@ -21,16 +21,9 @@ export default function Header() {
   const [mobileAccordion, setMobileAccordion] = useState<string | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Prefetch main routes + service pages for instant navigation
-  const allServiceRoutes = services?.map((svc) => `/services/${svc.slug}`) ?? [];
-  const staticRoutes = ['/services', '/portfolio', '/blog', '/contact', '/pricing', '/free-trial', '/about', '/book-demo'];
-  const { prefetchOnHover, prefetchAll } = usePrefetchRoutes([...staticRoutes, ...allServiceRoutes]);
-
-  useEffect(() => {
-    // Prefetch all routes after initial load settles
-    const t = setTimeout(() => prefetchAll(), 2500);
-    return () => clearTimeout(t);
-  }, [prefetchAll]);
+  // Prefetch top routes on hover for instant navigation
+  const staticRoutes = ['/services', '/portfolio', '/blog', '/contact', '/pricing', '/free-trial', '/about'];
+  const { prefetchOnHover } = usePrefetchRoutes(staticRoutes);
 
   useEffect(() => {
     setActiveDropdown(null);

@@ -3,19 +3,13 @@ import type { Metadata } from 'next';
 import { cache } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import type { GuideItem } from '@/services/public-api';
+import { cachedJsonFetch, type GuideItem } from '@/services/public-api';
 import GuideDetailClient from './GuideDetailClient';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
 const fetchGuide = cache(async (slug: string): Promise<GuideItem | null> => {
-  try {
-    const resp = await fetch(`${API_BASE}/api/v1/guides/api/items/${slug}/`, { next: { revalidate: 300 } });
-    if (!resp.ok) return null;
-    return await resp.json();
-  } catch {
-    return null;
-  }
+  return cachedJsonFetch<GuideItem>(`${API_BASE}/api/v1/guides/api/items/${slug}/`, 300);
 });
 
 export async function generateStaticParams() {

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ServiceDetailClient from './ServiceDetailClient';
-import { fetchBrandLogos, fetchSiteSettings, fetchFooterServices } from '@/services/public-api';
+import { fetchBrandLogos, fetchSiteSettings, fetchFooterServices, cachedJsonFetch } from '@/services/public-api';
 import type { Service, Technology, Testimonial, BrandLogo, SiteSetting } from '@/services/public-api';
 
 import { cache } from 'react';
@@ -12,32 +12,22 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com
 export const revalidate = 300;
 const isDev = process.env.NODE_ENV === 'development';
 
-async function fetchJson<T>(url: string): Promise<T | null> {
-  try {
-    const resp = await fetch(url, { next: { revalidate: 60 } });
-    if (resp.ok) return await resp.json();
-  } catch (e) {
-    console.error(`Fetch failed for ${url}:`, e);
-  }
-  return null;
-}
-
 const fetchService = cache(async (slug: string): Promise<Service | null> => {
-  return fetchJson<Service>(`${API_BASE}/api/v1/cms/services/${slug}/`);
+  return cachedJsonFetch<Service>(`${API_BASE}/api/v1/cms/services/${slug}/`, 300);
 });
 
 const fetchCoreServices = cache(async (): Promise<Service[]> => {
-  const data = await fetchJson<{ results: Service[] }>(`${API_BASE}/api/v1/cms/services/`);
+  const data = await cachedJsonFetch<{ results: Service[] }>(`${API_BASE}/api/v1/cms/services/`, 300);
   return data?.results || [];
 });
 
 const fetchTechnologies = cache(async (): Promise<Technology[]> => {
-  const data = await fetchJson<{ results: Technology[] }>(`${API_BASE}/api/v1/cms/technologies/`);
+  const data = await cachedJsonFetch<{ results: Technology[] }>(`${API_BASE}/api/v1/cms/technologies/`, 300);
   return data?.results || [];
 });
 
 const fetchTestimonials = cache(async (): Promise<Testimonial[]> => {
-  const data = await fetchJson<{ results: Testimonial[] }>(`${API_BASE}/api/v1/cms/testimonials/`);
+  const data = await cachedJsonFetch<{ results: Testimonial[] }>(`${API_BASE}/api/v1/cms/testimonials/`, 300);
   return data?.results || [];
 });
 

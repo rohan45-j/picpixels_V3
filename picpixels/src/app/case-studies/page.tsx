@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import type { CaseStudyItem, CaseStudyCategory } from '@/services/public-api';
+import { cachedJsonFetch, type CaseStudyItem, type CaseStudyCategory } from '@/services/public-api';
 import CaseStudiesListClient from './CaseStudiesListClient';
 import { buildPageMetadata, buildCollectionSchema, buildBreadcrumbSchema } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
@@ -17,23 +17,13 @@ export const metadata: Metadata = buildPageMetadata({
 
 export const revalidate = 60;
 
-async function fetchJson<T>(url: string): Promise<T | null> {
-  try {
-    const resp = await fetch(url, { next: { revalidate: 60 } });
-    if (!resp.ok) return null;
-    return await resp.json();
-  } catch {
-    return null;
-  }
-}
-
 export default async function CaseStudiesPage() {
   const currentCategory = '';
   const currentSearch = '';
 
   const [itemsRes, categories] = await Promise.all([
-    fetchJson<{ results: CaseStudyItem[]; count: number }>(`${API_BASE}/api/v1/case-studies/api/items/`),
-    fetchJson<CaseStudyCategory[]>(`${API_BASE}/api/v1/case-studies/api/categories/`),
+    cachedJsonFetch<{ results: CaseStudyItem[]; count: number }>(`${API_BASE}/api/v1/case-studies/api/items/`, 300),
+    cachedJsonFetch<CaseStudyCategory[]>(`${API_BASE}/api/v1/case-studies/api/categories/`, 300),
   ]);
 
   const initialItems = itemsRes?.results ?? [];

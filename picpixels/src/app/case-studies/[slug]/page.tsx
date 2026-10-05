@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { cache } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import type { CaseStudyItem } from '@/services/public-api';
+import { cachedJsonFetch, type CaseStudyItem } from '@/services/public-api';
 import CaseStudiesDetailClient from './CaseStudiesDetailClient';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
@@ -12,13 +12,7 @@ export const revalidate = 300;
 const isDev = process.env.NODE_ENV === 'development';
 
 const fetchCaseStudy = cache(async (slug: string): Promise<CaseStudyItem | null> => {
-  try {
-    const resp = await fetch(`${API_BASE}/api/v1/case-studies/api/items/${slug}/`, { next: { revalidate: 60 } });
-    if (!resp.ok) return null;
-    return await resp.json();
-  } catch {
-    return null;
-  }
+  return cachedJsonFetch<CaseStudyItem>(`${API_BASE}/api/v1/case-studies/api/items/${slug}/`, 300);
 });
 
 export async function generateStaticParams() {

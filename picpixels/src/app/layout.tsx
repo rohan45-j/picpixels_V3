@@ -44,26 +44,32 @@ import {
 } from "@/components/seo/TrackingScripts";
 import { CustomHeadInjector } from "@/components/seo/CustomHeadInjector";
 
+import NavigationProgress from "@/components/ui/NavigationProgress";
+import { cachedJsonFetch } from "@/services/public-api";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Fetch shared data server-side for SSR — enables instant header/footer on initial load
-  const [siteSettings, navItems, services] = await Promise.all([
-    fetch(`${BASE_URL}/api/v1/settings/site/`, { next: { revalidate: 60 } })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => (data?.results && data.results.length > 0) ? data.results[0] : data)
-      .catch(() => null),
-    fetch(`${BASE_URL}/api/v1/navigation/?location=header`, { next: { revalidate: 60 } })
-      .then(r => r.ok ? r.json() : { results: [] })
-      .then(data => Array.isArray(data) ? data : (data?.results ?? []))
-      .catch(() => []),
-    fetch(`${BASE_URL}/api/v1/cms/services/?mega_menu=true`, { next: { revalidate: 60 } })
-      .then(r => r.ok ? r.json() : { results: [] })
-      .then(data => Array.isArray(data) ? data : (data?.results ?? []))
-      .catch(() => []),
+  // Fetch shared data server-side for SSR — cached in memory for instant responses
+  const [siteSettingsData, navItemsData, servicesData] = await Promise.all([
+    cachedJsonFetch<any>(`${BASE_URL}/api/v1/settings/site/`, 300),
+    cachedJsonFetch<any>(`${BASE_URL}/api/v1/navigation/?location=header`, 300),
+    cachedJsonFetch<any>(`${BASE_URL}/api/v1/cms/services/?mega_menu=true`, 300),
   ]);
+
+  const siteSettings = (siteSettingsData?.results && siteSettingsData.results.length > 0)
+    ? siteSettingsData.results[0]
+    : (siteSettingsData || null);
+
+  const navItems = Array.isArray(navItemsData)
+    ? navItemsData
+    : (navItemsData?.results ?? []);
+
+  const services = Array.isArray(servicesData)
+    ? servicesData
+    : (servicesData?.results ?? []);
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -157,6 +163,9 @@ export default async function RootLayout({
         <CustomBodyStartScripts settings={siteSettings} />
         <SiteSettingsProvider initialSettings={siteSettings}>
           <SharedDataProvider initialNavItems={navItems} initialServices={services}>
+            <Suspense fallback={null}>
+              <NavigationProgress />
+            </Suspense>
             <DynamicFavicon />
             {children}
             <FloatingActionButtons />

@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import type { PortfolioItem } from '@/services/public-api';
+import { cachedJsonFetch, type PortfolioItem } from '@/services/public-api';
 import PortfolioDetailClient from './PortfolioDetailClient';
 import { SITE_URL, buildBreadcrumbSchema } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
@@ -12,19 +12,9 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com
 export const revalidate = 60;
 const isDev = process.env.NODE_ENV === 'development';
 
-async function fetchJson<T>(url: string): Promise<T | null> {
-  try {
-    const resp = await fetch(url, { next: { revalidate: 60 } });
-    if (!resp.ok) return null;
-    return await resp.json();
-  } catch {
-    return null;
-  }
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const project = await fetchJson<PortfolioItem>(`${API_BASE}/api/v1/portfolio/api/items/${slug}/`);
+  const project = await cachedJsonFetch<PortfolioItem>(`${API_BASE}/api/v1/portfolio/api/items/${slug}/`, 300);
   if (!project) return { title: 'Project Not Found' };
 
   const canonical = project.canonical_url || `${SITE_URL}/portfolio/${slug}`;
@@ -68,7 +58,7 @@ export default async function PortfolioDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = await fetchJson<PortfolioItem>(`${API_BASE}/api/v1/portfolio/api/items/${slug}/`);
+  const project = await cachedJsonFetch<PortfolioItem>(`${API_BASE}/api/v1/portfolio/api/items/${slug}/`, 300);
 
   if (!project) notFound();
 

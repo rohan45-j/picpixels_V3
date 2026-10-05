@@ -1,21 +1,45 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
-const DEFAULT_TIMEOUT = 10000;
-const DEFAULT_REVALIDATE = 60;
+const DEFAULT_TIMEOUT = 7000;
+const DEFAULT_REVALIDATE = 120;
+
+function resolveFetchUrl(url: string): string {
+  // If running on server and INTERNAL_API_URL is configured (e.g. http://127.0.0.1:8000 on VPS),
+  // route direct to local backend without public internet/TLS loopback overhead.
+  if (typeof window === 'undefined' && process.env.INTERNAL_API_URL) {
+    const internal = process.env.INTERNAL_API_URL.replace(/\/$/, '');
+    if (url.startsWith(BASE_URL)) {
+      return url.replace(BASE_URL, internal);
+    }
+  }
+  return url;
+}
 
 function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCache } = {}): Promise<Response> {
   const { revalidate = DEFAULT_REVALIDATE, cache } = options;
   const init: RequestInit = cache ? { cache } : { next: { revalidate } };
-  return fetch(url, init)
+  const targetUrl = resolveFetchUrl(url);
+
+  // Controller for safety timeout so hanging requests don't block SSR
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT);
+  init.signal = controller.signal;
+
+  return fetch(targetUrl, init)
+    .then((res) => {
+      clearTimeout(timer);
+      return res;
+    })
     .catch((err) => {
-      console.error(`[API] Network error fetching ${url}:`, err?.message || err);
+      clearTimeout(timer);
+      console.error(`[API] Network error fetching ${targetUrl}:`, err?.name === 'AbortError' ? 'Request timed out' : err?.message || err);
       return new Response(null, { status: 503, statusText: 'Service Unavailable' });
     });
 }
 
 const apiMemoryCache = new Map<string, { data: any; expiry: number }>();
 
-export async function cachedJsonFetch<T>(url: string, ttlSeconds = 120): Promise<T | null> {
+export async function cachedJsonFetch<T>(url: string, ttlSeconds = 180): Promise<T | null> {
   const now = Date.now();
   const cached = apiMemoryCache.get(url);
   if (cached && cached.expiry > now) {

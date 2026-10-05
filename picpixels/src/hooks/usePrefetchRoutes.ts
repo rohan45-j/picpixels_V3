@@ -1,67 +1,70 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 /**
  * Hook that provides route prefetching on hover/pointer-over for faster navigation.
- * Uses Next.js built-in router.prefetch which warms the RSC payload + route data.
+ * Uses Next.js built-in router.prefetch without flooding the server with simultaneous requests.
  */
 export function usePrefetchRoutes(routes: string[], enabled = true) {
   const router = useRouter();
   const prefetchedRef = useRef<Set<string>>(new Set());
 
+  // Throttled sequential prefetch for critical routes (one by one, 1s interval)
   useEffect(() => {
     if (!enabled || routes.length === 0) return;
 
-    // Idle prefetch for all routes (low priority, after page settles)
-    const idleId = window.requestIdleCallback
-      ? window.requestIdleCallback(
-          () => {
-            routes.forEach((route) => {
-              if (!prefetchedRef.current.has(route) && typeof window !== 'undefined') {
-                prefetchedRef.current.add(route);
-                router.prefetch(route);
-              }
-            });
-          },
-          { timeout: 2000 },
-        )
-      : (setTimeout(() => {
-          routes.forEach((route) => {
-            if (!prefetchedRef.current.has(route)) {
-              prefetchedRef.current.add(route);
-              router.prefetch(route);
-            }
-          });
-        }, 1500) as unknown as number);
+    // Pick only top 3 primary routes for idle prefetch to avoid server exhaustion
+    const primaryRoutes = routes.slice(0, 4);
+    let index = 0;
+    let timerId: ReturnType<typeof setTimeout> | null = null;
+
+    const prefetchNext = () => {
+      if (index >= primaryRoutes.length) return;
+      const route = primaryRoutes[index];
+      index += 1;
+
+      if (!prefetchedRef.current.has(route)) {
+        prefetchedRef.current.add(route);
+        try {
+          router.prefetch(route);
+        } catch {
+          // ignore
+        }
+      }
+
+      // Schedule next route prefetch with safe 1200ms delay to keep server workers free
+      timerId = setTimeout(prefetchNext, 1200);
+    };
+
+    // Start idle prefetching after 3 seconds when page is completely idle
+    timerId = setTimeout(prefetchNext, 3000);
 
     return () => {
-      if (typeof window !== 'undefined' && typeof (window as unknown as { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback === 'function') {
-        (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(idleId);
-      } else {
-        clearTimeout(idleId as unknown as ReturnType<typeof setTimeout>);
-      }
+      if (timerId) clearTimeout(timerId);
     };
   }, [routes, enabled, router]);
 
   /**
-   * Callback for onMouseEnter / onPointerOver events.
-   * Immediately prefetches the route so navigation is instant when clicked.
+   * Immediately prefetches on hover/focus when the user actually shows intent to click.
+   * This warms the RSC cache ~200ms before click, making navigation feel instant.
    */
-  const prefetchOnHover = (route: string) => {
-    if (!enabled) return;
+  const prefetchOnHover = useCallback((route: string) => {
+    if (!enabled || !route || route === '#' || route.startsWith('http')) return;
     if (prefetchedRef.current.has(route)) return;
     prefetchedRef.current.add(route);
-    router.prefetch(route);
-  };
+    try {
+      router.prefetch(route);
+    } catch {
+      // ignore
+    }
+  }, [enabled, router]);
 
-  return { prefetchOnHover, prefetchAll: () => {
-    routes.forEach((route) => {
-      if (!prefetchedRef.current.has(route)) {
-        prefetchedRef.current.add(route);
-        router.prefetch(route);
-      }
-    });
-  } };
+  return {
+    prefetchOnHover,
+    prefetchAll: () => {
+      // Intentionally a no-op or hover-driven to avoid Gunicorn worker starvation
+    },
+  };
 }

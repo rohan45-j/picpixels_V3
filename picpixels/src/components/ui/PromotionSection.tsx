@@ -44,22 +44,16 @@ export default function PromotionSection({ data }: { data: PricingPromotion | nu
         {/* ── RIGHT: Image side ── */}
         {(desktopSrc || mobileSrc) && (
           <div className={styles.imageCol}>
-            {desktopSrc && (
+            <picture className={styles.pictureWrapper}>
+              {mobileSrc && <source media="(max-width: 768px)" srcSet={mobileSrc} />}
               <img
-                src={desktopSrc}
-                alt={data.title || 'Promotion'}
-                className={styles.imageDesktop}
+                src={desktopSrc || mobileSrc}
+                alt={data.title || 'Special Promotion Offer'}
+                className={styles.promoImage}
                 loading="lazy"
+                decoding="async"
               />
-            )}
-            {mobileSrc && (
-              <img
-                src={mobileSrc}
-                alt={data.title || 'Promotion'}
-                className={styles.imageMobile}
-                loading="lazy"
-              />
-            )}
+            </picture>
           </div>
         )}
       </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import type { GuideItem, GuideCategory } from '@/services/public-api';
+import { cachedJsonFetch, type GuideItem, type GuideCategory } from '@/services/public-api';
 import GuideListClient from './GuideListClient';
 import { buildPageMetadata, buildCollectionSchema, buildBreadcrumbSchema } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
@@ -17,23 +17,13 @@ const API_BASE = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL
 
 export const revalidate = 60;
 
-async function fetchJson<T>(url: string): Promise<T | null> {
-  try {
-    const resp = await fetch(url, { next: { revalidate: 60 } });
-    if (!resp.ok) return null;
-    return await resp.json();
-  } catch {
-    return null;
-  }
-}
-
 export default async function GuidePage() {
   const currentCategory = '';
   const currentSearch = '';
 
   const [itemsRes, categories] = await Promise.all([
-    fetchJson<{ results: GuideItem[] }>(`${API_BASE}/api/v1/guides/api/items/`),
-    fetchJson<GuideCategory[]>(`${API_BASE}/api/v1/guides/api/categories/`),
+    cachedJsonFetch<{ results: GuideItem[] }>(`${API_BASE}/api/v1/guides/api/items/`, 300),
+    cachedJsonFetch<GuideCategory[]>(`${API_BASE}/api/v1/guides/api/categories/`, 300),
   ]);
 
   const initialItems = itemsRes?.results ?? [];
