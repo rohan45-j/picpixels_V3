@@ -42,7 +42,8 @@ GitHub-এ পুশ করার পর আপনার **PuTTY** ওপেন 
 cd /var/www/picpixels_root/picpixels
 git pull origin main
 npm run build
-pm2 reload picpixels-frontend
+chown -R deploy:deploy /var/www/picpixels_root/picpixels
+su - deploy -c "pm2 restart picpixels-frontend"
 ```
 
 ---
@@ -67,7 +68,7 @@ sudo systemctl restart picpixels-backend
 
 ```bash
 cd /var/www/picpixels_root && git pull origin main && \
-(cd picpixels && npm run build && pm2 reload picpixels-frontend) && \
+(cd picpixels && npm run build && chown -R deploy:deploy /var/www/picpixels_root/picpixels && su - deploy -c "pm2 restart picpixels-frontend") && \
 (cd admin.picpixels.com && source venv/bin/activate && python manage.py migrate && python manage.py collectstatic --noinput && sudo systemctl restart picpixels-backend)
 ```
 
