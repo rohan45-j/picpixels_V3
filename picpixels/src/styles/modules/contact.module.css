@@ -1,5 +1,5 @@
 .hero {
-  padding: 8rem 2rem 5rem;
+  padding: 9.5rem 2rem 1.5rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -8,19 +8,7 @@
 }
 
 .hero::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background: var(--bg-light);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'%3E%3Cpath d='M0,30 C200,0 400,60 600,30 C800,0 1000,60 1200,30 L1200,60 L0,60 Z' fill='%23000'/%3E%3C/svg%3E");
-  mask-size: 100% 100%;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60' preserveAspectRatio='none'%3E%3Cpath d='M0,30 C200,0 400,60 600,30 C800,0 1000,60 1200,30 L1200,60 L0,60 Z' fill='%23000'/%3E%3C/svg%3E");
-  -webkit-mask-size: 100% 100%;
-  pointer-events: none;
-  z-index: 2;
+  display: none;
 }
 
 .heroContent {
@@ -56,7 +44,7 @@
   font-size: 1.1rem;
   color: #000000;
   max-width: 700px;
-  margin: 0 auto 2.5rem;
+  margin: 0 auto;
   line-height: 1.6;
 }
 
@@ -69,8 +57,9 @@
 
 /* Section common */
 .section {
-  padding: 6rem 0;
+  padding: 1.5rem 0 5rem;
   position: relative;
+  scroll-margin-top: 90px;
 }
 
 .sectionHeader {
@@ -488,11 +477,11 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: 6rem 1.5rem 4rem;
+    padding: 7.5rem 1.5rem 1.25rem;
   }
 
   .section {
-    padding: 4rem 0;
+    padding: 1.25rem 0 3.5rem;
   }
 
   .formCard {
@@ -522,7 +511,7 @@
 
 @media (max-width: 480px) {
   .hero {
-    padding: 5.5rem 1rem 3rem;
+    padding: 6.5rem 1rem 1rem;
   }
   .title {
     font-size: 1.55rem;
@@ -531,7 +520,7 @@
     font-size: 0.95rem;
   }
   .section {
-    padding: 2.5rem 0;
+    padding: 1rem 0 2.5rem;
   }
   .formCard {
     padding: 1.25rem 1rem;

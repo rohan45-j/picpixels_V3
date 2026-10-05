@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Reveal from '@/components/animations/Reveal';
 import FAQAccordion from '@/components/ui/FAQAccordion';
@@ -41,6 +41,24 @@ export default function ContactClient({
   const [errorMessage, setErrorMessage] = useState('');
   const ctx = useSiteSettings();
   const siteSettings = initialSiteSettings || ctx.siteSettings;
+
+  useEffect(() => {
+    if (submitted && typeof window !== 'undefined') {
+      const timer = setTimeout(() => {
+        const sectionEl = document.getElementById('contact-form-section');
+        if (sectionEl) {
+          const navOffset = 90;
+          const rect = sectionEl.getBoundingClientRect();
+          const targetY = window.pageYOffset + rect.top - navOffset;
+          window.scrollTo({
+            top: Math.max(0, targetY),
+            behavior: 'smooth',
+          });
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [submitted]);
 
   // USA Office (Dynamic from Admin)
   const usaAddress = siteSettings?.usa_office_address?.trim() || '';
@@ -120,15 +138,11 @@ export default function ContactClient({
             <p className={styles.subtitle}>
               We are looking forward to hearing from you! Please upload your images via Wetransfer or Dropbox and send us the download link. Your first (3-5) images are free. No credit card required.
             </p>
-            <div className={styles.ctaGroup}>
-              <a href="https://wetransfer.com/" target="_blank" rel="noopener noreferrer" className="btn btn-secondary">Wetransfer</a>
-              <a href="https://www.dropbox.com/" target="_blank" rel="noopener noreferrer" className="btn btn-secondary">Dropbox</a>
-            </div>
           </div>
         </section>
       </Reveal>
 
-      <section className={styles.section}>
+      <section id="contact-form-section" className={styles.section}>
         <div className="container">
           <SectionHeading
             text="Send Us a Message"

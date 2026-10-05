@@ -438,6 +438,22 @@
   margin: 0;
 }
 
+/* ─── Card Top (Interactive Section) ─── */
+.cardTop {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  width: 100%;
+}
+
 /* ─── Card Footer ─── */
 .cardFooter {
   display: flex;
@@ -446,6 +462,7 @@
   padding: 0.5rem 1.5rem 1.5rem;
   flex-shrink: 0;
   margin-top: auto;
+  cursor: pointer;
 }
 
 .cardBtn {
@@ -462,17 +479,24 @@
   transition: all 0.25s ease;
   background: transparent;
   width: 100%;
+  cursor: pointer;
+}
+
+.cardBtn:hover {
+  cursor: pointer;
 }
 
 .card:hover .cardBtn {
   background: var(--color-primary);
   color: #fff;
   gap: 0.6rem;
+  cursor: pointer;
 }
 
 .cardSelected .cardBtn {
   background: var(--color-primary);
   color: #fff;
+  cursor: pointer;
 }
 
 .cardCheck {

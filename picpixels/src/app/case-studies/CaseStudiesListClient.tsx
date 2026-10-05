@@ -44,6 +44,11 @@ export default function CaseStudiesListClient({
   const [error, setError] = useState(false);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const isInitialMount = useRef(true);
+  const prevFiltersRef = useRef({
+    cat: initialCategory,
+    q: initialSearch,
+    sort: 'newest',
+  });
   const totalPages = Math.ceil(totalCount / PER_PAGE);
 
   useEffect(() => {
@@ -67,9 +72,6 @@ export default function CaseStudiesListClient({
   }, [search]);
 
   const getRequestUrl = (endpoint: string) => {
-    if (typeof window !== 'undefined') {
-      return endpoint;
-    }
     return `${API_BASE}${endpoint}`;
   };
 
@@ -95,8 +97,9 @@ export default function CaseStudiesListClient({
       setPage(pageNum);
     } catch {
       setError(true);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -104,6 +107,11 @@ export default function CaseStudiesListClient({
       isInitialMount.current = false;
       return;
     }
+    const prev = prevFiltersRef.current;
+    if (prev.cat === activeCategory && prev.q === debouncedSearch && prev.sort === sort) {
+      return;
+    }
+    prevFiltersRef.current = { cat: activeCategory, q: debouncedSearch, sort };
     fetchItems(1, activeCategory, debouncedSearch, sort);
   }, [activeCategory, debouncedSearch, sort, fetchItems]);
 

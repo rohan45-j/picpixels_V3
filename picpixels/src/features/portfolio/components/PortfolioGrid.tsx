@@ -83,33 +83,31 @@ export default function PortfolioGrid({
           </div>
         </Reveal>
 
-        <div className={styles.filterBar}>
-          <Link
-            href="/#latest-work"
+        <div className={styles.filterBar} role="tablist" aria-label="Portfolio categories">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activeCategory === ''}
             className={`${styles.filterBtn} ${activeCategory === '' ? styles.filterActive : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              handleFilter('');
-            }}
+            onClick={() => handleFilter('')}
           >
             <span>All</span>
             <span className={styles.filterCount}>{portfolios.length}</span>
-          </Link>
+          </button>
           {categories.map((cat) => {
             const count = portfolios.filter((p) => p.category_slug === cat.slug).length;
             return (
-              <Link
+              <button
                 key={cat.id}
-                href={`/?portfolio_cat=${encodeURIComponent(cat.slug)}#latest-work`}
+                type="button"
+                role="tab"
+                aria-selected={activeCategory === cat.slug}
                 className={`${styles.filterBtn} ${activeCategory === cat.slug ? styles.filterActive : ''}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleFilter(cat.slug);
-                }}
+                onClick={() => handleFilter(cat.slug)}
               >
                 <span>{cat.name}</span>
                 <span className={styles.filterCount}>{count > 0 ? count : (cat.portfolio_count || 0)}</span>
-              </Link>
+              </button>
             );
           })}
         </div>

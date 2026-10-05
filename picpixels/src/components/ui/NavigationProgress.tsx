@@ -1,36 +1,43 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
+import CenteredLoader from './CenteredLoader';
 
 export default function NavigationProgress() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const showTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  // When pathname or searchParams change, navigation has finished
+  // When pathname or searchParams change, navigation has completed - immediately hide
   useEffect(() => {
-    if (isLoading) {
-      setProgress(100);
-      const timer = setTimeout(() => {
-        setIsLoading(false);
-        setProgress(0);
-      }, 250);
-      return () => clearTimeout(timer);
-    }
+    clearTimeout(showTimerRef.current);
+    setIsLoading(false);
   }, [pathname, searchParams]);
 
   useEffect(() => {
-    // Intercept clicks on internal links to provide instant visual feedback
+    // Intercept clicks on REAL internal links to provide smooth visual feedback for slow loads
     const handleLinkClick = (e: MouseEvent) => {
+      // If event was cancelled / prevented by a component (like a tab filter), NEVER show loader
+      if (e.defaultPrevented) return;
+
       const target = (e.target as HTMLElement).closest('a');
       if (!target) return;
+
+      // Ignore buttons, tabs, or elements with data-no-progress
+      if (
+        (e.target as HTMLElement).closest('button') ||
+        target.getAttribute('role') === 'tab' ||
+        target.hasAttribute('data-no-progress')
+      ) {
+        return;
+      }
 
       const href = target.getAttribute('href');
       const targetAttr = target.getAttribute('target');
 
-      // Ignore external links, downloads, new tabs, hash links, mailto, tel
+      // Ignore external links, downloads, new tabs, in-page hash links, mailto, tel
       if (
         !href ||
         href.startsWith('#') ||
@@ -46,19 +53,20 @@ export default function NavigationProgress() {
         return;
       }
 
-      // Check if it's the current URL
+      // Check if it's pointing to a different internal route
       try {
         const url = new URL(href, window.location.href);
         if (url.origin === window.location.origin) {
-          if (url.pathname !== window.location.pathname || url.search !== window.location.search) {
-            setIsLoading(true);
-            setProgress(30);
-
-            // Animate to 75% while waiting for page response
-            setTimeout(() => {
-              setProgress((prev) => (prev < 75 ? 75 : prev));
-            }, 180);
+          // If only hash changed on current page, ignore
+          if (url.pathname === window.location.pathname && url.search === window.location.search) {
+            return;
           }
+
+          clearTimeout(showTimerRef.current);
+          // Only show loader if the transition takes more than 250ms (fast pages load with zero delay)
+          showTimerRef.current = setTimeout(() => {
+            setIsLoading(true);
+          }, 250);
         }
       } catch {
         // ignore invalid urls
@@ -66,45 +74,33 @@ export default function NavigationProgress() {
     };
 
     const handlePopState = () => {
-      setIsLoading(true);
-      setProgress(40);
+      clearTimeout(showTimerRef.current);
+      showTimerRef.current = setTimeout(() => {
+        setIsLoading(true);
+      }, 250);
     };
 
-    document.addEventListener('click', handleLinkClick, { capture: true });
+    document.addEventListener('click', handleLinkClick);
     window.addEventListener('popstate', handlePopState);
 
     return () => {
-      document.removeEventListener('click', handleLinkClick, { capture: true });
+      clearTimeout(showTimerRef.current);
+      document.removeEventListener('click', handleLinkClick);
       window.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
-  if (!isLoading && progress === 0) return null;
+  // Safety fallback: auto-dismiss after 3s in case navigation stalls
+  useEffect(() => {
+    if (isLoading) {
+      const safety = setTimeout(() => {
+        setIsLoading(false);
+      }, 3000);
+      return () => clearTimeout(safety);
+    }
+  }, [isLoading]);
 
-  return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: '3px',
-        zIndex: 999999,
-        pointerEvents: 'none',
-        overflow: 'hidden',
-      }}
-    >
-      <div
-        style={{
-          height: '100%',
-          width: `${progress}%`,
-          background: 'linear-gradient(90deg, #FF8A50, #FF5722, #FF3D00)',
-          boxShadow: '0 0 10px rgba(255, 138, 80, 0.7), 0 0 5px rgba(255, 87, 34, 0.5)',
-          transition: progress === 100 ? 'width 0.15s ease-out, opacity 0.25s ease' : 'width 0.3s cubic-bezier(0.1, 0.8, 0.2, 1)',
-          opacity: progress === 100 ? 0 : 1,
-          borderRadius: '0 2px 2px 0',
-        }}
-      />
-    </div>
-  );
+  if (!isLoading) return null;
+
+  return <CenteredLoader />;
 }

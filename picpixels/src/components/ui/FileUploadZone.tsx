@@ -9,6 +9,7 @@ interface FileItem {
   id: string;
   progress: number;
   status: 'pending' | 'uploading' | 'done' | 'error';
+  previewUrl?: string;
 }
 
 interface FileUploadZoneProps {
@@ -36,11 +37,21 @@ export default function FileUploadZone({
     const newItems: FileItem[] = [];
     for (let i = 0; i < Math.min(fileList.length, remaining); i++) {
       const f = fileList[i];
+      const isImg = f.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|jfif|gif|svg|avif|bmp|tiff)$/i.test(f.name);
+      let previewUrl: string | undefined;
+      if (isImg && typeof window !== 'undefined') {
+        try {
+          previewUrl = URL.createObjectURL(f);
+        } catch {
+          previewUrl = undefined;
+        }
+      }
       newItems.push({
         file: f,
         id: `file_${++fileIdCounter}`,
         progress: 100,
         status: 'done',
+        previewUrl,
       });
     }
     const updated = [...items, ...newItems];
@@ -50,6 +61,12 @@ export default function FileUploadZone({
 
   function removeFile(id: string) {
     setItems((prev) => {
+      const removed = prev.find((x) => x.id === id);
+      if (removed?.previewUrl && typeof window !== 'undefined') {
+        try {
+          URL.revokeObjectURL(removed.previewUrl);
+        } catch {}
+      }
       const updated = prev.filter((x) => x.id !== id);
       onFilesChange(updated.map((x) => x.file));
       return updated;
@@ -126,7 +143,11 @@ export default function FileUploadZone({
           {items.map((item) => (
             <li key={item.id} className={styles.fileItem}>
               <div className={styles.fileIcon}>
-                <File size={18} />
+                {item.previewUrl ? (
+                  <img src={item.previewUrl} alt={item.file.name} className={styles.fileThumb} />
+                ) : (
+                  <File size={18} />
+                )}
               </div>
               <div className={styles.fileInfo}>
                 <span className={styles.fileName}>{item.file.name}</span>

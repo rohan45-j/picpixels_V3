@@ -450,6 +450,7 @@ class FreeTrialViewSet(viewsets.ModelViewSet):
     queryset = FreeTrial.objects.prefetch_related('attachments').all()
     serializer_class = FreeTrialSerializer
     permission_classes = [permissions.AllowAny]
+    authentication_classes = []
     throttle_classes = [PublicFormRateThrottle]
     parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]
 

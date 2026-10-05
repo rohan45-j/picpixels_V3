@@ -77,7 +77,20 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
     });
   }, []);
 
-  function validate(): boolean {
+  useEffect(() => {
+    if (status === 'success' && typeof window !== 'undefined') {
+      setTimeout(() => {
+        const successCard = document.getElementById('trial-submitted-card');
+        if (successCard) {
+          successCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+          window.scrollTo({ top: 350, behavior: 'smooth' });
+        }
+      }, 80);
+    }
+  }, [status]);
+
+  function getValidationErrors(): FormErrors {
     const errs: FormErrors = {};
     if (!form.full_name.trim()) errs.full_name = 'Full name is required';
     if (!form.email.trim()) {
@@ -100,9 +113,7 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
         errs.drive_link = 'Please enter a valid URL (including https://)';
       }
     }
-
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
+    return errs;
   }
 
   function handleChange(
@@ -117,11 +128,24 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!validate()) {
-      const firstError = document.querySelector<HTMLElement>('[data-field-error]');
-      firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const errs = getValidationErrors();
+    setErrors(errs);
+
+    if (Object.keys(errs).length > 0) {
+      const firstFieldKey = Object.keys(errs)[0];
+      setTimeout(() => {
+        const inputEl = document.querySelector<HTMLElement>(`[name="${firstFieldKey}"]`) || document.getElementById(firstFieldKey);
+        if (inputEl) {
+          inputEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          inputEl.focus();
+        } else {
+          const firstError = document.querySelector<HTMLElement>('[data-field-error]');
+          firstError?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 50);
       return;
     }
+
     setStatus('loading');
     try {
       const ok = await submitFreeTrial(
@@ -141,7 +165,11 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
         },
         files.length > 0 ? files : undefined
       );
-      setStatus(ok ? 'success' : 'error');
+      if (ok) {
+        setStatus('success');
+      } else {
+        setStatus('error');
+      }
     } catch {
       setStatus('error');
     }
@@ -161,6 +189,9 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
     setFiles([]);
     setErrors({});
     setStatus('idle');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   const charCount = form.project_requirements.length;
@@ -202,7 +233,7 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
       <section className={styles.formSection}>
         <div className={styles.formCard}>
           {status === 'success' ? (
-            <div className={styles.successState}>
+            <div className={styles.successState} id="trial-submitted-card">
               <div className={styles.successIconWrap}>
                 <CheckCircle size={40} className={styles.successIcon} />
               </div>
@@ -369,7 +400,7 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
                 <textarea
                   id="project_requirements"
                   name="project_requirements"
-                  className={`${styles.textarea} ${errors.project_requirements ? styles.inputError : ''}`}
+                  className={`${styles.input} ${styles.textarea} ${errors.project_requirements ? styles.inputError : ''}`}
                   rows={5}
                   placeholder="Specify: background removal (pure white/transparent), shadow type (drop shadow, reflection), retouching details, output formats (PSD, PNG, JPG), resolution, and color profiles."
                   value={form.project_requirements}

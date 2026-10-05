@@ -1191,11 +1191,6 @@ export default function OrderSummaryClient({
                   )}
                 </div>
               )}
-
-              {/* Bot Protection Hidden Fields */}
-              <div style={{ marginTop: '1rem' }}>
-                <BotProtection onPayloadChange={setBotPayload} />
-              </div>
             </section>
           </div>
 

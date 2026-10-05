@@ -1,13 +1,15 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
-const DEFAULT_TIMEOUT = 7000;
+const DEFAULT_TIMEOUT = 3500;
 const DEFAULT_REVALIDATE = 120;
 
 function resolveFetchUrl(url: string): string {
-  // If running on server and INTERNAL_API_URL is configured (e.g. http://127.0.0.1:8000 on VPS),
-  // route direct to local backend without public internet/TLS loopback overhead.
-  if (typeof window === 'undefined' && process.env.INTERNAL_API_URL) {
-    const internal = process.env.INTERNAL_API_URL.replace(/\/$/, '');
+  // If running on server, route direct to local backend without public internet/TLS loopback overhead.
+  if (typeof window === 'undefined') {
+    const internal = (process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000').replace(/\/$/, '');
+    if (url.startsWith('https://admin.picpixels.com') || url.startsWith('http://admin.picpixels.com')) {
+      return url.replace(/^https?:\/\/admin\.picpixels\.com/, internal);
+    }
     if (url.startsWith(BASE_URL)) {
       return url.replace(BASE_URL, internal);
     }
@@ -1661,7 +1663,7 @@ export async function submitFreeTrial(data: {
       }
     }
     const targetUrl = typeof window !== 'undefined'
-      ? '/api/v1/cms/free-trials/'
+      ? '/api/v1/cms/free-trials'
       : `${process.env.INTERNAL_API_URL || BASE_URL}/api/v1/cms/free-trials/`;
 
     const resp = await fetch(targetUrl, {
@@ -1706,7 +1708,7 @@ export async function submitOrderRequest(data: {
       }
     }
     const targetUrl = typeof window !== 'undefined'
-      ? '/api/v1/cms/free-trials/'
+      ? '/api/v1/cms/free-trials'
       : `${process.env.INTERNAL_API_URL || BASE_URL}/api/v1/cms/free-trials/`;
 
     const resp = await fetch(targetUrl, {

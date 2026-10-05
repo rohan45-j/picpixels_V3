@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   compress: true,
+  skipTrailingSlashRedirect: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -134,10 +135,6 @@ const nextConfig = {
       {
         source: '/media/:path*',
         destination: `${backendUrl}/media/:path*`,
-      },
-      {
-        source: '/api/v1/:path*/',
-        destination: `${backendUrl}/api/v1/:path*/`,
       },
       {
         source: '/api/v1/:path*',

@@ -296,7 +296,8 @@
 }
 
 /* ─── Inputs & Controls ─── */
-.input {
+.input,
+.textarea {
   width: 100%;
   padding: 0.85rem 1.15rem;
   font-size: 0.95rem;
@@ -310,11 +311,13 @@
   box-sizing: border-box;
 }
 
-.input::placeholder {
+.input::placeholder,
+.textarea::placeholder {
   color: #a0aec0;
 }
 
-.input:focus {
+.input:focus,
+.textarea:focus {
   border-color: var(--color-primary, #FF8A50);
   background: #fff;
   box-shadow: 0 0 0 3px rgba(255, 138, 80, 0.15);

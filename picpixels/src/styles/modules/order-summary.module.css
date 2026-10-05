@@ -702,13 +702,13 @@
 }
 
 .volumeTierPill {
-  padding: 0.35rem 0.75rem;
+  padding: 0.4rem 0.85rem;
   border-radius: 9999px;
-  border: 1px solid #cbd5e1;
+  border: 1.5px solid #cbd5e1;
   background: #ffffff;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: #475569;
+  color: #334155;
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
@@ -720,10 +720,11 @@
 }
 
 .volumeTierPillActive {
-  background: rgba(255, 138, 80, 0.15);
+  background: #ea580c;
   border-color: #ea580c;
-  color: #ea580c;
+  color: #ffffff;
   font-weight: 700;
+  box-shadow: 0 2px 8px rgba(234, 88, 12, 0.35);
 }
 
 /* ═══════════════════════════════════════
