@@ -128,6 +128,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core.urls'
+APPEND_SLASH = False
 
 TEMPLATES = [
     {

@@ -194,6 +194,22 @@ export default function OrderSummaryClient({
   const dropRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const zipInputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsConfigDrawerOpen(false);
+      }
+    };
+    if (isConfigDrawerOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isConfigDrawerOpen]);
 
   // Bot protection payload
   const [botPayload, setBotPayload] = useState<BotProtectionPayload>({
@@ -612,22 +628,106 @@ export default function OrderSummaryClient({
                   <h2 className={styles.sectionCardTitle}>Selected Package &amp; Service</h2>
                 </div>
                 {availableServices.length > 0 && (
-                  <button
-                    type="button"
-                    className={styles.changePlanBtn}
-                    onClick={() => setIsConfigDrawerOpen(!isConfigDrawerOpen)}
-                    aria-expanded={isConfigDrawerOpen}
-                  >
-                    {isConfigDrawerOpen ? (
-                      <>
-                        Close Configurator <ChevronUp size={14} />
-                      </>
-                    ) : (
-                      <>
-                        Change Service / Tier <ChevronDown size={14} />
-                      </>
+                  <div className={styles.changePlanDropdownWrap} ref={dropdownRef}>
+                    <button
+                      type="button"
+                      className={styles.changePlanBtn}
+                      onClick={() => setIsConfigDrawerOpen(!isConfigDrawerOpen)}
+                      aria-expanded={isConfigDrawerOpen}
+                    >
+                      {isConfigDrawerOpen ? (
+                        <>
+                          Close Menu <ChevronUp size={14} />
+                        </>
+                      ) : (
+                        <>
+                          Change Service / Tier <ChevronDown size={14} />
+                        </>
+                      )}
+                    </button>
+
+                    {isConfigDrawerOpen && (
+                      <div className={styles.configDropdownMenu}>
+                        <div>
+                          <span className={styles.configSectionLabel}>1. Select Service Category</span>
+                          <div className={styles.serviceTabsList}>
+                            {availableServices.map((svc) => (
+                              <button
+                                key={svc.id}
+                                type="button"
+                                className={`${styles.serviceTabBtn} ${
+                                  activeServiceId === svc.id ? styles.serviceTabBtnActive : ''
+                                }`}
+                                onClick={() => handleServiceSelect(svc.id)}
+                              >
+                                {svc.name}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {currentSvc && currentSvc.cards && currentSvc.cards.length > 0 && (
+                          <div>
+                            <span className={styles.configSectionLabel}>2. Select Complexity Plan</span>
+                            <div className={styles.cardPickGrid}>
+                              {currentSvc.cards.map((c) => {
+                                const priceObj = c.prices?.find((p) => p.unit_range === activeUnitRangeId);
+                                const priceStr = priceObj ? `$${priceObj.price}` : c.prices?.[0]?.price ? `$${c.prices[0].price}` : '';
+                                const isSelected = activeCardId === c.id;
+
+                                return (
+                                  <div
+                                    key={c.id}
+                                    className={`${styles.cardPickItem} ${
+                                      isSelected ? styles.cardPickItemActive : ''
+                                    }`}
+                                    onClick={() => handleCardSelect(c.id)}
+                                  >
+                                    <div className={styles.cardPickName}>{c.name}</div>
+                                    {priceStr && <div className={styles.cardPickPrice}>{priceStr}</div>}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        {currentSvc && currentSvc.unit_ranges && currentSvc.unit_ranges.length > 0 && (
+                          <div>
+                            <span className={styles.configSectionLabel}>3. Select Volume Tier</span>
+                            <div className={styles.volumeTierWrap}>
+                              {currentSvc.unit_ranges.map((u) => {
+                                const isSelected = activeUnitRangeId === u.id;
+                                return (
+                                  <button
+                                    key={u.id}
+                                    type="button"
+                                    className={`${styles.volumeTierPill} ${
+                                      isSelected ? styles.volumeTierPillActive : ''
+                                    }`}
+                                    onClick={() => handleUnitRangeSelect(u.id)}
+                                  >
+                                    {u.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', paddingTop: '0.6rem', borderTop: '1px solid #f1f5f9' }}>
+                          <button
+                            type="button"
+                            className={styles.changePlanBtn}
+                            style={{ background: '#0f172a', color: '#ffffff', borderColor: '#0f172a' }}
+                            onClick={() => setIsConfigDrawerOpen(false)}
+                          >
+                            Done
+                          </button>
+                        </div>
+                      </div>
                     )}
-                  </button>
+                  </div>
                 )}
               </div>
 
@@ -684,78 +784,6 @@ export default function OrderSummaryClient({
                   </div>
                 </div>
               </div>
-
-              {/* Interactive In-line Configurator Drawer */}
-              {isConfigDrawerOpen && availableServices.length > 0 && (
-                <div className={styles.configDrawer}>
-                  <div>
-                    <span className={styles.configSectionLabel}>1. Select Service Category</span>
-                    <div className={styles.serviceTabsList}>
-                      {availableServices.map((svc) => (
-                        <button
-                          key={svc.id}
-                          type="button"
-                          className={`${styles.serviceTabBtn} ${
-                            activeServiceId === svc.id ? styles.serviceTabBtnActive : ''
-                          }`}
-                          onClick={() => handleServiceSelect(svc.id)}
-                        >
-                          {svc.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {currentSvc && currentSvc.cards && currentSvc.cards.length > 0 && (
-                    <div>
-                      <span className={styles.configSectionLabel}>2. Select Complexity Plan</span>
-                      <div className={styles.cardPickGrid}>
-                        {currentSvc.cards.map((c) => {
-                          const priceObj = c.prices?.find((p) => p.unit_range === activeUnitRangeId);
-                          const priceStr = priceObj ? `$${priceObj.price}` : c.prices?.[0]?.price ? `$${c.prices[0].price}` : '';
-                          const isSelected = activeCardId === c.id;
-
-                          return (
-                            <div
-                              key={c.id}
-                              className={`${styles.cardPickItem} ${
-                                isSelected ? styles.cardPickItemActive : ''
-                              }`}
-                              onClick={() => handleCardSelect(c.id)}
-                            >
-                              <div className={styles.cardPickName}>{c.name}</div>
-                              {priceStr && <div className={styles.cardPickPrice}>{priceStr}</div>}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {currentSvc && currentSvc.unit_ranges && currentSvc.unit_ranges.length > 0 && (
-                    <div>
-                      <span className={styles.configSectionLabel}>3. Select Volume Tier</span>
-                      <div className={styles.volumeTierWrap}>
-                        {currentSvc.unit_ranges.map((u) => {
-                          const isSelected = activeUnitRangeId === u.id;
-                          return (
-                            <button
-                              key={u.id}
-                              type="button"
-                              className={`${styles.volumeTierPill} ${
-                                isSelected ? styles.volumeTierPillActive : ''
-                              }`}
-                              onClick={() => handleUnitRangeSelect(u.id)}
-                            >
-                              {u.label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
             </section>
 
             {/* 2. Client & Contact Information */}

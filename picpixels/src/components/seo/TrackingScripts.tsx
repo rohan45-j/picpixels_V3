@@ -14,9 +14,8 @@ export function GTMHead({ settings }: TrackingScriptsProps) {
       id="gtm-script"
       dangerouslySetInnerHTML={{
         __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+new Date().getTime(),event:'gtm.js'});var j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;(d.head||d.body||d.documentElement).appendChild(j);
 })(window,document,'script','dataLayer','${gtmId}');`,
       }}
     />
@@ -96,8 +95,7 @@ export function FacebookPixelHead({ settings }: TrackingScriptsProps) {
           n.callMethod.apply(n,arguments):n.queue.push(arguments)};
           if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
           n.queue=[];t=b.createElement(e);t.async=!0;
-          t.src=v;s=b.getElementsByTagName(e)[0];
-          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          t.src=v;(b.head||b.body||b.documentElement).appendChild(t)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
           fbq('init', '${pixelId}');
           fbq('track', 'PageView');

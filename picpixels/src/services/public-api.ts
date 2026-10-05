@@ -1660,11 +1660,20 @@ export async function submitFreeTrial(data: {
         form.append('files', f);
       }
     }
-    const resp = await fetch(`${BASE_URL}/api/v1/cms/free-trials/`, {
+    const targetUrl = typeof window !== 'undefined'
+      ? '/api/v1/cms/free-trials/'
+      : `${process.env.INTERNAL_API_URL || BASE_URL}/api/v1/cms/free-trials/`;
+
+    const resp = await fetch(targetUrl, {
       method: 'POST',
       body: form,
     });
-    return resp.ok;
+    if (!resp.ok) {
+      const err = await resp.text();
+      console.error('[submitFreeTrial] HTTP Error:', resp.status, err);
+      return false;
+    }
+    return true;
   } catch (e) {
     console.error('Failed to submit free trial', e);
     return false;

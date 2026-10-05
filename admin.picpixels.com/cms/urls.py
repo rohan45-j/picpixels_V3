@@ -59,6 +59,7 @@ urlpatterns = [
     path('about-page/', AboutPageDataView.as_view(), name='about_page_data'),
     path('privacy-policy/', PrivacyPolicyView.as_view(), name='privacy_policy'),
     path('terms-conditions/', TermsConditionView.as_view(), name='terms_conditions'),
+    path('free-trials', FreeTrialViewSet.as_view({'get': 'list', 'post': 'create'}), name='free_trials_no_slash'),
     path('', include(router.urls)),
 ]
 
