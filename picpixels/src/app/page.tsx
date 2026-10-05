@@ -164,10 +164,6 @@ async function HomeContent({ initialPortfolioCategory = '' }: { initialPortfolio
   );
 }
 
-export default async function Home(props: {
-  searchParams?: Promise<{ category?: string; portfolio_cat?: string }>;
-}) {
-  const sp = props.searchParams ? await props.searchParams : undefined;
-  const initialCategory = sp?.portfolio_cat || sp?.category || '';
-  return <HomeContent initialPortfolioCategory={initialCategory} />;
+export default async function Home() {
+  return <HomeContent />;
 }

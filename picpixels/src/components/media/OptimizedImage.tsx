@@ -49,7 +49,7 @@ export default function OptimizedImage({
       priority={priority}
       loading={priority ? undefined : loading}
       sizes={sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'}
-      unoptimized={!isOptimizable}
+      unoptimized={true}
     />
   );
 }

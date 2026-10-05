@@ -2,12 +2,12 @@ import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ServicesClient from './ServicesClient';
-import type { Service } from '@/services/public-api';
+import { cachedJsonFetch, type Service } from '@/services/public-api';
 
 import { buildPageMetadata, buildCollectionSchema, buildBreadcrumbSchema } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://admin.picpixels.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
 export const revalidate = 60;
 
@@ -18,21 +18,13 @@ export const metadata: Metadata = buildPageMetadata({
   keywords: ['photo editing services', 'clipping path service', 'product image retouching', 'ghost mannequin service', 'color correction service'],
 });
 
-export default async function Services({
-  searchParams,
-}: {
-  searchParams?: Promise<{ location?: string }>;
-}) {
-  const resolvedParams = searchParams ? await searchParams : {};
-  const activeLocation = resolvedParams.location ? String(resolvedParams.location).trim() : '';
-
+export default async function Services() {
   let services: Service[] = [];
   try {
-    const url = `${BASE_URL}/api/v1/cms/services/?brief=1`;
-    const resp = await fetch(url, { next: { revalidate: 60 } });
-    if (resp.ok) {
-      const data = await resp.json();
-      services = data.results || data;
+    const url = `${API_URL}/api/v1/cms/services/?brief=1`;
+    const data = await cachedJsonFetch<any>(url, 120);
+    if (data) {
+      services = data.results || data || [];
     }
   } catch {}
 
@@ -58,7 +50,7 @@ export default async function Services({
       <JsonLd data={[collectionSchema, breadcrumbsSchema]} />
       <Header />
       <main id="main-content">
-        <ServicesClient services={services} initialLocation={activeLocation} />
+        <ServicesClient services={services} initialLocation="" />
       </main>
       <Footer footerServices={services} />
     </>

@@ -27,19 +27,12 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   }
 }
 
-export default async function GuidePage(props: {
-  searchParams?: Promise<{ category?: string; search?: string }>;
-}) {
-  const sp = props.searchParams ? await props.searchParams : undefined;
-  const currentCategory = sp?.category || '';
-  const currentSearch = sp?.search || '';
-
-  const params = new URLSearchParams();
-  if (currentCategory) params.set('category', currentCategory);
-  if (currentSearch) params.set('search', currentSearch);
+export default async function GuidePage() {
+  const currentCategory = '';
+  const currentSearch = '';
 
   const [itemsRes, categories] = await Promise.all([
-    fetchJson<{ results: GuideItem[] }>(`${API_BASE}/api/v1/guides/api/items/?${params.toString()}`),
+    fetchJson<{ results: GuideItem[] }>(`${API_BASE}/api/v1/guides/api/items/`),
     fetchJson<GuideCategory[]>(`${API_BASE}/api/v1/guides/api/categories/`),
   ]);
 

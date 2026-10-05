@@ -27,19 +27,12 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   }
 }
 
-export default async function CaseStudiesPage(props: {
-  searchParams?: Promise<{ category?: string; search?: string }>;
-}) {
-  const sp = props.searchParams ? await props.searchParams : undefined;
-  const currentCategory = sp?.category || '';
-  const currentSearch = sp?.search || '';
-
-  const params = new URLSearchParams();
-  if (currentCategory) params.set('category', currentCategory);
-  if (currentSearch) params.set('search', currentSearch);
+export default async function CaseStudiesPage() {
+  const currentCategory = '';
+  const currentSearch = '';
 
   const [itemsRes, categories] = await Promise.all([
-    fetchJson<{ results: CaseStudyItem[]; count: number }>(`${API_BASE}/api/v1/case-studies/api/items/?${params.toString()}`),
+    fetchJson<{ results: CaseStudyItem[]; count: number }>(`${API_BASE}/api/v1/case-studies/api/items/`),
     fetchJson<CaseStudyCategory[]>(`${API_BASE}/api/v1/case-studies/api/categories/`),
   ]);
 

@@ -28,19 +28,13 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   }
 }
 
-export default async function PortfolioPage(props: {
-  searchParams?: Promise<{ category?: string; search?: string; page?: string }>;
-}) {
-  const sp = props.searchParams ? await props.searchParams : undefined;
-  const currentCategory = sp?.category || '';
-  const currentSearch = sp?.search || '';
-  const currentPage = sp?.page || '1';
+export default async function PortfolioPage() {
+  const currentCategory = '';
+  const currentSearch = '';
+  const currentPage = '1';
 
   const params = new URLSearchParams();
   params.set('page_size', '36');
-  if (currentCategory) params.set('category', currentCategory);
-  if (currentSearch) params.set('search', currentSearch);
-  if (currentPage && currentPage !== '1') params.set('page', currentPage);
 
   const [portfoliosRes, categories, faqsRes, ctaRes] = await Promise.all([
     fetchJson<{ results: PortfolioItem[]; count?: number }>(`${API_BASE}/api/v1/portfolio/api/items/?${params.toString()}`),
