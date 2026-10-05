@@ -28,12 +28,10 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   }
 }
 
-export default async function PortfolioPage({
-  searchParams,
-}: {
+export default async function PortfolioPage(props: {
   searchParams?: Promise<{ category?: string; search?: string; page?: string }>;
-} = {}) {
-  const sp = searchParams ? await searchParams : undefined;
+}) {
+  const sp = props.searchParams ? await props.searchParams : undefined;
   const currentCategory = sp?.category || '';
   const currentSearch = sp?.search || '';
   const currentPage = sp?.page || '1';

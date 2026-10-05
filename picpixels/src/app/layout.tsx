@@ -4,7 +4,6 @@ import { SiteSettingsProvider } from "@/store/SiteSettingsContext";
 import { SharedDataProvider } from "@/store/SharedDataContext";
 import { DynamicFavicon } from "@/components/media/DynamicFavicon";
 import FloatingActionButtons from "@/components/ui/FloatingActionButtons";
-import NavigationProgressBar from "@/components/ui/NavigationProgressBar";
 import "./globals.css";
 import "@/styles/animations.css";
 
@@ -152,9 +151,6 @@ export default async function RootLayout({
         />
       </head>
       <body suppressHydrationWarning>
-        <Suspense fallback={null}>
-          <NavigationProgressBar />
-        </Suspense>
         <OrganizationSchema settings={siteSettings} />
         <CustomHeadInjector scripts={siteSettings?.custom_head_scripts} />
         <GTMBody settings={siteSettings} />

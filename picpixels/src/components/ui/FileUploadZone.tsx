@@ -12,6 +12,7 @@ interface FileItem {
 }
 
 interface FileUploadZoneProps {
+  files?: File[];
   onFilesChange: (files: File[]) => void;
   maxFiles?: number;
   maxSizeMB?: number;

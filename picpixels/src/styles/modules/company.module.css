@@ -543,9 +543,50 @@
 }
 
 @media (max-width: 600px) {
+  .hero {
+    padding: 6.5rem 1rem 3rem;
+  }
+  .section, .sectionAlt, .ctaBanner {
+    padding: 3rem 1rem;
+  }
+  .cardsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .card {
+    padding: 1.5rem 1.25rem;
+  }
+  .stepsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .pressGrid {
+    grid-template-columns: 1fr;
+  }
   .jobCard {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1.25rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 5.5rem 1rem 2.5rem;
+  }
+  .statsRow {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .teamGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .teamCard {
+    padding: 1.25rem 1rem;
+  }
+  .faqItem {
+    padding: 1.25rem 1rem;
   }
 }
 

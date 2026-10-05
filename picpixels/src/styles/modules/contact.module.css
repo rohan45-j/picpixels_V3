@@ -519,3 +519,37 @@
     padding: 3rem 1.5rem;
   }
 }
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 5.5rem 1rem 3rem;
+  }
+  .title {
+    font-size: 1.55rem;
+  }
+  .subtitle {
+    font-size: 0.95rem;
+  }
+  .section {
+    padding: 2.5rem 0;
+  }
+  .formCard {
+    padding: 1.25rem 1rem;
+    border-radius: 12px;
+  }
+  .formTitle {
+    font-size: 1.25rem;
+  }
+  .infoCard {
+    padding: 1rem;
+  }
+  .ctaBanner {
+    padding: 2rem 1rem;
+  }
+  .ctaBannerTitle {
+    font-size: 1.4rem;
+  }
+  .submitBtn {
+    width: 100%;
+  }
+}

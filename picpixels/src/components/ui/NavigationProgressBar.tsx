@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function NavigationProgressBar() {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -20,7 +19,6 @@ export default function NavigationProgressBar() {
     if (timerRef.current) clearInterval(timerRef.current);
     if (startTimeoutRef.current) clearTimeout(startTimeoutRef.current);
 
-    // Only show bar if navigation takes longer than 120ms
     startTimeoutRef.current = setTimeout(() => {
       setVisible(true);
       setLoading(true);
@@ -51,12 +49,10 @@ export default function NavigationProgressBar() {
     }, 200);
   };
 
-  // Listen for route changes to complete loading
   useEffect(() => {
     finish();
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
-  // Global prefetch on hover & click handling
   useEffect(() => {
     const isInternalLink = (target: HTMLElement | null): HTMLAnchorElement | null => {
       const anchor = target?.closest('a');
@@ -76,7 +72,6 @@ export default function NavigationProgressBar() {
       return anchor;
     };
 
-    // Instant prefetch as soon as cursor moves over or touches any internal link
     const handleMouseOver = (e: MouseEvent) => {
       const anchor = isInternalLink(e.target as HTMLElement);
       if (!anchor) return;
@@ -92,7 +87,6 @@ export default function NavigationProgressBar() {
       }
     };
 
-    // Intercept clicks to trigger smooth progress bar if navigation takes >120ms
     const handleGlobalClick = (e: MouseEvent) => {
       const anchor = isInternalLink(e.target as HTMLElement);
       if (!anchor) return;

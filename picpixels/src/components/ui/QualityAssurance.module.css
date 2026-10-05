@@ -30,8 +30,21 @@
 }
 
 @media (max-width: 640px) {
+  .section {
+    padding: 2.25rem 0;
+  }
   .grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .card {
+    padding: 1.25rem 1rem;
+  }
+  .cardTitle {
+    font-size: 1rem;
+  }
+  .cardDesc {
+    font-size: 0.85rem;
   }
 }
 

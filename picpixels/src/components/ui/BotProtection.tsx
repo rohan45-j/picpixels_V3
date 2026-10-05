@@ -15,6 +15,7 @@ interface BotProtectionProps {
   siteKey?: string;
   onTokenChange?: (token: string) => void;
   onChange?: (payload: BotProtectionPayload) => void;
+  onPayloadChange?: (payload: BotProtectionPayload) => void;
   honeypotValue?: string;
   onHoneypotChange?: (val: string) => void;
   theme?: 'auto' | 'light' | 'dark';
@@ -45,6 +46,7 @@ export default function BotProtection({
   siteKey,
   onTokenChange,
   onChange,
+  onPayloadChange,
   honeypotValue = '',
   onHoneypotChange,
   theme = 'auto',
@@ -63,19 +65,21 @@ export default function BotProtection({
     process.env.NEXT_PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY ||
     '1x00000000000000000000AA'; // Cloudflare official testing site key (always passes)
 
+  const notifyChange = onChange || onPayloadChange;
+
   const handleTokenReceived = useCallback(
     (newToken: string) => {
       setToken(newToken);
       if (onTokenChange) onTokenChange(newToken);
-      if (onChange) {
-        onChange({
+      if (notifyChange) {
+        notifyChange({
           website_hp: internalHoneypot,
           form_loaded_at: parseFloat(timestamp) * 1000,
           captcha_token: newToken,
         });
       }
     },
-    [internalHoneypot, timestamp, onTokenChange, onChange]
+    [internalHoneypot, timestamp, onTokenChange, notifyChange]
   );
 
   const handleHoneypotChange = (e: React.ChangeEvent<HTMLInputElement>) => {

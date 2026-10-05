@@ -104,7 +104,7 @@ export default function Footer({
 
     // 3. Fallback to siteSettings.footer_locations (only when not on a specific service detail page)
     if (items.length === 0 && !isServiceDetailPage) {
-      const rawLocations = siteSettings?.footer_locations || '';
+      const rawLocations = siteSettings?.footer_locations || 'Texas\nCalifornia\nFlorida\nNew York\nArizona\nNevada\nColorado\nWashington\nNew Jersey';
       rawLocations
         .split('\n')
         .map((line: string) => line.trim())
@@ -134,18 +134,18 @@ export default function Footer({
     return items;
   }, [footerServices, siteSettings?.footer_locations, pathname]);
 
-  // Corporate Office – USA (Fully dynamic from Django Admin - no hardcoded fallbacks)
-  const usaTitle = siteSettings?.usa_office_title?.trim() || '';
-  const usaPhone = siteSettings?.usa_office_phone?.trim() || '';
-  const usaEmail = siteSettings?.usa_office_email?.trim() || '';
-  const usaAddress = siteSettings?.usa_office_address?.trim() || '';
+  // Corporate Office – USA (Consistent across all pages with CMS override)
+  const usaTitle = siteSettings?.usa_office_title?.trim() || 'Corporate Office - USA';
+  const usaPhone = siteSettings?.usa_office_phone?.trim() || '+1 409 419 3704';
+  const usaEmail = siteSettings?.usa_office_email?.trim() || 'info@picpixels.com';
+  const usaAddress = siteSettings?.usa_office_address?.trim() || '3150 Roswell Rd. NW #1004, Atlanta, GA 30305, USA';
   const hasUsaOffice = Boolean(usaTitle || usaPhone || usaEmail || usaAddress);
 
-  // Production House – Bangladesh (Fully dynamic from Django Admin)
-  const bdTitle = siteSettings?.bd_office_title?.trim() || '';
-  const bdPhone = siteSettings?.bd_office_phone?.trim() || siteSettings?.support_phone?.trim() || '';
-  const bdEmail = siteSettings?.bd_office_email?.trim() || siteSettings?.support_email?.trim() || '';
-  const bdAddress = siteSettings?.bd_office_address?.trim() || siteSettings?.address?.trim() || '';
+  // Production House – Bangladesh (Consistent across all pages with CMS override)
+  const bdTitle = siteSettings?.bd_office_title?.trim() || 'Production House - Bangladesh';
+  const bdPhone = siteSettings?.bd_office_phone?.trim() || siteSettings?.support_phone?.trim() || '+880 1622915832';
+  const bdEmail = siteSettings?.bd_office_email?.trim() || siteSettings?.support_email?.trim() || 'info@picpixels.com';
+  const bdAddress = siteSettings?.bd_office_address?.trim() || siteSettings?.address?.trim() || '71&45, House, Road-28, Dhaka 1230, Bangladesh';
   const hasBdOffice = Boolean(bdTitle || bdPhone || bdEmail || bdAddress);
 
   // Social Links

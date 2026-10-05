@@ -435,6 +435,33 @@
   }
 }
 
+@media (max-width: 480px) {
+  .statsRow {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .statsRow > :last-child:nth-child(odd) {
+    grid-column: span 2;
+    max-width: 240px;
+    margin-inline: auto;
+    width: 100%;
+  }
+
+  .statCard {
+    padding: 1.15rem 0.65rem;
+  }
+
+  .statNum {
+    font-size: 1.65rem;
+  }
+
+  .statLabel {
+    font-size: 0.78rem;
+  }
+}
+
 .statCard {
   position: relative;
   overflow: hidden;

@@ -1227,6 +1227,12 @@
   .breadcrumb {
     padding-top: calc(8px + 62px + 0.75rem);
   }
+  .finalCta {
+    padding: 2.5rem 1rem;
+  }
+  .heroTitle {
+    font-size: 1.55rem;
+  }
 }
 
 /* ─── Rich Content Hyperlinks ─── */

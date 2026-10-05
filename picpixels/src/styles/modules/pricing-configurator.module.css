@@ -579,6 +579,15 @@
     padding: 2.25rem 0;
   }
 
+  .inner {
+    padding: 0 1rem;
+  }
+
+  .dropdownTrigger {
+    padding: 0.75rem 1rem;
+    font-size: 0.88rem;
+  }
+
   .cardGrid {
     grid-template-columns: 1fr;
     gap: 1.25rem;

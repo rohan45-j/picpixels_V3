@@ -178,13 +178,23 @@ html.js .reveal-stagger.reveal-visible > .reveal:nth-child(15) { transition-dela
   }
 }
 
-/* ─── Mobile: shorter distances ─── */
+/* ─── Mobile: Instant visibility to prevent blank delays on mobile devices ─── */
 @media (max-width: 768px) {
-  html.js .reveal-fadeUp { transform: translateY(16px); }
-  html.js .reveal-fadeDown { transform: translateY(-16px); }
-  html.js .reveal-fadeLeft { transform: translateX(-16px); }
-  html.js .reveal-fadeRight { transform: translateX(16px); }
-  html.js .reveal-flipUp { transform: perspective(600px) rotateX(5deg) translateY(12px); }
+  html.js .reveal,
+  html.js .reveal-fadeUp,
+  html.js .reveal-fadeDown,
+  html.js .reveal-fadeLeft,
+  html.js .reveal-fadeRight,
+  html.js .reveal-fadeIn,
+  html.js .reveal-scaleIn,
+  html.js .reveal-flipUp,
+  html.js .reveal-stagger > .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    visibility: visible !important;
+    transition: opacity 0.2s ease !important;
+  }
 }
 
 /* ─── Fallback for No-JS (@media scripting: none) ─── */

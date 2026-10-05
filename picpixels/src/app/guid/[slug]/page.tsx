@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.picpicxels.com';
     const canonical = item.canonical_url || `${siteUrl}/guid/${slug}`;
     const title = item.meta_title || `${item.title} | Guides & Tutorials | PicPicxels`;
-    const description = item.meta_description || item.short_description || item.excerpt || 'Read our detailed step-by-step editing guide.';
+    const description = item.meta_description || item.short_description || 'Read our detailed step-by-step editing guide.';
 
     return {
       title,
@@ -89,7 +89,7 @@ export default async function GuideDetailPage({
     '@context': 'https://schema.org',
     '@type': 'TechArticle',
     headline: item.title,
-    description: item.short_description || item.excerpt,
+    description: item.short_description,
     url: pageUrl,
     image: item.featured_image_url || item.featured_image || undefined,
     author: {

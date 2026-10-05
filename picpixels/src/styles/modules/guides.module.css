@@ -785,6 +785,10 @@
 }
 
 @media (max-width: 480px) {
+  .container { padding: 0 1rem; }
+  .heroInner { padding: 0 1rem; }
+  .articleContainer { padding: 0 1rem; }
+  .heroContent { padding: 4.5rem 0 1.75rem; }
   .projectNavInner {
     flex-direction: column;
     align-items: stretch;

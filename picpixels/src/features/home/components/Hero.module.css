@@ -428,11 +428,34 @@
     padding: 5.5rem 1rem 2.5rem;
   }
 
+  .title {
+    font-size: clamp(1.6rem, 6vw, 2.1rem);
+  }
+
+  .description {
+    font-size: 0.95rem;
+  }
+
+  .ctaGroup {
+    flex-direction: column;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .ctaGroup a,
+  .ctaGroup button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
   .heroStats {
-    gap: 1.2rem;
+    gap: 1.25rem 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .heroStatNum {
-    font-size: 1.3rem;
+    font-size: 1.35rem;
   }
 }

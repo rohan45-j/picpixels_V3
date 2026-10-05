@@ -27,12 +27,10 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   }
 }
 
-export default async function GuidePage({
-  searchParams,
-}: {
+export default async function GuidePage(props: {
   searchParams?: Promise<{ category?: string; search?: string }>;
-} = {}) {
-  const sp = searchParams ? await searchParams : undefined;
+}) {
+  const sp = props.searchParams ? await props.searchParams : undefined;
   const currentCategory = sp?.category || '';
   const currentSearch = sp?.search || '';
 
@@ -59,8 +57,8 @@ export default async function GuidePage({
     items: initialItems.map((g) => ({
       name: g.title,
       url: `/guid/${g.slug}`,
-      description: g.excerpt || g.meta_description,
-      image: g.featured_image || g.hero_image,
+      description: g.short_description || g.meta_description,
+      image: g.og_image_url || g.featured_image_url || g.featured_image || undefined,
     })),
   });
 

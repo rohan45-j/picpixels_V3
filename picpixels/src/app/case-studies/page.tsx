@@ -27,12 +27,10 @@ async function fetchJson<T>(url: string): Promise<T | null> {
   }
 }
 
-export default async function CaseStudiesPage({
-  searchParams,
-}: {
+export default async function CaseStudiesPage(props: {
   searchParams?: Promise<{ category?: string; search?: string }>;
-} = {}) {
-  const sp = searchParams ? await searchParams : undefined;
+}) {
+  const sp = props.searchParams ? await props.searchParams : undefined;
   const currentCategory = sp?.category || '';
   const currentSearch = sp?.search || '';
 
@@ -60,8 +58,8 @@ export default async function CaseStudiesPage({
     items: initialItems.map((cs) => ({
       name: cs.title,
       url: `/case-studies/${cs.slug}`,
-      description: cs.summary || cs.client_name,
-      image: cs.featured_image || cs.hero_image,
+      description: cs.excerpt || cs.short_description || cs.client_name,
+      image: cs.featured_image || cs.hero_banner || cs.og_image || undefined,
     })),
   });
 

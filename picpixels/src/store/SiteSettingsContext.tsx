@@ -5,12 +5,27 @@ import { fetchSiteSettings, type SiteSetting } from '@/services/public-api';
 
 const DEFAULT_SETTINGS: SiteSetting = {
   site_name: 'PicPicxels',
-  tagline: 'PicPicxels offers top-quality services that enhance revenue, increase profit margins, reduce operational costs, and save valuable time.',
-  support_email: 'support@picpicxels.com',
-  support_phone: '+1 (123) 456-7890',
+  tagline: 'Professional Photo Editing Services at Affordable Pricing',
+  support_email: 'info@picpicxels.com',
+  support_phone: '+880 1622915832',
   copyright_text: '© PicPicxels. All Rights Reserved.',
-  address: '123 Business Avenue, Suite 100, New York, NY 10001',
-  social_links: {},
+  address: '71&45, House, Road-28, Dhaka 1230, Bangladesh',
+  social_links: {
+    facebook: 'https://www.facebook.com/picpicxelsLTD',
+    linkedin: 'https://www.linkedin.com/company/photoexpert-bd/',
+    instagram: 'https://www.instagram.com/picpicxelsltd/',
+    pinterest: 'https://www.pinterest.com/picpicxels/',
+  },
+  footer_location_title: 'Location Based Services',
+  footer_locations: 'Texas\nCalifornia\nFlorida\nNew York\nArizona\nNevada\nColorado\nWashington\nNew Jersey',
+  usa_office_title: 'Corporate Office - USA',
+  usa_office_phone: '+1 409 419 3704',
+  usa_office_email: 'info@picpixels.com',
+  usa_office_address: '3150 Roswell Rd. NW #1004, Atlanta, GA 30305, USA',
+  bd_office_title: 'Production House - Bangladesh',
+  bd_office_phone: '+880 1622915832',
+  bd_office_email: 'info@picpixels.com',
+  bd_office_address: '71&45, House, Road-28, Dhaka 1230, Bangladesh',
 };
 
 interface SiteSettingsContextValue {

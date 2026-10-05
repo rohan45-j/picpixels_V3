@@ -20,8 +20,11 @@
 }
 
 @media (max-width: 480px) {
+  .wrapper {
+    padding: 1.5rem 1rem;
+  }
   .card {
-    padding: 2.5rem 1.8rem;
+    padding: 2rem 1.25rem;
   }
 }
 

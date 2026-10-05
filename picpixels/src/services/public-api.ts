@@ -13,10 +13,32 @@ function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCa
     });
 }
 
+const apiMemoryCache = new Map<string, { data: any; expiry: number }>();
+
+export async function cachedJsonFetch<T>(url: string, ttlSeconds = 120): Promise<T | null> {
+  const now = Date.now();
+  const cached = apiMemoryCache.get(url);
+  if (cached && cached.expiry > now) {
+    return cached.data as T;
+  }
+  try {
+    const resp = await apiFetch(url, { revalidate: ttlSeconds });
+    if (!resp.ok) {
+      if (cached) return cached.data as T;
+      return null;
+    }
+    const data = await resp.json();
+    apiMemoryCache.set(url, { data, expiry: now + ttlSeconds * 1000 });
+    return data as T;
+  } catch {
+    if (cached) return cached.data as T;
+    return null;
+  }
+}
+
 /**
  * Consolidated homepage data fetch - single API call replaces 13 separate calls
- * This should be imp
- * lemented as a Django endpoint at /api/v1/homepage/
+ * This should be implemented as a Django endpoint at /api/v1/homepage/
  * Returns all data needed for homepage in one request (~1-2s vs 13x3s=39s)
  */
 export interface HomepageData {
@@ -37,14 +59,7 @@ export interface HomepageData {
 }
 
 export async function fetchHomepageData(): Promise<HomepageData | null> {
-  try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/homepage/`, { revalidate: 60 });
-    if (!resp.ok) return null;
-    return await resp.json();
-  } catch (e) {
-    console.error('Failed to fetch consolidated homepage data', e);
-    return null;
-  }
+  return cachedJsonFetch<HomepageData>(`${BASE_URL}/api/v1/homepage/`, 120);
 }
 
 export function mediaUrl(path: string | null | undefined): string | undefined {
@@ -1036,27 +1051,15 @@ export async function fetchCMSPage(slug: string): Promise<CMSPage | null> {
 }
 
 export async function fetchSiteSettings(): Promise<SiteSetting | null> {
-  try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/settings/site/`, { revalidate: 300 });
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    return data.results?.[0] ?? data ?? null;
-  } catch (e) {
-    console.error('Failed to fetch Site Settings', e);
-    return null;
-  }
+  const data = await cachedJsonFetch<any>(`${BASE_URL}/api/v1/settings/site/`, 300);
+  if (!data) return null;
+  return data.results?.[0] ?? data ?? null;
 }
 
 export async function fetchSEOSettings(): Promise<SEOSetting | null> {
-  try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/settings/seo/`);
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    return data.results?.[0] ?? null;
-  } catch (e) {
-    console.error('Failed to fetch SEO Settings', e);
-    return null;
-  }
+  const data = await cachedJsonFetch<any>(`${BASE_URL}/api/v1/settings/seo/`, 300);
+  if (!data) return null;
+  return data.results?.[0] ?? null;
 }
 
 export async function fetchNavigationItems(location: 'header' | 'footer' | 'mega_menu'): Promise<NavigationItem[]> {

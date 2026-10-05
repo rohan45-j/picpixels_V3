@@ -1070,6 +1070,9 @@
   .pricingGrid {
     grid-template-columns: 1fr;
   }
+  .pricingPopular {
+    transform: none;
+  }
 }
 
 .pricingCard {

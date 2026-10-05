@@ -277,6 +277,11 @@
 }
 
 @media (max-width: 480px) {
+  .container { padding: 0 1rem; }
+  .breadcrumb { padding: calc(65px + 0.75rem) 1rem 0.75rem; }
+  .pageHeader { padding: 1.75rem 0 1rem; }
+  .mainSection { padding: 1.5rem 0 2.5rem; }
+  .projectOverview { padding: 1.25rem 1rem; margin-top: 1.25rem; margin-bottom: 1.75rem; }
   .grid { column-count: 2; column-gap: 6px; }
   .gridCell { margin-bottom: 6px; }
   .projectNavInner {

@@ -457,7 +457,7 @@ export default function OrderSummaryClient({
           country: clientInfo.country,
           product_name: pkgTitle,
           package_price: data.price,
-          project_requirements: combinedNotes || undefined,
+          project_requirements: combinedNotes || '',
           drive_link: driveLink || undefined,
           ...botPayload,
         },

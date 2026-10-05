@@ -402,30 +402,34 @@
     padding: 2.25rem 0;
   }
 
+  .inner {
+    padding: 0 1rem;
+  }
+
   .header {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
   }
 
   .grid {
-    gap: 2rem;
+    gap: 1.75rem;
   }
 
   .fieldGroupRow {
     grid-template-columns: 1fr;
-    gap: 1.25rem;
+    gap: 1rem;
   }
 
   .formCol {
-    padding: 1.5rem;
+    padding: 1.25rem 1rem;
   }
 
   .ctaText {
-    padding: 1.25rem 1.5rem;
-    font-size: 1rem;
+    padding: 1rem 1.25rem;
+    font-size: 0.95rem;
   }
 
   .infoCard {
-    padding: 1rem 1.25rem;
+    padding: 0.85rem 1rem;
   }
 }
 

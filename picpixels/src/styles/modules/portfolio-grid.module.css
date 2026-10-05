@@ -510,8 +510,13 @@
 }
 
 @media (max-width: 480px) {
-  .grid { grid-template-columns: repeat(1, 1fr); gap: 18px; }
-  .skeletonGrid { grid-template-columns: repeat(1, 1fr); gap: 18px; }
-  .filterBtn { padding: 6px 14px; font-size: 0.72rem; gap: 4px; }
-  .filterCount { padding: 1px 8px; font-size: 0.6rem; }
+  .section { padding: 2.25rem 0; }
+  .filterBar { padding: 0.25rem 0.5rem 0; }
+  .filterContainer { padding: 0.5rem 0.75rem; border-radius: 12px; }
+  .filterInner { gap: 6px; }
+  .grid { grid-template-columns: 1fr; gap: 16px; }
+  .skeletonGrid { grid-template-columns: 1fr; gap: 16px; }
+  .filterBtn { padding: 5px 12px; font-size: 0.74rem; gap: 4px; }
+  .filterCount { padding: 1px 7px; font-size: 0.6rem; }
+  .viewAllBtn { padding: 0.7rem 1.5rem; font-size: 0.82rem; }
 }

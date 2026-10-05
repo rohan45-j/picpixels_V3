@@ -32,9 +32,31 @@
 }
 
 @media (max-width: 640px) {
+  .section {
+    padding: 2.5rem 0;
+  }
+
+  .headerWrap {
+    margin-bottom: 2rem;
+  }
+
   .grid {
     grid-template-columns: 1fr;
-    gap: 1.75rem;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .body {
+    padding: 1.25rem;
+  }
+
+  .title {
+    font-size: 1.1rem;
+  }
+
+  .viewAllBtn {
+    padding: 0.75rem 1.75rem;
+    font-size: 0.88rem;
   }
 }
 

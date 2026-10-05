@@ -890,11 +890,17 @@
 }
 
 @media (max-width: 480px) {
-  .card { min-height: 460px; padding: 1.5rem 1rem; }
-  .planPrice { font-size: 2rem; }
+  .headerSection { padding: 5.5rem 1rem 2.5rem; }
+  .title { font-size: 1.55rem; }
+  .subtitle { font-size: 0.95rem; }
+  .card { min-height: auto; padding: 1.5rem 1rem; }
+  .planPrice { font-size: 1.85rem; }
   .cardImageWrapper { height: 130px; }
   .cardPricing { margin-bottom: 0.35rem; }
   .countField { gap: 0.35rem; }
   .countInputField { font-size: 0.8rem; }
   .dropdownWrap { max-width: 100%; }
+  .ctaBanner { padding: 2rem 1rem; }
+  .ctaBannerTitle { font-size: 1.4rem; }
+  .compareTable { min-width: 480px; }
 }

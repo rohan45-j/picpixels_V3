@@ -45,7 +45,7 @@ export default function LatestBlogs({ posts }: { posts: BlogPost[] }) {
           {latestThree.map((post, i) => {
             const readTime = calculateReadTime(post);
             const authorName = post.author_profile_data?.name || 'PicPixels Editorial';
-            const authorAvatar = post.author_profile_data?.avatar || post.author_image;
+            const authorAvatar = post.author_profile_data?.image || post.author_image;
             const category = post.category_name || 'Photography';
 
             return (

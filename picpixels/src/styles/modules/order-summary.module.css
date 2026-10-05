@@ -1348,3 +1348,25 @@
     display: none;
   }
 }
+
+@media (max-width: 480px) {
+  .container {
+    padding: 5.5rem 0.85rem 3rem;
+  }
+  .sectionCard {
+    padding: 1rem 0.85rem;
+    border-radius: 12px;
+  }
+  .pageTitle {
+    font-size: 1.4rem;
+  }
+  .deliveryGrid {
+    grid-template-columns: 1fr;
+  }
+  .checkoutBtn,
+  .payBtn {
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 0.85rem 1rem;
+  }
+}

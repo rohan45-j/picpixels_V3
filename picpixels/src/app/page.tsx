@@ -24,21 +24,18 @@ export const metadata = buildPageMetadata({
 });
 
 async function getHomepageData() {
-  // Use consolidated homepage API if available, otherwise fall back to parallel fetches with optimized caching
-  let homepageData = null;
-  try {
-    homepageData = await fetchHomepageData();
-  } catch (e) {
-    console.warn('Consolidated homepage API failed, falling back to parallel fetches:', e);
-  }
-  
+  const [homepageDataRes, siteSettingsRes] = await Promise.allSettled([
+    fetchHomepageData(),
+    fetchSiteSettings(),
+  ]);
+
+  const homepageData = homepageDataRes.status === 'fulfilled' ? homepageDataRes.value : null;
+  const siteSettings = siteSettingsRes.status === 'fulfilled' ? siteSettingsRes.value : null;
+
   if (homepageData) {
-    // Consolidated endpoint returned data - use it
-    const siteSettings = await fetchSiteSettings();
-    return { 
-      ...homepageData, 
+    return {
+      ...homepageData,
       siteSettings,
-      // Ensure arrays are never undefined
       services: homepageData.services ?? [],
       testimonials: homepageData.testimonials ?? [],
       technologies: homepageData.technologies ?? [],
@@ -136,7 +133,7 @@ async function getHomepageData() {
 async function HomeContent({ initialPortfolioCategory = '' }: { initialPortfolioCategory?: string } = {}) {
   const { services, testimonials, technologies, portfolios, portfolioCategories, whyChooseUs, latestBlogs, caseStudies, whyChooseFeatures, heroData, brandLogos, pricingConfig, homepageCTA, faqs, siteSettings } = await getHomepageData();
   const homepagePortfolios = (portfolios && portfolios.length > 0) ? portfolios : [];
-  const homepageCategories = (portfolioCategories || []).filter((c) => c.show_on_homepage !== false);
+  const homepageCategories = (portfolioCategories || []).filter((c: any) => c.show_on_homepage !== false);
 
   return (
     <>
@@ -167,12 +164,10 @@ async function HomeContent({ initialPortfolioCategory = '' }: { initialPortfolio
   );
 }
 
-export default async function Home({
-  searchParams,
-}: {
+export default async function Home(props: {
   searchParams?: Promise<{ category?: string; portfolio_cat?: string }>;
-} = {}) {
-  const sp = searchParams ? await searchParams : undefined;
+}) {
+  const sp = props.searchParams ? await props.searchParams : undefined;
   const initialCategory = sp?.portfolio_cat || sp?.category || '';
   return <HomeContent initialPortfolioCategory={initialCategory} />;
 }

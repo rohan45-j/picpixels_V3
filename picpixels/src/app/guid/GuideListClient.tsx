@@ -44,7 +44,7 @@ export default function GuideListClient({
   const [initialLoading, setInitialLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(initialItems.length);
   const searchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const catCache = useRef<Record<string, { items: Guide[]; totalCount: number; hasNext: boolean }>>({});
+  const catCache = useRef<Record<string, { items: GuideItem[]; totalCount: number; hasNext: boolean }>>({});
 
   useEffect(() => {
     setItems(initialItems);

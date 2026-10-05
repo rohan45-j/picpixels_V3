@@ -528,3 +528,27 @@
   color: var(--text-muted-dark);
   line-height: 1.5;
 }
+
+@media (max-width: 640px) {
+  .topBar {
+    padding: 0 1rem;
+    height: 60px;
+  }
+  .content {
+    padding: 1.5rem 1rem;
+  }
+  .sectionCard {
+    padding: 1.25rem 1rem;
+  }
+  .wizardCard {
+    padding: 1.5rem 1rem;
+  }
+  .dashboardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .userMenu .email {
+    display: none;
+  }
+}

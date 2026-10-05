@@ -1984,3 +1984,12 @@
   .breadcrumb { padding-top: calc(72px + 1rem); }
   .featuredBody { padding: 1.25rem; }
 }
+
+@media (max-width: 480px) {
+  .controlsBar { top: 66px; }
+  .breadcrumb { padding-top: calc(62px + 1rem); }
+  .hero { padding: 5.5rem 0.85rem 2.5rem; }
+  .featuredCardTitle { font-size: 1.25rem; }
+  .featuredDesc { font-size: 0.85rem; }
+  .statNumber { font-size: 2.2rem; }
+}

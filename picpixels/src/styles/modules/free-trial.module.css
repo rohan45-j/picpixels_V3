@@ -660,19 +660,34 @@
 }
 
 @media (max-width: 480px) {
+  .heroSection,
+  .hero {
+    padding: 5.5rem 1rem 3.5rem;
+  }
+
+  .formSection {
+    padding: 0 0.75rem 3rem;
+  }
+
+  .formCard {
+    padding: 1.25rem 0.85rem;
+    border-radius: 12px;
+  }
+
   .title,
   .heroTitle {
-    font-size: 1.85rem;
+    font-size: 1.65rem;
   }
 
   .subtitle,
   .heroDesc {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 
   .submitBtn {
-    font-size: 0.95rem;
-    padding: 0.95rem 1.5rem;
+    font-size: 0.92rem;
+    padding: 0.85rem 1.25rem;
+    width: 100%;
   }
 }
 
