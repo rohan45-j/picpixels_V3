@@ -96,7 +96,8 @@ cd /var/www/picpixels_root && git pull origin main && \
 | এরর বা লক্ষণ | সমাধান কমান্ড (PuTTY) |
 |---|---|
 | **ফ্রন্টএন্ড এরর দেখতে** | `pm2 logs picpixels-frontend --lines 50` |
-| **ফ্রন্টএন্ড রিস্টার্ট দিতে** | `pm2 restart picpixels-frontend` |
+| **ফ্রন্টএন্ড রিস্টার্ট দিতে** | `su - deploy -c "pm2 restart picpixels-frontend"` |
+| **fatal: detected dubious ownership** | `git config --global --add safe.directory "*"` |
 | **ব্যাকএন্ড এরর দেখতে** | `sudo journalctl -u picpixels-backend -n 50 --no-pager` |
 | **ব্যাকএন্ড রিস্টার্ট দিতে** | `sudo systemctl restart picpixels-backend` |
 | **ব্রাউজারে পুরোনো পেজ আসলে** | ব্রাউজারে `Ctrl + F5` দিয়ে হার্ড রিফ্রেশ দিন (ক্যাশ ক্লিয়ার) |
