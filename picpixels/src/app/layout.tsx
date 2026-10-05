@@ -151,6 +151,31 @@ export default async function RootLayout({
                     }
                   };
                 }
+
+                // Safe DOM mutation protection against Chrome extensions / React 19 hydration mismatch
+                if (typeof window !== 'undefined' && typeof Node !== 'undefined') {
+                  var origRemoveChild = Node.prototype.removeChild;
+                  Node.prototype.removeChild = function(child) {
+                    if (child && child.parentNode !== this) {
+                      if (child.parentNode) {
+                        return child.parentNode.removeChild(child);
+                      }
+                      return child;
+                    }
+                    return origRemoveChild.call(this, child);
+                  };
+
+                  var origInsertBefore = Node.prototype.insertBefore;
+                  Node.prototype.insertBefore = function(newNode, referenceNode) {
+                    if (referenceNode && referenceNode.parentNode !== this) {
+                      if (referenceNode.parentNode) {
+                        return referenceNode.parentNode.insertBefore(newNode, referenceNode);
+                      }
+                      return this.appendChild(newNode);
+                    }
+                    return origInsertBefore.call(this, newNode, referenceNode);
+                  };
+                }
               })();
             `
           }}

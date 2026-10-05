@@ -37,8 +37,14 @@ export function CustomHeadInjector({ scripts }: CustomHeadInjectorProps) {
 
     return () => {
       injectedElements.forEach((el) => {
-        if (el.parentNode) {
-          el.parentNode.removeChild(el);
+        try {
+          if (el.parentNode && el.parentNode.contains(el)) {
+            el.parentNode.removeChild(el);
+          } else if (typeof el.remove === 'function') {
+            el.remove();
+          }
+        } catch {
+          // Ignore if node is already detached
         }
       });
     };
