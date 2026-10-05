@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ServiceDetailClient from './ServiceDetailClient';
-import { fetchBrandLogos, fetchSiteSettings, fetchFooterServices, cachedJsonFetch } from '@/services/public-api';
+import { fetchBrandLogos, fetchSiteSettings, fetchFooterServices, cachedJsonFetch, mediaUrl } from '@/services/public-api';
 import type { Service, Technology, Testimonial, BrandLogo, SiteSetting } from '@/services/public-api';
 
 import { cache } from 'react';
@@ -57,7 +57,7 @@ export async function generateMetadata({
   const keywords = service.meta_keywords
     ? service.meta_keywords.split(',').map((k) => k.trim()).filter(Boolean)
     : [service.title, 'photo editing service', 'professional photo retouching'];
-  const shareImage = service.og_image_url || service.og_image || service.image || undefined;
+  const shareImage = mediaUrl(service.og_image_url || service.og_image || service.image) || undefined;
 
   return {
     title,
@@ -139,7 +139,7 @@ export default async function ServiceDetailPage({
       price: service.price,
       priceCurrency: 'USD',
     } : undefined,
-    image: service.og_image_url || service.og_image || service.image || undefined,
+    image: mediaUrl(service.og_image_url || service.og_image || service.image) || undefined,
   };
 
   let customJsonLdString: string | null = null;

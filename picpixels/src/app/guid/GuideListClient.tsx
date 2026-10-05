@@ -251,9 +251,9 @@ export default function GuideListClient({
                 items.map((item, index) => (
                   <Link key={item.id} href={`/guid/${item.slug}`} className={`${gridStyles.card} ${styles.card}`} style={{ animationDelay: `${index * 0.06}s` }}>
                     <div className={styles.cardVisual}>
-                      {item.featured_image_url ? (
+                      {item.featured_image_url || (item as any).featured_image ? (
                         <img
-                          src={mediaUrl(item.featured_image_url) || ''}
+                          src={mediaUrl(item.featured_image_url || (item as any).featured_image) || ''}
                           alt={item.featured_image_alt || item.title}
                           className={styles.cardImg}
                           loading="lazy"

@@ -147,7 +147,7 @@ export default function CaseStudiesDetailClient({
   const container = listStyles.container;
   const sectionInner = detailStyles.sectionInner;
 
-  const heroImg = item.hero_banner_url || item.featured_image_url;
+  const heroImg = mediaUrl(item.hero_banner_url || item.hero_banner || item.featured_image_url || item.featured_image);
   const heroImgAlt = item.hero_banner_alt || item.featured_image_alt || item.title;
 
   return (

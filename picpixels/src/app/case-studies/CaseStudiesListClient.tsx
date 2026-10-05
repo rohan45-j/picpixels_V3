@@ -316,9 +316,9 @@ export default function CaseStudiesListClient({
           <div className={styles.container}>
             <Link href={`/case-studies/${featured.slug}`} className={styles.featuredCard}>
               <div className={styles.featuredVisual}>
-                {featured.featured_image_url ? (
+                {featured.featured_image_url || (featured as any).featured_image ? (
                   <img
-                    src={mediaUrl(featured.featured_image_url) || ''}
+                    src={mediaUrl(featured.featured_image_url || (featured as any).featured_image) || ''}
                     alt={featured.featured_image_alt || featured.title}
                     className={styles.featuredImg}
                   />
@@ -415,9 +415,9 @@ export default function CaseStudiesListClient({
                     style={{ animationDelay: `${index * 0.06}s` }}
                   >
                     <div className={styles.cardVisual}>
-                      {item.featured_image_url ? (
+                      {item.featured_image_url || (item as any).featured_image ? (
                         <img
-                          src={mediaUrl(item.featured_image_url) || ''}
+                          src={mediaUrl(item.featured_image_url || (item as any).featured_image) || ''}
                           alt={item.featured_image_alt || item.title}
                           className={styles.cardImg}
                           loading="lazy"

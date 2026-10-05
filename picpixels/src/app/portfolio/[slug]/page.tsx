@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { cachedJsonFetch, type PortfolioItem } from '@/services/public-api';
+import { cachedJsonFetch, mediaUrl, type PortfolioItem } from '@/services/public-api';
 import PortfolioDetailClient from './PortfolioDetailClient';
 import { SITE_URL, buildBreadcrumbSchema } from '@/lib/seo';
 import JsonLd from '@/components/seo/JsonLd';
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     ? project.meta_keywords.split(',').map((k) => k.trim()).filter(Boolean)
     : [project.category_name, 'photo editing portfolio', 'clipping path sample', 'retouching example'].filter(Boolean);
 
-  const shareImage = project.og_image_url || project.og_image || project.featured_image_url || project.featured_image;
+  const shareImage = mediaUrl(project.og_image_url || project.og_image || project.featured_image_url || project.featured_image);
 
   return {
     title,
@@ -74,7 +74,7 @@ export default async function PortfolioDetailPage({
     name: project.title,
     headline: project.title,
     description: cleanDescription,
-    image: project.featured_image_url || project.featured_image || project.after_image_url || undefined,
+    image: mediaUrl(project.featured_image_url || project.featured_image || project.after_image_url) || undefined,
     datePublished: project.created_at,
     dateModified: project.updated_at,
     creator: {

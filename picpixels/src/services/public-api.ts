@@ -41,6 +41,17 @@ function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCa
 
 const apiMemoryCache = new Map<string, { data: any; expiry: number }>();
 
+export function sanitizeMediaUrls<T>(data: T): T {
+  if (!data) return data;
+  try {
+    const str = JSON.stringify(data);
+    const cleaned = str.replace(/https?:\/\/(?:(?:127\.0\.0\.1|localhost)(?::\d+)?|(?:admin\.)?picpixels\.com)\/media\//gi, '/media/');
+    return JSON.parse(cleaned);
+  } catch {
+    return data;
+  }
+}
+
 export async function cachedJsonFetch<T>(url: string, ttlSeconds = 180): Promise<T | null> {
   const now = Date.now();
   const cached = apiMemoryCache.get(url);
@@ -53,7 +64,8 @@ export async function cachedJsonFetch<T>(url: string, ttlSeconds = 180): Promise
       if (cached) return cached.data as T;
       return null;
     }
-    const data = await resp.json();
+    const rawData = await resp.json();
+    const data = sanitizeMediaUrls(rawData);
     apiMemoryCache.set(url, { data, expiry: now + ttlSeconds * 1000 });
     return data as T;
   } catch {
@@ -90,13 +102,34 @@ export async function fetchHomepageData(): Promise<HomepageData | null> {
 
 export function mediaUrl(path: string | null | undefined): string | undefined {
   if (!path) return undefined;
-  if (path.startsWith('http://') || path.startsWith('https://')) return path;
-  // Django MEDIA_URL is /media/ — handle both relative paths with and without /media/ prefix
-  const normalized = path.startsWith('/media/') ? path : `/${path}`;
-  if (normalized.startsWith('/media/')) {
-    return `${BASE_URL}${normalized}`;
+
+  let clean = path.trim();
+
+  // 1. Strip internal localhost/127.0.0.1 URLs injected by Django DRF during SSR
+  if (/^https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?/i.test(clean)) {
+    clean = clean.replace(/^https?:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?/, '');
   }
-  return `${BASE_URL}/media${normalized}`;
+
+  // 2. Strip live production domains to make them relative same-origin paths (/media/...)
+  if (/^https?:\/\/(?:admin\.)?picpixels\.com/i.test(clean)) {
+    clean = clean.replace(/^https?:\/\/(?:admin\.)?picpixels\.com/i, '');
+  }
+
+  // 3. If it's an external third-party URL (e.g. Unsplash, external CDN, Sketchfab), return as-is
+  if (clean.startsWith('http://') || clean.startsWith('https://')) {
+    return clean;
+  }
+
+  // 4. Ensure path starts with /media/
+  if (clean.startsWith('/media/')) {
+    return clean;
+  }
+  if (clean.startsWith('media/')) {
+    return `/${clean}`;
+  }
+
+  const slashPrefixed = clean.startsWith('/') ? clean : `/${clean}`;
+  return `/media${slashPrefixed}`;
 }
 
 export interface CMSPage {

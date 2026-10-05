@@ -62,7 +62,7 @@ function FeaturedLayout({ item }: { item: CaseStudyItem }) {
           {item.featured_image_url || item.featured_image ? (
             <div className="rounded-2xl overflow-hidden shadow-[0_16px_48px_rgba(0,0,0,0.1)]">
               <img
-                src={mediaUrl(item.featured_image) || item.featured_image_url || ''}
+                src={mediaUrl(item.featured_image || item.featured_image_url) || ''}
                 alt={item.featured_image_alt || item.title}
                 className="w-full aspect-[4/3] object-cover"
                 loading="lazy"
@@ -91,7 +91,7 @@ function GridLayout({ items }: { items: CaseStudyItem[] }) {
             <div className={blogStyles.cardImageWrap}>
               {item.featured_image_url || item.featured_image ? (
                 <img
-                  src={mediaUrl(item.featured_image) || item.featured_image_url || ''}
+                  src={mediaUrl(item.featured_image || item.featured_image_url) || ''}
                   alt={item.featured_image_alt || item.title}
                   className={blogStyles.cardImg}
                   loading="lazy"

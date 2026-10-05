@@ -90,8 +90,15 @@ export async function fetchJSON<T>(
           return null;
         }
 
-        const data = (await resp.json()) as T;
-        return data;
+        const rawData = (await resp.json()) as T;
+        if (!rawData) return rawData;
+        try {
+          const str = JSON.stringify(rawData);
+          const cleaned = str.replace(/https?:\/\/(?:(?:127\.0\.0\.1|localhost)(?::\d+)?|(?:admin\.)?picpixels\.com)\/media\//gi, '/media/');
+          return JSON.parse(cleaned) as T;
+        } catch {
+          return rawData;
+        }
       } catch (err) {
         lastError = err as Error;
 

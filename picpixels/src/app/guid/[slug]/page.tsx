@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { cache } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { cachedJsonFetch, type GuideItem } from '@/services/public-api';
+import { cachedJsonFetch, mediaUrl, type GuideItem } from '@/services/public-api';
 import GuideDetailClient from './GuideDetailClient';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
@@ -44,13 +44,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description,
         url: canonical,
         type: 'article',
-        images: item.og_image_url || item.featured_image_url || item.featured_image || undefined,
+        images: mediaUrl(item.og_image_url || item.featured_image_url || item.featured_image) || undefined,
       },
       twitter: {
         card: 'summary_large_image',
         title,
         description,
-        images: item.og_image_url || item.featured_image_url || item.featured_image || undefined,
+        images: mediaUrl(item.og_image_url || item.featured_image_url || item.featured_image) || undefined,
       },
     };
   }
@@ -85,7 +85,7 @@ export default async function GuideDetailPage({
     headline: item.title,
     description: item.short_description,
     url: pageUrl,
-    image: item.featured_image_url || item.featured_image || undefined,
+    image: mediaUrl(item.featured_image_url || item.featured_image) || undefined,
     author: {
       '@type': 'Organization',
       name: 'PicPicxels',

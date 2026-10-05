@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import type { PortfolioItem, PortfolioCategory, HomepageCTASection as HomepageCTAType, FAQ } from '@/services/public-api';
-import { cachedJsonFetch } from '@/services/public-api';
+import { cachedJsonFetch, mediaUrl } from '@/services/public-api';
 import PortfolioListClient from './PortfolioListClient';
 import PortfolioFAQSection from '@/components/ui/PortfolioFAQSection';
 import { buildPageMetadata, buildCollectionSchema, buildBreadcrumbSchema } from '@/lib/seo';
@@ -53,7 +53,7 @@ export default async function PortfolioPage({
       name: item.title,
       url: `/portfolio/${item.slug}`,
       description: item.short_description,
-      image: item.featured_image || item.after_image,
+      image: mediaUrl(item.featured_image || item.after_image),
     })),
   });
 

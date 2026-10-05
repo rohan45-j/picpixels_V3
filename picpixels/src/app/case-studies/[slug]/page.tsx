@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { cache } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { cachedJsonFetch, type CaseStudyItem } from '@/services/public-api';
+import { cachedJsonFetch, mediaUrl, type CaseStudyItem } from '@/services/public-api';
 import CaseStudiesDetailClient from './CaseStudiesDetailClient';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const keywords = item.meta_keywords
     ? item.meta_keywords.split(',').map((k) => k.trim()).filter(Boolean)
     : [item.title, 'photo editing case study', 'ecommerce retouching case study'];
-  const shareImage = item.og_image || item.featured_image_url || undefined;
+  const shareImage = mediaUrl(item.og_image || item.featured_image_url || item.featured_image) || undefined;
 
   return {
     title,
@@ -97,7 +97,7 @@ export default async function CaseStudyDetailPage({
     url: canonical,
     headline: item.title,
     description: (item.meta_description || item.excerpt || item.short_description || '').replace(/<[^>]*>/g, '').slice(0, 300),
-    image: item.featured_image_url || item.og_image || undefined,
+    image: mediaUrl(item.featured_image_url || item.featured_image || item.og_image) || undefined,
     datePublished: item.publish_date || item.created_at || undefined,
     dateModified: item.updated_at || undefined,
     author: {

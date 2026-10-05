@@ -11,7 +11,7 @@ export default function HomeFeaturedCaseStudy({ item }: { item: CaseStudyItem | 
   if (!item) return null;
 
   const detailHref = `/case-studies/${item.slug}`;
-  const imageSrc = item.featured_image_url || (item.featured_image ? mediaUrl(item.featured_image) : null);
+  const imageSrc = mediaUrl(item.featured_image_url || item.featured_image) || null;
   const imageAlt = item.featured_image_alt || item.title;
 
   // Statistics from Admin Panel
