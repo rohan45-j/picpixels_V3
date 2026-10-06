@@ -10,6 +10,7 @@ import faqStyles from '@/styles/modules/faq-accordion.module.css';
 import type { FAQ, SiteSetting } from '@/services/public-api';
 import { useSiteSettings } from '@/store/SiteSettingsContext';
 import BotProtection from '@/components/ui/BotProtection';
+import { Loader2, Send } from 'lucide-react';
 
 interface FormData {
   name: string;
@@ -199,7 +200,19 @@ export default function ContactClient({
                         onHoneypotChange={setHoneypot}
                       />
                     </div>
-                    <button type="submit" className={styles.submitBtn} disabled={loading}>{loading ? 'Sending...' : 'Send Message →'}</button>
+                    <button type="submit" className={styles.submitBtn} disabled={loading}>
+                      {loading ? (
+                        <>
+                          <Loader2 size={18} className="spin" />
+                          <span>Sending Message...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Send Message</span>
+                          <Send size={16} />
+                        </>
+                      )}
+                    </button>
                   </form>
                 </div>
               </Reveal>

@@ -1258,10 +1258,12 @@ export default function OrderSummaryClient({
                 className={styles.submitBtn}
                 disabled={!canSubmit}
                 onClick={handleSubmit}
+                style={{ opacity: submitting ? 0.8 : undefined, cursor: submitting ? 'wait' : undefined }}
               >
                 {submitting ? (
                   <>
-                    <Loader2 size={18} className="spin" /> Submitting Order...
+                    <Loader2 size={18} className="spin" />
+                    <span>{files.length > 0 || zipFile ? 'Uploading Images & Submitting...' : 'Submitting Order...'}</span>
                   </>
                 ) : (
                   <>

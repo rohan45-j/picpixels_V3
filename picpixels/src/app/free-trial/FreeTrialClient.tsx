@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { CheckCircle, AlertCircle, Send, Zap, Shield, RefreshCw, Users, ChevronDown, FileText, Link as LinkIcon, Upload } from 'lucide-react';
+import { CheckCircle, AlertCircle, Send, Zap, Shield, RefreshCw, Users, ChevronDown, FileText, Link as LinkIcon, Upload, Loader2 } from 'lucide-react';
 import FileUploadZone from '@/components/ui/FileUploadZone';
 import { submitFreeTrial, getProductCategories } from '@/services/public-api';
 import BotProtection from '@/components/ui/BotProtection';
@@ -479,15 +479,16 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
                   className={styles.submitBtn}
                   type="submit"
                   disabled={status === 'loading'}
+                  style={{ opacity: status === 'loading' ? 0.8 : 1, cursor: status === 'loading' ? 'wait' : 'pointer' }}
                 >
                   {status === 'loading' ? (
                     <>
-                      <span className={styles.spinner} />
-                      Submitting Request...
+                      <Loader2 size={18} className="spin" />
+                      <span>{files.length > 0 ? 'Uploading Images & Submitting...' : 'Submitting Free Trial...'}</span>
                     </>
                   ) : (
                     <>
-                      Submit Free Trial Request
+                      <span>Submit Free Trial Request</span>
                       <Send size={16} />
                     </>
                   )}

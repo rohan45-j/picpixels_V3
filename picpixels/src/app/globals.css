@@ -325,6 +325,20 @@ body.lightbox-open [class*="FloatingActionButtons_container"] {
   visibility: hidden !important;
   pointer-events: none !important;
 }
+/* ─── Universal Loading Spinner Animations ─── */
+.spin,
+.spinner-icon,
+.animate-spin {
+  display: inline-block;
+  animation: globalSpin 0.75s linear infinite !important;
+}
 
-
+@keyframes globalSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 
