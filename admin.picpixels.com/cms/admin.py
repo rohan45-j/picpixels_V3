@@ -1951,11 +1951,53 @@ class PricingConfigCardPriceAdmin(ModelAdmin):
 class FreeTrialAttachmentInline(TabularInline):
     model = FreeTrialAttachment
     extra = 0
-    readonly_fields = ('file', 'original_filename', 'uploaded_at')
+    fields = ('thumbnail_preview', 'original_filename', 'file_size_col', 'actions_col', 'uploaded_at')
+    readonly_fields = ('thumbnail_preview', 'original_filename', 'file_size_col', 'actions_col', 'uploaded_at')
     can_delete = True
 
     def has_add_permission(self, request, obj=None):
         return False
+
+    @display(description='Preview')
+    def thumbnail_preview(self, obj):
+        if not obj.file:
+            return mark_safe('<span style="color:#94a3b8;">No file</span>')
+        try:
+            url = obj.file.url
+        except Exception:
+            return mark_safe('<span style="color:#ef4444;">Error</span>')
+
+        if obj.is_image:
+            return format_html(
+                '<a href="{}" target="_blank" title="Click to view full image in new tab">'
+                '<img src="{}" style="width:56px;height:56px;object-fit:cover;border-radius:6px;border:1px solid #cbd5e1;box-shadow:0 1px 2px rgba(0,0,0,0.08);cursor:pointer;" />'
+                '</a>',
+                url, url
+            )
+        return format_html(
+            '<div style="width:56px;height:56px;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:700;font-size:11px;color:#475569;">'
+            '<span>📄</span><span>{}</span>'
+            '</div>',
+            obj.file_ext
+        )
+
+    @display(description='Size')
+    def file_size_col(self, obj):
+        return obj.file_size_display
+
+    @display(description='Actions')
+    def actions_col(self, obj):
+        if not obj.file:
+            return '-'
+        url = obj.file.url
+        filename = obj.original_filename or 'download'
+        return format_html(
+            '<div style="display:flex;gap:6px;align-items:center;">'
+            '<a href="{}" target="_blank" style="padding:4px 10px;background:#0284c7;color:#fff;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;">👁️ View</a>'
+            '<a href="{}" download="{}" style="padding:4px 10px;background:#059669;color:#fff;border-radius:4px;font-size:11px;font-weight:600;text-decoration:none;">⬇️ Download</a>'
+            '</div>',
+            url, url, filename
+        )
 
 
 @admin.register(ProductCategory)
@@ -1980,12 +2022,12 @@ class ProductCategoryAdmin(ModelAdmin):
 
 @admin.register(FreeTrial)
 class FreeTrialAdmin(ModelAdmin):
-    list_display = ('type_badge', 'full_name', 'phone_actions', 'email', 'product_name', 'country', 'sms_status', 'is_read', 'created_at')
+    list_display = ('type_badge', 'full_name', 'phone_actions', 'email', 'product_name', 'files_badge', 'country', 'sms_status', 'is_read', 'created_at')
     list_editable = ('sms_status', 'is_read')
     list_filter = ('request_type', 'sms_status', 'is_read', 'product_category', 'created_at')
     search_fields = ('full_name', 'email', 'phone_number', 'product_name', 'company_name', 'country')
     ordering = ('-created_at',)
-    readonly_fields = ('created_at', 'phone_actions_detail')
+    readonly_fields = ('created_at', 'phone_actions_detail', 'uploaded_files_preview', 'cloud_drive_preview')
     actions = ['mark_sms_sent', 'mark_contacted_whatsapp']
     fieldsets = (
         ('Submission Type & Plan', {
@@ -1993,6 +2035,10 @@ class FreeTrialAdmin(ModelAdmin):
         }),
         ('Contact Information', {
             'fields': ('full_name', 'company_name', 'country', 'email', 'phone_number', 'phone_actions_detail'),
+        }),
+        ('📸 Client Uploaded Images & Files', {
+            'fields': ('uploaded_files_preview', 'cloud_drive_preview'),
+            'description': 'Direct interactive gallery to view, inspect thumbnails, download original image files, or access client cloud drive link.',
         }),
         ('📱 Client SMS & Communication Tracking', {
             'fields': ('sms_status', 'last_sms_sent_at', 'sms_notes'),
@@ -2017,6 +2063,99 @@ class FreeTrialAdmin(ModelAdmin):
         return format_html(
             '<span style="background:#6366f118;color:#6366f1;border:1px solid #6366f138;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:700;white-space:nowrap;">'
             '🚀 Free Trial</span>'
+        )
+
+    @display(description='Files / Attachments')
+    def files_badge(self, obj):
+        parts = []
+        att_count = obj.attachments.count()
+        if att_count > 0:
+            parts.append(
+                f'<span style="background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:700;white-space:nowrap;">'
+                f'📷 {att_count} File{"s" if att_count > 1 else ""}</span>'
+            )
+        if obj.drive_link:
+            drive_clean = obj.drive_link if obj.drive_link.startswith('http') else f'https://{obj.drive_link}'
+            parts.append(
+                f'<a href="{drive_clean}" target="_blank" style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:2px 8px;border-radius:9999px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;" title="Open Cloud Link">'
+                f'☁️ Cloud Link ↗</a>'
+            )
+        if not parts:
+            return mark_safe('<span style="color:#94a3b8;font-size:11px;">None</span>')
+        return mark_safe(f'<div style="display:flex;flex-direction:column;gap:4px;">{"".join(parts)}</div>')
+
+    @display(description='Uploaded Files Gallery')
+    def uploaded_files_preview(self, obj):
+        attachments = list(obj.attachments.all())
+        if not attachments:
+            return mark_safe(
+                '<div style="padding:14px 18px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:8px;color:#64748b;font-size:13px;">'
+                'ℹ️ No direct image files attached to this request. (Check Cloud Drive link if provided below)'
+                '</div>'
+            )
+
+        cards_html = []
+        for att in attachments:
+            try:
+                url = att.file.url if att.file else '#'
+            except Exception:
+                url = '#'
+            filename = att.original_filename or 'Image'
+            size = att.file_size_display
+            ext = att.file_ext
+
+            if att.is_image:
+                preview_elem = (
+                    f'<div style="width:100%;height:140px;background:#f1f5f9;border-radius:6px;overflow:hidden;display:flex;align-items:center;justify-content:center;">'
+                    f'<a href="{url}" target="_blank" title="Click to view full image in new tab" style="display:block;width:100%;height:100%;">'
+                    f'<img src="{url}" alt="{filename}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.2s;" onmouseover="this.style.transform=\'scale(1.05)\'" onmouseout="this.style.transform=\'scale(1)\'" />'
+                    f'</a>'
+                    f'</div>'
+                )
+            else:
+                preview_elem = (
+                    f'<div style="width:100%;height:140px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">'
+                    f'<span style="font-size:36px;">📁</span>'
+                    f'<span style="font-size:11px;font-weight:700;color:#334155;background:#e2e8f0;padding:2px 8px;border-radius:4px;">{ext}</span>'
+                    f'</div>'
+                )
+
+            card = (
+                f'<div style="width:200px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;padding:10px;box-shadow:0 1px 3px rgba(0,0,0,0.06);display:flex;flex-direction:column;gap:8px;">'
+                f'{preview_elem}'
+                f'<div style="font-size:12px;font-weight:600;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{filename}">{filename}</div>'
+                f'<div style="font-size:11px;color:#64748b;">Size: <strong style="color:#334155;">{size}</strong></div>'
+                f'<div style="display:flex;gap:6px;margin-top:auto;">'
+                f'<a href="{url}" target="_blank" style="flex:1;text-align:center;padding:6px 0;background:#0284c7;color:#ffffff;border-radius:5px;font-size:11px;font-weight:600;text-decoration:none;">👁️ View</a>'
+                f'<a href="{url}" download="{filename}" style="flex:1;text-align:center;padding:6px 0;background:#059669;color:#ffffff;border-radius:5px;font-size:11px;font-weight:600;text-decoration:none;">⬇️ Download</a>'
+                f'</div>'
+                f'</div>'
+            )
+            cards_html.append(card)
+
+        return mark_safe(
+            f'<div style="display:flex;flex-wrap:wrap;gap:14px;padding:8px 0;">{"".join(cards_html)}</div>'
+        )
+
+    @display(description='Client Cloud Storage Link')
+    def cloud_drive_preview(self, obj):
+        if not obj.drive_link:
+            return mark_safe('<span style="color:#94a3b8;font-size:13px;">No external cloud drive link provided.</span>')
+        clean_url = obj.drive_link if obj.drive_link.startswith('http') else f'https://{obj.drive_link}'
+        return format_html(
+            '<div style="display:flex;align-items:center;justify-content:space-between;background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 18px;max-width:700px;">'
+            '  <div style="display:flex;align-items:center;gap:12px;">'
+            '    <span style="font-size:26px;">☁️</span>'
+            '    <div>'
+            '      <div style="font-size:11px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:0.5px;">Cloud Storage (Drive / Dropbox / WeTransfer)</div>'
+            '      <a href="{}" target="_blank" style="font-size:13px;font-weight:600;color:#2563eb;word-break:break-all;text-decoration:underline;">{}</a>'
+            '    </div>'
+            '  </div>'
+            '  <a href="{}" target="_blank" class="button" style="background:#2563eb;color:#ffffff;padding:8px 16px;border-radius:6px;font-weight:700;text-decoration:none;white-space:nowrap;margin-left:12px;">'
+            '    Open Link ↗'
+            '  </a>'
+            '</div>',
+            clean_url, obj.drive_link, clean_url
         )
 
     @display(description='Phone / Quick SMS')

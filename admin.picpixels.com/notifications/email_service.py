@@ -486,6 +486,7 @@ def trigger_submission_emails(instance, submission_type):
 
     if submission_type in ('order_request', 'free_trial'):
         client_email = getattr(instance, 'email', None)
+        admin_base = getattr(settings, 'ADMIN_BASE_URL', None) or os.getenv('ADMIN_BASE_URL') or ('http://127.0.0.1:8000' if settings.DEBUG else 'https://admin.picpixels.com')
         context.update({
             'client_name': getattr(instance, 'full_name', 'Valued Client'),
             'client_email': client_email or '',
@@ -497,9 +498,10 @@ def trigger_submission_emails(instance, submission_type):
             'order_id': str(getattr(instance, 'id', '')),
             'requirements': getattr(instance, 'project_requirements', '') or 'None provided',
             'drive_link': getattr(instance, 'drive_link', '') or '',
-            'admin_link': f"http://127.0.0.1:8000/admin/cms/freetrial/{instance.id}/change/",
+            'admin_link': f"{admin_base}/admin/cms/freetrial/{instance.id}/change/",
         })
     elif submission_type == 'contact_inquiry':
+        admin_base = getattr(settings, 'ADMIN_BASE_URL', None) or os.getenv('ADMIN_BASE_URL') or ('http://127.0.0.1:8000' if settings.DEBUG else 'https://admin.picpixels.com')
         client_email = getattr(instance, 'email', None)
         context.update({
             'client_name': getattr(instance, 'name', 'Valued Client'),
@@ -507,7 +509,7 @@ def trigger_submission_emails(instance, submission_type):
             'service_name': getattr(instance, 'subject', 'General Inquiry') or 'General Inquiry',
             'requirements': getattr(instance, 'message', '') or '',
             'order_id': str(getattr(instance, 'id', '')),
-            'admin_link': f"http://127.0.0.1:8000/admin/cms/contactinquiry/{instance.id}/change/",
+            'admin_link': f"{admin_base}/admin/cms/contactinquiry/{instance.id}/change/",
         })
 
     # Launch in a daemon thread

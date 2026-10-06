@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
@@ -1101,6 +1102,39 @@ class FreeTrialAttachment(models.Model):
 
     def __str__(self):
         return self.original_filename
+
+    @property
+    def file_size_display(self):
+        try:
+            if self.file and hasattr(self.file, 'size'):
+                size = self.file.size
+                if size < 1024:
+                    return f"{size} B"
+                elif size < 1024 * 1024:
+                    return f"{size / 1024:.1f} KB"
+                else:
+                    return f"{size / (1024 * 1024):.2f} MB"
+        except Exception:
+            pass
+        return "N/A"
+
+    @property
+    def file_ext(self):
+        name = self.original_filename or (self.file.name if self.file else '')
+        ext = os.path.splitext(name)[1].lower().replace('.', '')
+        return ext.upper() if ext else 'FILE'
+
+    @property
+    def is_image(self):
+        name = self.original_filename or (self.file.name if self.file else '')
+        ext = os.path.splitext(name)[1].lower()
+        return ext in ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.svg', '.tif', '.tiff']
+
+    @property
+    def is_archive(self):
+        name = self.original_filename or (self.file.name if self.file else '')
+        ext = os.path.splitext(name)[1].lower()
+        return ext in ['.zip', '.rar', '.7z', '.tar', '.gz']
 
 
 class WhyChooseSection(models.Model):

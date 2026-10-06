@@ -35,8 +35,8 @@ urlpatterns = [
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
 
-if settings.DEBUG:
-    urlpatterns += [
-        re_path(r'^media/(?P<path>.*)$', cached_media_serve, {'document_root': settings.MEDIA_ROOT}),
-    ]
+# Always serve media files via cached_media_serve (backed by Nginx in production, or Django fallback)
+urlpatterns += [
+    re_path(r'^media/(?P<path>.*)$', cached_media_serve, {'document_root': settings.MEDIA_ROOT}),
+]
 
