@@ -111,7 +111,7 @@ interface UploadedFile {
 }
 
 const ALLOWED_EXTS = ['.jpg', '.jpeg', '.png', '.psd', '.tif', '.tiff', '.zip', '.rar'];
-const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500 MB
+const MAX_DIRECT_FILE_SIZE = 5 * 1024 * 1024; // 5 MB max per file for direct smooth upload
 
 type FileTab = 'upload' | 'drive' | 'zip';
 
@@ -395,15 +395,30 @@ export default function OrderSummaryClient({
   /* ── File validation & management ── */
   const validateAndAddFiles = useCallback((fileList: FileList | File[]) => {
     const newFiles: UploadedFile[] = [];
+    const oversized: string[] = [];
+    const valid: File[] = [];
+
     for (const f of Array.from(fileList)) {
       const ext = '.' + f.name.split('.').pop()?.toLowerCase();
       if (!ALLOWED_EXTS.includes(ext)) continue;
-      if (f.size > MAX_FILE_SIZE) continue;
+      if (f.size > MAX_DIRECT_FILE_SIZE) {
+        oversized.push(`${f.name} (${formatFileSize(f.size)})`);
+      } else {
+        valid.push(f);
+      }
+    }
+
+    if (oversized.length > 0) {
+      alert(`The following file(s) exceed the 5MB direct upload limit:\n\n• ${oversized.join('\n• ')}\n\nFor larger batches or RAW files, please use the "Cloud Drive Link" tab (Google Drive / Dropbox / WeTransfer).`);
+    }
+
+    if (valid.length === 0) return;
+
+    for (const f of valid) {
       const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const preview = f.type.startsWith('image/') ? URL.createObjectURL(f) : undefined;
       newFiles.push({ id, file: f, progress: 100, preview, status: 'done' });
     }
-    if (newFiles.length === 0) return;
     setFiles((prev) => [...prev, ...newFiles]);
   }, []);
 
@@ -1076,7 +1091,7 @@ export default function OrderSummaryClient({
                       <strong>Click to upload files</strong> or drag and drop here
                     </p>
                     <p className={styles.dropHint}>
-                      Supports JPG, PNG, PSD, TIFF, RAW &mdash; Up to 500 MB per file
+                      Supports JPG, PNG, PSD, TIFF, RAW &mdash; Up to 5MB each (for larger batches or RAW files, use Cloud Drive Link)
                     </p>
                   </div>
 

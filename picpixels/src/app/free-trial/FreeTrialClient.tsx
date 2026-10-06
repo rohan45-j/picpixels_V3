@@ -422,14 +422,15 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
 
               <div className={styles.uploadSection}>
                 <p className={styles.uploadTip}>
-                  Upload up to <strong>5 test images</strong> directly, or provide a Google Drive / Dropbox link below.
+                  Upload up to <strong>5 test images</strong> directly (up to 5MB each), or provide a Google Drive / Dropbox link below for larger or RAW files.
                 </p>
                 <FileUploadZone
                   files={files}
                   onFilesChange={setFiles}
                   maxFiles={5}
-                  maxSizeMB={50}
+                  maxSizeMB={5}
                   accept={'image/jpeg,image/png,image/tiff,image/webp,image/x-canon-cr2,image/x-adobe-dng'}
+                  acceptLabel={'JPG, PNG, WebP, TIFF'}
                 />
               </div>
 

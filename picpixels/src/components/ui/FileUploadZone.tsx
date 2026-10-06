@@ -18,6 +18,7 @@ interface FileUploadZoneProps {
   maxFiles?: number;
   maxSizeMB?: number;
   accept?: string;
+  acceptLabel?: string;
 }
 
 let fileIdCounter = 0;
@@ -25,18 +26,38 @@ let fileIdCounter = 0;
 export default function FileUploadZone({
   onFilesChange,
   maxFiles = 10,
-  maxSizeMB = 25,
+  maxSizeMB = 5,
   accept = '*/*',
+  acceptLabel,
 }: FileUploadZoneProps) {
   const [isDragActive, setIsDragActive] = useState(false);
   const [items, setItems] = useState<FileItem[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   function addFiles(fileList: FileList) {
+    const maxSizeBytes = maxSizeMB * 1024 * 1024;
+    const oversizedFiles: string[] = [];
+    const validFiles: File[] = [];
+
+    for (let i = 0; i < fileList.length; i++) {
+      const f = fileList[i];
+      if (f.size > maxSizeBytes) {
+        oversizedFiles.push(`${f.name} (${formatBytes(f.size)})`);
+      } else {
+        validFiles.push(f);
+      }
+    }
+
+    if (oversizedFiles.length > 0) {
+      alert(`The following file(s) exceed the ${maxSizeMB}MB limit:\n\n• ${oversizedFiles.join('\n• ')}\n\nFor files larger than ${maxSizeMB}MB, please use the Google Drive / Dropbox link option below.`);
+    }
+
+    if (validFiles.length === 0) return;
+
     const remaining = maxFiles - items.length;
     const newItems: FileItem[] = [];
-    for (let i = 0; i < Math.min(fileList.length, remaining); i++) {
-      const f = fileList[i];
+    for (let i = 0; i < Math.min(validFiles.length, remaining); i++) {
+      const f = validFiles[i];
       const isImg = f.type.startsWith('image/') || /\.(jpg|jpeg|png|webp|jfif|gif|svg|avif|bmp|tiff)$/i.test(f.name);
       let previewUrl: string | undefined;
       if (isImg && typeof window !== 'undefined') {
@@ -134,7 +155,7 @@ export default function FileUploadZone({
           {isDragActive ? 'Drop your files here' : 'Drag & drop your files here'}
         </p>
         <p className={styles.dropDesc}>
-          or <span className={styles.browseText}>browse files</span> &mdash; {accept === '*/*' ? 'any format' : accept} up to {maxSizeMB}MB each (max {maxFiles})
+          or <span className={styles.browseText}>browse files</span> &mdash; {acceptLabel || (accept === '*/*' ? 'any format' : 'JPG, PNG, WebP, TIFF')} up to {maxSizeMB}MB each (max {maxFiles})
         </p>
       </label>
 
