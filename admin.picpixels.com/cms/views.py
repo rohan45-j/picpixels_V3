@@ -1,3 +1,5 @@
+import os
+import logging
 from rest_framework import viewsets, permissions, parsers, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -10,6 +12,8 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from core.captcha import verify_bot_protection
 from core.throttles import PublicFormRateThrottle
+
+logger = logging.getLogger(__name__)
 
 from .models import (
     PageCategory, Page, Section, Banner, Service, Testimonial,
@@ -463,12 +467,22 @@ class FreeTrialViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         instance = serializer.save()
         files = self.request.FILES.getlist('files')
+
+        media_subpath = os.path.join(settings.MEDIA_ROOT, 'free_trial_attachments')
+        try:
+            os.makedirs(media_subpath, exist_ok=True)
+        except Exception as e:
+            logger.warning(f"Could not create media directory {media_subpath}: {e}")
+
         for f in files:
-            FreeTrialAttachment.objects.create(
-                free_trial=instance,
-                file=f,
-                original_filename=f.name,
-            )
+            try:
+                FreeTrialAttachment.objects.create(
+                    free_trial=instance,
+                    file=f,
+                    original_filename=f.name,
+                )
+            except Exception as e:
+                logger.error(f"Error saving FreeTrialAttachment for order/trial #{instance.id}: {e}", exc_info=True)
 
 
 class ProductCategoryViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):
