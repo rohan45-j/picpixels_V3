@@ -464,7 +464,7 @@ export default function OrderSummaryClient({
         .filter(Boolean)
         .join('\n\n');
 
-      const ok = await submitOrderRequest(
+      const result = await submitOrderRequest(
         {
           full_name: clientInfo.fullName,
           company_name: clientInfo.company || undefined,
@@ -480,14 +480,14 @@ export default function OrderSummaryClient({
         uploadFiles.length > 0 ? uploadFiles : undefined
       );
 
-      if (ok) {
+      if (result.success) {
         setSubmitted(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        alert('There was an issue submitting your order. Please verify your details and try again.');
+        alert(result.error || 'There was an issue submitting your order. Please verify your details and try again.');
       }
-    } catch {
-      alert('An unexpected error occurred while submitting your order. Please try again.');
+    } catch (err: any) {
+      alert(err?.message || 'An unexpected error occurred while submitting your order. Please try again.');
     } finally {
       setSubmitting(false);
     }

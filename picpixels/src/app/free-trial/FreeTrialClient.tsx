@@ -62,6 +62,7 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
   const [files, setFiles] = useState<File[]>([]);
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [serverErrorMessage, setServerErrorMessage] = useState('');
   const [honeypot, setHoneypot] = useState('');
   const [recaptchaToken, setRecaptchaToken] = useState('');
   const [categories, setCategories] = useState<{ value: string; label: string }[]>(PRODUCT_CATEGORIES);
@@ -147,8 +148,9 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
     }
 
     setStatus('loading');
+    setServerErrorMessage('');
     try {
-      const ok = await submitFreeTrial(
+      const result = await submitFreeTrial(
         {
           full_name: form.full_name,
           company_name: form.company_name || undefined,
@@ -165,13 +167,15 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
         },
         files.length > 0 ? files : undefined
       );
-      if (ok) {
+      if (result.success) {
         setStatus('success');
       } else {
         setStatus('error');
+        setServerErrorMessage(result.error || 'Something went wrong. Please check your inputs.');
       }
-    } catch {
+    } catch (err: any) {
       setStatus('error');
+      setServerErrorMessage(err?.message || 'Something went wrong. Please check your network connection.');
     }
   }
 
@@ -468,7 +472,7 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
                 {status === 'error' && (
                   <div className={styles.errorBanner}>
                     <AlertCircle size={18} />
-                    <span>Something went wrong. Please check your inputs or email us directly at info@picpixels.com.</span>
+                    <span>{serverErrorMessage || 'Something went wrong. Please check your inputs or email us directly at info@picpixels.com.'}</span>
                   </div>
                 )}
                 <button

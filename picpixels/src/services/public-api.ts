@@ -1669,6 +1669,11 @@ export async function getProductCategories(): Promise<ProductCategoryItem[]> {
 }
 
 
+export interface SubmitFormResponse {
+  success: boolean;
+  error?: string;
+}
+
 export async function submitFreeTrial(data: {
   full_name: string;
   company_name?: string;
@@ -1682,7 +1687,7 @@ export async function submitFreeTrial(data: {
   recaptcha_token?: string;
   cf_turnstile_response?: string;
   captcha_token?: string;
-}, files?: File[]): Promise<boolean> {
+}, files?: File[]): Promise<SubmitFormResponse> {
   try {
     const form = new FormData();
     for (const [key, value] of Object.entries(data)) {
@@ -1695,23 +1700,51 @@ export async function submitFreeTrial(data: {
         form.append('files', f);
       }
     }
-    const targetUrl = typeof window !== 'undefined'
-      ? '/api/v1/cms/free-trials'
-      : `${process.env.INTERNAL_API_URL || BASE_URL}/api/v1/cms/free-trials/`;
 
-    const resp = await fetch(targetUrl, {
-      method: 'POST',
-      body: form,
-    });
-    if (!resp.ok) {
-      const err = await resp.text();
-      console.error('[submitFreeTrial] HTTP Error:', resp.status, err);
-      return false;
+    const targetUrl = `${BASE_URL}/api/v1/cms/free-trials/`;
+
+    let resp: Response;
+    try {
+      resp = await fetch(targetUrl, {
+        method: 'POST',
+        body: form,
+      });
+    } catch (directErr) {
+      console.warn('[submitFreeTrial] Direct connection failed, trying relative proxy...', directErr);
+      resp = await fetch('/api/v1/cms/free-trials/', {
+        method: 'POST',
+        body: form,
+      });
     }
-    return true;
-  } catch (e) {
+
+    if (!resp.ok) {
+      let errorMsg = `Server returned status ${resp.status}`;
+      try {
+        const errJson = await resp.json();
+        if (typeof errJson === 'object' && errJson !== null) {
+          if (errJson.detail) {
+            errorMsg = errJson.detail;
+          } else {
+            const firstKey = Object.keys(errJson)[0];
+            const firstVal = errJson[firstKey];
+            if (Array.isArray(firstVal)) {
+              errorMsg = `${firstKey}: ${firstVal[0]}`;
+            } else if (typeof firstVal === 'string') {
+              errorMsg = `${firstKey}: ${firstVal}`;
+            }
+          }
+        }
+      } catch {
+        const text = await resp.text().catch(() => '');
+        if (text) errorMsg = text.slice(0, 150);
+      }
+      console.error('[submitFreeTrial] HTTP Error:', resp.status, errorMsg);
+      return { success: false, error: errorMsg };
+    }
+    return { success: true };
+  } catch (e: any) {
     console.error('Failed to submit free trial', e);
-    return false;
+    return { success: false, error: e?.message || 'Network connection failed' };
   }
 }
 
@@ -1725,7 +1758,7 @@ export async function submitOrderRequest(data: {
   package_price?: string;
   drive_link?: string;
   project_requirements: string;
-}, files?: File[]): Promise<boolean> {
+}, files?: File[]): Promise<SubmitFormResponse> {
   try {
     const form = new FormData();
     form.append('request_type', 'order_request');
@@ -1740,23 +1773,51 @@ export async function submitOrderRequest(data: {
         form.append('files', f);
       }
     }
-    const targetUrl = typeof window !== 'undefined'
-      ? '/api/v1/cms/free-trials'
-      : `${process.env.INTERNAL_API_URL || BASE_URL}/api/v1/cms/free-trials/`;
 
-    const resp = await fetch(targetUrl, {
-      method: 'POST',
-      body: form,
-    });
-    if (!resp.ok) {
-      const err = await resp.text();
-      console.error('[submitOrderRequest] HTTP Error:', resp.status, err);
-      return false;
+    const targetUrl = `${BASE_URL}/api/v1/cms/free-trials/`;
+
+    let resp: Response;
+    try {
+      resp = await fetch(targetUrl, {
+        method: 'POST',
+        body: form,
+      });
+    } catch (directErr) {
+      console.warn('[submitOrderRequest] Direct connection failed, trying relative proxy...', directErr);
+      resp = await fetch('/api/v1/cms/free-trials/', {
+        method: 'POST',
+        body: form,
+      });
     }
-    return true;
-  } catch (e) {
+
+    if (!resp.ok) {
+      let errorMsg = `Server returned status ${resp.status}`;
+      try {
+        const errJson = await resp.json();
+        if (typeof errJson === 'object' && errJson !== null) {
+          if (errJson.detail) {
+            errorMsg = errJson.detail;
+          } else {
+            const firstKey = Object.keys(errJson)[0];
+            const firstVal = errJson[firstKey];
+            if (Array.isArray(firstVal)) {
+              errorMsg = `${firstKey}: ${firstVal[0]}`;
+            } else if (typeof firstVal === 'string') {
+              errorMsg = `${firstKey}: ${firstVal}`;
+            }
+          }
+        }
+      } catch {
+        const text = await resp.text().catch(() => '');
+        if (text) errorMsg = text.slice(0, 150);
+      }
+      console.error('[submitOrderRequest] HTTP Error:', resp.status, errorMsg);
+      return { success: false, error: errorMsg };
+    }
+    return { success: true };
+  } catch (e: any) {
     console.error('Failed to submit order request', e);
-    return false;
+    return { success: false, error: e?.message || 'Network connection failed' };
   }
 }
 
