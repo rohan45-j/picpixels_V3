@@ -462,7 +462,11 @@ class FreeTrialViewSet(viewsets.ModelViewSet):
         is_valid, err_msg = verify_bot_protection(request, request.data, require_captcha=False)
         if not is_valid:
             return Response({'detail': err_msg}, status=status.HTTP_400_BAD_REQUEST)
-        return super().create(request, *args, **kwargs)
+        try:
+            return super().create(request, *args, **kwargs)
+        except Exception as e:
+            logger.error(f"Error creating FreeTrial request: {e}", exc_info=True)
+            return Response({'detail': f'Submission failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def perform_create(self, serializer):
         instance = serializer.save()

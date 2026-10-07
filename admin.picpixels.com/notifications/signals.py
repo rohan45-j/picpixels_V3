@@ -69,9 +69,11 @@ def handle_contact_inquiry(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=FreeTrial)
 def handle_free_trial(sender, instance, created, **kwargs):
-    from .models import Notification
-    from .email_service import trigger_submission_emails
-    if created:
+    if not created:
+        return
+    try:
+        from .models import Notification
+        from .email_service import trigger_submission_emails
         req_type = getattr(instance, 'request_type', 'free_trial')
         if req_type == 'order_request':
             price_info = f" ({instance.package_price})" if instance.package_price else ""
@@ -97,6 +99,8 @@ def handle_free_trial(sender, instance, created, **kwargs):
             )
             broadcast_notification(notification)
             trigger_submission_emails(instance, 'free_trial')
+    except Exception as e:
+        logger.error(f"Error handling FreeTrial post_save notification: {e}", exc_info=True)
 
 
 

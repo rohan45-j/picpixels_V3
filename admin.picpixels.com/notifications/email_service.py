@@ -1,5 +1,7 @@
+import os
 import logging
 import threading
+from django.conf import settings
 from django.core.mail import get_connection, EmailMultiAlternatives
 from django.utils.html import strip_tags
 
@@ -470,52 +472,55 @@ def trigger_submission_emails(instance, submission_type):
     Never blocks or crashes the calling request.
     """
     try:
-        from site_settings.models import SiteSetting
-        site = SiteSetting.objects.first()
-        site_name = site.site_name if site else "PicPixels"
-        support_email = site.support_email if site and site.support_email else "support@picpixels.com"
-    except Exception:
-        site_name = "PicPixels"
-        support_email = "support@picpixels.com"
+        try:
+            from site_settings.models import SiteSetting
+            site = SiteSetting.objects.first()
+            site_name = site.site_name if site else "PicPixels"
+            support_email = site.support_email if site and site.support_email else "support@picpixels.com"
+        except Exception:
+            site_name = "PicPixels"
+            support_email = "support@picpixels.com"
 
-    context = {
-        'site_name': site_name,
-        'support_email': support_email,
-    }
-    client_email = None
+        context = {
+            'site_name': site_name,
+            'support_email': support_email,
+        }
+        client_email = None
 
-    if submission_type in ('order_request', 'free_trial'):
-        client_email = getattr(instance, 'email', None)
-        admin_base = getattr(settings, 'ADMIN_BASE_URL', None) or os.getenv('ADMIN_BASE_URL') or ('http://127.0.0.1:8000' if settings.DEBUG else 'https://admin.picpixels.com')
-        context.update({
-            'client_name': getattr(instance, 'full_name', 'Valued Client'),
-            'client_email': client_email or '',
-            'client_phone': getattr(instance, 'phone_number', '') or 'Not provided',
-            'service_name': getattr(instance, 'product_name', 'Photo Retouching Service'),
-            'package_price': getattr(instance, 'package_price', '') or 'Standard Pricing',
-            'country': getattr(instance, 'country', '') or 'N/A',
-            'company_name': getattr(instance, 'company_name', '') or '',
-            'order_id': str(getattr(instance, 'id', '')),
-            'requirements': getattr(instance, 'project_requirements', '') or 'None provided',
-            'drive_link': getattr(instance, 'drive_link', '') or '',
-            'admin_link': f"{admin_base}/admin/cms/freetrial/{instance.id}/change/",
-        })
-    elif submission_type == 'contact_inquiry':
-        admin_base = getattr(settings, 'ADMIN_BASE_URL', None) or os.getenv('ADMIN_BASE_URL') or ('http://127.0.0.1:8000' if settings.DEBUG else 'https://admin.picpixels.com')
-        client_email = getattr(instance, 'email', None)
-        context.update({
-            'client_name': getattr(instance, 'name', 'Valued Client'),
-            'client_email': client_email or '',
-            'service_name': getattr(instance, 'subject', 'General Inquiry') or 'General Inquiry',
-            'requirements': getattr(instance, 'message', '') or '',
-            'order_id': str(getattr(instance, 'id', '')),
-            'admin_link': f"{admin_base}/admin/cms/contactinquiry/{instance.id}/change/",
-        })
+        if submission_type in ('order_request', 'free_trial'):
+            client_email = getattr(instance, 'email', None)
+            admin_base = getattr(settings, 'ADMIN_BASE_URL', None) or os.getenv('ADMIN_BASE_URL') or ('http://127.0.0.1:8000' if getattr(settings, 'DEBUG', False) else 'https://admin.picpixels.com')
+            context.update({
+                'client_name': getattr(instance, 'full_name', 'Valued Client'),
+                'client_email': client_email or '',
+                'client_phone': getattr(instance, 'phone_number', '') or 'Not provided',
+                'service_name': getattr(instance, 'product_name', 'Photo Retouching Service'),
+                'package_price': getattr(instance, 'package_price', '') or 'Standard Pricing',
+                'country': getattr(instance, 'country', '') or 'N/A',
+                'company_name': getattr(instance, 'company_name', '') or '',
+                'order_id': str(getattr(instance, 'id', '')),
+                'requirements': getattr(instance, 'project_requirements', '') or 'None provided',
+                'drive_link': getattr(instance, 'drive_link', '') or '',
+                'admin_link': f"{admin_base}/admin/cms/freetrial/{instance.id}/change/",
+            })
+        elif submission_type == 'contact_inquiry':
+            admin_base = getattr(settings, 'ADMIN_BASE_URL', None) or os.getenv('ADMIN_BASE_URL') or ('http://127.0.0.1:8000' if getattr(settings, 'DEBUG', False) else 'https://admin.picpixels.com')
+            client_email = getattr(instance, 'email', None)
+            context.update({
+                'client_name': getattr(instance, 'name', 'Valued Client'),
+                'client_email': client_email or '',
+                'service_name': getattr(instance, 'subject', 'General Inquiry') or 'General Inquiry',
+                'requirements': getattr(instance, 'message', '') or '',
+                'order_id': str(getattr(instance, 'id', '')),
+                'admin_link': f"{admin_base}/admin/cms/contactinquiry/{instance.id}/change/",
+            })
 
-    # Launch in a daemon thread
-    thread = threading.Thread(
-        target=_dispatch_emails_worker,
-        args=(submission_type, context, client_email),
-        daemon=True
-    )
-    thread.start()
+        # Launch in a daemon thread
+        thread = threading.Thread(
+            target=_dispatch_emails_worker,
+            args=(submission_type, context, client_email),
+            daemon=True
+        )
+        thread.start()
+    except Exception as e:
+        logger.error(f"Error in trigger_submission_emails for {submission_type}: {e}", exc_info=True)
