@@ -43,7 +43,6 @@
 
     clearTimeout(progressTimer);
     clearTimeout(abortFallbackTimer);
-    document.body.classList.add('admin-is-navigating');
 
     progressBar.className = 'active';
     progressBar.style.width = '30%';
@@ -65,7 +64,6 @@
 
     clearTimeout(progressTimer);
     clearTimeout(abortFallbackTimer);
-    document.body.classList.add('admin-is-navigating');
     progressBar.className = 'indeterminate active';
 
     clearTimeout(toastTimer);
@@ -84,8 +82,6 @@
     clearTimeout(progressTimer);
     clearTimeout(toastTimer);
     clearTimeout(abortFallbackTimer);
-
-    document.body.classList.remove('admin-is-navigating');
 
     if (progressBar) {
       progressBar.style.width = '100%';
@@ -149,6 +145,8 @@
 
   function handleLinkClicks() {
     document.addEventListener('click', function (e) {
+      if (e.defaultPrevented) return;
+
       const link = e.target.closest('a');
       if (!link) return;
 
@@ -157,16 +155,16 @@
       if (link.target === '_blank' || link.hasAttribute('download')) return;
       if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
 
+      // Do not trigger if already on the exact same page
+      if (href === window.location.pathname || href === window.location.href) return;
+
       // Check same origin
       if (link.origin && link.origin !== window.location.origin) return;
 
-      // Detect admin navigation links (sidebar modules, quick actions, breadcrumbs, table links)
+      // Detect admin navigation links
       const isNav = link.closest('#nav-sidebar') ||
                     link.closest('#nav-sidebar-apps') ||
                     link.closest('#nav-sidebar-inner') ||
-                    link.closest('aside') ||
-                    link.closest('.sidebar') ||
-                    link.closest('nav') ||
                     link.closest('.admin-quick-actions');
 
       if (isNav) {
@@ -174,7 +172,7 @@
       }
 
       startProgress();
-    }, true);
+    });
   }
 
   function init() {

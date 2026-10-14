@@ -102,34 +102,10 @@
   animation: adminSpinnerSpin 0.7s linear infinite;
 }
 
-/* Sidebar Active Module Click Feedback */
+/* Sidebar Module Click Feedback (Completely non-blocking) */
 .admin-nav-item-loading {
-  position: relative !important;
-  background: rgba(255, 138, 80, 0.16) !important;
-  color: #ea580c !important;
-  font-weight: 600 !important;
-  border-radius: 6px !important;
-  transition: all 0.15s ease !important;
-  pointer-events: none !important;
+  background: rgba(255, 138, 80, 0.12) !important;
+  transition: background 0.15s ease !important;
 }
 
-.admin-nav-item-loading::after {
-  content: "" !important;
-  position: absolute !important;
-  right: 12px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 13px !important;
-  height: 13px !important;
-  border: 2px solid rgba(234, 88, 12, 0.25) !important;
-  border-top-color: #ea580c !important;
-  border-radius: 50% !important;
-  animation: adminSpinnerSpin 0.6s linear infinite !important;
-}
-
-body.admin-is-navigating,
-body.admin-is-navigating a,
-body.admin-is-navigating button {
-  cursor: progress !important;
-}
 
