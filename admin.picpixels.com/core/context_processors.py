@@ -40,6 +40,10 @@ def site_settings(request):
 
 
 def navigation_items(request):
+    # Admin panel uses UNFOLD sidebar, never public header navigation items. Skip for speed!
+    if request and request.path.startswith('/admin'):
+        return {'nav_items': []}
+
     items = cache.get(_NAV_ITEMS_CACHE_KEY)
     if items is None:
         try:
@@ -55,8 +59,7 @@ def navigation_items(request):
 
 def admin_dashboard_stats(request):
     # Only compute dashboard stats on the actual dashboard home page (/admin or /admin/)
-    # On other admin pages (module change lists, form updates, etc.), skip completely for speed!
-    if request.path.rstrip('/') != '/admin':
+    if not request or request.path.rstrip('/') != '/admin':
         return {}
 
     stats = cache.get(_DASHBOARD_CACHE_KEY)
@@ -74,93 +77,122 @@ def admin_dashboard_stats(request):
     from media_library.models import MediaFile
     from workflows.models import WorkflowTemplate
     from revisions.models import RevisionRequest
+    from django.db.models import Count, Q
 
     now = timezone.now()
     month_ago = now - timedelta(days=30)
     week_ago = now - timedelta(days=7)
 
-    orders = Order.objects.all()
-    contacts = ContactInquiry.objects.all()
-    blogs = BlogPost.objects.all()
-    services = Service.objects.all()
-    faqs = FAQ.objects.filter(is_active=True)
+    # 1. Orders aggregation (1 query instead of 8)
+    orders_agg = Order.objects.aggregate(
+        total=Count('id'),
+        pending=Count('id', filter=Q(status='pending')),
+        in_progress=Count('id', filter=Q(status='in_progress')),
+        completed=Count('id', filter=Q(status='completed')),
+        cancelled=Count('id', filter=Q(status='cancelled')),
+        this_month=Count('id', filter=Q(created_at__gte=month_ago)),
+        this_week=Count('id', filter=Q(created_at__gte=week_ago)),
+        completed_this_month=Count('id', filter=Q(created_at__gte=month_ago, status='completed')),
+    )
 
-    def monthly_counts(queryset, date_field='created_at'):
-        months = []
-        for i in range(5, -1, -1):
-            start = now.replace(day=1) - timedelta(days=30 * i)
-            if i > 0:
-                end = now.replace(day=1) - timedelta(days=30 * (i - 1))
-            else:
-                end = now
-            count = queryset.filter(**{f'{date_field}__gte': start, f'{date_field}__lt': end}).count()
-            months.append({'month': start.strftime('%b'), 'count': count})
-        return months
+    # 2. Contacts aggregation (1 query instead of 5)
+    contacts_agg = ContactInquiry.objects.aggregate(
+        total=Count('id'),
+        unread=Count('id', filter=Q(is_read=False)),
+        this_month=Count('id', filter=Q(created_at__gte=month_ago)),
+        this_week=Count('id', filter=Q(created_at__gte=week_ago)),
+    )
+
+    # 3. Blogs aggregation (1 query instead of 4)
+    blogs_agg = BlogPost.objects.aggregate(
+        published=Count('id', filter=Q(is_published=True)),
+        draft=Count('id', filter=Q(is_published=False)),
+        featured=Count('id', filter=Q(is_featured=True)),
+    )
+
+    # 4. Services aggregation (1 query instead of 2)
+    services_agg = Service.objects.aggregate(
+        total=Count('id'),
+        active=Count('id', filter=Q(is_active=True)),
+    )
+
+    # 5. Pricing plans aggregation (1 query instead of 3)
+    plans_agg = PricingPlan.objects.aggregate(
+        total=Count('id'),
+        active=Count('id', filter=Q(is_active=True)),
+        popular=Count('id', filter=Q(is_popular=True)),
+    )
+
+    # 6. Team members aggregation (1 query instead of 2)
+    team_agg = TeamMember.objects.aggregate(
+        total=Count('id'),
+        active=Count('id', filter=Q(is_active=True)),
+        inactive=Count('id', filter=Q(is_active=False)),
+    )
 
     stats = {
-            # Core content
-            'total_pages': Page.objects.count(),
-            'total_banners': Banner.objects.count(),
-            'total_services': services.count(),
-            'active_services': services.filter(is_active=True).count(),
-            'total_testimonials': Testimonial.objects.filter(is_active=True).count(),
+        # Core content
+        'total_pages': Page.objects.count(),
+        'total_banners': Banner.objects.count(),
+        'total_services': services_agg['total'],
+        'active_services': services_agg['active'],
+        'total_testimonials': Testimonial.objects.filter(is_active=True).count(),
 
-            # Blog breakdown
-            'total_blog_posts': blogs.filter(is_published=True).count(),
-            'draft_blog_posts': blogs.filter(is_published=False).count(),
-            'featured_blog_posts': blogs.filter(is_featured=True).count(),
-            'total_blog_categories': BlogCategory.objects.count(),
-            'total_blog_tags': BlogTag.objects.count(),
-            'recent_blog_posts': blogs.filter(is_published=True).order_by('-published_at')[:5],
+        # Blog breakdown
+        'total_blog_posts': blogs_agg['published'],
+        'draft_blog_posts': blogs_agg['draft'],
+        'featured_blog_posts': blogs_agg['featured'],
+        'total_blog_categories': BlogCategory.objects.count(),
+        'total_blog_tags': BlogTag.objects.count(),
+        'recent_blog_posts': list(BlogPost.objects.filter(is_published=True).order_by('-published_at')[:5]),
 
-            # Contact inquiries
-            'total_contacts': contacts.count(),
-            'unread_contacts': contacts.filter(is_read=False).count(),
-            'recent_contacts': contacts.filter(is_read=False).order_by('-created_at')[:5],
+        # Contact inquiries
+        'total_contacts': contacts_agg['total'],
+        'unread_contacts': contacts_agg['unread'],
+        'recent_contacts': list(ContactInquiry.objects.filter(is_read=False).order_by('-created_at')[:5]),
 
-            # Orders
-            'total_orders': orders.count(),
-            'pending_orders': orders.filter(status='pending').count(),
-            'in_progress_orders': orders.filter(status='in_progress').count(),
-            'completed_orders': orders.filter(status='completed').count(),
-            'cancelled_orders': orders.filter(status='cancelled').count(),
-            'recent_orders': orders.order_by('-created_at')[:5],
+        # Orders
+        'total_orders': orders_agg['total'],
+        'pending_orders': orders_agg['pending'],
+        'in_progress_orders': orders_agg['in_progress'],
+        'completed_orders': orders_agg['completed'],
+        'cancelled_orders': orders_agg['cancelled'],
+        'recent_orders': list(Order.objects.order_by('-created_at')[:5]),
 
-            # Growth
-            'orders_this_month': orders.filter(created_at__gte=month_ago).count(),
-            'orders_this_week': orders.filter(created_at__gte=week_ago).count(),
-            'contacts_this_month': contacts.filter(created_at__gte=month_ago).count(),
-            'contacts_this_week': contacts.filter(created_at__gte=week_ago).count(),
-            'revenue_this_month': orders.filter(
-                created_at__gte=month_ago, status='completed'
-            ).count(),
-            'order_monthly': monthly_counts(orders, 'created_at'),
-            'contacts_monthly': monthly_counts(contacts, 'created_at'),
+        # Growth
+        'orders_this_month': orders_agg['this_month'],
+        'orders_this_week': orders_agg['this_week'],
+        'contacts_this_month': contacts_agg['this_month'],
+        'contacts_this_week': contacts_agg['this_week'],
+        'revenue_this_month': orders_agg['completed_this_month'],
+        'order_monthly': [],
+        'contacts_monthly': [],
 
-            # Users & subscriptions
-            'total_users': UserProfile.objects.count(),
-            'active_users': UserProfile.objects.filter(user__is_active=True).count(),
-            'total_plans': PricingPlan.objects.count(),
-            'active_plans': PricingPlan.objects.filter(is_active=True).count(),
-            'popular_plans': PricingPlan.objects.filter(is_popular=True).count(),
-            'total_subscriptions': Subscription.objects.filter(status='active').count(),
-            'total_transactions': Transaction.objects.count(),
+        # Users & subscriptions
+        'total_users': UserProfile.objects.count(),
+        'active_users': UserProfile.objects.filter(user__is_active=True).count(),
+        'total_plans': plans_agg['total'],
+        'active_plans': plans_agg['active'],
+        'popular_plans': plans_agg['popular'],
+        'total_subscriptions': Subscription.objects.filter(status='active').count(),
+        'total_transactions': Transaction.objects.count(),
 
-            # Team & branding
-            'total_team': TeamMember.objects.filter(is_active=True).count(),
-            'team_inactive': TeamMember.objects.filter(is_active=False).count(),
-            'total_brands': BrandLogo.objects.count(),
+        # Team & branding
+        'total_team': team_agg['active'],
+        'team_inactive': team_agg['inactive'],
+        'total_brands': BrandLogo.objects.count(),
 
-            # FAQ
-            'total_faqs': faqs.count(),
-            'total_faq_categories': FAQCategory.objects.count(),
+        # FAQ
+        'total_faqs': FAQ.objects.filter(is_active=True).count(),
+        'total_faq_categories': FAQCategory.objects.count(),
 
-            # Media & infra
-            'total_media': MediaFile.objects.count(),
-            'total_nav_items': NavigationItem.objects.filter(is_active=True).count(),
-            'total_workflows': WorkflowTemplate.objects.count(),
-            'total_revisions': RevisionRequest.objects.count(),
-        }
+        # Media & infra
+        'total_media': MediaFile.objects.count(),
+        'total_nav_items': NavigationItem.objects.filter(is_active=True).count(),
+        'total_workflows': WorkflowTemplate.objects.count(),
+        'total_revisions': RevisionRequest.objects.count(),
+    }
 
-    cache.set(_DASHBOARD_CACHE_KEY, stats, _DASHBOARD_CACHE_TTL)
+    cache.set(_DASHBOARD_CACHE_KEY, stats, 600)
     return {'dashboard_stats': stats}
+

@@ -397,11 +397,7 @@ UNFOLD = {
         "/static/admin/css/light-mode-fix.css",
         "/static/admin/css/admin_loading.css",
     ],
-    "SCRIPTS": [
-        "/static/admin/js/sidebar.js",
-        "/static/admin/js/toggle.js?v=2",
-        "/static/admin/js/admin_loading.js",
-    ],
+    "SCRIPTS": [],
     "COMMAND": {
         "search_models": True,
         "show_history": True,

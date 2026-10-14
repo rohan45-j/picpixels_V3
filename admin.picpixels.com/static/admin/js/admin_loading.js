@@ -1,30 +1,40 @@
 /**
- * PicPixels Admin - User-Friendly Loading UI & Fast Non-Intrusive Feedback
+ * PicPixels Admin - User-Friendly Loading UI & Instant Navigation Feedback
  */
 (function () {
   'use strict';
+
+  if (window.__PicPixelsLoadingInitialized) return;
+  window.__PicPixelsLoadingInitialized = true;
 
   let progressBar = null;
   let toastEl = null;
   let progressTimer = null;
   let toastTimer = null;
+  let abortFallbackTimer = null;
 
   function initUI() {
-    if (document.getElementById('admin-top-progress')) return;
+    if (!progressBar) {
+      progressBar = document.getElementById('admin-top-progress');
+      if (!progressBar) {
+        progressBar = document.createElement('div');
+        progressBar.id = 'admin-top-progress';
+        document.body.appendChild(progressBar);
+      }
+    }
 
-    // Create top progress bar
-    progressBar = document.createElement('div');
-    progressBar.id = 'admin-top-progress';
-    document.body.appendChild(progressBar);
-
-    // Create toast notification
-    toastEl = document.createElement('div');
-    toastEl.className = 'admin-loading-toast';
-    toastEl.innerHTML = `
-      <div class="admin-loading-toast-spinner"></div>
-      <span class="admin-loading-toast-text">Saving changes, please wait...</span>
-    `;
-    document.body.appendChild(toastEl);
+    if (!toastEl) {
+      toastEl = document.querySelector('.admin-loading-toast');
+      if (!toastEl) {
+        toastEl = document.createElement('div');
+        toastEl.className = 'admin-loading-toast';
+        toastEl.innerHTML = `
+          <div class="admin-loading-toast-spinner"></div>
+          <span class="admin-loading-toast-text">Saving changes, please wait...</span>
+        `;
+        document.body.appendChild(toastEl);
+      }
+    }
   }
 
   function startProgress() {
@@ -32,15 +42,21 @@
     if (!progressBar) return;
 
     clearTimeout(progressTimer);
+    clearTimeout(abortFallbackTimer);
+    document.body.classList.add('admin-is-navigating');
+
     progressBar.className = 'active';
-    progressBar.style.width = '25%';
+    progressBar.style.width = '30%';
 
     progressTimer = setTimeout(() => {
-      progressBar.style.width = '65%';
+      progressBar.style.width = '68%';
       progressTimer = setTimeout(() => {
         progressBar.style.width = '88%';
-      }, 300);
-    }, 150);
+      }, 250);
+    }, 100);
+
+    // Safety fallback: if user stays on page (e.g. cancelled request, download, or same URL hash), reset after 5s
+    abortFallbackTimer = setTimeout(stopProgress, 5000);
   }
 
   function startIndeterminate(toastText) {
@@ -48,9 +64,10 @@
     if (!progressBar || !toastEl) return;
 
     clearTimeout(progressTimer);
+    clearTimeout(abortFallbackTimer);
+    document.body.classList.add('admin-is-navigating');
     progressBar.className = 'indeterminate active';
 
-    // Only show toast after a slight delay (650ms) to prevent flashing on fast requests
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       if (toastText) {
@@ -58,24 +75,33 @@
         if (textSpan) textSpan.textContent = toastText;
       }
       toastEl.classList.add('visible');
-    }, 650);
+    }, 600);
+
+    abortFallbackTimer = setTimeout(stopProgress, 8000);
   }
 
   function stopProgress() {
     clearTimeout(progressTimer);
     clearTimeout(toastTimer);
+    clearTimeout(abortFallbackTimer);
+
+    document.body.classList.remove('admin-is-navigating');
 
     if (progressBar) {
       progressBar.style.width = '100%';
       setTimeout(() => {
         progressBar.classList.remove('active', 'indeterminate');
         progressBar.style.width = '0%';
-      }, 200);
+      }, 180);
     }
 
     if (toastEl) {
       toastEl.classList.remove('visible');
     }
+
+    document.querySelectorAll('.admin-nav-item-loading').forEach((el) => {
+      el.classList.remove('admin-nav-item-loading');
+    });
 
     document.querySelectorAll('.admin-btn-loading').forEach((btn) => {
       btn.classList.remove('admin-btn-loading');
@@ -93,14 +119,12 @@
       const form = e.target;
       if (!form || form.tagName !== 'FORM') return;
 
-      // Skip search GET forms or pure query filter forms
       const isGet = (form.method || 'GET').toUpperCase() === 'GET';
       if (isGet) {
         startProgress();
         return;
       }
 
-      // Check which submit button was clicked
       const submitBtn = form.querySelector('button[type="submit"]:focus, input[type="submit"]:focus') ||
                         form.querySelector('button[type="submit"], input[type="submit"]');
 
@@ -133,11 +157,19 @@
       if (link.target === '_blank' || link.hasAttribute('download')) return;
       if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
 
-      // Check if same origin
+      // Check same origin
       if (link.origin && link.origin !== window.location.origin) return;
 
-      // Add subtle visual feedback for clicked sidebar/nav links
-      if (link.closest('aside') || link.closest('.sidebar') || link.closest('nav')) {
+      // Detect admin navigation links (sidebar modules, quick actions, breadcrumbs, table links)
+      const isNav = link.closest('#nav-sidebar') ||
+                    link.closest('#nav-sidebar-apps') ||
+                    link.closest('#nav-sidebar-inner') ||
+                    link.closest('aside') ||
+                    link.closest('.sidebar') ||
+                    link.closest('nav') ||
+                    link.closest('.admin-quick-actions');
+
+      if (isNav) {
         link.classList.add('admin-nav-item-loading');
       }
 
@@ -145,7 +177,6 @@
     }, true);
   }
 
-  // Initialize
   function init() {
     initUI();
     stopProgress();
@@ -159,7 +190,7 @@
     init();
   }
 
-  // Clean up on back/forward navigation or page restore
   window.addEventListener('pageshow', stopProgress);
   window.addEventListener('load', stopProgress);
 })();
+
