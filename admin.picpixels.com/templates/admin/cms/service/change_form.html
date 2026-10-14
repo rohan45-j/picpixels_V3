@@ -23,7 +23,7 @@
     <div class="svc-tab-quick-actions">
       <a href="/admin/cms/service/" class="svc-back-btn">← Back to List</a>
       {% if original.slug %}
-      <a href="http://localhost:3000/services/{{ original.slug }}" target="_blank" class="svc-preview-btn">
+      <a href="{{ frontend_url|default:'https://picpixels.com' }}/services/{{ original.slug }}" target="_blank" class="svc-preview-btn">
         <span>View on Site</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />

@@ -10,6 +10,9 @@ _NAV_ITEMS_CACHE_KEY = 'nav_items_context'
 _DASHBOARD_CACHE_KEY = 'admin_dashboard_stats'
 _DASHBOARD_CACHE_TTL = 300
 
+from django.conf import settings as django_settings
+
+
 def site_settings(request):
     settings = cache.get(_SITE_SETTINGS_CACHE_KEY)
     if settings is None:
@@ -19,7 +22,21 @@ def site_settings(request):
                 cache.set(_SITE_SETTINGS_CACHE_KEY, settings, 300)
         except Exception:
             settings = None
-    return {'site_settings': settings}
+
+    frontend_url = getattr(django_settings, 'FRONTEND_URL', 'https://picpixels.com').rstrip('/')
+    if request:
+        try:
+            host = request.get_host().lower()
+            if 'localhost' not in host and '127.0.0.1' not in host:
+                if 'localhost' in frontend_url or '127.0.0.1' in frontend_url:
+                    frontend_url = 'https://picpixels.com'
+        except Exception:
+            pass
+
+    return {
+        'site_settings': settings,
+        'frontend_url': frontend_url,
+    }
 
 
 def navigation_items(request):

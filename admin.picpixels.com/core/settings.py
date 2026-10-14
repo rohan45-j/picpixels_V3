@@ -384,6 +384,7 @@ UNFOLD = {
     "SITE_FAVICONS": [],
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
+    "SITE_URL": env('FRONTEND_URL', default='https://picpixels.com'),
     "THEME": "light",
     "ENVIRONMENT": "PicPicxels Enterprise",
     "SHOW_BACK_BUTTON": True,
