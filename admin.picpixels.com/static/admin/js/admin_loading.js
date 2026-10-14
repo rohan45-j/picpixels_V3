@@ -143,43 +143,10 @@
     }, true);
   }
 
-  function handleLinkClicks() {
-    document.addEventListener('click', function (e) {
-      if (e.defaultPrevented) return;
-
-      const link = e.target.closest('a');
-      if (!link) return;
-
-      const href = link.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('javascript:')) return;
-      if (link.target === '_blank' || link.hasAttribute('download')) return;
-      if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
-
-      // Do not trigger if already on the exact same page
-      if (href === window.location.pathname || href === window.location.href) return;
-
-      // Check same origin
-      if (link.origin && link.origin !== window.location.origin) return;
-
-      // Detect admin navigation links
-      const isNav = link.closest('#nav-sidebar') ||
-                    link.closest('#nav-sidebar-apps') ||
-                    link.closest('#nav-sidebar-inner') ||
-                    link.closest('.admin-quick-actions');
-
-      if (isNav) {
-        link.classList.add('admin-nav-item-loading');
-      }
-
-      startProgress();
-    });
-  }
-
   function init() {
     initUI();
     stopProgress();
     handleFormSubmissions();
-    handleLinkClicks();
   }
 
   if (document.readyState === 'loading') {
