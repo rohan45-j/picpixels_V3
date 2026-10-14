@@ -4,23 +4,23 @@
 
 {% block extrastyle %}
     {{ block.super }}
-    <link href="{% static 'admin/css/custom.css' %}" rel="stylesheet">
-    <link href="{% static 'admin/css/custom_admin.css' %}" rel="stylesheet">
-    <link href="{% static 'admin/css/custom_table.css' %}" rel="stylesheet">
-    <link href="{% static 'admin/css/dashboard-redesign.css' %}" rel="stylesheet">
-    <link href="{% static 'admin/css/light-mode-fix.css' %}" rel="stylesheet">
-    <link href="{% static 'admin/css/responsive.css' %}" rel="stylesheet">
-    <link href="{% static 'admin/css/notifications.css' %}" rel="stylesheet">
-    <link href="{% static 'admin/css/admin_loading.css' %}" rel="stylesheet">
+    <link href="{% static 'admin/css/custom.css' %}?v=20" rel="stylesheet">
+    <link href="{% static 'admin/css/custom_admin.css' %}?v=20" rel="stylesheet">
+    <link href="{% static 'admin/css/custom_table.css' %}?v=20" rel="stylesheet">
+    <link href="{% static 'admin/css/dashboard-redesign.css' %}?v=20" rel="stylesheet">
+    <link href="{% static 'admin/css/light-mode-fix.css' %}?v=20" rel="stylesheet">
+    <link href="{% static 'admin/css/responsive.css' %}?v=20" rel="stylesheet">
+    <link href="{% static 'admin/css/notifications.css' %}?v=20" rel="stylesheet">
+    <link href="{% static 'admin/css/admin_loading.css' %}?v=20" rel="stylesheet">
 {% endblock %}
 
 {% block extrahead %}
     {{ block.super }}
-    <script src="{% static 'admin/js/theme.js' %}" defer></script>
-    <script src="{% static 'admin/js/toggle.js' %}" defer></script>
-    <script src="{% static 'admin/js/sidebar.js' %}" defer></script>
-    <script src="{% static 'admin/js/notifications.js' %}" defer></script>
-    <script src="{% static 'admin/js/admin_loading.js' %}" defer></script>
+    <script src="{% static 'admin/js/theme.js' %}?v=20" defer></script>
+    <script src="{% static 'admin/js/toggle.js' %}?v=20" defer></script>
+    <script src="{% static 'admin/js/sidebar.js' %}?v=20" defer></script>
+    <script src="{% static 'admin/js/notifications.js' %}?v=20" defer></script>
+    <script src="{% static 'admin/js/admin_loading.js' %}?v=20" defer></script>
     {% if site_settings and site_settings.favicon %}
     <link rel="icon" href="{{ site_settings.favicon.url }}">
     <link rel="apple-touch-icon" href="{{ site_settings.favicon.url }}">
