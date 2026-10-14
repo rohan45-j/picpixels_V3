@@ -88,11 +88,11 @@ class CustomToggleSwitch(forms.CheckboxInput):
         id_str = attrs.get('id', f"id_{name}")
         checked = 'checked' if value else ''
         label_text = 'Active' if value else 'Inactive'
-
+        field_key = name.split('-')[-1] if name else ''
         html = f"""
         <div class="custom-toggle-wrapper">
             <label class="custom-toggle-container" for="{id_str}">
-                <input type="checkbox" name="{name}" id="{id_str}" class="custom-toggle-checkbox" {checked}>
+                <input type="checkbox" name="{name}" id="{id_str}" class="custom-toggle-checkbox" data-field-name="{field_key}" {checked}>
                 <span class="custom-toggle-slider"></span>
                 <span class="custom-toggle-label-text">{label_text}</span>
             </label>

@@ -432,9 +432,15 @@
       function checkFinish() {
         m.uploadBtn.textContent = 'Uploading ' + (uploaded + failed) + '/' + readyFiles.length + '...';
         if (uploaded + failed >= readyFiles.length) {
-          m.uploadBtn.textContent = 'Done!';
-          showToast(uploaded + ' image' + (uploaded !== 1 ? 's' : '') + ' queued for save.', uploaded > 0 ? 'success' : 'error');
-          setTimeout(function () { m.close(); }, 800);
+          if (uploaded > 0) {
+            m.uploadBtn.textContent = 'Done!';
+            showToast(uploaded + ' image' + (uploaded !== 1 ? 's' : '') + ' queued for save.', 'success');
+            setTimeout(function () { m.close(); }, 800);
+          } else {
+            m.uploadBtn.textContent = 'Retry Upload';
+            m.uploadBtn.disabled = false;
+            showToast('All image uploads failed. Please check the error message below or server storage permissions.', 'error');
+          }
         }
       }
     });

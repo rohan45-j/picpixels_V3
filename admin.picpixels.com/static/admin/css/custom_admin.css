@@ -285,21 +285,115 @@ table .addlink .material-symbols-outlined {
 /* List editable toggle in changelist */
 #changelist .custom-toggle-wrapper {
   margin-top: 0;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.2s ease;
 }
 
-/* ===========================================================
-   Modern Button UI (Global) — kept for transitional backward compat
-   (Full modern button styles moved to custom.css)
-   =========================================================== */
+/* Quick AJAX Toggle feedback states */
+.custom-toggle-wrapper.saving .custom-toggle-slider {
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.45) !important;
+  animation: toggleSavingPulse 0.7s infinite alternate ease-in-out;
+}
 
-/* ===========================================================
-   Modern Card-Style Form Containers & Spacing — kept for backward compat
-   (Full modern form styles moved to custom.css)
-   =========================================================== */
+@keyframes toggleSavingPulse {
+  from { opacity: 0.75; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1.02); }
+}
 
-/* ===========================================================
-   Table List is_active Column Badges — kept for backward compat
-   (Full badge styles moved to custom.css)
-   =========================================================== */
+.custom-toggle-wrapper.saved .custom-toggle-slider {
+  box-shadow: 0 0 0 3.5px rgba(16, 185, 129, 0.65) !important;
+  transition: box-shadow 0.2s ease;
+}
+
+.custom-toggle-wrapper.error .custom-toggle-slider {
+  box-shadow: 0 0 0 3.5px rgba(239, 68, 68, 0.7) !important;
+  animation: toggleShake 0.35s ease;
+}
+
+@keyframes toggleShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+
+/* List editable numeric / text inputs (e.g. order, price) */
+.input-saving {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.25) !important;
+  transition: all 0.2s ease;
+}
+
+.input-saved {
+  border-color: #10b981 !important;
+  background-color: rgba(16, 185, 129, 0.04) !important;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3) !important;
+  transition: all 0.2s ease;
+}
+
+.input-error {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3) !important;
+  animation: toggleShake 0.35s ease;
+}
+
+/* High-speed Modern Quick Toast Container */
+#admin-quick-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.admin-quick-toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  font-size: 13.5px;
+  font-weight: 500;
+  background: rgba(15, 23, 42, 0.94);
+  color: #ffffff;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  transform: translateY(16px) scale(0.96);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: auto;
+}
+
+.admin-quick-toast.visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.admin-quick-toast .quick-toast-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.admin-quick-toast.success .quick-toast-icon {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.admin-quick-toast.error .quick-toast-icon {
+  background: #ef4444;
+  color: #ffffff;
+}
 
 

@@ -13,8 +13,12 @@ def cached_media_serve(request, path, document_root=None, show_indexes=False):
     return response
 
 
+from core.admin_quick_update import admin_quick_update_view
+
+
 urlpatterns = [
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
+    path('admin/quick-update/', admin_quick_update_view, name='admin-quick-update'),
     path('admin/', admin.site.urls),
     path('api/v1/homepage/', HomepageDataView.as_view(), name='homepage-data'),
     path('api/v1/users/', include('users.urls')),

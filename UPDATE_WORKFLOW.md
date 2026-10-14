@@ -58,6 +58,8 @@ source venv/bin/activate
 pip install -r requirements.txt            # যদি নতুন কোনো প্যাকেজ যোগ হয়
 python manage.py migrate                   # যদি নতুন কোনো মাইগ্রেশন থাকে
 python manage.py collectstatic --noinput   # স্ট্যাটিক ফাইলের জন্য
+sudo chown -R www-data:www-data media/     # ইমেজ আপলোড পারমিশন সুরক্ষিত রাখতে
+sudo chmod -R 775 media/
 sudo systemctl restart picpixels-backend
 ```
 
@@ -69,7 +71,7 @@ sudo systemctl restart picpixels-backend
 ```bash
 cd /var/www/picpixels_root && git pull origin main && \
 (cd picpixels && npm run build && chown -R deploy:deploy /var/www/picpixels_root/picpixels && su - deploy -c "pm2 restart picpixels-frontend") && \
-(cd admin.picpixels.com && source venv/bin/activate && python manage.py migrate && python manage.py collectstatic --noinput && sudo systemctl restart picpixels-backend)
+(cd admin.picpixels.com && source venv/bin/activate && python manage.py migrate && python manage.py collectstatic --noinput && sudo chown -R www-data:www-data media/ && sudo chmod -R 775 media/ && sudo systemctl restart picpixels-backend)
 ```
 
 ---

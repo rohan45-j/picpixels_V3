@@ -415,19 +415,48 @@ class MediaUploadView(APIView):
         },
     )
     def post(self, request, *args, **kwargs):
+        from django.utils.text import get_valid_filename
+        import os
+
         file_obj = request.FILES.get('file')
         if not file_obj:
             return Response({'error': 'No file uploaded'}, status=400)
 
-        file_name = default_storage.save(f'uploads/{file_obj.name}', file_obj)
-        file_url = default_storage.url(file_name)
-        full_url = request.build_absolute_uri(file_url)
+        # Enforce max 25MB file size limit
+        if file_obj.size > 25 * 1024 * 1024:
+            return Response({'error': f'File exceeds 25MB limit ({file_obj.size / (1024 * 1024):.1f}MB)'}, status=400)
 
-        return Response({
-            'filename': file_obj.name,
-            'url': full_url,
-            'size': file_obj.size,
-        }, status=201)
+        clean_name = get_valid_filename(file_obj.name)
+        if not clean_name:
+            clean_name = f'upload_{file_obj.size}'
+
+        target_path = f'uploads/{clean_name}'
+
+        try:
+            # Ensure uploads directory exists inside MEDIA_ROOT
+            full_uploads_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
+            os.makedirs(full_uploads_dir, exist_ok=True)
+
+            file_name = default_storage.save(target_path, file_obj)
+            file_url = default_storage.url(file_name)
+            full_url = request.build_absolute_uri(file_url)
+
+            return Response({
+                'filename': clean_name,
+                'url': full_url,
+                'size': file_obj.size,
+            }, status=201)
+        except PermissionError as pe:
+            logger.error(f"[MediaUploadView] Permission denied saving upload {clean_name}: {pe}", exc_info=True)
+            return Response({
+                'error': f'Server storage permission denied on media/uploads/. Please run: sudo chown -R www-data:www-data media/ on VPS. ({pe})'
+            }, status=500)
+        except Exception as e:
+            logger.error(f"[MediaUploadView] Upload error saving {clean_name}: {e}", exc_info=True)
+            return Response({
+                'error': f'Upload failed: {str(e)}'
+            }, status=500)
+
 
 
 class PricingConfigSectionViewSet(NoCacheOnWriteMixin, viewsets.ReadOnlyModelViewSet):

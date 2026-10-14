@@ -291,16 +291,17 @@ class LocationPickerWidget(forms.Widget):
         import json as _json
         raw = data.get(name)
         if raw is None:
-            return []
-        if isinstance(raw, list):
-            return raw
+            return '[]'
+        if isinstance(raw, (list, dict)):
+            return _json.dumps(raw)
         if isinstance(raw, str):
             raw = raw.strip()
             if not raw or raw == '[]':
-                return []
+                return '[]'
             try:
                 parsed = _json.loads(raw)
-                return parsed if isinstance(parsed, list) else []
+                return _json.dumps(parsed if isinstance(parsed, list) else [])
             except _json.JSONDecodeError:
-                return [x.strip() for x in raw.split(',') if x.strip()]
-        return []
+                items = [x.strip() for x in raw.split(',') if x.strip()]
+                return _json.dumps(items)
+        return '[]'

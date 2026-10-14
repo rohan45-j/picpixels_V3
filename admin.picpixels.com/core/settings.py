@@ -230,6 +230,8 @@ WHITENOISE_MANIFEST_STRICT = False
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+FILE_UPLOAD_PERMISSIONS = 0o664
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o775
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -384,7 +386,6 @@ UNFOLD = {
     "SHOW_VIEW_ON_SITE": True,
     "THEME": "light",
     "ENVIRONMENT": "PicPicxels Enterprise",
-    "ENVIRONMENT_TITLE_PREFIX": "show",
     "SHOW_BACK_BUTTON": True,
     "SHOW_LANGUAGES": False,
     "STYLES": [

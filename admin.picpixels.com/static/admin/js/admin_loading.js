@@ -1,5 +1,5 @@
 /**
- * PicPixels Admin - User-Friendly Loading UI & Fast Feedback
+ * PicPixels Admin - User-Friendly Loading UI & Fast Non-Intrusive Feedback
  */
 (function () {
   'use strict';
@@ -7,6 +7,7 @@
   let progressBar = null;
   let toastEl = null;
   let progressTimer = null;
+  let toastTimer = null;
 
   function initUI() {
     if (document.getElementById('admin-top-progress')) return;
@@ -32,12 +33,12 @@
 
     clearTimeout(progressTimer);
     progressBar.className = 'active';
-    progressBar.style.width = '20%';
+    progressBar.style.width = '25%';
 
     progressTimer = setTimeout(() => {
-      progressBar.style.width = '60%';
+      progressBar.style.width = '65%';
       progressTimer = setTimeout(() => {
-        progressBar.style.width = '85%';
+        progressBar.style.width = '88%';
       }, 300);
     }, 150);
   }
@@ -49,33 +50,50 @@
     clearTimeout(progressTimer);
     progressBar.className = 'indeterminate active';
 
-    if (toastText) {
-      const textSpan = toastEl.querySelector('.admin-loading-toast-text');
-      if (textSpan) textSpan.textContent = toastText;
+    // Only show toast after a slight delay (650ms) to prevent flashing on fast requests
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      if (toastText) {
+        const textSpan = toastEl.querySelector('.admin-loading-toast-text');
+        if (textSpan) textSpan.textContent = toastText;
+      }
       toastEl.classList.add('visible');
-    }
+    }, 650);
   }
 
   function stopProgress() {
-    if (!progressBar) return;
     clearTimeout(progressTimer);
-    progressBar.style.width = '100%';
-    setTimeout(() => {
-      progressBar.classList.remove('active', 'indeterminate');
-      progressBar.style.width = '0%';
-      if (toastEl) toastEl.classList.remove('visible');
-      document.querySelectorAll('.admin-btn-loading').forEach((btn) => {
-        btn.classList.remove('admin-btn-loading');
-      });
-    }, 200);
+    clearTimeout(toastTimer);
+
+    if (progressBar) {
+      progressBar.style.width = '100%';
+      setTimeout(() => {
+        progressBar.classList.remove('active', 'indeterminate');
+        progressBar.style.width = '0%';
+      }, 200);
+    }
+
+    if (toastEl) {
+      toastEl.classList.remove('visible');
+    }
+
+    document.querySelectorAll('.admin-btn-loading').forEach((btn) => {
+      btn.classList.remove('admin-btn-loading');
+      const orig = btn.getAttribute('data-original-val');
+      if (orig && btn.tagName === 'INPUT') {
+        btn.value = orig;
+      }
+    });
   }
 
   function handleFormSubmissions() {
     document.addEventListener('submit', function (e) {
+      if (e.defaultPrevented) return;
+
       const form = e.target;
       if (!form || form.tagName !== 'FORM') return;
 
-      // Skip search GET forms for heavy toast
+      // Skip search GET forms or pure query filter forms
       const isGet = (form.method || 'GET').toUpperCase() === 'GET';
       if (isGet) {
         startProgress();
@@ -100,13 +118,13 @@
         }
       }
 
-      startIndeterminate('Saving module changes, please wait...');
+      startProgress();
+      startIndeterminate('Saving changes, please wait...');
     }, true);
   }
 
   function handleLinkClicks() {
     document.addEventListener('click', function (e) {
-      // Find closest link
       const link = e.target.closest('a');
       if (!link) return;
 
@@ -118,8 +136,8 @@
       // Check if same origin
       if (link.origin && link.origin !== window.location.origin) return;
 
-      // Add immediate subtle loading visual on clicked sidebar or table link
-      if (link.closest('aside') || link.closest('.sidebar') || link.closest('nav') || link.closest('table')) {
+      // Add subtle visual feedback for clicked sidebar/nav links
+      if (link.closest('aside') || link.closest('.sidebar') || link.closest('nav')) {
         link.classList.add('admin-nav-item-loading');
       }
 
@@ -127,21 +145,21 @@
     }, true);
   }
 
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      initUI();
-      handleFormSubmissions();
-      handleLinkClicks();
-    });
-  } else {
+  // Initialize
+  function init() {
     initUI();
+    stopProgress();
     handleFormSubmissions();
     handleLinkClicks();
   }
 
-  // Handle browser back/forward and page restores
-  window.addEventListener('pageshow', (event) => {
-    stopProgress();
-  });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  // Clean up on back/forward navigation or page restore
+  window.addEventListener('pageshow', stopProgress);
+  window.addEventListener('load', stopProgress);
 })();
