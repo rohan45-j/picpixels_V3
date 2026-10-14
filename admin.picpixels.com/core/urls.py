@@ -18,6 +18,7 @@ from core.admin_quick_update import admin_quick_update_view
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
+    path('admin', RedirectView.as_view(url='/admin/', permanent=False)),
     path('admin/quick-update/', admin_quick_update_view, name='admin-quick-update'),
     path('admin/', admin.site.urls),
     path('api/v1/homepage/', HomepageDataView.as_view(), name='homepage-data'),
