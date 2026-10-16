@@ -35,6 +35,18 @@ MODEL_REVALIDATION_MAP = {
         'paths': ['/', '/services', '/pricing'],
         'tags': ['homepage', 'services', 'pricing', 'navigation'],
     },
+    'ServiceGalleryImage': {
+        'paths': ['/services'],
+        'tags': ['services'],
+    },
+    'ServiceHeroImage': {
+        'paths': ['/services'],
+        'tags': ['services'],
+    },
+    'ServiceContentSection': {
+        'paths': ['/services'],
+        'tags': ['services'],
+    },
     'Testimonial': {
         'paths': ['/', '/about'],
         'tags': ['homepage', 'testimonials'],
@@ -273,7 +285,13 @@ def trigger_revalidation(model_name, instance=None, extra_paths=None, extra_tags
     # Add slug-specific paths for detail pages
     if instance:
         slug = getattr(instance, 'slug', None)
-        if slug:
+        if not slug and hasattr(instance, 'service') and getattr(instance, 'service', None):
+            svc = getattr(instance, 'service')
+            svc_slug = getattr(svc, 'slug', None)
+            if svc_slug:
+                paths.append(f'/services/{svc_slug}')
+                tags.append('services')
+        elif slug:
             if model_name == 'Service':
                 paths.append(f'/services/{slug}')
             elif model_name == 'BlogPost':

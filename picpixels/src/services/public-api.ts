@@ -17,7 +17,7 @@ function resolveFetchUrl(url: string): string {
   return url;
 }
 
-function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCache; tags?: string[] } = {}): Promise<Response> {
+export function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCache; tags?: string[] } = {}): Promise<Response> {
   const { revalidate = DEFAULT_REVALIDATE, cache, tags } = options;
   const nextOptions: { revalidate?: number; tags?: string[] } = { revalidate };
   if (tags && tags.length > 0) {
