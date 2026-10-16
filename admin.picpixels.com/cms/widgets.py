@@ -189,7 +189,7 @@ class ColorPickerWidget(forms.TextInput):
     A modern color picker widget providing:
     - HTML5 native color wheel picker
     - Hex input field
-    - Quick-select color presets (Black #000000, Brand Orange #FF8A50, Indigo #6366F1, Emerald #10B981, Crimson #EF4444, Violet #8B5CF6)
+    - Quick-select color presets (Black #000000, Brand Orange #F97316, Indigo #6366F1, Emerald #10B981, Crimson #EF4444, Violet #8B5CF6)
     - Reset to default black button
     """
     def __init__(self, attrs=None):
@@ -217,8 +217,8 @@ class ColorPickerWidget(forms.TextInput):
                 <span class="color-swatch-label">Presets:</span>
                 <button type="button" class="color-swatch" style="background:#000000;" title="Default Black (#000000)"
                     onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = '#000000'; var w = this.closest('.modern-color-picker-wrap'); if (w) w.querySelector('input[type=color]').value = '#000000';"></button>
-                <button type="button" class="color-swatch" style="background:#FF8A50;" title="Brand Orange (#FF8A50)"
-                    onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = '#FF8A50'; var w = this.closest('.modern-color-picker-wrap'); if (w) w.querySelector('input[type=color]').value = '#FF8A50';"></button>
+                <button type="button" class="color-swatch" style="background:#F97316;" title="Brand Orange (#F97316)"
+                    onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = '#F97316'; var w = this.closest('.modern-color-picker-wrap'); if (w) w.querySelector('input[type=color]').value = '#F97316';"></button>
                 <button type="button" class="color-swatch" style="background:#6366F1;" title="Indigo (#6366F1)"
                     onclick="var txt = document.getElementById('id_{name}'); if (txt) txt.value = '#6366F1'; var w = this.closest('.modern-color-picker-wrap'); if (w) w.querySelector('input[type=color]').value = '#6366F1';"></button>
                 <button type="button" class="color-swatch" style="background:#10B981;" title="Emerald (#10B981)"

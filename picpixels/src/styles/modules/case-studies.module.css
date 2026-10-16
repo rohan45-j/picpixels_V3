@@ -1122,7 +1122,7 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #FF8A50;
+  color: #F97316;
   margin-bottom: 0.75rem;
 }
 
@@ -1908,7 +1908,7 @@
   position: absolute;
   inset: 0;
   opacity: 0.04;
-  background: radial-gradient(circle at 70% 50%, #FF8A50 0%, transparent 50%);
+  background: radial-gradient(circle at 70% 50%, #F97316 0%, transparent 50%);
 }
 
 .finalCtaInner {

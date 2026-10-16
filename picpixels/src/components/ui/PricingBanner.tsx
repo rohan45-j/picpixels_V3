@@ -13,7 +13,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const defaultBgMap: Record<string, string> = {
   discount: '#EF4444',
-  popular: '#FF8A50',
+  popular: '#F97316',
   recommended: '#10B981',
   new: '#6366F1',
 };
@@ -26,7 +26,7 @@ export default function PricingBanner({ data }: { data: PricingBannerType }) {
     if (expiry <= new Date()) return null;
   }
 
-  const bgColor = data.banner_bg_color || defaultBgMap[data.banner_type] || '#FF8A50';
+  const bgColor = data.banner_bg_color || defaultBgMap[data.banner_type] || '#F97316';
   const textColor = data.banner_text_color || '#FFFFFF';
 
   return (

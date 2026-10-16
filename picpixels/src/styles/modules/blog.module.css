@@ -405,7 +405,7 @@
 }
 
 .shareBtn:last-child:hover {
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
 }
 
 /* ─── TOC ─── */
@@ -429,7 +429,7 @@
 }
 .tocProgressBar {
   height: 100%;
-  background: linear-gradient(90deg, var(--primary), #ff6b35);
+  background: linear-gradient(90deg, var(--primary), #EA580C);
   border-radius: 0 2px 2px 0;
   transition: width 0.15s ease-out;
 }

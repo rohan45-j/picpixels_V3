@@ -70,7 +70,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   margin-bottom: 0.75rem;
 }
 
@@ -161,7 +161,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
 }
 
 .infoContent {
@@ -193,7 +193,7 @@
 }
 
 .infoValue a:hover {
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
 }
 
 /* ─── Right: Form ─── */
@@ -245,7 +245,7 @@
 
 .labelRequired::after {
   content: ' *';
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
 }
 
 .input {
@@ -267,7 +267,7 @@
 }
 
 .input:focus {
-  border-color: var(--color-primary, #FF8A50);
+  border-color: var(--color-primary, #F97316);
   background: #ffffff;
   box-shadow: 0 0 0 3px rgba(255, 138, 80, 0.1);
 }
@@ -310,7 +310,7 @@
   font-weight: 700;
   font-family: inherit;
   color: #ffffff;
-  background: var(--color-primary, #FF8A50);
+  background: var(--color-primary, #F97316);
   border: none;
   border-radius: var(--radius-sm, 8px);
   cursor: pointer;
@@ -318,7 +318,7 @@
 }
 
 .submitBtn:hover:not(:disabled) {
-  background: var(--color-primary-dark, #CC6F3F);
+  background: var(--color-primary-dark, #EA580C);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(255, 138, 80, 0.3);
 }
@@ -493,5 +493,5 @@
 }
 
 [data-theme="dark"] .infoValue a:hover {
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
 }

@@ -194,8 +194,8 @@
 }
 
 .arrow:hover:not(:disabled) {
-  border-color: #FF8A50;
-  color: #FF8A50;
+  border-color: #F97316;
+  color: #F97316;
   transform: translateY(-50%) scale(1.08);
   box-shadow: 0 4px 16px rgba(255, 138, 80, 0.15);
 }
@@ -238,7 +238,7 @@
 .dotActive {
   width: 28px;
   border-radius: 4px;
-  background: #FF8A50;
+  background: #F97316;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -159,7 +159,7 @@
 .categoryBadge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background: #FF8A50;
+  background: #F97316;
   border-radius: 9999px;
   font-family: inherit;
   font-size: 0.72rem;
@@ -196,8 +196,8 @@
 }
 
 .detailLink:hover {
-  background: #FF8A50;
-  border-color: #FF8A50;
+  background: #F97316;
+  border-color: #F97316;
   transform: translateY(-1px);
 }
 

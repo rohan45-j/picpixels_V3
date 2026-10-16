@@ -23,7 +23,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: #FF8A50;
+  color: #F97316;
   margin-bottom: 0.75rem;
 }
 
@@ -37,7 +37,7 @@
 .divider {
   width: 60px;
   height: 3px;
-  background: linear-gradient(90deg, #FF8A50, #FF6B35);
+  background: linear-gradient(90deg, #F97316, #EA580C);
   border-radius: 9999px;
   margin: 0.75rem auto 0.75rem;
   opacity: 0.8;
@@ -63,10 +63,10 @@
 }
 
 .viewAllBtn:hover {
-  border-color: #FF8A50;
-  color: #FF8A50;
+  border-color: #F97316;
+  color: #F97316;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255,138,80,0.15);
+  box-shadow: 0 4px 12px rgba(249,115,22,0.15);
 }
 
 .viewAllWrap {
@@ -241,7 +241,7 @@
 }
 
 .cta:hover {
-  background: #FF8A50;
+  background: #F97316;
   color: #fff;
 }
 
@@ -282,7 +282,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: #FF8A50;
+  color: #F97316;
   text-transform: uppercase;
   margin-bottom: 0.75rem;
 }
@@ -334,9 +334,9 @@
 }
 
 .searchInput:focus {
-  border-color: #FF8A50;
+  border-color: #F97316;
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(255,138,80,0.1);
+  box-shadow: 0 0 0 4px rgba(249,115,22,0.1);
 }
 
 .searchInput::placeholder { color: #9CA3AF; }
@@ -387,17 +387,17 @@
 }
 
 .filterBtn:hover {
-  background: #FF8A50;
+  background: #F97316;
   color: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(255,138,80,0.25);
+  box-shadow: 0 4px 14px rgba(249,115,22,0.25);
 }
 
 .filterActive {
-  background: linear-gradient(135deg, #FF8A50 0%, #FF6B35 100%) !important;
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%) !important;
   color: #fff !important;
   font-weight: 600 !important;
-  box-shadow: 0 6px 20px rgba(255,138,80,0.3) !important;
+  box-shadow: 0 6px 20px rgba(249,115,22,0.3) !important;
   transform: translateY(-1px);
 }
 
@@ -446,10 +446,10 @@
 }
 
 .loadMore:hover {
-  border-color: #FF8A50;
-  color: #FF8A50;
+  border-color: #F97316;
+  color: #F97316;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255,138,80,0.15);
+  box-shadow: 0 4px 12px rgba(249,115,22,0.15);
 }
 
 .loadMore svg { transition: transform 0.3s cubic-bezier(0.22,1,0.36,1); }

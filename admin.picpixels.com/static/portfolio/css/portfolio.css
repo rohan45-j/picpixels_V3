@@ -1,12 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════
-   PORTFOLIO STYLES — Brand: #FF8A50
+   PORTFOLIO STYLES — Brand: #F97316
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  --pf-primary: #FF8A50;
+  --pf-primary: #F97316;
   --pf-primary-dark: #CC6F3F;
   --pf-primary-light: #FFB180;
-  --pf-gradient: linear-gradient(135deg, #FF8A50 0%, #FF6B35 100%);
+  --pf-gradient: linear-gradient(135deg, #F97316 0%, #FF6B35 100%);
   --pf-text: #212529;
   --pf-muted: #6c757d;
   --pf-light: #9CA3AF;

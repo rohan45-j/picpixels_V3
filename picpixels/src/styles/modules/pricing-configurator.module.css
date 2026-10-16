@@ -156,11 +156,11 @@
   width: 100%;
   padding: 0.85rem 2.6rem 0.85rem 1.15rem;
   background: #fff;
-  border: 2px solid var(--color-primary, #FF8A50);
+  border: 2px solid var(--color-primary, #F97316);
   border-radius: var(--radius-md, 12px);
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   cursor: pointer;
   font-family: inherit;
   box-shadow: 0 2px 8px rgba(255, 138, 80, 0.12);
@@ -174,13 +174,13 @@
 }
 
 .nativeSelect:hover {
-  border-color: var(--color-primary-dark, #e07a45);
+  border-color: var(--color-primary-dark, #EA580C);
   box-shadow: 0 4px 16px rgba(255, 138, 80, 0.2);
   transform: translateY(-1px);
 }
 
 .nativeSelect:focus {
-  border-color: var(--color-primary, #FF8A50);
+  border-color: var(--color-primary, #F97316);
   box-shadow: 0 0 0 3px rgba(255, 138, 80, 0.2);
 }
 
@@ -195,13 +195,13 @@
   position: absolute;
   right: 1.1rem;
   pointer-events: none;
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
 }
 
 .noJsFilterBtn {
   align-self: flex-end;
   padding: 0.85rem 1.5rem;
-  background: var(--color-primary, #FF8A50);
+  background: var(--color-primary, #F97316);
   color: #fff;
   font-weight: 700;
   font-size: 0.9rem;
@@ -213,13 +213,13 @@
 }
 
 .noJsFilterBtn:hover {
-  background: var(--color-primary-dark, #e07a45);
+  background: var(--color-primary-dark, #EA580C);
 }
 
 [data-theme="dark"] .nativeSelect {
   background: var(--bg-dark-card, #1e293b);
   border-color: rgba(255, 138, 80, 0.5);
-  color: #FF8A50;
+  color: #F97316;
 }
 
 [data-theme="dark"] .nativeSelect option {
@@ -724,8 +724,8 @@
 :global([data-theme="dark"]) .nativeSelect,
 :global(.dark) .nativeSelect {
   background: #1e1e24;
-  color: #ff8a50;
-  border-color: #ff8a50;
+  color: #F97316;
+  border-color: #F97316;
 }
 
 :global([data-theme="dark"]) .nativeSelect option,

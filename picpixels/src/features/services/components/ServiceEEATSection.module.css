@@ -21,7 +21,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: #FF8A50;
+  color: #F97316;
   text-transform: uppercase;
   margin-bottom: 0.75rem;
 }
@@ -39,7 +39,7 @@
 .accentLine {
   width: 60px;
   height: 4px;
-  background: #FF8A50;
+  background: #F97316;
   border-radius: 2px;
   margin: 0 auto 1rem;
 }
@@ -63,7 +63,7 @@
 
 .card:hover {
   transform: translateY(-6px);
-  border-color: #FF8A50;
+  border-color: #F97316;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
 }
 
@@ -76,7 +76,7 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1.25rem;
-  color: #FF8A50;
+  color: #F97316;
   flex-shrink: 0;
 }
 

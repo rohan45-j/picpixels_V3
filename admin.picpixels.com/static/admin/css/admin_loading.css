@@ -5,7 +5,7 @@
   left: 0;
   height: 3.5px;
   width: 0%;
-  background: linear-gradient(90deg, #FF8A50 0%, #ea580c 50%, #f97316 100%);
+  background: linear-gradient(90deg, #F97316 0%, #ea580c 50%, #f97316 100%);
   z-index: 9999999;
   transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
   box-shadow: 0 0 10px rgba(255, 138, 80, 0.7), 0 0 5px rgba(234, 88, 12, 0.5);
@@ -68,7 +68,7 @@
   width: 16px;
   height: 16px;
   border: 2.2px solid rgba(255, 255, 255, 0.25);
-  border-top-color: #FF8A50;
+  border-top-color: #F97316;
   border-radius: 50%;
   animation: adminSpinnerSpin 0.7s linear infinite;
 }

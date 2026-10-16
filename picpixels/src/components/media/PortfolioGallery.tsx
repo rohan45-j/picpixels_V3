@@ -85,10 +85,10 @@ export default function PortfolioGallery({ images, title, subtitle, onImageClick
               pointer-events: none;
             }
             #tab-all:checked ~ .portfolio-gallery-filters label[for="tab-all"] {
-              background: var(--color-primary, #ff8a50) !important;
+              background: var(--color-primary, #F97316) !important;
               color: #ffffff !important;
-              border-color: var(--color-primary, #ff8a50) !important;
-              box-shadow: 0 4px 12px rgba(255, 138, 80, 0.3) !important;
+              border-color: var(--color-primary, #F97316) !important;
+              box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3) !important;
             }
             #tab-all:checked ~ .portfolio-gallery-grid .portfolio-card {
               display: block !important;
@@ -99,10 +99,10 @@ export default function PortfolioGallery({ images, title, subtitle, onImageClick
                 const slug = toSlug(cat);
                 return `
                   #tab-${slug}:checked ~ .portfolio-gallery-filters label[for="tab-${slug}"] {
-                    background: var(--color-primary, #ff8a50) !important;
+                    background: var(--color-primary, #F97316) !important;
                     color: #ffffff !important;
-                    border-color: var(--color-primary, #ff8a50) !important;
-                    box-shadow: 0 4px 12px rgba(255, 138, 80, 0.3) !important;
+                    border-color: var(--color-primary, #F97316) !important;
+                    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3) !important;
                   }
                   #tab-${slug}:checked ~ .portfolio-gallery-grid .portfolio-card:not([data-category="${slug}"]) {
                     display: none !important;

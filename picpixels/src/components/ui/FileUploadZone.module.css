@@ -16,13 +16,13 @@
 
 .dropZone:hover,
 .dropZoneActive {
-  border-color: var(--color-primary, #FF8A50);
+  border-color: var(--color-primary, #F97316);
   background: rgba(255, 138, 80, 0.04);
   box-shadow: 0 0 24px rgba(255, 138, 80, 0.08);
 }
 
 .dropZone:focus-visible {
-  outline: 2px solid var(--color-primary, #FF8A50);
+  outline: 2px solid var(--color-primary, #F97316);
   outline-offset: 2px;
 }
 
@@ -34,7 +34,7 @@
   height: 52px;
   border-radius: 14px;
   background: linear-gradient(135deg, rgba(255, 138, 80, 0.1), rgba(255, 138, 80, 0.05));
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   margin: 0 auto 1rem;
   transition: all 0.3s ease;
 }
@@ -42,7 +42,7 @@
 .dropZone:hover .dropIcon,
 .dropZoneActive .dropIcon {
   transform: translateY(-3px);
-  background: var(--color-primary, #FF8A50);
+  background: var(--color-primary, #F97316);
   color: #fff;
   box-shadow: 0 4px 12px rgba(255, 138, 80, 0.25);
 }
@@ -61,7 +61,7 @@
 }
 
 .browseText {
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -104,7 +104,7 @@
   height: 42px;
   border-radius: 8px;
   background: rgba(255, 138, 80, 0.08);
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   flex-shrink: 0;
   overflow: hidden;
   position: relative;
@@ -181,7 +181,7 @@
 
 [data-theme="dark"] .dropZone:hover,
 [data-theme="dark"] .dropZoneActive {
-  border-color: var(--color-primary, #FF8A50);
+  border-color: var(--color-primary, #F97316);
   background: rgba(255, 138, 80, 0.06);
 }
 

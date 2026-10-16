@@ -59,7 +59,7 @@
   border-radius: 100px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   text-transform: uppercase;
   letter-spacing: 0.14em;
   margin-bottom: 1.5rem;
@@ -168,7 +168,7 @@
 .priceCurrency {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   line-height: 1;
 }
 
@@ -176,7 +176,7 @@
   font-family: Arial, Helvetica, sans-serif;
   font-size: 4rem;
   font-weight: 900;
-  background: linear-gradient(135deg, var(--color-primary, #FF8A50) 0%, var(--color-primary-dark, #CC6F3F) 100%);
+  background: linear-gradient(135deg, var(--color-primary, #F97316) 0%, var(--color-primary-dark, #EA580C) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -231,7 +231,7 @@
   height: 22px;
   border-radius: 50%;
   background: rgba(255, 138, 80, 0.1);
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
 }
 
 .checkIcon svg {
@@ -245,7 +245,7 @@
   gap: 0.6rem;
   width: 100%;
   padding: 1rem 2rem;
-  background: linear-gradient(135deg, var(--color-primary, #FF8A50), var(--color-primary-dark, #CC6F3F));
+  background: linear-gradient(135deg, var(--color-primary, #F97316), var(--color-primary-dark, #EA580C));
   color: #ffffff;
   font-size: 1rem;
   font-weight: 700;
@@ -288,7 +288,7 @@
   border-radius: 100px;
   font-size: 0.7rem;
   font-weight: 700;
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   width: fit-content;
@@ -304,7 +304,7 @@
 }
 
 .highlight {
-  background: linear-gradient(135deg, var(--color-primary, #FF8A50), var(--color-primary-light, #FFB180));
+  background: linear-gradient(135deg, var(--color-primary, #F97316), var(--color-primary-light, #FB923C));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -354,7 +354,7 @@
   height: 40px;
   border-radius: 12px;
   background: linear-gradient(135deg, rgba(255, 138, 80, 0.1), rgba(255, 138, 80, 0.05));
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
 }
 
 .benefitItem strong {
@@ -377,7 +377,7 @@
   gap: 0.5rem;
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   text-decoration: none;
   transition: all 0.3s ease;
   width: fit-content;

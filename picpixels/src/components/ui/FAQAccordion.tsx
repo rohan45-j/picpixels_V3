@@ -49,7 +49,7 @@ export default function FAQAccordion({ faqs, className }: FAQAccordionProps) {
               </span>
               <span className={`${styles.faqIconBox} ${isOpen ? styles.faqIconBoxActive : ''}`}>
                 {isOpen ? (
-                  <Minus className="w-4 h-4 text-[#FF8A50]" strokeWidth={2.5} />
+                  <Minus className="w-4 h-4 text-[#F97316]" strokeWidth={2.5} />
                 ) : (
                   <Plus className="w-4 h-4 text-gray-500" strokeWidth={2.5} />
                 )}

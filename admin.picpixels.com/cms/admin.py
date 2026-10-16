@@ -532,7 +532,7 @@ class ServiceAdminForm(forms.ModelForm):
         }
         help_texts = {
             'title': 'The main name of this service, e.g. "Background Removal".',
-            'title_color': 'Custom color for title (hex e.g. #FF8A50). Default is solid black.',
+            'title_color': 'Custom color for title (hex e.g. #F97316). Default is solid black.',
             'slug': 'Auto-generated from title. Used in the page URL.',
             'short_description': 'Brief one-liner shown on service cards across the site.',
             'description': 'Full description displayed on the service detail page.',
@@ -654,7 +654,7 @@ class ServiceAdmin(ModelAdmin):
                 ('faq_title', 'faq_title_color'),
                 ('review_title', 'review_title_color'),
             ),
-            'description': 'Customize section titles and their colors. 💡 Word Highlight Tip: Wrap any word in {Word} to highlight it in brand orange, or use {#FF8A50}Word{/#} for a custom color (e.g. "Why {Choose} Us").',
+            'description': 'Customize section titles and their colors. 💡 Word Highlight Tip: Wrap any word in {Word} to highlight it in brand orange, or use {#F97316}Word{/#} for a custom color (e.g. "Why {Choose} Us").',
         }),
         ('Pricing', {
             'classes': ('collapse',),
@@ -1624,7 +1624,7 @@ class PricingPlanAdmin(ModelAdmin):
     @display(description='Popular')
     def popular_badge(self, obj):
         if obj.is_popular:
-            return mark_safe('<span style="background:#ff8a5015;color:#ff8a50;padding:2px 8px;border-radius:100px;font-size:0.65rem;font-weight:600">★ Popular</span>')
+            return mark_safe('<span style="background:#F9731615;color:#F97316;padding:2px 8px;border-radius:100px;font-size:0.65rem;font-weight:600">★ Popular</span>')
         return mark_safe('<span style="color:#9ca3af">—</span>')
 
     @display(description='# Features')

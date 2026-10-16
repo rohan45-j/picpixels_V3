@@ -30,7 +30,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.22em;
-  color: #FF8A50;
+  color: #F97316;
   text-transform: uppercase;
   background: rgba(255, 138, 80, 0.08);
   padding: 0.35rem 1rem;
@@ -84,7 +84,7 @@
 }
 
 .stack-card-inner:focus-visible {
-  box-shadow: 0 0 0 3px #FF8A50;
+  box-shadow: 0 0 0 3px #F97316;
 }
 
 /* ─── Alternating Layout ─── */
@@ -160,7 +160,7 @@
   border-radius: 100px;
   font-size: 0.68rem;
   font-weight: 700;
-  color: #FF8A50;
+  color: #F97316;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -195,7 +195,7 @@
   font-family: Arial, Helvetica, sans-serif;
   font-size: clamp(0.72rem, 0.85vw, 0.85rem);
   font-weight: 800;
-  color: #FF8A50;
+  color: #F97316;
   line-height: 1;
   margin-bottom: 0.35rem;
   letter-spacing: 0.03em;
@@ -206,7 +206,7 @@
   display: block;
   width: clamp(20px, 2.5vw, 36px);
   height: 2px;
-  background: #FF8A50;
+  background: #F97316;
   opacity: 0.35;
   border-radius: 1px;
 }
@@ -254,7 +254,7 @@
 
 .stack-card-features li svg {
   flex-shrink: 0;
-  color: #FF8A50;
+  color: #F97316;
 }
 
 .stack-card-features li span {
@@ -274,7 +274,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   color: #ffffff;
-  background: #FF8A50;
+  background: #F97316;
   padding: 0.45rem 1rem;
   border-radius: 100px;
   width: fit-content;

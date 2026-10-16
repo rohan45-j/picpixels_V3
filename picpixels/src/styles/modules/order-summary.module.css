@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════
    ORDER SUMMARY & SPECIFICATIONS STYLES
-   PicPicxels Brand Orange (#FF8A50) Design System
+   PicPicxels Brand Orange (#F97316) Design System
    ═══════════════════════════════════════════════ */
 
 .page {
@@ -103,7 +103,7 @@
 }
 
 .stepDotActive {
-  background: linear-gradient(135deg, #FF8A50 0%, #ea580c 100%);
+  background: linear-gradient(135deg, #F97316 0%, #ea580c 100%);
   color: #ffffff;
   box-shadow: 0 0 8px rgba(234, 88, 12, 0.4);
 }
@@ -383,7 +383,7 @@
 }
 
 .volumeTierPillActive {
-  background: linear-gradient(135deg, #FF8A50 0%, #ea580c 100%);
+  background: linear-gradient(135deg, #F97316 0%, #ea580c 100%);
   border-color: #ea580c;
   color: #ffffff !important;
   box-shadow: 0 2px 8px rgba(234, 88, 12, 0.25);
@@ -410,7 +410,7 @@
   left: 0;
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg, #FF8A50 0%, #ea580c 100%);
+  background: linear-gradient(180deg, #F97316 0%, #ea580c 100%);
 }
 
 .pkgImgWrap {
@@ -435,7 +435,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FF8A50;
+  color: #F97316;
   background: rgba(255, 138, 80, 0.08);
 }
 
@@ -1243,7 +1243,7 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 0.95rem 1.5rem;
-  background: linear-gradient(135deg, #FF8A50 0%, #ea580c 100%);
+  background: linear-gradient(135deg, #F97316 0%, #ea580c 100%);
   color: #ffffff;
   border: none;
   border-radius: 12px;
@@ -1382,7 +1382,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.85rem 1.75rem;
-  background: linear-gradient(135deg, #FF8A50 0%, #ea580c 100%);
+  background: linear-gradient(135deg, #F97316 0%, #ea580c 100%);
   color: #ffffff;
   border-radius: 12px;
   font-size: 0.92rem;

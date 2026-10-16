@@ -95,7 +95,7 @@
 }
 
 .trigger:hover .question {
-  color: #FF8A50;
+  color: #F97316;
 }
 
 .iconWrap {
@@ -112,7 +112,7 @@
 
 .iconWrapOpen {
   transform: rotate(180deg);
-  color: #FF8A50;
+  color: #F97316;
 }
 
 .panel {

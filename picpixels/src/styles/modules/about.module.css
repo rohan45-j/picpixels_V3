@@ -79,7 +79,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: #FF8A50;
+  color: #F97316;
   text-transform: uppercase;
   margin-bottom: 0.75rem;
 }
@@ -278,7 +278,7 @@
 }
 .processCard:hover {
   transform: translateY(-6px);
-  border-color: #FF8A50;
+  border-color: #F97316;
   box-shadow: 0 12px 28px rgba(255, 138, 80, 0.15);
 }
 .processConnector { display: none; }

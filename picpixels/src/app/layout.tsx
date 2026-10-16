@@ -12,7 +12,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#FF8A50",
+  themeColor: "#F97316",
 };
 
 export const metadata: Metadata = {

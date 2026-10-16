@@ -4,17 +4,17 @@ import React from 'react';
  * Parses a title or heading string and renders highlighted words/phrases with custom colors.
  * 
  * Supported syntaxes:
- * 1. Brand Highlight (defaults to brand orange #FF8A50):
+ * 1. Brand Highlight (defaults to brand orange #F97316):
  *    - `{Word}` or `{Multiple words}` -> e.g. "Why {Choose} Us"
  *    - `*Word*` or `**Word**`
  * 
  * 2. Custom Color Highlight:
- *    - `{#FF8A50}Word{/#}` or `{#FF8A50}Word{/}`
- *    - `{color:#FF8A50}Word{/color}` or `{color:red}Word{/color}`
- *    - `[color=#FF8A50]Word[/color]` or `[color:#FF8A50]Word[/color]`
+ *    - `{#F97316}Word{/#}` or `{#F97316}Word{/}`
+ *    - `{color:#F97316}Word{/color}` or `{color:red}Word{/color}`
+ *    - `[color=#F97316]Word[/color]` or `[color:#F97316]Word[/color]`
  * 
  * 3. HTML Spans:
- *    - `<span style="color: #FF8A50">Word</span>`
+ *    - `<span style="color: #F97316">Word</span>`
  *    - `<span class="highlight">Word</span>`
  */
 export function renderHighlightedText(text: string, baseColor?: string): React.ReactNode {
@@ -73,7 +73,7 @@ export function renderHighlightedText(text: string, baseColor?: string): React.R
       nodes.push(
         <span
           key={`hl-${keyIndex++}`}
-          style={{ color: '#FF8A50' }}
+          style={{ color: 'var(--color-primary, #F97316)' }}
           className="title-highlight-brand"
         >
           {brandText6}
@@ -83,7 +83,7 @@ export function renderHighlightedText(text: string, baseColor?: string): React.R
       nodes.push(
         <span
           key={`hl-${keyIndex++}`}
-          style={{ color: '#FF8A50' }}
+          style={{ color: 'var(--color-primary, #F97316)' }}
           className="title-highlight-brand"
         >
           {markdownText7}

@@ -9,7 +9,7 @@
 }
 
 .inline-group.sortable table tbody tr.sortable-over {
-  border-bottom: 2px solid #FF8A50 !important;
+  border-bottom: 2px solid #F97316 !important;
   background: #fff8f0 !important;
 }
 
@@ -18,6 +18,6 @@
 }
 
 .sortable-handle:hover {
-  color: #FF8A50 !important;
+  color: #F97316 !important;
   transform: scale(1.1);
 }

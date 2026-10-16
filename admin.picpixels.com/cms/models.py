@@ -42,7 +42,7 @@ PAGE_SCHEMA_TYPES = [
 
 class Page(models.Model):
     title = models.CharField(max_length=200)
-    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for the page title (e.g. #FF8A50). Default is black.')
+    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for the page title (e.g. #F97316). Default is black.')
     slug = models.SlugField(unique=True, max_length=200)
     category = models.ForeignKey(
         PageCategory, on_delete=models.SET_NULL,
@@ -107,7 +107,7 @@ class Banner(models.Model):
 
 class Service(models.Model):
     title = models.CharField(max_length=150)
-    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for the service title (e.g. #FF8A50). Default is black.')
+    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for the service title (e.g. #F97316). Default is black.')
     slug = models.SlugField(unique=True, max_length=200, blank=True, help_text='URL identifier (auto-generated from title)')
     short_description = models.CharField(max_length=300, blank=True, help_text='Brief description for service cards')
     description = models.TextField(help_text='Detailed service description')
@@ -155,23 +155,23 @@ class Service(models.Model):
     updated_at = models.DateTimeField(auto_now=True, null=True)
     brand_section_title = models.CharField(max_length=200, default='Trusted by Brands & Partners', blank=True)
     why_need_section_title = models.CharField(max_length=200, default='Why Should You Need Our Service', blank=True)
-    why_need_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for "Why Should You Need Our Service" heading (HEX e.g. #000000 or #FF8A50)')
+    why_need_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for "Why Should You Need Our Service" heading (HEX e.g. #000000 or #F97316)')
     why_need_section_description = models.TextField(blank=True, default='')
     process_section_title = models.CharField(max_length=200, default='Process & Workflow', blank=True)
-    process_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for "Process & Workflow" heading (HEX e.g. #000000 or #FF8A50)')
+    process_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for "Process & Workflow" heading (HEX e.g. #000000 or #F97316)')
     why_choose_title = models.CharField(max_length=200, default='Why Choose Us', blank=True, help_text='Heading for "Why Choose Us" section')
-    why_choose_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for "Why Choose Us" heading (HEX e.g. #000000 or #FF8A50)')
+    why_choose_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for "Why Choose Us" heading (HEX e.g. #000000 or #F97316)')
     overview_title = models.CharField(max_length=200, blank=True, default='', help_text='Custom heading for Overview section. Leave blank for "Overview of [Service Title]"')
-    overview_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for Overview section heading (HEX e.g. #000000 or #FF8A50)')
+    overview_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for Overview section heading (HEX e.g. #000000 or #F97316)')
     faq_title = models.CharField(max_length=200, blank=True, default='', help_text='Custom heading for FAQs section. Leave blank for "[Service Title] - FAQs"')
-    faq_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for FAQs heading (HEX e.g. #000000 or #FF8A50)')
+    faq_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for FAQs heading (HEX e.g. #000000 or #F97316)')
     review_title = models.CharField(max_length=200, blank=True, default='', help_text='Custom heading for Reviews section. Leave blank for "Our Clients & Reviews"')
-    review_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for Reviews heading (HEX e.g. #000000 or #FF8A50)')
+    review_title_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for Reviews heading (HEX e.g. #000000 or #F97316)')
     tools_section_title = models.CharField(max_length=200, default='Tools We Use', blank=True)
     pricing_title = models.CharField(max_length=200, default='Pricing', blank=True)
     pricing_badge_text = models.CharField(max_length=200, blank=True, default='', help_text='e.g. "Simple, Transparent Pricing"')
     pricing_heading = models.CharField(max_length=300, blank=True, default='', help_text='Main heading for premium pricing section')
-    pricing_heading_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for main Pricing section heading (HEX e.g. #000000 or #FF8A50)')
+    pricing_heading_color = models.CharField(max_length=50, blank=True, default='', help_text='Color for main Pricing section heading (HEX e.g. #000000 or #F97316)')
     pricing_description = models.TextField(blank=True, default='', help_text='Description text for pricing section')
     pricing_starting_price = models.CharField(max_length=100, blank=True, default='', help_text='e.g. "$5.00"')
     pricing_unit = models.CharField(max_length=50, blank=True, default='/image', help_text='Price unit e.g. "/image", "/hour", "/project"')
@@ -293,7 +293,7 @@ class HeroSection(models.Model):
     is_active = models.BooleanField(default=True, help_text='Show on homepage')
     tagline = models.CharField(max_length=200, blank=True, default='Photo Editing Services at Affordable Pricing')
     title = models.CharField(max_length=500, default='Get pixel-perfect photo editing services with quality as our top priority')
-    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for the hero title (e.g. #FF8A50). Default is black.')
+    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for the hero title (e.g. #F97316). Default is black.')
     description = models.TextField(blank=True, default='We edited over 5M+ images for brands, retailers, media agencies, and commercial photographers. Bulk order discounts available. Ready to assist 24/7.')
     background_image = models.ImageField(upload_to='hero/', blank=True, null=True, help_text=IMG['hero_section_bg'])
     background_image_alt = models.CharField(max_length=200, blank=True, help_text='Alt text for the hero background image')
@@ -747,7 +747,7 @@ class PricingPlan(models.Model):
         default='custom',
         help_text='Visual style for the banner'
     )
-    banner_bg_color = models.CharField(max_length=20, default='#FF8A50', help_text='Banner background color (HEX)')
+    banner_bg_color = models.CharField(max_length=20, default='#F97316', help_text='Banner background color (HEX)')
     banner_text_color = models.CharField(max_length=20, default='#FFFFFF', help_text='Banner text color (HEX)')
     banner_icon = models.CharField(
         max_length=50, blank=True,
@@ -855,7 +855,7 @@ class PricingConfigCard(models.Model):
         default='custom',
         help_text='Visual style for the banner'
     )
-    banner_bg_color = models.CharField(max_length=20, default='#FF8A50', help_text='Banner background color (HEX)')
+    banner_bg_color = models.CharField(max_length=20, default='#F97316', help_text='Banner background color (HEX)')
     banner_text_color = models.CharField(max_length=20, default='#FFFFFF', help_text='Banner text color (HEX)')
     banner_icon = models.CharField(
         max_length=50, blank=True,
@@ -929,7 +929,7 @@ class PricingPromotionSection(models.Model):
     bg_color = models.CharField(max_length=20, default='#0F172A', help_text='Section background color (HEX). Only used if "Use Theme Color" is OFF.')
     use_theme_color = models.BooleanField(default=True, help_text='Use theme CSS variables (--primary-color, --accent-color) instead of custom background color. Keeps the promotion visually consistent with the site design.')
     text_color = models.CharField(max_length=20, default='#FFFFFF', help_text='Main text color (HEX)')
-    accent_color = models.CharField(max_length=20, default='#FF8A50', help_text='Badge and CTA accent color (HEX)')
+    accent_color = models.CharField(max_length=20, default='#F97316', help_text='Badge and CTA accent color (HEX)')
     start_date = models.DateTimeField(blank=True, null=True, help_text='Campaign start date')
     end_date = models.DateTimeField(blank=True, null=True, help_text='Campaign end date (auto-hides after)')
     display_order = models.PositiveIntegerField(default=0, help_text='Display order (if multiple promotions)')
@@ -1369,7 +1369,7 @@ class HomepageCTASection(models.Model):
     is_active = models.BooleanField(default=True, help_text='Show this CTA section on the homepage')
     badge_text = models.CharField(max_length=100, blank=True, default='Free Trial Available', help_text='Small badge/tag above the title (optional)')
     title = models.CharField(max_length=255, default='Experience Our World-Class Photo Editing', help_text='Main CTA heading')
-    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for heading (e.g. #0F172A or #FF8A50). Leave blank for default.')
+    title_color = models.CharField(max_length=50, blank=True, default='', help_text='Custom hex color for heading (e.g. #0F172A or #F97316). Leave blank for default.')
     subtitle = models.TextField(blank=True, default='Get your quote within 45 minutes. Upload your images via Wetransfer or Dropbox. Your first (3-5) images are free. No credit card required.', help_text='Supporting subtitle or description text')
     
     # Primary Button (Button 1)

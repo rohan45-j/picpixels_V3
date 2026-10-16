@@ -51,7 +51,7 @@
   background: linear-gradient(135deg, rgba(255, 138, 80, 0.1), rgba(255, 138, 80, 0.04));
   border: 1px solid rgba(255, 138, 80, 0.18);
   border-radius: 100px;
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -125,7 +125,7 @@
 }
 
 .circle:hover {
-  border-color: #FF8A50;
+  border-color: #F97316;
   box-shadow: 0 12px 28px rgba(255, 138, 80, 0.2);
   transform: scale(1.1);
   background: linear-gradient(135deg, #ffffff, rgba(255, 138, 80, 0.04));
@@ -152,7 +152,7 @@
 }
 
 .circle:hover .fallbackIcon {
-  color: #FF8A50;
+  color: #F97316;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -101,7 +101,7 @@ export default function ServicesClient({
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 6,
-                  background: '#FF8A50',
+                  background: '#F97316',
                   color: '#ffffff',
                   padding: '8px 20px',
                   borderRadius: 10,

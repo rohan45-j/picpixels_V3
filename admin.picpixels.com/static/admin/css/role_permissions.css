@@ -34,7 +34,7 @@
 
 .role-badge-chip {
   background: rgba(255, 138, 80, 0.2);
-  color: #ff8a50;
+  color: #F97316;
   border: 1px solid rgba(255, 138, 80, 0.4);
   font-size: 0.7rem;
   font-weight: 700;
@@ -109,7 +109,7 @@
 
 .role-name-input:focus {
   background: #ffffff;
-  border-color: #ff8a50;
+  border-color: #F97316;
   box-shadow: 0 0 0 3px rgba(255, 138, 80, 0.15);
 }
 
@@ -167,7 +167,7 @@
 
 .role-search-input:focus {
   background: #ffffff;
-  border-color: #ff8a50;
+  border-color: #F97316;
   box-shadow: 0 0 0 2px rgba(255, 138, 80, 0.15);
 }
 
@@ -199,7 +199,7 @@
 }
 
 .role-tool-btn.primary {
-  background: #ff8a50;
+  background: #F97316;
   border-color: #ea580c;
   color: #ffffff;
 }
@@ -268,7 +268,7 @@
   width: 36px;
   height: 36px;
   border-radius: 8px;
-  background: #ff8a5018;
+  background: #F9731618;
   color: #ea580c;
   display: flex;
   align-items: center;
@@ -419,7 +419,7 @@
 .role-check-input {
   width: 18px;
   height: 18px;
-  accent-color: #ff8a50;
+  accent-color: #F97316;
   cursor: pointer;
   border-radius: 4px;
 }
@@ -437,9 +437,9 @@
 }
 
 .role-row-toggle:hover {
-  background: #ff8a5020;
+  background: #F9731620;
   color: #ea580c;
-  border-color: #ff8a5040;
+  border-color: #F9731640;
 }
 
 /* Bottom Actions Row */
@@ -457,7 +457,7 @@
 }
 
 .role-submit-btn {
-  background: #ff8a50;
+  background: #F97316;
   color: #ffffff;
   border: none;
   padding: 0.75rem 1.75rem;

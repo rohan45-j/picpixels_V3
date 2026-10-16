@@ -301,7 +301,7 @@ export default function BlogFeedbackWidget({ postSlug, postTitle }: BlogFeedback
                 alignItems: 'center',
                 gap: '0.5rem',
                 padding: '0.7rem 1.6rem',
-                background: 'linear-gradient(135deg, #FF8A50 0%, #FF6B00 100%)',
+                background: 'linear-gradient(135deg, #F97316 0%, #FF6B00 100%)',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',

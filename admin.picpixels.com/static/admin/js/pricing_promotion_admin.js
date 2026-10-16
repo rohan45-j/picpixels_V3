@@ -50,8 +50,8 @@
           'border:1px solid #e5e7eb;background:#fff;color:#374151;cursor:pointer;' +
           'transition:all 0.15s ease;font-family:inherit';
         btn.addEventListener('mouseenter', function () {
-          btn.style.borderColor = '#FF8A50';
-          btn.style.color = '#FF8A50';
+          btn.style.borderColor = '#F97316';
+          btn.style.color = '#F97316';
           btn.style.background = '#fff7f0';
         });
         btn.addEventListener('mouseleave', function () {

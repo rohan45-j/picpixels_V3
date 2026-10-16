@@ -19,7 +19,7 @@
   ];
 
   var SWATCH_COLORS = [
-    { name: 'Brand Orange', hex: '#FF8A50', isBrand: true },
+    { name: 'Brand Orange', hex: '#F97316', isBrand: true },
     { name: 'Royal Blue', hex: '#2563EB', isBrand: false },
     { name: 'Emerald Green', hex: '#10B981', isBrand: false },
     { name: 'Crimson Red', hex: '#EF4444', isBrand: false },
@@ -49,7 +49,7 @@
 
       tokens.push({
         text: text,
-        color: isBrand ? '#FF8A50' : (color || '#FF8A50'),
+        color: isBrand ? '#F97316' : (color || '#F97316'),
         rawMatch: match[0],
         matchIndex: match.index,
         matchLength: match[0].length
@@ -184,7 +184,7 @@
 
     var customColorInput = document.createElement('input');
     customColorInput.type = 'color';
-    customColorInput.value = '#FF8A50';
+    customColorInput.value = '#F97316';
     customColorInput.className = 'twh-color-input';
 
     customColorInput.addEventListener('change', function() {
@@ -277,7 +277,7 @@
         if (tagMatch) {
           tokenColor = tagMatch[1];
         } else if (/\{[^{}]+\}/.test(part)) {
-          tokenColor = '#FF8A50'; // Brand orange
+          tokenColor = '#F97316'; // Brand orange
         }
 
         var chip = document.createElement('span');

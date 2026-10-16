@@ -1,33 +1,38 @@
 @import "tailwindcss";
 
 :root {
-  /* Primary palette */
-  --color-primary: #FF8A50;
-  --color-primary-light: #FFB180;
-  --color-primary-dark: #CC6F3F;
+  /* Primary palette - Vibrant Orange */
+  --color-primary: #F97316;
+  --color-primary-light: #FB923C;
+  --color-primary-dark: #EA580C;
+
+  /* Secondary palette - Royal Blue */
+  --color-secondary: #2563EB;
+  --color-secondary-light: #3B82F6;
+  --color-secondary-dark: #1D4ED8;
 
   --brand-gradient: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
   --tint-bg: hsl(24, 100%, 97%);
-  --tint-2-bg: hsl(210, 40%, 98%);
+  --tint-2-bg: hsl(217, 91%, 97%);
 
-  --primary-hue: 160;
-  --secondary-hue: 260;
-  --accent-hue: 190;
+  --primary-hue: 24;
+  --secondary-hue: 221;
+  --accent-hue: 217;
 
   --primary: var(--color-primary);
   --primary-color: var(--primary);
-  --secondary-color: var(--secondary);
-  --accent-color: var(--accent);
+  --secondary: var(--color-secondary);
+  --secondary-color: var(--color-secondary);
+  --accent-color: var(--color-secondary);
+  --accent: var(--color-secondary);
   --primary-light: var(--color-primary-light);
   --primary-dark: var(--color-primary-dark);
-  --secondary: var(--color-secondary, hsl(var(--secondary-hue), 70%, 50%));
-  --accent: var(--color-accent, hsl(var(--accent-hue), 90%, 50%));
 
-  /* Background Palette */
-  --color-bg: #f8f9fa;
-  --color-bg-card: #ffffff;
-  --bg-light: hsl(0, 0%, 97%);
-  --bg-light-card: hsl(0, 0%, 100%);
+  /* Background Palette - Pure White */
+  --color-bg: #FFFFFF;
+  --color-bg-card: #FFFFFF;
+  --bg-light: #FFFFFF;
+  --bg-light-card: #FFFFFF;
   --bg-dark: hsl(222, 47%, 11%);
   --bg-dark-card: hsl(222, 30%, 16%);
   --bg-dark-elevated: hsl(222, 25%, 20%);
@@ -236,42 +241,38 @@ textarea {
 
 .btn-primary {
   background: var(--color-primary);
-  /* solid primary color */
-  color: var(--text-white);
-  box-shadow: var(--glow-shadow);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
 }
 
 .btn-primary:hover {
   background: var(--color-primary-dark);
-  /* darker shade on hover */
   transform: translateY(-2px);
-  box-shadow: 0 0 30px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.45);
 }
 
 .btn-secondary {
-  background: var(--color-bg-card);
-  /* solid neutral background */
-  color: var(--color-text);
-  border: 1px solid var(--glass-border);
+  background: #ffffff;
+  color: var(--color-secondary);
+  border: 1.5px solid var(--color-secondary);
 }
 
 .btn-secondary:hover {
-  background: var(--color-primary);
-  /* primary color on hover */
-  color: var(--text-white);
+  background: var(--color-secondary);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
 }
 
 .btn-ai {
-  background: var(--color-accent);
-  /* solid accent color */
-  color: var(--text-white);
+  background: var(--color-secondary);
+  color: #ffffff;
 }
 
 .btn-ai:hover {
-  background: var(--color-accent);
-  /* same color on hover (optional slight shade) */
+  background: var(--color-secondary-dark);
   transform: translateY(-2px);
-  box-shadow: 0 0 25px rgba(213, 143, 13, 0.35);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
 }
 
 /* Slide Marquee animation */
@@ -307,7 +308,7 @@ textarea {
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: #FF8A50;
+  color: var(--color-primary, #F97316);
   text-transform: uppercase;
   margin-bottom: 0.75rem;
 }

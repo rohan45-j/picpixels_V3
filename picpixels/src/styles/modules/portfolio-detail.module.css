@@ -26,7 +26,7 @@
   font-weight: 500;
 }
 
-.breadcrumb a:hover { color: #FF8A50; }
+.breadcrumb a:hover { color: #F97316; }
 
 .breadcrumb svg { flex-shrink: 0; color: #9CA3AF; }
 
@@ -200,8 +200,8 @@
 
 .navLinkPrev:hover .navArrow,
 .navLinkNext:hover .navArrow {
-  background: #FF8A50;
-  border-color: #FF8A50;
+  background: #F97316;
+  border-color: #F97316;
   color: #ffffff;
   box-shadow: 0 4px 14px rgba(255,138,80,0.25);
 }

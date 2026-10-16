@@ -215,7 +215,7 @@ function TOC({ blocks, postSlug }: { blocks: ContentBlock[]; postSlug: string })
 }
 
 function DummyImage({ title, slug }: { title: string; slug: string }) {
-  const colors = ['FF8A50', '4A90D9', '50C878', '9B59B6', 'E74C3C', '2ECC71', 'F39C12', '1ABC9C'];
+  const colors = ['F97316', '2563EB', '50C878', '9B59B6', 'E74C3C', '2ECC71', 'F39C12', '1ABC9C'];
   const idx = slug.split('').reduce((a, c) => a + c.charCodeAt(0), 0) % colors.length;
   return (
     <svg viewBox="0 0 1200 630" className={styles.heroImage} role="img" aria-label={title}>

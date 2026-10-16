@@ -113,7 +113,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.2em;
-  color: #FF8A50;
+  color: #F97316;
   text-transform: uppercase;
   margin-bottom: 0.75rem;
 }
@@ -530,7 +530,7 @@
   align-items: center;
   font-size: 2.25rem;
   font-weight: 900;
-  color: var(--color-primary, #FF8A50);
+  color: var(--color-primary, #F97316);
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.1;
   margin-bottom: 0.4rem;
@@ -549,7 +549,7 @@
   display: inline-block;
   width: 2px;
   height: 1.4em;
-  background: var(--color-primary, #FF8A50);
+  background: var(--color-primary, #F97316);
   margin-left: 2px;
   vertical-align: middle;
   opacity: 0;
@@ -608,7 +608,7 @@
 
 .processCard:hover {
   transform: translateY(-6px);
-  border-color: #FF8A50;
+  border-color: #F97316;
   box-shadow: 0 12px 28px rgba(255, 138, 80, 0.15);
 }
 
@@ -794,7 +794,7 @@
 
 .compareCompanyNameActive {
   font-size: 1.125rem;
-  color: #FF8A50;
+  color: #F97316;
 }
 
 .compareCompanyDesc {

@@ -67,7 +67,7 @@ def seed_privacy():
   <li>Detect and prevent fraud, abuse, and security incidents</li>
   <li>Comply with legal obligations and enforce our terms of service</li>
 </ul>
-<div class="highlight-box" style="background: rgba(255,138,80,0.05); border-left: 4px solid #FF8A50; padding: 1.25rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0;">
+<div class="highlight-box" style="background: rgba(255,138,80,0.05); border-left: 4px solid #F97316; padding: 1.25rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0;">
   <p style="margin: 0; font-size: 0.95rem; line-height: 1.7;"><strong>Your Privacy is Our Priority:</strong> We never use your uploaded images for training AI models, marketing materials, or any purpose beyond providing the specific editing services you request. We do not sell your personal data.</p>
 </div>"""
         },
@@ -104,7 +104,7 @@ def seed_privacy():
   <li><strong>Regular Audits:</strong> Weekly vulnerability scans and quarterly penetration testing</li>
   <li><strong>SOC 2 Compliance:</strong> We maintain SOC 2 Type II certification for our security controls</li>
 </ul>
-<div class="highlight-box" style="background: rgba(255,138,80,0.05); border-left: 4px solid #FF8A50; padding: 1.25rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0;">
+<div class="highlight-box" style="background: rgba(255,138,80,0.05); border-left: 4px solid #F97316; padding: 1.25rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0;">
   <p style="margin: 0; font-size: 0.95rem; line-height: 1.7;"><strong>Important:</strong> While we implement robust security measures, no system can guarantee absolute security. We recommend that you also take steps to protect your account, such as using strong, unique passwords and enabling two-factor authentication.</p>
 </div>"""
         },
@@ -183,7 +183,7 @@ def seed_terms():
   <li>Interfering with the security, integrity, or performance of our systems</li>
   <li>Using automated tools to create accounts or submit orders</li>
 </ul>
-<div class="highlight-box" style="background: rgba(255,138,80,0.05); border-left: 4px solid #FF8A50; padding: 1.25rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0;">
+<div class="highlight-box" style="background: rgba(255,138,80,0.05); border-left: 4px solid #F97316; padding: 1.25rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0;">
   <p style="margin: 0; font-size: 0.95rem; line-height: 1.7;"><strong>Important:</strong> Violation of these usage terms may result in immediate account suspension, termination, and legal action. We reserve the right to remove any content that violates these provisions without prior notice.</p>
 </div>"""
         },
@@ -206,7 +206,7 @@ def seed_terms():
   <li>Subscription plans auto-renew unless canceled at least 24 hours before the renewal date</li>
   <li>Refunds are issued on a case-by-case basis as outlined in our Refund Policy</li>
 </ul>
-<div class="highlight-box" style="background: rgba(255,138,80,0.05); border-left: 4px solid #FF8A50; padding: 1.25rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0;">
+<div class="highlight-box" style="background: rgba(255,138,80,0.05); border-left: 4px solid #F97316; padding: 1.25rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0;">
   <p style="margin: 0; font-size: 0.95rem; line-height: 1.7;"><strong>Note:</strong> You are responsible for maintaining accurate and current billing information. Failure to process payment may result in service interruption or account suspension.</p>
 </div>"""
         },
@@ -246,7 +246,7 @@ def seed_terms():
   <li>Quality assurance review on all edited deliverables</li>
   <li>Free revisions within 48 hours of delivery for quality issues</li>
 </ul>
-<div class="highlight-box" style="background: rgba(255,138,80,0.05); border-left: 4px solid #FF8A50; padding: 1.25rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0;">
+<div class="highlight-box" style="background: rgba(255,138,80,0.05); border-left: 4px solid #F97316; padding: 1.25rem 1.5rem; border-radius: 0 10px 10px 0; margin: 1.5rem 0;">
   <p style="margin: 0; font-size: 0.95rem; line-height: 1.7;"><strong>SLA Credits:</strong> If we fail to meet our guaranteed turnaround time, you may be eligible for service credits as outlined in your service agreement.</p>
 </div>"""
         },
