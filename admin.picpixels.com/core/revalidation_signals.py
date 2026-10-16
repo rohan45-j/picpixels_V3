@@ -18,22 +18,31 @@ def _get_revalidator():
     return trigger_revalidation
 
 
+from django.db import transaction
+
 def _invalidate_and_revalidate(sender, instance, **kwargs):
     """
     Common handler: clear Django's server-side cache, then trigger
-    Next.js on-demand revalidation.
+    Next.js on-demand revalidation ONLY AFTER the current transaction commits.
     """
     model_name = sender.__name__
     
-    # Clear Django's consolidated homepage cache
-    cache.delete('consolidated_homepage_data_v1')
-    
-    # Trigger Next.js revalidation
+    def on_commit_callback():
+        try:
+            # Clear Django's consolidated homepage cache
+            cache.delete('consolidated_homepage_data_v1')
+            
+            # Trigger Next.js revalidation
+            trigger = _get_revalidator()
+            trigger(model_name, instance=instance)
+        except Exception as e:
+            logger.warning(f"[Revalidation Signal] Failed for {model_name}: {e}")
+
     try:
-        trigger = _get_revalidator()
-        trigger(model_name, instance=instance)
-    except Exception as e:
-        logger.warning(f"[Revalidation Signal] Failed for {model_name}: {e}")
+        transaction.on_commit(on_commit_callback)
+    except Exception:
+        # Fallback if executed outside of an active transaction
+        on_commit_callback()
 
 
 # ──────────────────────────────────────────────────────────────

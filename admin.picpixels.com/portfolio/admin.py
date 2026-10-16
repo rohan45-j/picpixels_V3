@@ -1,7 +1,7 @@
 import os
 import re
 from django.contrib import admin
-from django.db import models
+from django.db import models, transaction
 from django.urls import path
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -167,25 +167,36 @@ class PortfolioAdmin(ModelAdmin):
         alt_prefix = (request.POST.get('bulk_alt_prefix') or '').strip()
         if bulk_images:
             portfolio = form.instance
-            current_count = portfolio.gallery.count()
+            try:
+                current_count = portfolio.gallery.count()
+            except Exception:
+                current_count = 0
             saved_count = 0
             try:
                 for i, file in enumerate(bulk_images, start=1):
                     caption = alt_prefix or f"{portfolio.title} Image {current_count + i}"
-                    PortfolioGallery.objects.create(
-                        portfolio=portfolio,
-                        image=file,
-                        alt_text=caption,
-                        sort_order=current_count + i
-                    )
-                    saved_count += 1
-                messages.success(request, f"🎉 Successfully added {saved_count} images to '{portfolio.title}' gallery!")
+                    try:
+                        with transaction.atomic():
+                            PortfolioGallery.objects.create(
+                                portfolio=portfolio,
+                                image=file,
+                                alt_text=caption,
+                                sort_order=current_count + i
+                            )
+                        saved_count += 1
+                    except PermissionError:
+                        raise
+                    except Exception as img_err:
+                        # Log error without poisoning outer transaction
+                        print(f"[Gallery Upload] Error adding image {file.name}: {img_err}")
+                if saved_count:
+                    messages.success(request, f"🎉 Successfully added {saved_count} images to '{portfolio.title}' gallery!")
             except PermissionError as pe:
                 messages.error(
                     request,
                     mark_safe(
                         f"❌ <strong>Gallery Upload Permission Denied:</strong> {pe}<br>"
-                        "Please run on VPS terminal: <code>sudo chown -R www-data:www-data media/ && sudo chmod -R 775 media/</code>"
+                        "Please run on VPS terminal: <code>sudo bash scripts/fix_permissions.sh</code>"
                     )
                 )
 
