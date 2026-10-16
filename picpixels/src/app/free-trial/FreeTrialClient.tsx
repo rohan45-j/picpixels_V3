@@ -206,7 +206,10 @@ export default function FreeTrialClient({ recaptchaSiteKey }: { recaptchaSiteKey
       <section className={styles.heroSection}>
         <div className={styles.container}>
           <div className={styles.heroContent}>
-            <span className={styles.badge}>Risk-Free Trial</span>
+            <span className={styles.badge}>
+              <span className={styles.badgeDot} />
+              <span>Risk-Free Trial</span>
+            </span>
             <h1 className={styles.title}>
               Get Your First <span className={styles.accentText}>3–5 Images</span> Edited Free
             </h1>
