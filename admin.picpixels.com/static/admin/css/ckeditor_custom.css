@@ -1,0 +1,21 @@
+/* PicPixels Admin CKEditor Custom Styles */
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #1e293b;
+}
+
+/* Hyperlinks in Editor: Blue and Underlined */
+a, a:link, a:visited {
+    color: #2563eb !important;
+    text-decoration: underline !important;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1.5px;
+    font-weight: 500;
+}
+
+a:hover, a:active {
+    color: #1d4ed8 !important;
+    text-decoration: underline !important;
+}

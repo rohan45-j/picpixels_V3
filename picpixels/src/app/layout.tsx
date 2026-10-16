@@ -52,11 +52,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Fetch shared data server-side for SSR — cached in memory for instant responses
+  // Fetch shared data server-side for SSR — cached in memory with fast 10s revalidation
   const [siteSettingsData, navItemsData, servicesData] = await Promise.all([
-    cachedJsonFetch<any>(`${BASE_URL}/api/v1/settings/site/`, 300),
-    cachedJsonFetch<any>(`${BASE_URL}/api/v1/navigation/?location=header`, 300),
-    cachedJsonFetch<any>(`${BASE_URL}/api/v1/cms/services/?mega_menu=true`, 300),
+    cachedJsonFetch<any>(`${BASE_URL}/api/v1/settings/site/`, 10),
+    cachedJsonFetch<any>(`${BASE_URL}/api/v1/navigation/?location=header`, 10),
+    cachedJsonFetch<any>(`${BASE_URL}/api/v1/cms/services/?mega_menu=true`, 10),
   ]);
 
   const siteSettings = (siteSettingsData?.results && siteSettingsData.results.length > 0)

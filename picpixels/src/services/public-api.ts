@@ -1,7 +1,7 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://admin.picpixels.com';
 
 const DEFAULT_TIMEOUT = 3500;
-const DEFAULT_REVALIDATE = 120;
+const DEFAULT_REVALIDATE = 10;
 
 function resolveFetchUrl(url: string): string {
   // If running on server, route direct to local backend without public internet/TLS loopback overhead.
@@ -17,9 +17,13 @@ function resolveFetchUrl(url: string): string {
   return url;
 }
 
-function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCache } = {}): Promise<Response> {
-  const { revalidate = DEFAULT_REVALIDATE, cache } = options;
-  const init: RequestInit = cache ? { cache } : { next: { revalidate } };
+function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCache; tags?: string[] } = {}): Promise<Response> {
+  const { revalidate = DEFAULT_REVALIDATE, cache, tags } = options;
+  const nextOptions: { revalidate?: number; tags?: string[] } = { revalidate };
+  if (tags && tags.length > 0) {
+    nextOptions.tags = tags;
+  }
+  const init: RequestInit = cache ? { cache } : { next: nextOptions };
   const targetUrl = resolveFetchUrl(url);
 
   // Controller for safety timeout so hanging requests don't block SSR
@@ -41,6 +45,10 @@ function apiFetch(url: string, options: { revalidate?: number; cache?: RequestCa
 
 const apiMemoryCache = new Map<string, { data: any; expiry: number }>();
 
+export function clearApiMemoryCache(): void {
+  apiMemoryCache.clear();
+}
+
 export function sanitizeMediaUrls<T>(data: T): T {
   if (!data) return data;
   try {
@@ -52,7 +60,7 @@ export function sanitizeMediaUrls<T>(data: T): T {
   }
 }
 
-export async function cachedJsonFetch<T>(url: string, ttlSeconds = 180): Promise<T | null> {
+export async function cachedJsonFetch<T>(url: string, ttlSeconds = 10): Promise<T | null> {
   const now = Date.now();
   const cached = apiMemoryCache.get(url);
   if (cached && cached.expiry > now) {
@@ -97,7 +105,12 @@ export interface HomepageData {
 }
 
 export async function fetchHomepageData(): Promise<HomepageData | null> {
-  return cachedJsonFetch<HomepageData>(`${BASE_URL}/api/v1/homepage/`, 120);
+  try {
+    const resp = await apiFetch(`${BASE_URL}/api/v1/homepage/`, { revalidate: 10, tags: ['homepage'] });
+    if (!resp.ok) return null;
+    const rawData = await resp.json();
+    return sanitizeMediaUrls(rawData);
+  } catch { return null; }
 }
 
 export function mediaUrl(path: string | null | undefined): string | undefined {
@@ -746,7 +759,7 @@ export interface PortfolioItem {
 
 export async function fetchPortfolioCategories(): Promise<PortfolioCategory[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/portfolio/api/categories/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/portfolio/api/categories/`, { tags: ['portfolio'] });
     if (!resp.ok) return [];
     return await resp.json();
   } catch { return []; }
@@ -754,7 +767,7 @@ export async function fetchPortfolioCategories(): Promise<PortfolioCategory[]> {
 
 export async function fetchPortfolioServices(): Promise<PortfolioService[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/portfolio/api/services/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/portfolio/api/services/`, { tags: ['services'] });
     if (!resp.ok) return [];
     return await resp.json();
   } catch { return []; }
@@ -762,7 +775,7 @@ export async function fetchPortfolioServices(): Promise<PortfolioService[]> {
 
 export async function fetchHomepagePortfolios(): Promise<PortfolioItem[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/portfolio/api/items/homepage/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/portfolio/api/items/homepage/`, { tags: ['homepage', 'portfolio'] });
     if (!resp.ok) return [];
     return await resp.json();
   } catch { return []; }
@@ -861,7 +874,7 @@ export interface CaseStudyItem {
 
 export async function fetchCaseStudyCategories(): Promise<CaseStudyCategory[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/case-studies/api/categories/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/case-studies/api/categories/`, { tags: ['case-studies'] });
     if (!resp.ok) return [];
     return await resp.json();
   } catch { return []; }
@@ -1027,7 +1040,7 @@ export interface WhyChooseFeatureSection {
 
 export async function fetchWhyChooseFeatures(): Promise<WhyChooseFeatureSection | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/why-choose-features/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/why-choose-features/`, { tags: ['homepage', 'why-choose-features'] });
     if (!resp.ok) return null;
     const data = await resp.json();
     const results = data.results || data;
@@ -1040,7 +1053,7 @@ export async function fetchWhyChooseFeatures(): Promise<WhyChooseFeatureSection 
 
 export async function fetchWhyChooseUs(): Promise<WhyChooseSection | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/why-choose-us/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/why-choose-us/`, { tags: ['homepage', 'why-choose'] });
     if (!resp.ok) return null;
     const data = await resp.json();
     const results = data.results || data;
@@ -1053,7 +1066,7 @@ export async function fetchWhyChooseUs(): Promise<WhyChooseSection | null> {
 
 export async function fetchLatestBlogPosts(): Promise<BlogPost[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/blog/posts/latest/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/blog/posts/latest/`, { tags: ['homepage', 'blog'] });
     if (!resp.ok) return [];
     return await resp.json();
   } catch (e) {
@@ -1064,7 +1077,7 @@ export async function fetchLatestBlogPosts(): Promise<BlogPost[]> {
 
 export async function fetchHomepageCaseStudiesSection(): Promise<CaseStudyItem[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/case-studies/api/items/homepage-section/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/case-studies/api/items/homepage-section/`, { tags: ['homepage', 'case-studies'] });
     if (!resp.ok) return [];
     return await resp.json();
   } catch (e) {
@@ -1110,20 +1123,20 @@ export async function fetchCMSPage(slug: string): Promise<CMSPage | null> {
 }
 
 export async function fetchSiteSettings(): Promise<SiteSetting | null> {
-  const data = await cachedJsonFetch<any>(`${BASE_URL}/api/v1/settings/site/`, 300);
+  const data = await cachedJsonFetch<any>(`${BASE_URL}/api/v1/settings/site/`, 10);  // Also fetched via apiFetch with tags in layout
   if (!data) return null;
   return data.results?.[0] ?? data ?? null;
 }
 
 export async function fetchSEOSettings(): Promise<SEOSetting | null> {
-  const data = await cachedJsonFetch<any>(`${BASE_URL}/api/v1/settings/seo/`, 300);
+  const data = await cachedJsonFetch<any>(`${BASE_URL}/api/v1/settings/seo/`, 10);
   if (!data) return null;
   return data.results?.[0] ?? null;
 }
 
 export async function fetchNavigationItems(location: 'header' | 'footer' | 'mega_menu'): Promise<NavigationItem[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/navigation/?location=${location}`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/navigation/?location=${location}`, { tags: ['navigation'] });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1135,7 +1148,7 @@ export async function fetchNavigationItems(location: 'header' | 'footer' | 'mega
 
 export async function fetchBrandLogos(): Promise<BrandLogo[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/brands/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/brands/`, { tags: ['homepage', 'brands'] });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1147,7 +1160,7 @@ export async function fetchBrandLogos(): Promise<BrandLogo[]> {
 
 export async function fetchHeroData(): Promise<HeroSection | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/hero/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/hero/`, { tags: ['homepage', 'hero'] });
     if (!resp.ok) return null;
     const data = await resp.json();
     const results = data.results || data;
@@ -1163,7 +1176,7 @@ export async function fetchCoreServices(location?: string): Promise<Service[]> {
     const url = location
       ? `${BASE_URL}/api/v1/cms/services/?brief=1&location=${encodeURIComponent(location)}`
       : `${BASE_URL}/api/v1/cms/services/?brief=1`;
-    const resp = await apiFetch(url);
+    const resp = await apiFetch(url, { tags: ['services'] });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1175,7 +1188,7 @@ export async function fetchCoreServices(location?: string): Promise<Service[]> {
 
 export async function fetchServiceBySlug(slug: string): Promise<Service | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/?slug=${encodeURIComponent(slug)}`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/?slug=${encodeURIComponent(slug)}`, { tags: ['services'] });
     if (!resp.ok) return null;
     const data = await resp.json();
     const results = data.results || data;
@@ -1188,7 +1201,7 @@ export async function fetchServiceBySlug(slug: string): Promise<Service | null> 
 
 export async function fetchMegaMenuServices(): Promise<Service[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/mega_menu/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/mega_menu/`, { tags: ['services', 'navigation'] });
     if (!resp.ok) return [];
     return await resp.json();
   } catch (e) {
@@ -1199,7 +1212,7 @@ export async function fetchMegaMenuServices(): Promise<Service[]> {
 
 export async function fetchHomepageServices(): Promise<Service[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/homepage/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/homepage/`, { tags: ['homepage', 'services'] });
     if (!resp.ok) return [];
     return await resp.json();
   } catch (e) {
@@ -1210,7 +1223,7 @@ export async function fetchHomepageServices(): Promise<Service[]> {
 
 export async function fetchFooterServices(): Promise<Service[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/footer/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/services/footer/`, { tags: ['services', 'navigation'] });
     if (!resp.ok) return [];
     return await resp.json();
   } catch (e) {
@@ -1221,7 +1234,7 @@ export async function fetchFooterServices(): Promise<Service[]> {
 
 export async function fetchTestimonials(): Promise<Testimonial[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/testimonials/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/testimonials/`, { tags: ['homepage', 'testimonials'] });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1233,7 +1246,7 @@ export async function fetchTestimonials(): Promise<Testimonial[]> {
 
 export async function fetchTeamMembers(): Promise<TeamMember[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/team/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/team/`, { tags: ['team'] });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1245,7 +1258,7 @@ export async function fetchTeamMembers(): Promise<TeamMember[]> {
 
 export async function fetchFAQs(): Promise<FAQ[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/faqs/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/faqs/`, { tags: ['faq'] });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1257,7 +1270,7 @@ export async function fetchFAQs(): Promise<FAQ[]> {
 
 export async function fetchFAQCategories(): Promise<FAQCategory[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/faq/categories/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/faq/categories/`, { tags: ['faq'] });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1269,7 +1282,7 @@ export async function fetchFAQCategories(): Promise<FAQCategory[]> {
 
 export async function fetchContactFAQs(): Promise<FAQ[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/faqs/?is_contact_faq=true`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/faqs/?is_contact_faq=true`, { tags: ['faq'] });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1395,7 +1408,7 @@ export async function fetchPopularBlogPosts(limit = 5): Promise<BlogPost[]> {
  */
 export async function fetchPricingPlans(): Promise<PricingPlan[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/pricing/?is_active=true`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/pricing/?is_active=true`, { tags: ['pricing'] });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1419,7 +1432,7 @@ export async function fetchSubscriptionPlans(): Promise<SubscriptionPlan[]> {
 
 export async function fetchTechnologies(): Promise<Technology[]> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/technologies/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/technologies/`, { tags: ['homepage', 'technologies'] });
     if (!resp.ok) return [];
     const data = await resp.json();
     return data.results || data;
@@ -1635,7 +1648,7 @@ export function clearOrderSummary(): void {
 
 export async function fetchPricingConfig(): Promise<PricingConfigSectionData | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/pricing-config/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/pricing-config/`, { tags: ['homepage', 'pricing'] });
     if (!resp.ok) return null;
     const data = await resp.json();
     const results = data.results || data;
@@ -1838,7 +1851,7 @@ export interface HomepageCTASection {
 
 export async function fetchHomepageCTASection(): Promise<HomepageCTASection | null> {
   try {
-    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/homepage-cta/`);
+    const resp = await apiFetch(`${BASE_URL}/api/v1/cms/homepage-cta/`, { tags: ['homepage', 'homepage-cta'] });
     if (!resp.ok) return null;
     const data = await resp.json();
     const results = data.results || data;

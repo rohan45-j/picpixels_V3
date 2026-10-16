@@ -1237,14 +1237,15 @@
 
 /* ─── Rich Content Hyperlinks ─── */
 .heroSummary a,
+.heroSummary a,
 .clientDesc a,
 .challengeCardDesc a,
 .solutionBlockDesc a,
 .timelineDesc a,
 .resultsText a {
-  color: #ff6b00;
+  color: #2563eb !important;
   font-weight: 600;
-  text-decoration: underline;
+  text-decoration: underline !important;
   text-underline-offset: 3px;
   text-decoration-thickness: 1.5px;
   transition: all 0.2s ease;
@@ -1256,8 +1257,9 @@
 .solutionBlockDesc a:hover,
 .timelineDesc a:hover,
 .resultsText a:hover {
-  color: #e05e00;
+  color: #1d4ed8 !important;
+  text-decoration-color: #1d4ed8 !important;
   text-decoration-thickness: 2.5px;
-  background: rgba(255, 107, 0, 0.08);
+  background: rgba(37, 99, 235, 0.08);
   border-radius: 3px;
 }

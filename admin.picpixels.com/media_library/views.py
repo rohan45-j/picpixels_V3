@@ -51,8 +51,12 @@ class MediaFileViewSet(NoCacheOnWriteMixin, viewsets.ModelViewSet):
         data['uploaded_by'] = request.user.id if request.user.is_authenticated else None
 
         serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        try:
+            self.perform_create(serializer)
+        except PermissionError as pe:
+            return Response({
+                'error': f'Server storage permission denied on media folder. Please run: sudo chown -R www-data:www-data media/ on VPS. ({pe})'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 

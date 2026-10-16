@@ -265,8 +265,7 @@
             const selected = textarea.value.substring(start, end);
             const url = prompt('Enter link URL (e.g. /services/clipping-path or https://...):', 'https://');
             if (!url) return;
-            const text = selected || prompt('Enter link text:', 'Learn More') || url;
-            const linkTag = `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+            const linkTag = `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 500;">${text}</a>`;
             textarea.focus();
             textarea.setRangeText(linkTag, start, end, 'end');
         });

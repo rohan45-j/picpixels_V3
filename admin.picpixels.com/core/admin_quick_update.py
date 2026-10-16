@@ -135,6 +135,15 @@ def admin_quick_update_view(request):
         except Exception as save_err:
             return JsonResponse({'success': False, 'error': str(save_err)}, status=500)
 
+    # Invalidate backend cache & trigger Next.js revalidation
+    try:
+        from django.core.cache import cache
+        cache.delete('consolidated_homepage_data_v1')
+        from core.revalidation import trigger_revalidation
+        trigger_revalidation(model_name, instance=obj)
+    except Exception:
+        pass
+
     # Log action in Django Admin History
     try:
         LogEntry.objects.log_action(

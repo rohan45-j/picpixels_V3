@@ -63,6 +63,7 @@ if _frontend_url:
 CLOUDFLARE_TURNSTILE_SECRET_KEY = env('CLOUDFLARE_TURNSTILE_SECRET_KEY', default='')
 CLOUDFLARE_TURNSTILE_SITE_KEY = env('CLOUDFLARE_TURNSTILE_SITE_KEY', default='')
 BOT_PROTECTION_ENABLED = env('BOT_PROTECTION_ENABLED', default=True)
+REVALIDATION_SECRET = env('REVALIDATION_SECRET', default='picpixels-revalidate-secret-2024')
 
 # ── Security Settings ──────────────────────────────────────────
 CSRF_TRUSTED_ORIGINS = [
@@ -371,6 +372,9 @@ CKEDITOR_CONFIGS = {
         'height': 400,
         'width': '100%',
         'extraPlugins': ','.join(['codesnippet', 'image2', 'uploadimage']),
+        'contentsCss': [
+            '/static/admin/css/ckeditor_custom.css',
+        ],
     },
 }
 

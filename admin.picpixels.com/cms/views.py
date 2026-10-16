@@ -646,7 +646,7 @@ class HomepageDataView(APIView):
         cached = cache.get(cache_key)
         if cached and not DEBUG:
             resp = Response(cached)
-            resp['Cache-Control'] = 'public, max-age=60, s-maxage=120'
+            resp['Cache-Control'] = 'public, max-age=0, must-revalidate'
             return resp
 
         # 1. Services
@@ -755,7 +755,7 @@ class HomepageDataView(APIView):
         if not DEBUG:
             cache.set(cache_key, payload, timeout=120)
         resp = Response(payload)
-        resp['Cache-Control'] = 'public, max-age=60, s-maxage=120'
+        resp['Cache-Control'] = 'public, max-age=0, must-revalidate'
         return resp
 
 

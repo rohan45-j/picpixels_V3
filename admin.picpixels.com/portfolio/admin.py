@@ -138,6 +138,29 @@ class PortfolioAdmin(ModelAdmin):
         ]
         return custom_urls + urls
 
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        try:
+            return super().changeform_view(request, object_id, form_url, extra_context)
+        except PermissionError as pe:
+            messages.error(
+                request,
+                mark_safe(
+                    f"❌ <strong>Server Storage Permission Denied:</strong> {pe}<br>"
+                    "The web server (<code>www-data</code>) does not have write access to the media folder.<br>"
+                    "<strong>Run on VPS terminal:</strong><br>"
+                    "<pre style='background:#1e1e1e;color:#00ff9d;padding:8px 12px;border-radius:6px;margin-top:6px;font-size:12px;'>"
+                    "sudo bash /var/www/picpixels_root/admin.picpixels.com/scripts/fix_permissions.sh\n"
+                    "# OR manually:\n"
+                    "sudo chown -R www-data:www-data /var/www/picpixels_root/admin.picpixels.com/media\n"
+                    "sudo chmod -R 775 /var/www/picpixels_root/admin.picpixels.com/media\n"
+                    "sudo find /var/www/picpixels_root/admin.picpixels.com/media -type d -exec chmod 2775 {} +"
+                    "</pre>"
+                )
+            )
+            if object_id:
+                return redirect('admin:portfolio_portfolio_change', object_id)
+            return redirect('admin:portfolio_portfolio_add')
+
     def save_related(self, request, form, formsets, change):
         super().save_related(request, form, formsets, change)
         bulk_images = request.FILES.getlist('bulk_gallery_images')
@@ -145,15 +168,26 @@ class PortfolioAdmin(ModelAdmin):
         if bulk_images:
             portfolio = form.instance
             current_count = portfolio.gallery.count()
-            for i, file in enumerate(bulk_images, start=1):
-                caption = alt_prefix or f"{portfolio.title} Image {current_count + i}"
-                PortfolioGallery.objects.create(
-                    portfolio=portfolio,
-                    image=file,
-                    alt_text=caption,
-                    sort_order=current_count + i
+            saved_count = 0
+            try:
+                for i, file in enumerate(bulk_images, start=1):
+                    caption = alt_prefix or f"{portfolio.title} Image {current_count + i}"
+                    PortfolioGallery.objects.create(
+                        portfolio=portfolio,
+                        image=file,
+                        alt_text=caption,
+                        sort_order=current_count + i
+                    )
+                    saved_count += 1
+                messages.success(request, f"🎉 Successfully added {saved_count} images to '{portfolio.title}' gallery!")
+            except PermissionError as pe:
+                messages.error(
+                    request,
+                    mark_safe(
+                        f"❌ <strong>Gallery Upload Permission Denied:</strong> {pe}<br>"
+                        "Please run on VPS terminal: <code>sudo chown -R www-data:www-data media/ && sudo chmod -R 775 media/</code>"
+                    )
                 )
-            messages.success(request, f"🎉 Successfully added {len(bulk_images)} images to '{portfolio.title}' gallery!")
 
     def quick_bulk_upload_view(self, request, object_id):
         """AJAX endpoint for instant bulk upload directly from the change form."""
@@ -171,26 +205,38 @@ class PortfolioAdmin(ModelAdmin):
 
             current_count = portfolio.gallery.count()
             uploaded = []
-            for i, file in enumerate(images, start=1):
-                caption = alt_prefix or f"{portfolio.title} Image {current_count + i}"
-                g = PortfolioGallery.objects.create(
-                    portfolio=portfolio,
-                    image=file,
-                    alt_text=caption,
-                    sort_order=current_count + i
-                )
-                uploaded.append({
-                    'id': g.id,
-                    'url': g.image.url if g.image else '',
-                    'alt_text': g.alt_text,
-                })
+            try:
+                for i, file in enumerate(images, start=1):
+                    caption = alt_prefix or f"{portfolio.title} Image {current_count + i}"
+                    g = PortfolioGallery.objects.create(
+                        portfolio=portfolio,
+                        image=file,
+                        alt_text=caption,
+                        sort_order=current_count + i
+                    )
+                    uploaded.append({
+                        'id': g.id,
+                        'url': g.image.url if g.image else '',
+                        'alt_text': g.alt_text,
+                    })
 
-            return JsonResponse({
-                'status': 'success',
-                'message': f"Uploaded {len(uploaded)} image(s) to '{portfolio.title}' gallery!",
-                'count': len(uploaded),
-                'items': uploaded,
-            })
+                return JsonResponse({
+                    'status': 'success',
+                    'message': f"Uploaded {len(uploaded)} image(s) to '{portfolio.title}' gallery!",
+                    'count': len(uploaded),
+                    'items': uploaded,
+                })
+            except PermissionError as pe:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': f"Server storage permission denied on media/ folder. Please run: sudo bash scripts/fix_permissions.sh on VPS. ({pe})"
+                }, status=500)
+            except Exception as e:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': f"Upload failed: {str(e)}"
+                }, status=500)
+
         return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
 
 
@@ -223,30 +269,40 @@ class PortfolioAdmin(ModelAdmin):
             service = Service.objects.filter(pk=service_id).first() if service_id else None
 
             created_count = 0
-            for file in images:
-                base_name = os.path.splitext(file.name)[0]
-                clean_title = re.sub(r'[-_]+', ' ', base_name).strip().title()
-                if not clean_title:
-                    clean_title = f"{category.name} Item"
+            try:
+                for file in images:
+                    base_name = os.path.splitext(file.name)[0]
+                    clean_title = re.sub(r'[-_]+', ' ', base_name).strip().title()
+                    if not clean_title:
+                        clean_title = f"{category.name} Item"
 
-                item = Portfolio(
-                    title=clean_title,
-                    category=category,
-                    service=service,
-                    featured_image=file,
-                    featured_image_alt=clean_title,
-                    is_published=is_published,
-                    show_on_homepage=show_on_homepage,
-                    featured=show_on_homepage,
+                    item = Portfolio(
+                        title=clean_title,
+                        category=category,
+                        service=service,
+                        featured_image=file,
+                        featured_image_alt=clean_title,
+                        is_published=is_published,
+                        show_on_homepage=show_on_homepage,
+                        featured=show_on_homepage,
+                    )
+                    item.save()
+                    created_count += 1
+
+                messages.success(
+                    request,
+                    f"🎉 Successfully created {created_count} portfolio item(s) under '{category.name}'!"
                 )
-                item.save()
-                created_count += 1
-
-            messages.success(
-                request,
-                f"🎉 Successfully created {created_count} portfolio item(s) under '{category.name}'!"
-            )
-            return redirect('admin:portfolio_portfolio_changelist')
+                return redirect('admin:portfolio_portfolio_changelist')
+            except PermissionError as pe:
+                messages.error(
+                    request,
+                    mark_safe(
+                        f"❌ <strong>Bulk Create Storage Permission Denied:</strong> {pe}<br>"
+                        "Please run on VPS: <code>sudo chown -R www-data:www-data media/ && sudo chmod -R 775 media/</code>"
+                    )
+                )
+                return redirect('admin:portfolio_portfolio_bulk_upload')
 
         context = {
             **self.admin_site.each_context(request),
@@ -412,21 +468,31 @@ class PortfolioGalleryAdmin(ModelAdmin):
 
             current_count = portfolio.gallery.count()
             created_count = 0
-            for i, file in enumerate(images, start=1):
-                caption = alt_text_prefix or f"{portfolio.title} Image {current_count + i}"
-                PortfolioGallery.objects.create(
-                    portfolio=portfolio,
-                    image=file,
-                    alt_text=caption,
-                    sort_order=current_count + i
-                )
-                created_count += 1
+            try:
+                for i, file in enumerate(images, start=1):
+                    caption = alt_text_prefix or f"{portfolio.title} Image {current_count + i}"
+                    PortfolioGallery.objects.create(
+                        portfolio=portfolio,
+                        image=file,
+                        alt_text=caption,
+                        sort_order=current_count + i
+                    )
+                    created_count += 1
 
-            messages.success(
-                request,
-                f"🎉 Successfully uploaded {created_count} images to '{portfolio.title}' gallery!"
-            )
-            return redirect('admin:portfolio_portfoliogallery_changelist')
+                messages.success(
+                    request,
+                    f"🎉 Successfully uploaded {created_count} images to '{portfolio.title}' gallery!"
+                )
+                return redirect('admin:portfolio_portfoliogallery_changelist')
+            except PermissionError as pe:
+                messages.error(
+                    request,
+                    mark_safe(
+                        f"❌ <strong>Gallery Upload Permission Denied:</strong> {pe}<br>"
+                        "Please run on VPS: <code>sudo chown -R www-data:www-data media/ && sudo chmod -R 775 media/</code>"
+                    )
+                )
+                return redirect('admin:portfolio_portfoliogallery_bulk_upload')
 
         context = {
             **self.admin_site.each_context(request),

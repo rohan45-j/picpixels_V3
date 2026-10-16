@@ -14,12 +14,14 @@ def cached_media_serve(request, path, document_root=None, show_indexes=False):
 
 
 from core.admin_quick_update import admin_quick_update_view
+from core.revalidation import manual_revalidate_view
 
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
     path('admin', RedirectView.as_view(url='/admin/', permanent=False)),
     path('admin/quick-update/', admin_quick_update_view, name='admin-quick-update'),
+    path('admin/revalidate-cache/', manual_revalidate_view, name='admin-revalidate-cache'),
     path('admin/', admin.site.urls),
     path('api/v1/homepage/', HomepageDataView.as_view(), name='homepage-data'),
     path('api/v1/users/', include('users.urls')),

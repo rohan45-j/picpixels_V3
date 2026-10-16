@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin, messages
+from django.shortcuts import redirect
 from django.db import models
 from django.utils import timezone
 from django.utils.html import format_html
@@ -1363,6 +1364,29 @@ class BlogPostAdmin(ModelAdmin):
         if obj.author_profile:
             return obj.author_profile.name
         return '-'
+
+    def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
+        try:
+            return super().changeform_view(request, object_id, form_url, extra_context)
+        except PermissionError as pe:
+            messages.error(
+                request,
+                mark_safe(
+                    f"❌ <strong>Server Storage Permission Denied:</strong> {pe}<br>"
+                    "The web server (<code>www-data</code>) does not have write access to the media folder.<br>"
+                    "<strong>Run on VPS terminal:</strong><br>"
+                    "<pre style='background:#1e1e1e;color:#00ff9d;padding:8px 12px;border-radius:6px;margin-top:6px;font-size:12px;'>"
+                    "sudo bash /var/www/picpixels_root/admin.picpixels.com/scripts/fix_permissions.sh\n"
+                    "# OR manually:\n"
+                    "sudo chown -R www-data:www-data /var/www/picpixels_root/admin.picpixels.com/media\n"
+                    "sudo chmod -R 775 /var/www/picpixels_root/admin.picpixels.com/media\n"
+                    "sudo find /var/www/picpixels_root/admin.picpixels.com/media -type d -exec chmod 2775 {} +"
+                    "</pre>"
+                )
+            )
+            if object_id:
+                return redirect('admin:cms_blogpost_change', object_id)
+            return redirect('admin:cms_blogpost_changelist')
 
 
 @admin.register(BlogContentSection)

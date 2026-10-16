@@ -305,6 +305,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py collectstatic --noinput
+sudo bash scripts/fix_permissions.sh
 sudo systemctl restart picpixels-backend
 ```
 
@@ -312,7 +313,7 @@ sudo systemctl restart picpixels-backend
 ```bash
 cd /var/www/picpixels_root && git pull origin main && \
 (cd picpixels && npm install && npm run build && pm2 reload picpixels-frontend) && \
-(cd admin.picpixels.com && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && sudo systemctl restart picpixels-backend)
+(cd admin.picpixels.com && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput && sudo bash scripts/fix_permissions.sh && sudo systemctl restart picpixels-backend)
 ```
 
 ---

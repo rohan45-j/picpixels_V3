@@ -32,7 +32,7 @@
       var url = prompt('Enter link URL (e.g. /services or https://...):', 'https://');
       if (!url) return;
       var text = selected || prompt('Enter link text:', 'Learn More') || url;
-      var linkTag = '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + text + '</a>';
+      var linkTag = '<a href="' + url + '" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 500;">' + text + '</a>';
       textarea.focus();
       textarea.setRangeText(linkTag, start, end, 'end');
       textarea.dispatchEvent(new Event('input', { bubbles: true }));

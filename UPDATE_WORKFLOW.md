@@ -58,8 +58,7 @@ source venv/bin/activate
 pip install -r requirements.txt            # যদি নতুন কোনো প্যাকেজ যোগ হয়
 python manage.py migrate                   # যদি নতুন কোনো মাইগ্রেশন থাকে
 python manage.py collectstatic --noinput   # স্ট্যাটিক ফাইলের জন্য
-sudo chown -R www-data:www-data media/     # ইমেজ আপলোড পারমিশন সুরক্ষিত রাখতে
-sudo chmod -R 775 media/
+sudo bash scripts/fix_permissions.sh       # পারমিশন ও ওনারশিপ ১০০% পারফেক্ট করতে
 sudo systemctl restart picpixels-backend
 ```
 
@@ -71,7 +70,7 @@ sudo systemctl restart picpixels-backend
 ```bash
 cd /var/www/picpixels_root && git pull origin main && \
 (cd picpixels && npm run build && chown -R deploy:deploy /var/www/picpixels_root/picpixels && su - deploy -c "pm2 restart picpixels-frontend") && \
-(cd admin.picpixels.com && source venv/bin/activate && python manage.py migrate && python manage.py collectstatic --noinput && sudo chown -R www-data:www-data media/ && sudo chmod -R 775 media/ && sudo systemctl restart picpixels-backend)
+(cd admin.picpixels.com && source venv/bin/activate && python manage.py migrate && python manage.py collectstatic --noinput && sudo bash scripts/fix_permissions.sh && sudo systemctl restart picpixels-backend)
 ```
 
 ---
@@ -84,10 +83,11 @@ cd /var/www/picpixels_root && git pull origin main && \
 ১. **WinSCP** ওপেন করুন।
 ২. আপনার লোকালের `d:\picpixels\Live_Code\admin.picpixels.com\media\` থেকে নতুন ফাইল বা ফোল্ডারটি কপি করুন।
 ৩. সার্ভারের `/var/www/picpixels_root/admin.picpixels.com/media/` ফোল্ডারে পেস্ট করে দিন।
-৪. আপলোড শেষ হলে PuTTY-তে পারমিশন দিয়ে দিন:
+৪. আপলোড শেষ হলে PuTTY-তে এই কমান্ডটি রান করে পারমিশন ও ওনারশিপ ফিক্স করুন:
    ```bash
-   sudo chmod -R 777 /var/www/picpixels_root/admin.picpixels.com/media
+   sudo bash /var/www/picpixels_root/admin.picpixels.com/scripts/fix_permissions.sh
    ```
+   *(অথবা ম্যানুয়ালি: `sudo chown -R www-data:www-data /var/www/picpixels_root/admin.picpixels.com/media && sudo chmod -R 775 /var/www/picpixels_root/admin.picpixels.com/media && sudo find /var/www/picpixels_root/admin.picpixels.com/media -type d -exec chmod 2775 {} +`)*
 
 ---
 
@@ -97,6 +97,7 @@ cd /var/www/picpixels_root && git pull origin main && \
 
 | এরর বা লক্ষণ | সমাধান কমান্ড (PuTTY) |
 |---|---|
+| **[Errno 13] Permission denied (media/portfolio/uploads)** | `sudo bash /var/www/picpixels_root/admin.picpixels.com/scripts/fix_permissions.sh` |
 | **ফ্রন্টএন্ড এরর দেখতে** | `pm2 logs picpixels-frontend --lines 50` |
 | **ফ্রন্টএন্ড রিস্টার্ট দিতে** | `su - deploy -c "pm2 restart picpixels-frontend"` |
 | **fatal: detected dubious ownership** | `git config --global --add safe.directory "*"` |

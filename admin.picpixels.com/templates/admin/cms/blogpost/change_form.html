@@ -161,7 +161,7 @@
         <span class="text-[11px] font-bold text-gray-500 dark:text-gray-400 mr-1 flex items-center gap-1">
           <span>✍️</span> ${label} Tools:
         </span>
-        <button type="button" class="btn-fmt-link px-2.5 py-1 bg-white dark:bg-gray-700 hover:bg-primary-50 dark:hover:bg-primary-950/40 text-primary-600 dark:text-primary-400 font-semibold rounded border border-gray-300 dark:border-gray-600 flex items-center gap-1 shadow-2xs">
+        <button type="button" class="btn-fmt-link px-2.5 py-1 bg-white dark:bg-gray-700 hover:bg-blue-50 dark:hover:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-semibold rounded border border-blue-300 dark:border-blue-600 flex items-center gap-1 shadow-2xs">
           <span>🔗</span> Add Hyperlink
         </button>
         <button type="button" class="btn-fmt-bold px-2 py-1 bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 font-bold rounded border border-gray-300 dark:border-gray-600 shadow-2xs">
@@ -182,48 +182,116 @@
       textarea.classList.add('rounded-b-lg', 'border-t-0');
       textarea.parentNode.insertBefore(toolbar, textarea);
 
+      function getEditor() {
+        return window.CKEDITOR && CKEDITOR.instances[textareaId];
+      }
+
       toolbar.querySelector('.btn-fmt-link').addEventListener('click', function() {
-        var start = textarea.selectionStart;
-        var end = textarea.selectionEnd;
-        var selected = textarea.value.substring(start, end);
+        var editor = getEditor();
+        var selected = '';
+        if (editor) {
+          var sel = editor.getSelection();
+          selected = (sel && sel.getSelectedText()) || '';
+        } else {
+          selected = textarea.value.substring(textarea.selectionStart, textarea.selectionEnd);
+        }
+
         var url = prompt('Enter link URL (e.g. /services or https://...):', 'https://');
-        if (!url) return;
-        var text = selected || prompt('Enter link text:', 'Learn More') || url;
-        var linkTag = '<a href="' + url + '" target="_blank" rel="noopener noreferrer">' + text + '</a>';
-        textarea.focus();
-        textarea.setRangeText(linkTag, start, end, 'end');
+        if (!url || !url.trim() || url === 'https://') return;
+        url = url.trim();
+
+        var text = selected || prompt('Enter link text to display:', 'Learn More') || url;
+        // Blue and underlined hyperlink
+        var linkTag = '<a href="' + url + '" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: underline; font-weight: 500;">' + text + '</a>';
+
+        if (editor) {
+          editor.insertHtml(linkTag);
+        } else {
+          var start = textarea.selectionStart;
+          var end = textarea.selectionEnd;
+          textarea.focus();
+          textarea.setRangeText(linkTag, start, end, 'end');
+          textarea.dispatchEvent(new Event('input', { bubbles: true }));
+        }
       });
 
       toolbar.querySelector('.btn-fmt-bold').addEventListener('click', function() {
+        var editor = getEditor();
+        if (editor) {
+          var sel = editor.getSelection();
+          var selected = (sel && sel.getSelectedText()) || 'Bold text';
+          editor.insertHtml('<strong>' + selected + '</strong>');
+          return;
+        }
         var start = textarea.selectionStart;
         var end = textarea.selectionEnd;
         var selected = textarea.value.substring(start, end) || 'Bold text';
         textarea.focus();
         textarea.setRangeText('<strong>' + selected + '</strong>', start, end, 'end');
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
       });
 
       toolbar.querySelector('.btn-fmt-italic').addEventListener('click', function() {
+        var editor = getEditor();
+        if (editor) {
+          var sel = editor.getSelection();
+          var selected = (sel && sel.getSelectedText()) || 'Italic text';
+          editor.insertHtml('<em>' + selected + '</em>');
+          return;
+        }
         var start = textarea.selectionStart;
         var end = textarea.selectionEnd;
         var selected = textarea.value.substring(start, end) || 'Italic text';
         textarea.focus();
         textarea.setRangeText('<em>' + selected + '</em>', start, end, 'end');
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
       });
 
       toolbar.querySelector('.btn-fmt-h3').addEventListener('click', function() {
+        var editor = getEditor();
+        if (editor) {
+          var sel = editor.getSelection();
+          var selected = (sel && sel.getSelectedText()) || 'Section Heading';
+          editor.insertHtml('<h3>' + selected + '</h3>');
+          return;
+        }
         var start = textarea.selectionStart;
         var end = textarea.selectionEnd;
         var selected = textarea.value.substring(start, end) || 'Section Heading';
         textarea.focus();
         textarea.setRangeText('<h3>' + selected + '</h3>\n', start, end, 'end');
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
       });
 
       toolbar.querySelector('.btn-fmt-ul').addEventListener('click', function() {
+        var editor = getEditor();
+        if (editor) {
+          var sel = editor.getSelection();
+          var selected = (sel && sel.getSelectedText()) || 'Key feature or highlight';
+          editor.insertHtml('<ul><li>' + selected + '</li></ul>');
+          return;
+        }
         var start = textarea.selectionStart;
         var end = textarea.selectionEnd;
         var selected = textarea.value.substring(start, end) || 'Key feature or highlight';
         textarea.focus();
         textarea.setRangeText('<ul>\n  <li>' + selected + '</li>\n</ul>\n', start, end, 'end');
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+    }
+
+    // Auto-inject blue underline link styling into CKEditor iframe documents
+    if (window.CKEDITOR) {
+      CKEDITOR.on('instanceReady', function(evt) {
+        try {
+          var doc = evt.editor.document.$;
+          if (doc && doc.head) {
+            var style = doc.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = 'a, a:link, a:visited { color: #2563eb !important; text-decoration: underline !important; font-weight: 500; } a:hover { color: #1d4ed8 !important; text-decoration: underline !important; }';
+            doc.head.appendChild(style);
+          }
+        } catch(e) {}
       });
     }
 
