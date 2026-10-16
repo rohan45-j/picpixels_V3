@@ -388,14 +388,15 @@
 .ctaSection { padding: 1rem 2rem 5rem; text-align: center; }
 .ctaInner { max-width: 820px; margin: 0 auto; }
 .ctaCard {
-  background: linear-gradient(135deg, rgba(255,138,80,0.06) 0%, rgba(204,111,63,0.03) 100%);
-  border: 1px solid rgba(255,138,80,0.1);
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 60%, #1E40AF 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 20px;
   padding: 3rem 2rem;
+  box-shadow: 0 20px 50px -10px rgba(37, 99, 235, 0.35);
 }
-.ctaCard h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
-.ctaCard > p { color: var(--color-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
-.ctaGroup { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+.ctaCard h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; color: #FFFFFF !important; }
+.ctaCard > p { color: rgba(255, 255, 255, 0.92); margin-bottom: 1.5rem; font-size: 0.95rem; }
+.ctaGroup { display: flex; justify-content: center; gap: 1.15rem; flex-wrap: wrap; }
 
 /* ═══════════════════════════════════════════════
    LOADING

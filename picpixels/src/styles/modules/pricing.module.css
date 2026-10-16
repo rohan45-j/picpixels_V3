@@ -840,27 +840,28 @@
 }
 
 /* ─── CTA ─── */
-.ctaSection { padding: 6rem 2rem; }
+.ctaSection { padding: 6rem 2rem; background: var(--bg-light, #FFFFFF); }
 .ctaBanner {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(135deg, var(--bg-light-card) 0%, rgba(255,138,80,0.05) 100%);
-  border: 1px solid rgba(255,138,80,0.1);
+  padding: 4rem 2.5rem;
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 60%, #1E40AF 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--border-radius-xl);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 20px 50px -10px rgba(37, 99, 235, 0.35);
 }
 .ctaBanner::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, var(--primary) 0%, transparent 60%);
-  opacity: 0.1;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.35) 0%, transparent 60%);
+  opacity: 0.8;
   transform: translate(-50%, -50%);
   filter: blur(50px);
   pointer-events: none;
@@ -870,10 +871,10 @@
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   font-weight: 800;
   margin-bottom: 0.75rem;
-  color: var(--color-text);
+  color: #FFFFFF !important;
 }
 .ctaBannerDesc {
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.92);
   max-width: 500px;
   margin: 0 auto 2rem;
   font-size: 1.05rem;
@@ -882,7 +883,7 @@
 .ctaBannerGroup {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.15rem;
   flex-wrap: wrap;
 }
 

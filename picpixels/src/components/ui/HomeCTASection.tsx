@@ -61,7 +61,7 @@ export default function HomeCTASection({ data: propData }: HomeCTASectionProps) 
                 </div>
               )}
 
-              <h2 className={styles.title} style={titleColor ? { color: titleColor } : undefined}>
+              <h2 className={styles.title} style={(titleColor && !['#0F172A', '#0f172a', '#000000', '#111827', '#1e293b'].includes(titleColor)) ? { color: titleColor } : undefined}>
                 {title}
               </h2>
 
