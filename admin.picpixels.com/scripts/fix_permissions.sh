@@ -24,12 +24,8 @@ mkdir -p "$MEDIA_DIR"/{uploads,portfolio,portfolio/before,portfolio/after,portfo
 echo "👤 Setting ownership to www-data:www-data..."
 chown -R www-data:www-data "$MEDIA_DIR"
 
-echo "🔒 Setting directory permissions (2775 with SGID)..."
-# SGID (2775) ensures all newly created directories automatically inherit the www-data group!
-find "$MEDIA_DIR" -type d -exec chmod 2775 {} +
-
-echo "📄 Setting file permissions (664 rw-rw-r--)..."
-find "$MEDIA_DIR" -type f -exec chmod 664 {} +
+echo "🔒 Setting permissions (777 full read/write access for media)..."
+chmod -R 777 "$MEDIA_DIR"
 
 # Add deploy/current user to www-data group if needed
 if [ -n "$SUDO_USER" ] && [ "$SUDO_USER" != "root" ]; then
