@@ -401,7 +401,11 @@ UNFOLD = {
         "/static/admin/css/light-mode-fix.css",
         "/static/admin/css/admin_loading.css",
     ],
-    "SCRIPTS": [],
+    "SCRIPTS": [
+        "/static/admin/js/theme.js",
+        "/static/admin/js/toggle.js",
+        "/static/admin/js/password_toggle.js",
+    ],
     "COMMAND": {
         "search_models": True,
         "show_history": True,

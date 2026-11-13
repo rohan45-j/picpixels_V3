@@ -144,6 +144,12 @@ class ServiceClientFeedbackSerializer(serializers.ModelSerializer):
         fields = ['id', 'client_name', 'company', 'designation', 'photo', 'photo_alt', 'rating', 'review', 'display_order', 'is_active']
 
 
+class ServiceListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ['id', 'title', 'title_color', 'slug', 'short_description', 'description', 'features', 'icon', 'image', 'image_alt', 'price', 'order', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'show_in_related', 'is_active', 'available_locations']
+
+
 class ServiceSerializer(serializers.ModelSerializer):
     gallery_images = ServiceGalleryImageSerializer(many=True, read_only=True)
     content_sections = ServiceContentSectionSerializer(many=True, read_only=True)
@@ -158,6 +164,7 @@ class ServiceSerializer(serializers.ModelSerializer):
     pricing_tier_cards = ServicePricingTierCardSerializer(many=True, read_only=True)
     client_feedbacks = serializers.SerializerMethodField()
     og_image_url = serializers.SerializerMethodField()
+    related_services = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
@@ -172,6 +179,7 @@ class ServiceSerializer(serializers.ModelSerializer):
                     'pricing_title', 'pricing_badge_text', 'pricing_heading', 'pricing_heading_color', 'pricing_description',
                     'pricing_starting_price', 'pricing_unit', 'pricing_notes', 'pricing_features',
                     'pricing_cta_text', 'pricing_cta_link', 'pricing_cta2_text', 'pricing_cta2_link',
+                    'related_section_title', 'related_section_subtitle', 'related_services',
                    'brand_logos', 'why_need_features', 'process_steps', 'why_choose_cards',
                    'tools', 'pricing_tier_cards', 'client_feedbacks']
         read_only_fields = ['created_at', 'updated_at']
@@ -194,11 +202,12 @@ class ServiceSerializer(serializers.ModelSerializer):
         qs = obj.client_feedbacks.filter(is_active=True).order_by('display_order')
         return ServiceClientFeedbackSerializer(qs, many=True).data
 
-
-class ServiceListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Service
-        fields = ['id', 'title', 'title_color', 'slug', 'short_description', 'description', 'features', 'icon', 'image', 'image_alt', 'price', 'order', 'is_featured', 'show_in_mega_menu', 'show_on_homepage', 'show_in_footer', 'show_in_related', 'is_active', 'available_locations']
+    def get_related_services(self, obj):
+        manual = obj.related_services.filter(is_active=True).order_by('order')
+        if manual.exists():
+            return ServiceListSerializer(manual, many=True, context=self.context).data
+        fallback = Service.objects.filter(is_active=True, show_in_related=True).exclude(id=obj.id).order_by('order')[:4]
+        return ServiceListSerializer(fallback, many=True, context=self.context).data
 
 
 class HeroSlideSerializer(serializers.ModelSerializer):

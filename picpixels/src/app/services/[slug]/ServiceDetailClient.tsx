@@ -404,18 +404,67 @@ export default function ServiceDetailClient({
       {related.length > 0 && (
         <section className={styles.relatedSection}>
           <div className="container">
-            <SectionHeading text="Related Services" subtitle="Explore more of our professional photo editing services" />
-            <div className={styles.serviceIndexGrid}>
-              {related.map((svc) => (
-                <Link key={svc.id} href={`/services/${svc.slug}`} className={styles.serviceIndexCard}>
-                  <h3 className={styles.serviceIndexTitle}>{svc.title}</h3>
-                  <p className={styles.serviceIndexDesc}>{svc.short_description || svc.description}</p>
-                  {svc.price && parseFloat(svc.price) > 0 && (
-                    <span className={styles.serviceIndexPrice}>From ${parseFloat(svc.price).toFixed(2)}/image</span>
-                  )}
-                  <span className={styles.serviceIndexLink}>Learn More →</span>
-                </Link>
-              ))}
+            <SectionHeading
+              text={service.related_section_title || "Related Services"}
+              subtitle={service.related_section_subtitle || "Explore more of our professional photo editing services"}
+            />
+            <div className={styles.relatedServicesGrid}>
+              {related.map((svc, i) => {
+                const img = svc.image || (svc.hero_images && svc.hero_images[0]?.image);
+                const hasPrice = svc.price && parseFloat(svc.price) > 0;
+                return (
+                  <Link
+                    key={svc.id || i}
+                    href={`/services/${svc.slug}`}
+                    className={styles.relatedCard}
+                  >
+                    <div className={styles.relatedCardMedia}>
+                      {img ? (
+                        <img
+                          src={mediaUrl(img)}
+                          alt={svc.image_alt || svc.title}
+                          className={styles.relatedCardImg}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className={styles.relatedCardFallback}>
+                          {svc.icon ? (
+                            <span dangerouslySetInnerHTML={{ __html: svc.icon }} />
+                          ) : (
+                            <span>{svc.title}</span>
+                          )}
+                        </div>
+                      )}
+                      {hasPrice && (
+                        <span className={styles.relatedCardPriceBadge}>
+                          From ${parseFloat(svc.price).toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                    <div className={styles.relatedCardBody}>
+                      <h3 className={styles.relatedCardTitle}>{svc.title}</h3>
+                      <p className={styles.relatedCardDesc}>
+                        {svc.short_description || svc.description}
+                      </p>
+                      {svc.features && svc.features.length > 0 && (
+                        <div className={styles.relatedCardFeatures}>
+                          {svc.features.slice(0, 2).map((feat, fi) => (
+                            <span key={fi} className={styles.relatedCardFeatureTag}>
+                              {feat}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <div className={styles.relatedCardFooter}>
+                        <span className={styles.relatedCardLink}>
+                          Learn More
+                          <span className={styles.relatedCardArrow}>→</span>
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>

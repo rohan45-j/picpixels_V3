@@ -122,9 +122,11 @@ export default async function ServiceDetailPage({
     ? (footerServicesData.some((s) => s.slug === service.slug) ? footerServicesData : [service, ...footerServicesData])
     : [service, ...(relatedServices || [])];
 
-  const related = relatedServices
-    .filter((s) => s.slug !== slug && s.show_in_related !== false)
-    .slice(0, 4);
+  const related = (service.related_services && service.related_services.length > 0)
+    ? service.related_services.filter((s) => s.slug !== slug && s.is_active !== false)
+    : relatedServices
+        .filter((s) => s.slug !== slug && s.show_in_related !== false && s.is_active !== false)
+        .slice(0, 4);
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.picpicxels.com';
   const canonical = service.canonical_url || `${siteUrl}/services/${slug}`;

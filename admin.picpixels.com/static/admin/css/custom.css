@@ -286,16 +286,23 @@ a, button, input, select, textarea, .data-row, .changelist-actions,
   background: #f87171;
 }
 
-/* Hide default Django boolean icons */
-.field-is_active img,
-.field-is_published img,
-.field-is_read img,
-.field-is_featured img,
-.field-is_popular img,
-.field-is_active input,
-.field-is_published input,
-.field-is_read input {
+/* Hide default legacy Django boolean icons in changelist tables only */
+#result_list td.field-is_active img,
+#result_list td.field-is_published img,
+#result_list td.field-is_read img,
+#result_list td.field-is_featured img,
+#result_list td.field-is_popular img {
   display: none !important;
+}
+
+/* Ensure all form toggle switches (Active, Staff, Superuser, etc.) are always visible, interactive & styled */
+.field-line input[type="checkbox"],
+.field-is_active input[type="checkbox"],
+.field-is_staff input[type="checkbox"],
+.field-is_superuser input[type="checkbox"],
+.field-is_published input[type="checkbox"] {
+  display: block !important;
+  cursor: pointer;
 }
 
 /* Ensure list_editable toggles show properly */
@@ -1653,3 +1660,127 @@ a.deletelink:hover {
   from { opacity: 0; transform: translateY(-50%) translateX(-4px); }
   to { opacity: 1; transform: translateY(-50%) translateX(0); }
 }
+
+/* ===========================================================
+   Password Visibility Eye Toggle — Modern & Accessible
+   =========================================================== */
+.password-toggle-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.password-toggle-wrapper input.pwd-input-padded {
+  padding-right: 2.85rem !important;
+  width: 100%;
+}
+
+.pwd-toggle-btn {
+  position: absolute;
+  right: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 0.35rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  color: #94a3b8;
+  transition: all 0.15s ease;
+  z-index: 10;
+  line-height: 1;
+}
+
+.pwd-toggle-btn:hover {
+  color: #334155;
+  background-color: rgba(148, 163, 184, 0.18);
+  transform: translateY(-50%) scale(1.06);
+}
+
+.pwd-toggle-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.pwd-toggle-btn.is-active {
+  color: #ff8a50; /* PicPixels brand primary orange */
+}
+
+.dark .pwd-toggle-btn {
+  color: #64748b;
+}
+
+.dark .pwd-toggle-btn:hover {
+  color: #f1f5f9;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .pwd-toggle-btn.is-active {
+  color: #ff8a50;
+}
+
+.pwd-toggle-btn svg {
+  display: block;
+  pointer-events: none;
+}
+
+/* ===========================================================
+   User Edit / Change Form UX Enhancements
+   =========================================================== */
+/* Password change action button in user change form */
+.field-password a[href*="password/"],
+#id_password_helptext a[href*="password/"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.625rem;
+  background-color: #ff8a50;
+  color: #ffffff !important;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-decoration: none !important;
+  box-shadow: 0 1px 2px rgba(255, 138, 80, 0.25);
+  transition: all 0.15s ease;
+}
+
+.field-password a[href*="password/"]:hover,
+#id_password_helptext a[href*="password/"]:hover {
+  background-color: #ea580c;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(234, 88, 12, 0.3);
+}
+
+/* Active & Access Control Row Styling */
+.field-is_active,
+.field-is_staff,
+.field-is_superuser {
+  transition: background-color 0.15s ease;
+}
+
+.field-is_active:hover,
+.field-is_staff:hover,
+.field-is_superuser:hover {
+  background-color: rgba(0, 0, 0, 0.015);
+}
+
+.dark .field-is_active:hover,
+.dark .field-is_staff:hover,
+.dark .field-is_superuser:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Ensure switch inputs have smooth transitions and clear outlines */
+.field-line input[type="checkbox"].h-5.w-8 {
+  outline: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.field-line input[type="checkbox"].h-5.w-8:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 138, 80, 0.35);
+}
+

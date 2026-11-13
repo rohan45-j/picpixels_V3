@@ -608,6 +608,7 @@ class ServiceAdmin(ModelAdmin):
     search_fields = ('title', 'short_description', 'description')
     ordering = ('order',)
     prepopulated_fields = {'slug': ('title',)}
+    filter_horizontal = ('related_services',)
     list_fullwidth = True
     inlines = [
         ServiceHeroImageInline,
@@ -675,6 +676,14 @@ class ServiceAdmin(ModelAdmin):
             ),
             'description': 'Specify which geographic locations this service is available in. Click on any location chip to add or remove it. If none are selected, this service is available across all locations globally.',
         }),
+        ('Related Services', {
+            'fields': (
+                ('related_section_title', 'related_section_subtitle'),
+                'related_services',
+                'show_in_related',
+            ),
+            'description': 'Configure the Related Services section shown at the bottom of this service page. Select specific related services in the box below, or leave empty to automatically display other active services.',
+        }),
         ('SEO & Display', {
             'classes': ('collapse',),
             'fields': (
@@ -683,7 +692,6 @@ class ServiceAdmin(ModelAdmin):
                 'order', 'price',
                 'is_active', 'is_featured',
                 'show_in_mega_menu', 'show_on_homepage',
-                'show_in_related',
             ),
         }),
     )

@@ -386,6 +386,9 @@ export interface Service {
   show_on_homepage: boolean;
   show_in_footer: boolean;
   show_in_related: boolean;
+  related_section_title?: string;
+  related_section_subtitle?: string;
+  related_services?: Service[];
   is_active: boolean;
   is_featured: boolean;
   available_locations?: string[];

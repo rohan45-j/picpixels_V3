@@ -181,6 +181,9 @@ class Service(models.Model):
     pricing_cta_link = models.CharField(max_length=500, blank=True, default='/free-trial')
     pricing_cta2_text = models.CharField(max_length=100, blank=True, default='View All Plans')
     pricing_cta2_link = models.CharField(max_length=500, blank=True, default='/pricing')
+    related_section_title = models.CharField(max_length=200, default='Related Services', blank=True, help_text='Heading for Related Services section')
+    related_section_subtitle = models.CharField(max_length=300, default='Explore more of our professional photo editing services', blank=True, help_text='Subtitle for Related Services section')
+    related_services = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='referenced_by_services', help_text='Choose specific services to display in the Related Services section. Leave empty to automatically display other active services.')
 
     def save(self, *args, **kwargs):
         if not self.slug:

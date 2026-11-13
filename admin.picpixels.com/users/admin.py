@@ -58,9 +58,10 @@ class StandardUserCreationForm(UserCreationForm):
             user.save()
             if role:
                 user.groups.set([role])
+            profile_role = 'admin' if (role and role.name.lower() in ('administrator', 'admin')) else (role.name.lower() if role else 'client')
             UserProfile.objects.get_or_create(
                 user=user,
-                defaults={'role': role.name.lower() if role else 'client'}
+                defaults={'role': profile_role}
             )
         return user
 
@@ -91,12 +92,11 @@ class StandardUserChangeForm(UserChangeForm):
         role = self.cleaned_data.get('role')
         if role:
             user.groups.set([role])
-            if role.name in ['Administrator', 'Manager', 'Editor', 'Retoucher']:
-                user.is_staff = True
-                user.save(update_fields=['is_staff'])
-            if hasattr(user, 'profile'):
-                user.profile.role = role.name.lower()
-                user.profile.save(update_fields=['role'])
+            profile_role = 'admin' if role.name.lower() in ('administrator', 'admin') else role.name.lower()
+            profile, _ = UserProfile.objects.get_or_create(user=user, defaults={'role': profile_role})
+            if profile.role != profile_role:
+                profile.role = profile_role
+                profile.save(update_fields=['role'])
         else:
             user.groups.clear()
         return user
@@ -144,13 +144,11 @@ class CustomUserAdmin(BaseUserAdmin, ModelAdmin):
             role = form.cleaned_data.get('role')
             if role:
                 obj.groups.set([role])
-                if role.name in ['Administrator', 'Manager', 'Editor', 'Retoucher']:
-                    if not obj.is_staff:
-                        obj.is_staff = True
-                        obj.save(update_fields=['is_staff'])
-                if hasattr(obj, 'profile'):
-                    obj.profile.role = role.name.lower()
-                    obj.profile.save(update_fields=['role'])
+                profile_role = 'admin' if role.name.lower() in ('administrator', 'admin') else role.name.lower()
+                profile, _ = UserProfile.objects.get_or_create(user=obj, defaults={'role': profile_role})
+                if profile.role != profile_role:
+                    profile.role = profile_role
+                    profile.save(update_fields=['role'])
             else:
                 obj.groups.clear()
 
