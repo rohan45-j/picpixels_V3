@@ -41,9 +41,9 @@ echo "✅ Write test passed! 'www-data' can read, write, and create files in $ME
 echo "📁 Ensuring database permissions for SQLite if present..."
 if [ -f "/var/www/picpixels_root/admin.picpixels.com/db.sqlite3" ]; then
     chown www-data:www-data /var/www/picpixels_root/admin.picpixels.com/db.sqlite3* || true
-    chmod 664 /var/www/picpixels_root/admin.picpixels.com/db.sqlite3* || true
+    chmod 666 /var/www/picpixels_root/admin.picpixels.com/db.sqlite3* || true
     chown www-data:www-data /var/www/picpixels_root/admin.picpixels.com || true
-    chmod 775 /var/www/picpixels_root/admin.picpixels.com || true
+    chmod 777 /var/www/picpixels_root/admin.picpixels.com || true
 fi
 
 echo "=========================================================="

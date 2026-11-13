@@ -178,11 +178,14 @@ else:
     from django.db.backends.signals import connection_created
     def _configure_sqlite_performance(sender, connection, **kwargs):
         if connection.vendor == 'sqlite':
-            cursor = connection.cursor()
-            cursor.execute('PRAGMA journal_mode = WAL;')
-            cursor.execute('PRAGMA synchronous = NORMAL;')
-            cursor.execute('PRAGMA busy_timeout = 10000;')
-            cursor.execute('PRAGMA cache_size = -32000;')
+            try:
+                cursor = connection.cursor()
+                cursor.execute('PRAGMA journal_mode = WAL;')
+                cursor.execute('PRAGMA synchronous = NORMAL;')
+                cursor.execute('PRAGMA busy_timeout = 10000;')
+                cursor.execute('PRAGMA cache_size = -32000;')
+            except Exception:
+                pass
     connection_created.connect(_configure_sqlite_performance)
 
 CACHES = {
