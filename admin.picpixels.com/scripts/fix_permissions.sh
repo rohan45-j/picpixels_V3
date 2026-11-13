@@ -38,6 +38,14 @@ TEST_FILE="$MEDIA_DIR/.perm_test_write.tmp"
 su -s /bin/bash www-data -c "touch $TEST_FILE && rm $TEST_FILE"
 echo "✅ Write test passed! 'www-data' can read, write, and create files in $MEDIA_DIR."
 
+echo "📁 Ensuring database permissions for SQLite if present..."
+if [ -f "/var/www/picpixels_root/admin.picpixels.com/db.sqlite3" ]; then
+    chown www-data:www-data /var/www/picpixels_root/admin.picpixels.com/db.sqlite3* || true
+    chmod 664 /var/www/picpixels_root/admin.picpixels.com/db.sqlite3* || true
+    chown www-data:www-data /var/www/picpixels_root/admin.picpixels.com || true
+    chmod 775 /var/www/picpixels_root/admin.picpixels.com || true
+fi
+
 echo "=========================================================="
-echo "🎉 All media permissions repaired successfully!"
+echo "🎉 All media and database permissions repaired successfully!"
 echo "=========================================================="
